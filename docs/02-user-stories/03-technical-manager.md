@@ -8,6 +8,7 @@
 **Teknik müdür olarak** ekipmanı hiyerarşik kategorilere ayırmak **istiyorum**, **çünkü** rider'lar çoğu zaman belirli bir model değil, bir kategori ister.
 
 Öncelik: Must · Demo adımı: —
+Kurallar: BR-SYS-001, BR-EQP-002
 
 **Kabul kriterleri**
 1. Kategori bir üst kategoriye bağlanabilir (ör. Ses › Mikrofon › Dinamik vokal).
@@ -18,6 +19,7 @@
 **Teknik müdür olarak** ekipman kataloğunu gerçek teknik değerleriyle tutmak **istiyorum**, **çünkü** ihtiyaç hesabı, ileride güç ve yükleme hesapları bu değerlere dayanır.
 
 Öncelik: Must · Demo adımı: —
+Kurallar: BR-EQP-001
 
 **Kabul kriterleri**
 1. Marka, model adı, kategori ve takip tipi (**Seri no'lu** / **Adetli**) zorunludur.
@@ -29,6 +31,7 @@
 **Teknik müdür olarak** sık birlikte kullanılan ekipmanı kit olarak tanımlamak **istiyorum**, **çünkü** "küçük sahne ışık paketi" gibi setleri her seferinde satır satır girmek istemiyorum.
 
 Öncelik: Should · Demo adımı: —
+Kurallar: BR-EQP-003
 
 **Kabul kriterleri**
 1. Kit bir ad ve satırlardan oluşur; her satır bir model ya da başka bir kit ve adettir.
@@ -39,6 +42,7 @@
 **Teknik müdür olarak** mekanın kendi ekipmanını kaydetmek **istiyorum**, **çünkü** mekanın verdiği ekipmanı depodan götürmemeliyiz.
 
 Öncelik: Must · Demo adımı: 5
+Kurallar: BR-VEN-001, BR-MRP-003, BR-MRP-010
 
 **Kabul kriterleri**
 1. Her satır bir model ya da kategori ve adettir.
@@ -51,6 +55,7 @@
 **Teknik müdür olarak** sanatçıdan gelen rider'ı prodüksiyona girmek **istiyorum**, **çünkü** ekipman ihtiyacı rider'dan hesaplanır.
 
 Öncelik: Must · Demo adımı: 4
+Kurallar: BR-RDR-001, BR-RDR-002, BR-RDR-008
 
 **Kabul kriterleri**
 1. Her rider satırında bir model ya da kategori (biri zorunlu), adet (en az 1), satır esnekliği ve isteğe bağlı not bulunur.
@@ -62,6 +67,7 @@
 **Teknik müdür olarak** sanatçı rider'ını güncellediğinde yeni versiyon oluşturmak ve eskisiyle karşılaştırmak **istiyorum**, **çünkü** sanatçılar rider'ı sık değiştirir ve neyin değiştiğini görmeliyim.
 
 Öncelik: Must · Demo adımı: 4
+Kurallar: BR-RDR-003, BR-RDR-005
 
 **Kabul kriterleri**
 1. Rider'da yapılan her kayıt yeni bir versiyon oluşturur; eski versiyonlar değiştirilemez.
@@ -72,6 +78,7 @@
 **Teknik müdür olarak** etkinliğe prodüksiyonun belirli bir rider versiyonunu bağlamak **istiyorum**, **çünkü** rider sonradan değişse de etkinliğin hangi rider'la planlandığı sabit kalmalı.
 
 Öncelik: Must · Demo adımı: 4
+Kurallar: BR-RDR-004, BR-MRP-010
 
 **Kabul kriterleri**
 1. Kendi etkinliğine, prodüksiyonunun versiyonlarından biri bağlanır; varsayılan en güncel versiyondur.
@@ -81,6 +88,7 @@
 **Teknik müdür olarak** rider'ı yalnızca bir etkinlik için değiştirmek **istiyorum**, **çünkü** mekan koşulları yüzünden sanatçıyla o etkinliğe özel değişiklik üzerinde anlaşabiliyoruz.
 
 Öncelik: Should · Demo adımı: —
+Kurallar: BR-RDR-006
 
 **Kabul kriterleri**
 1. Etkinliğe bağlı versiyondan etkinliğe özel yeni bir versiyon türetilir ve etkinliğe bağlanır.
@@ -91,6 +99,7 @@
 **Teknik müdür olarak** teknik hizmet müşterisinin ihtiyaçlarını rider ile aynı yapıda girmek **istiyorum**, **çünkü** ihtiyaç hesabı ve rezervasyon iki gelir kolunda da aynı şekilde çalışmalı.
 
 Öncelik: Must · Demo adımı: —
+Kurallar: BR-RDR-001, BR-RDR-007, BR-MRP-004
 
 **Kabul kriterleri**
 1. Teknik hizmet etkinliğinde rider, arayüzde "İhtiyaç listesi" adıyla etkinliğin kendisine bağlı oluşturulur.
@@ -103,14 +112,15 @@
 **Teknik müdür olarak** rider'dan net ekipman ihtiyacını ve bunun nereden karşılanacağını otomatik görmek **istiyorum**, **çünkü** bunu elle hesaplamak hem uzun sürüyor hem de hataya açık.
 
 Öncelik: Must · Demo adımı: 5, 6, 7, 9
+Kurallar: BR-VEN-001, BR-EVT-010, BR-MRP-001, BR-MRP-002, BR-MRP-003, BR-MRP-004, BR-MRP-005, BR-MRP-009, BR-MRP-010, BR-MRP-011, BR-MRP-012, BR-MRP-019
 
 **Kabul kriterleri**
-1. Hesap, etkinlik **Hazırlık** durumuna geçerken otomatik çalışır. **Hazırlık** ve **Kurulum** durumlarında elle yeniden çalıştırılabilir.
+1. Hesap, etkinlik **Hazırlık** durumuna geçerken otomatik çalışır. **Onaylı**, **Hazırlık** ve **Kurulum** durumlarında elle çalıştırılabilir.
 2. Her rider satırı için brüt ihtiyaç, mekan ekipmanından karşılanan adet, net ihtiyaç ve net ihtiyacın kaynaklara dağılımı gösterilir.
 3. **Zorunlu** satır yalnızca istenen modelle karşılanır. **Esnek** satır önce istenen modelle, sonra muadillerle sırasıyla karşılanır. Kategori satırı o kategori ve alt kategorilerindeki herhangi bir modelle karşılanır.
 4. Mekan ekipmanı, 3. maddedeki eşleşme kurallarıyla brüt ihtiyaçtan önce düşülür.
 5. Net ihtiyaç sırasıyla kaynak depodan, sonra diğer depolardan (transfer önerisi), en son dış kiralama önerisiyle karşılanır.
-6. Müsaitlik, rezervasyon aralığı (etkinlik tarihleri, hazırlık payı ve dönüş payı) üzerinden hesaplanır. Başka etkinliklerin onaylı rezervasyonları düşülür. **Bakımda**, **Kayıp** ve **Hurda** birimler sayılmaz. Yoldaki transferler planlanan varış tarihinden itibaren hedef depoda sayılır.
+6. Müsaitlik, rezervasyon aralığı (etkinliğin başlangıç ve bitiş zamanı, hazırlık payı ve dönüş payı) üzerinden, saat hassasiyetinde hesaplanır. Başka etkinliklerin onaylı rezervasyonları düşülür. **Bakımda**, **Kayıp** ve **Hurda** birimler sayılmaz. Yoldaki transferler planlanan varış tarihinden itibaren hedef depoda sayılır.
 7. Yeniden hesaplamada **Önerildi** rezervasyonlar silinip yeniden üretilir, **Onaylandı** rezervasyonlar korunur. Yeni net ihtiyacı aşan onaylı rezervasyonlar "fazla" olarak işaretlenir.
 8. Her hesabın zamanı, çalıştıran kullanıcı ve kullanılan rider versiyonu kaydedilir.
 9. 50 satırlık bir rider ve 5.000 birimlik stokla hesap 2 saniyeden kısa sürer.
@@ -119,6 +129,7 @@
 **Teknik müdür olarak** ihtiyaç hesabının önerdiği rezervasyonları kontrol edip onaylamak **istiyorum**, **çünkü** ekipman ancak onayımla ayrılmış sayılmalı.
 
 Öncelik: Must · Demo adımı: 6
+Kurallar: BR-SYS-011, BR-MRP-012, BR-MRP-013, BR-MRP-014, BR-MRP-015
 
 **Kabul kriterleri**
 1. Öneriler satır satır ya da toplu onaylanır.
@@ -131,10 +142,11 @@
 **Teknik müdür olarak** kaynak depoda yetmeyen ekipmanın başka depodan getirilmesini planlamak **istiyorum**, **çünkü** aynı ekipman başka şehirdeki depomuzda boş dururken dışarıdan kiralamak para kaybı.
 
 Öncelik: Must · Demo adımı: 7
+Kurallar: BR-MRP-006, BR-MRP-007
 
 **Kabul kriterleri**
 1. Öneri hangi depodan hangi modelden kaç adet getirileceğini gösterir.
-2. Onaylarken planlanan çıkış ve varış tarihi girilir. Varış, rezervasyon aralığının başlangıcından sonraysa onay engellenir.
+2. Onaylarken planlanan çıkış ve varış zamanı girilir. Varış, rezervasyon aralığının başlangıcından sonraysa onay engellenir.
 3. Onaylanan öneri **Planlandı** durumunda bir transfer oluşturur. Ekipman, çıkış tarihinden itibaren gönderen depoda ayrılmış, varış tarihinden itibaren hedef depoda etkinliğe rezerve sayılır.
 4. Transferin çıkış ve girişini depo sorumluları yapar (US-WHS-004).
 
@@ -142,6 +154,7 @@
 **Teknik müdür olarak** karşılanamayan ya da fazla ayrılmış ekipmanı tek listede görmek **istiyorum**, **çünkü** çakışmaları etkinlik gününden önce çözmeliyim.
 
 Öncelik: Must · Demo adımı: 8
+Kurallar: BR-MRP-016, BR-MRP-017, BR-MRP-018
 
 **Kabul kriterleri**
 1. Her çakışma için model, depo, zaman aralığı, istenen ve müsait adet ile etkilenen etkinlikler listelenir.
@@ -156,6 +169,7 @@
 **Teknik müdür olarak** hiçbir depoda bulunmayan ekipman için tedarikçiye sipariş açmak **istiyorum**, **çünkü** eksik ekipman etkinlikten önce kesin olarak karşılanmalı.
 
 Öncelik: Must · Demo adımı: 9
+Kurallar: BR-PTY-004, BR-WHS-013, BR-MRP-008
 
 **Kabul kriterleri**
 1. İhtiyaç hesabının dış kiralama önerisinden sipariş oluşturulur.
@@ -169,6 +183,7 @@
 **Teknik müdür olarak** rider'ın her satırının nereden karşılandığını gösteren bir belge almak **istiyorum**, **çünkü** sanatçının teknik ekibine ve mekana bunu göndermem gerekiyor.
 
 Öncelik: Must · Demo adımı: 10
+Kurallar: BR-MRP-020
 
 **Kabul kriterleri**
 1. PDF olarak üretilir; başlıkta etkinlik, mekan, tarih, rider versiyonu ve belgenin üretilme zamanı bulunur.
@@ -179,8 +194,22 @@
 **Teknik müdür olarak** bir ekipmanın belirli tarihlerde hangi depoda kaç adet boş olduğunu sorgulamak **istiyorum**, **çünkü** müşteriye teklif vermeden önce yapabilir miyiz görmeliyim.
 
 Öncelik: Must · Demo adımı: —
+Kurallar: BR-MRP-002
 
 **Kabul kriterleri**
-1. Model ya da kategori, tarih aralığı ve isteğe bağlı depo seçilerek sorgulanır.
+1. Model ya da kategori, zaman aralığı (tarih ve isteğe bağlı saat) ve isteğe bağlı depo seçilerek sorgulanır.
 2. Sonuç her depo için toplam, rezerve ve müsait adeti tablo halinde gösterir.
 3. Rezerve adetlerin hangi etkinliklere ait olduğu görülebilir.
+
+### US-MRP-008 · Etkinlik bazında hazırlık ve dönüş payı
+**Teknik müdür olarak** her etkinlik için ekipmanın ne kadar önce hazırlanacağını ve döndükten sonra ne kadar kontrol edileceğini saat hassasiyetinde belirlemek **istiyorum**, **çünkü** küçük bir kurumsal iş 10 saatte hazırlanırken bir stadyum konseri günler sürer.
+
+Öncelik: Must · Demo adımı: 5
+Kurallar: BR-MRP-001, BR-MRP-010, BR-MRP-017
+
+**Kabul kriterleri**
+1. Etkinlik oluşturulduğunda hazırlık ve dönüş payı varsayılan değerlerle (US-SYS-007) dolar.
+2. Paylar etkinlik sayfasında gün ve saat olarak girilir (ör. "10 saat", "1 gün 6 saat"); sıfır olabilir, eksi olamaz.
+3. Etkinlik sayfasında rezervasyon aralığının başlangıç ve bitiş zamanı açıkça gösterilir.
+4. Payları booking müdürü ve teknik müdür değiştirebilir.
+5. Değişiklik ihtiyaç hesabını "güncel değil" yapar ve aşırı rezervasyon kontrolünü çalıştırır.

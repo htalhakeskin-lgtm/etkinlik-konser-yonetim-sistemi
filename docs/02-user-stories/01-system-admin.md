@@ -6,6 +6,7 @@
 **Sistem yöneticisi olarak** yeni bir çalışan için kullanıcı açıp rol atamak **istiyorum**, **çünkü** her çalışan yalnızca işinin gerektirdiği yetkilerle çalışmalı.
 
 Öncelik: Must · Demo adımı: —
+Kurallar: BR-SYS-006, BR-SYS-014
 
 **Kabul kriterleri**
 1. Ad soyad, e-posta ve en az bir rol zorunludur.
@@ -18,6 +19,7 @@
 **Sistem yöneticisi olarak** ayrılan çalışanın erişimini kapatmak ve şifresini unutanın şifresini sıfırlamak **istiyorum**, **çünkü** erişimi kontrol etmek benim sorumluluğum.
 
 Öncelik: Must · Demo adımı: —
+Kurallar: BR-SYS-001, BR-SYS-006, BR-SYS-008, BR-SYS-009
 
 **Kabul kriterleri**
 1. Kullanıcılar silinmez, pasifleştirilir. Pasif kullanıcının adı geçmiş kayıtlarda görünmeye devam eder.
@@ -29,6 +31,7 @@
 **Sistem yöneticisi olarak** her rolün hangi işlemleri yapabildiğini tek tabloda görmek **istiyorum**, **çünkü** bir çalışana hangi rolü vereceğime karar vermeliyim.
 
 Öncelik: Could · Demo adımı: —
+Kurallar: —
 
 **Kabul kriterleri**
 1. Roller sütunlarda, yetkiler satırlarda, modül bazında gruplanmış gösterilir.
@@ -38,8 +41,20 @@
 **Sistem yöneticisi olarak** şirketin depolarını tanımlamak **istiyorum**, **çünkü** tüm stok ve depo işlemleri bir depoya bağlıdır.
 
 Öncelik: Must · Demo adımı: —
+Kurallar: BR-SYS-001, BR-SYS-013
 
 **Kabul kriterleri**
 1. Depo adı, şehir ve adres zorunludur; depo adı tekildir.
 2. İçinde stok, açık transfer ya da açık rezervasyon bulunan depo pasifleştirilemez.
 3. Sistemde her zaman en az bir aktif depo bulunur.
+
+### US-SYS-007 · Varsayılan hazırlık ve dönüş payı
+**Sistem yöneticisi olarak** yeni etkinliklere gelecek varsayılan hazırlık ve dönüş payını ayarlardan değiştirmek **istiyorum**, **çünkü** şirketin çalışma temposu zamanla değişir.
+
+Öncelik: Should · Demo adımı: —
+Kurallar: BR-MRP-001
+
+**Kabul kriterleri**
+1. Varsayılan paylar ayarlar ekranında gün ve saat olarak girilir; başlangıç değerleri 1'er gündür.
+2. Değişiklik yalnızca bundan sonra oluşturulan etkinlikleri etkiler; mevcut etkinliklerin payları değişmez.
+3. Değişiklik işlem geçmişine yazılır.

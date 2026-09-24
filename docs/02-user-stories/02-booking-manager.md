@@ -8,6 +8,7 @@
 **Booking müdürü olarak** sanatçı, ajans, mekan işletmecisi, tedarikçi ve müşterileri tek yerde kaydetmek **istiyorum**, **çünkü** aynı firma farklı işlerde farklı rollerle karşıma çıkıyor.
 
 Öncelik: Must · Demo adımı: —
+Kurallar: BR-PTY-001, BR-PTY-002, BR-PTY-003
 
 **Kabul kriterleri**
 1. Taraf türü (kişi / firma), ad ve en az bir taraf rolü zorunludur.
@@ -19,6 +20,7 @@
 **Booking müdürü olarak** kayıtlı tarafları bulup güncellemek **istiyorum**, **çünkü** iletişim bilgileri sık değişir.
 
 Öncelik: Must · Demo adımı: —
+Kurallar: BR-SYS-001
 
 **Kabul kriterleri**
 1. Taraflar ad, rol ve iletişim bilgisine göre aranır ve role göre filtrelenir.
@@ -29,6 +31,7 @@
 **Booking müdürü olarak** mekanları teknik bilgileriyle kaydetmek **istiyorum**, **çünkü** opsiyon, ihtiyaç hesabı ve ileride güç hesabı bu bilgilere dayanır.
 
 Öncelik: Must · Demo adımı: —
+Kurallar: BR-PTY-004
 
 **Kabul kriterleri**
 1. Ad, şehir, adres ve kapasite zorunludur.
@@ -40,6 +43,7 @@
 **Booking müdürü olarak** sanatçıları ve şovlarını kaydetmek **istiyorum**, **çünkü** rider ve etkinlikler prodüksiyona bağlanır.
 
 Öncelik: Must · Demo adımı: —
+Kurallar: BR-PTY-004
 
 **Kabul kriterleri**
 1. Sanatçı, sanatçı rolündeki bir taraftır; varsa ajansı bağlanır.
@@ -52,9 +56,10 @@
 **Booking müdürü olarak** yeni bir etkinlik talebini kaydetmek **istiyorum**, **çünkü** görüşme başladığı andan itibaren etkinliğin tek bir kaydı olmalı.
 
 Öncelik: Must · Demo adımı: 1
+Kurallar: BR-PTY-004, BR-EVT-016, BR-MRP-001
 
 **Kabul kriterleri**
-1. Ad, etkinlik türü, başlangıç ve bitiş tarihi zorunludur; bitiş başlangıçtan önce olamaz.
+1. Ad, etkinlik türü, başlangıç ve bitiş zamanı zorunludur; bitiş başlangıçtan önce olamaz. Talep aşamasında yalnızca tarih girilebilir; saat girilmezse başlangıç 00:00, bitiş 23:59 kabul edilir.
 2. Etkinlik türü **Kendi etkinliği** ise prodüksiyon, **Teknik hizmet** ise müşteri zorunludur.
 3. Mekan ve kaynak depo talep aşamasında boş bırakılabilir.
 4. Yeni etkinlik **Talep** durumunda başlar ve durum geçmişine ilk kayıt yazılır.
@@ -63,6 +68,7 @@
 **Booking müdürü olarak** mekanın bize verdiği opsiyonu sırasıyla kaydetmek **istiyorum**, **çünkü** hangi tarihlerde kaçıncı sırada olduğumuzu takip etmeliyim.
 
 Öncelik: Must · Demo adımı: 1
+Kurallar: BR-EVT-001, BR-EVT-002, BR-EVT-003, BR-EVT-004, BR-EVT-008
 
 **Kabul kriterleri**
 1. Etkinlik **Talep** veya **Opsiyonda** durumundayken bir mekan ve tarih için opsiyon eklenir.
@@ -70,7 +76,7 @@
 3. Aynı mekan ve tarihteki tüm opsiyonlar (kendi ve dış) sırasıyla gösterilir.
 4. Girilen sıradan önceki sıralar sistemde kayıtlı değilse, eksik sıralar için sahibi bilinmeyen dış opsiyonlar otomatik oluşturulur. Örneğin "2. opsiyon" girildiğinde 1. sıraya bir dış opsiyon eklenir.
 5. Dış opsiyon elle de eklenebilir; sahibinin adı isteğe bağlı serbest metindir.
-6. Opsiyon son tarihi isteğe bağlıdır; son tarihine 3 gün veya daha az kalan opsiyonlar listelerde vurgulanır.
+6. Opsiyon son tarihi isteğe bağlıdır. Son tarihi yaklaşan (3 gün veya daha az kalan) ve süresi geçmiş opsiyonlar listelerde ve etkinlik sayfasında farklı renklerle işaretlenir. Süresi geçen opsiyon düşmez; mekan süreyi uzatırsa son tarih güncellenir.
 7. Bir etkinliğin aynı mekan ve tarih için tek aktif opsiyonu olabilir. Farklı etkinliklerimiz aynı tarih için ayrı opsiyonlar tutabilir.
 8. İlk opsiyon eklendiğinde etkinlik **Talep** durumundan **Opsiyonda** durumuna geçer.
 
@@ -78,6 +84,7 @@
 **Booking müdürü olarak** mekan bir opsiyonu düşürdüğünde sıramızın otomatik güncellenmesini **istiyorum**, **çünkü** sırayı elle takip etmek hataya açık.
 
 Öncelik: Must · Demo adımı: 2
+Kurallar: BR-EVT-005, BR-EVT-006, BR-EVT-007
 
 **Kabul kriterleri**
 1. Kendi opsiyonumuz ya da bir dış opsiyon, neden seçilerek düşürülür (iptal, süre doldu, mekan başkasına verdi).
@@ -90,10 +97,11 @@
 **Booking müdürü olarak** etkinliği müzakereye ve ardından onaya taşımak **istiyorum**, **çünkü** hangi etkinliklerin kesinleştiği herkes için net olmalı.
 
 Öncelik: Must · Demo adımı: 3
+Kurallar: BR-EVT-001, BR-EVT-009, BR-EVT-015
 
 **Kabul kriterleri**
-1. **Kendi etkinliği** **Opsiyonda** durumundan, **Teknik hizmet** **Talep** durumundan **Müzakere**'ye geçer. Teknik hizmette mekan müşterinin olduğu için opsiyon gerekmez.
-2. **Müzakere**'den **Onaylı**'ya geçişte kendi etkinliğinin mekan opsiyonu 1. sırada olmalıdır.
+1. **Kendi etkinliği** **Opsiyonda** durumundan **Müzakere**'ye geçer. **Teknik hizmet** **Talep** ya da **Opsiyonda** durumundan geçebilir: mekanı müşteri tuttuysa opsiyon gerekmez, müşteri adına mekanı biz tutuyorsak opsiyon alınır.
+2. **Müzakere**'den **Onaylı**'ya geçişte etkinliğin opsiyonları varsa hepsi 1. sırada olmalı ve hiçbirinin süresi geçmemiş olmalıdır.
 3. **Onaylı**'ya geçişte "Sözleşme imzalandı" elle onayı zorunludur; onayı veren kullanıcı kaydedilir. S3'te bu onay sözleşme kontrolüyle değiştirilecek.
 4. Her geçiş durum geçmişine önceki durum, yeni durum, kullanıcı, zaman ve isteğe bağlı notla yazılır.
 5. O an geçerli olmayan geçişler arayüzde sunulmaz. Tam geçiş tablosu `04-state-machines.md`'de tanımlanacak.
@@ -102,6 +110,7 @@
 **Booking müdürü olarak** onaylı etkinliği operasyon aşamalarından geçirip kapatmak **istiyorum**, **çünkü** etkinliğin hangi aşamada olduğu depo ve teknik ekip için yol gösterici.
 
 Öncelik: Must · Demo adımı: 5, 11, 12
+Kurallar: BR-EVT-010, BR-EVT-011, BR-EVT-012, BR-EVT-013, BR-EVT-015
 
 **Kabul kriterleri**
 1. **Onaylı** → **Hazırlık** geçişi için mekan, kaynak depo ve bir rider versiyonu tanımlı olmalıdır. Geçişte ihtiyaç hesabı otomatik çalışır (US-MRP-001).
@@ -114,6 +123,7 @@
 **Booking müdürü olarak** bir etkinliği herhangi bir aşamada iptal etmek **istiyorum**, **çünkü** iptal edilen etkinlik ayırdığı mekan ve ekipmanı bırakmalı.
 
 Öncelik: Must · Demo adımı: —
+Kurallar: BR-EVT-014
 
 **Kabul kriterleri**
 1. **Kapandı** dışındaki her durumdan iptal edilebilir; iptal nedeni zorunludur.
@@ -127,9 +137,10 @@
 **Booking müdürü olarak** tüm etkinlikleri filtreleyip bir etkinliğin her bilgisine tek sayfadan ulaşmak **istiyorum**, **çünkü** aynı anda onlarca etkinliği takip ediyorum.
 
 Öncelik: Must · Demo adımı: —
+Kurallar: BR-EVT-006, BR-EVT-008, BR-EVT-017
 
 **Kabul kriterleri**
 1. Liste durum, tarih aralığı, etkinlik türü, mekan ve kaynak depoya göre filtrelenir; varsayılan sıralama başlangıç tarihidir.
-2. Listede opsiyon sırası, açık çakışma sayısı ve "dönmemiş ekipman" işaretleri görünür.
+2. Listede opsiyon sırası, opsiyon süresi işaretleri, açık çakışma sayısı ve "dönmemiş ekipman" işaretleri görünür. Liste, süresi geçmiş opsiyonu olan etkinliklere göre filtrelenebilir.
 3. Detay sayfası sekmelerden oluşur: Genel, Opsiyonlar, Rider, İhtiyaç ve rezervasyon, Depo işlemleri, Durum geçmişi.
 4. Detay sayfasında geçerli durum geçişleri düğme olarak sunulur.

@@ -1,6 +1,6 @@
 # 02 — Kullanıcı Hikayeleri
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-24
+> **Durum:** v1.2 · **Son güncelleme:** 2026-09-24
 > **Kararlar:** [Bölüm 6](#6-kararlar)
 
 ## 1. Bu klasör ne işe yarar
@@ -37,6 +37,7 @@ Veritabanı tasarımında izlenen iki seviyeli yaklaşım burada da geçerlidir:
 **<Rol> olarak** <ne> **istiyorum**, **çünkü** <neden>.
 
 Öncelik: Must · Demo adımı: 1
+Kurallar: BR-EVT-016
 
 **Kabul kriterleri**
 1. Test edilebilir tek bir koşul.
@@ -45,7 +46,7 @@ Veritabanı tasarımında izlenen iki seviyeli yaklaşım burada da geçerlidir:
 - **Öncelik (MoSCoW):** `Must` MVP demo senaryosu için gerekli. `Should` S1'de yapılır ama demoyu engellemez. `Could` zaman kalırsa yapılır, yoksa sonraki sürüme kayar.
 - **Demo adımı:** Hikayenin karşıladığı [MVP demo senaryosu](../00-scope.md#61-bitti-kriteri-mvp-demo-senaryosu) adımları.
 - **Terimler** yalnızca [sözlükteki](../01-glossary.md) adlarla yazılır.
-- **Kabul kriterleri** içindeki kurallar bir sonraki adımda [03-business-rules.md](../03-business-rules.md) içinde numaralandırılacak. O zaman kriterler kuralı tekrar yazmak yerine `BR-xxx` numarasına referans verecek.
+- **Kurallar** satırı, hikayeyi ilgilendiren [iş kurallarını](../03-business-rules.md) listeler. Kabul kriterleri okunabilirlik için kuralı kısaca tekrar eder; ikisi çelişirse iş kuralları kataloğu geçerlidir ve hikaye düzeltilir.
 
 ## 4. Roller ve dosyalar
 
@@ -54,9 +55,9 @@ Her hikaye, işi asıl yapan rolün dosyasındadır.
 | Dosya | Rol | S1 hikaye sayısı |
 |---|---|---|
 | [00-all-users.md](00-all-users.md) | Tüm kullanıcılar | 3 |
-| [01-system-admin.md](01-system-admin.md) | Sistem yöneticisi | 4 |
+| [01-system-admin.md](01-system-admin.md) | Sistem yöneticisi | 5 |
 | [02-booking-manager.md](02-booking-manager.md) | Booking / prodüksiyon müdürü | 11 |
-| [03-technical-manager.md](03-technical-manager.md) | Teknik müdür | 16 |
+| [03-technical-manager.md](03-technical-manager.md) | Teknik müdür | 17 |
 | [04-warehouse-manager.md](04-warehouse-manager.md) | Depo sorumlusu | 12 |
 | [05-general-manager.md](05-general-manager.md) | Genel müdür | 3 |
 
@@ -72,7 +73,7 @@ Demo senaryosunun her adımı en az bir `Must` hikayeyle karşılanır:
 | 2. Opsiyon yükselmesi | US-EVT-003 |
 | 3. Müzakere ve Onaylı geçişleri | US-EVT-004 |
 | 4. Rider versiyonunun bağlanması | US-RDR-001, US-RDR-002, US-RDR-003 |
-| 5. Net ihtiyaç hesabı | US-EVT-005, US-VEN-002, US-MRP-001 |
+| 5. Net ihtiyaç hesabı | US-EVT-005, US-VEN-002, US-MRP-001, US-MRP-008 |
 | 6. Rezervasyon önerisi ve onayı | US-MRP-002 |
 | 7. Depolar arası transfer | US-MRP-003, US-WHS-004 |
 | 8. Çakışma paneli | US-MRP-004 |
@@ -83,7 +84,7 @@ Demo senaryosunun her adımı en az bir `Must` hikayeyle karşılanır:
 | 13. Anlık güncelleme ve eşzamanlı çıkış | US-WHS-005, US-EQP-008 |
 | 14. İşlem geçmişi | US-SYS-004 |
 
-Demo için gerekli ana veriler (depo, taraf, mekan, sanatçı, katalog, birim, kasa) US-SYS-005, US-PTY-001, US-VEN-001, US-ART-001 ve US-EQP-001…004 ile girilir. S1'de toplam 49 hikaye var.
+Demo için gerekli ana veriler (depo, taraf, mekan, sanatçı, katalog, birim, kasa) US-SYS-005, US-PTY-001, US-VEN-001, US-ART-001 ve US-EQP-001…004 ile girilir. S1'de toplam 51 hikaye var.
 
 ## 5. S2–S6 epic listesi
 
@@ -138,3 +139,5 @@ Demo için gerekli ana veriler (depo, taraf, mekan, sanatçı, katalog, birim, k
 |---|---|---|
 | 2026-09-24 | v0.1 | İlk taslak |
 | 2026-09-24 | v1.0 | Açık sorular karara bağlandı; dış kiralamanın QR ile takibi için US-WHS-007 eklendi. |
+| 2026-09-24 | v1.1 | Her hikayeye ilgili iş kuralları eklendi. US-MRP-001: hesap Onaylı durumunda da çalıştırılabilir. US-WHS-002: her okutma anında kaydedilir. |
+| 2026-09-24 | v1.2 | İş kuralı kararları: US-SYS-007 ve US-MRP-008 eklendi (saat hassasiyetinde hazırlık ve dönüş payı); etkinlik zamanı saatli oldu; süresi geçmiş opsiyon işaretleri; teknik hizmette isteğe bağlı opsiyon. |

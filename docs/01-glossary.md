@@ -1,6 +1,6 @@
 # 01 — Terimler Sözlüğü
 
-> **Durum:** v1.1 · **Son güncelleme:** 2026-09-24
+> **Durum:** v1.3 · **Son güncelleme:** 2026-09-24
 > **Kararlar:** [Bölüm 5](#5-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -64,6 +64,7 @@ Sözlük tüm sistemi kapsar; her terimin hangi sürümde devreye girdiği [00-s
 | Opsiyon | `VenueHold` | Mekanın belirli bir tarih için bir etkinliğe verdiği ön rezervasyon (hold). Aynı tarihe birden çok opsiyon verilebilir. | S1 |
 | Dış opsiyon | `VenueHold` (`EventId` boş) | Mekanın aynı tarih için başka bir firmaya verdiği opsiyon. Sahibi bilinmeyebilir. Kendi opsiyonumuzun sırasını doğru tutmak için kaydedilir. | S1 |
 | Opsiyon son tarihi | `HoldExpiresAt` | Mekanın opsiyon için verdiği karar son tarihi. | S1 |
+| Süresi geçmiş opsiyon | `VenueHold.IsExpired` | Son tarihi geçtiği halde düşürülmemiş opsiyon. Sırasını korur ama etkinlik bununla onaylanamaz. | S1 |
 | Opsiyon sırası | `HoldRank` | Aynı mekan ve tarihteki opsiyonlar arasındaki öncelik (1. opsiyon, 2. opsiyon...). | S1 |
 | Opsiyon yükselmesi | `HoldPromotion` | Öndeki opsiyon düştüğünde arkadakinin sırasının bir öne çıkması. | S1 |
 | Opsiyonun düşmesi | `HoldRelease` | Bir opsiyonun iptal edilmesi ya da süresinin dolması. | S1 |
@@ -81,6 +82,7 @@ Sözlük tüm sistemi kapsar; her terimin hangi sürümde devreye girdiği [00-s
 | Terim | Kod adı | Tanım | Sürüm |
 |---|---|---|---|
 | Etkinlik | `Event` | Belirli tarih(ler)de belirli bir mekanda gerçekleşen, şirketin sorumluluk aldığı iş. Sistemin merkez varlığıdır. | S1 |
+| Etkinlik zamanı | `StartsAt`, `EndsAt` | Etkinliğin başlangıç ve bitiş zamanı (tarih ve saat). Saat girilmezse başlangıç 00:00, bitiş 23:59 kabul edilir. | S1 |
 | Etkinlik türü | `EventKind` | Etkinliğin hangi gelir koluna ait olduğu: **Kendi etkinliği** (`Promoted`) veya **Teknik hizmet** (`TechnicalService`). | S1 |
 | Kaynak depo | `SourceWarehouse` | Etkinliğin ekipmanını hazırlayıp gönderen depo. İhtiyaç önce buradan karşılanmaya çalışılır. | S1 |
 | Seans | `Performance` | Bir etkinlik içindeki tek bir gösterim (ör. matine ve akşam seansı). | S2 |
@@ -149,8 +151,10 @@ Geçiş kuralları `04-state-machines.md`'de tanımlanacak.
 | Sahiplik | `Ownership` | Ekipmanın kime ait olduğu: **Şirket** (`Owned`) veya **Dış kiralama** (`SubRented`, QR ile takibe alınmış dış kiralama ekipmanı). | S1 |
 | Birim durumu | `UnitStatus` | Birimin fiziksel durumu. Değerler aşağıdaki tabloda. Rezervasyon bir durum değildir (bkz. 3.8 Müsaitlik). | S1 |
 | Transfer | `WarehouseTransfer` | Ekipmanın bir depodan diğerine taşınması. Planlanan ve gerçekleşen varış zamanı vardır. | S1 |
+| Gecikmiş transfer | `WarehouseTransfer.IsOverdue` | Planlanan varış zamanı geçtiği halde tamamlanmamış transfer. Kalemleri hedef depoda müsait sayılmaz. | S1 |
 | Transfer durumu | `TransferStatus` | **Planlandı** (`Planned`), **Yolda** (`InTransit`), **Tamamlandı** (`Completed`), **İptal** (`Cancelled`). | S1 |
 | Çıkış | `CheckOut` | Ekipmanın QR okutularak depodan etkinliğe ya da transfere çıkarılması. | S1 |
+| Çıkışın geri alınması | `CheckOutReversal` | Yanlış yapılan çıkışın, etkinlik Canlı olmadan geri alınması. | S1 |
 | Giriş | `CheckIn` | Ekipmanın QR okutularak depoya geri alınması. | S1 |
 | Toplama listesi | `PickList` | Bir etkinlik için depodan çıkarılacak kasa, birim ve adetlerin QR kodlu listesi. | S1 |
 | Sayım farkı | `CountDiscrepancy` | Adetli bir kalemde beklenen ile sayılan miktar arasındaki fark. Hangi etkinlik ya da transferde oluştuğuyla kaydedilir. | S1 |
@@ -180,11 +184,16 @@ Geçiş kuralları `04-state-machines.md`'de tanımlanacak.
 | Net ihtiyaç | `NetRequirement` | Brüt ihtiyaçtan mekan ekipmanı ve kabul edilen muadiller düşüldükten sonra kalan, şirketin karşılaması gereken miktar. | S1 |
 | Rezervasyon | `EquipmentReservation` | Bir birimin ya da adetli miktarın belirli bir zaman aralığı için bir etkinliğe ayrılması. Fiziksel durumu değiştirmez. | S1 |
 | Rezervasyon durumu | `ReservationStatus` | **Önerildi** (`Proposed`), **Onaylandı** (`Confirmed`), **Serbest bırakıldı** (`Released`). | S1 |
-| Hazırlık payı | `PrepBuffer` | Etkinlik öncesinde ekipmanın hazırlanması için rezervasyona eklenen süre. | S1 |
-| Dönüş payı | `ReturnBuffer` | Etkinlik sonrasında ekipmanın dönüp kontrol edilmesi için rezervasyona eklenen süre. | S1 |
-| Rezervasyon aralığı | `ReservationWindow` | Etkinlik tarihleri ile hazırlık ve dönüş paylarının toplamı. Çakışma bu aralık üzerinden hesaplanır. | S1 |
+| Hazırlık payı | `PrepBuffer` | Etkinlik öncesinde ekipmanın hazırlanması için rezervasyona eklenen süre. Saat hassasiyetindedir (ör. 10 saat); varsayılanı ayarlardan gelir, etkinlik bazında değiştirilir. | S1 |
+| Dönüş payı | `ReturnBuffer` | Etkinlik sonrasında ekipmanın dönüp kontrol edilmesi için rezervasyona eklenen süre. Saat hassasiyetindedir; varsayılanı ayarlardan gelir, etkinlik bazında değiştirilir. | S1 |
+| Rezervasyon aralığı | `ReservationWindow` | Etkinliğin başlangıç zamanından hazırlık payı kadar önce başlayıp bitiş zamanından dönüş payı kadar sonra biten zaman aralığı. Müsaitlik ve çakışma bu aralık üzerinden hesaplanır. | S1 |
+| Stok havuzu | `StockPool` | Müsaitlik hesabında bir depoda belirli bir an için var sayılan şirket ekipmanı: depodakiler, o depodan etkinliğe çıkıp aralığı bitmemiş olanlar ve o depoya zamanında gelecek transferler. | S1 |
+| Gecikmiş dönüş | `OverdueReturn` | Rezervasyon aralığı bittiği halde depoya dönmemiş ekipman. Stok havuzuna girmez. | S1 |
 | Müsaitlik | `Availability` | Bir modelden belirli bir zaman aralığında, belirli bir depoda kaç adet kullanılabilir olduğu. Durumdan farklı olarak zamana bağlı ve hesaplanan bir değerdir. | S1 |
 | Çakışma | `Conflict` | Aynı kaynağın örtüşen zaman aralıklarında birden fazla işe ayrılması. S1'de yalnızca ekipman için, S2'den itibaren ekip, mekan ve araç için de. | S1 |
+| Çakışma türü | `ConflictType` | **Rakip talep** (`CompetingDemand`): net ihtiyaç, başka etkinliklerin onaylı rezervasyonları yüzünden karşılanamıyor. **Aşırı rezervasyon** (`Overbooking`): onaylı rezervasyonlar sonradan müsaitliği aşıyor. | S1 |
+| Fazla rezervasyon | `EquipmentReservation.IsExcess` | Yeniden hesaplamadan sonra yeni net ihtiyacı aşan onaylı rezervasyon. Otomatik serbest bırakılmaz. | S1 |
+| Güncel olmayan hesap | `RequirementCalculation.IsStale` | Hesaba giren bir veri (rider versiyonu, mekan, tarih, paylar, kaynak depo) değiştiği için yeniden çalıştırılması gereken ihtiyaç hesabı. | S1 |
 | Karşılama | `Fulfillment` | Bir rider satırının nasıl karşılandığı. | S1 |
 | Karşılama kaynağı | `FulfillmentSource` | **Depo** (`Warehouse`), **Mekan** (`Venue`), **Muadil** (`Equivalent`), **Dış kiralama** (`SubRental`). | S1 |
 | Dış kiralama | `SubRental` | Şirketin hiçbir deposunda bulunmayan ekipmanın bir tedarikçiden kiralanması. | S1 |
@@ -297,3 +306,5 @@ Bu kelimeler arayüzde, belgelerde ve kodda kullanılmaz; yerine sağ sütundaki
 | 2026-09-24 | v0.1 | İlk taslak |
 | 2026-09-24 | v1.0 | Açık sorular varsayılanlarla karara bağlandı. Kullanıcı hikayeleri yazılırken çıkan terimler eklendi: pasif kayıt, dış opsiyon, opsiyon son tarihi, transfer durumu, dış kiralama siparişi durumu. |
 | 2026-09-24 | v1.1 | Dış kiralamanın QR ile takibi için sahiplik terimi ve "Tedarikçiye iade edildi" birim durumu eklendi. |
+| 2026-09-24 | v1.2 | İş kuralları yazılırken çıkan terimler eklendi: stok havuzu, gecikmiş dönüş, gecikmiş transfer, çakışma türleri, fazla rezervasyon, güncel olmayan hesap, çıkışın geri alınması. |
+| 2026-09-24 | v1.3 | Etkinlik zamanı ve süresi geçmiş opsiyon eklendi; hazırlık payı, dönüş payı ve rezervasyon aralığı saat hassasiyetine göre yeniden tanımlandı. |

@@ -1,6 +1,6 @@
 # 00 — Kapsam ve MVP Sınırları
 
-> **Durum:** v1.2 · **Son güncelleme:** 2026-09-24
+> **Durum:** v1.3 · **Son güncelleme:** 2026-09-24
 > **Kararlar:** [Bölüm 10](#10-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -118,6 +118,7 @@ Aşağıdaki akış seed verili bir ortamda baştan sona çalıştığında S1 t
 | E-posta ve şifre ile giriş | S1 |
 | Sabit roller ve rol bazlı yetkiler | S1 |
 | Kullanıcı ve rol yönetimi ekranı | S1 |
+| Ayarlar ekranı: varsayılan hazırlık ve dönüş payı | S1 |
 | Kullanıcının bağlı olduğu depo (depo sorumlusu kendi deposunda işlem yapar) | S1 |
 | Audit log (kim, neyi, ne zaman, eski ve yeni değer) | S1 |
 | Anlık güncellenen ekranlar (stok ve durum değişiklikleri sayfa yenilemeden yansır) | S1 |
@@ -162,9 +163,12 @@ Aşağıdaki akış seed verili bir ortamda baştan sona çalıştığında S1 t
 | Özellik | Sürüm |
 |---|---|
 | Etkinlik kaydı ve tipi (kendi etkinliği / teknik hizmet) | S1 |
+| Etkinliğin başlangıç ve bitiş zamanı (tarih ve saat) | S1 |
+| Etkinlik bazında, saat hassasiyetinde hazırlık ve dönüş payı | S1 |
 | Etkinliğin kaynak deposu | S1 |
 | Tam durum makinesi, geçiş kuralları, durum geçmişi | S1 |
-| Opsiyon (hold) sırası ve otomatik yükselme | S1 |
+| Opsiyon (hold) sırası ve otomatik yükselme; her iki etkinlik türünde | S1 |
+| Opsiyon son tarihi, "yaklaşıyor" ve "süresi geçti" işaretleri | S1 |
 | İptal ve iptal nedeni | S1 |
 | Seanslar (matine, akşam gibi birden fazla performans) | S2 |
 | Günlük zaman çizelgesi (yükleme, ses provası, kapı, sahne, sessizlik saati) | S2 |
@@ -344,3 +348,4 @@ Bunlar hiçbir sürümde yapılmayacak. Gerekçe: ya başka bir yazılımın iş
 | 2026-09-24 | v1.0 | Açık sorular karara bağlandı. Çoklu depo ve depolar arası transfer S1'e alındı; adetli kalem ilkeleri eklendi; etkinliğe özel rider versiyonu, kiralama fiyat listesi ve sıralama gerekçesi eklendi. |
 | 2026-09-24 | v1.1 | Terimler sözlüğüyle uyum: "çıkış deposu" → "kaynak depo", "pick list" → "toplama listesi", etkinlik durumu "Anlaşma" → "Müzakere"; "rezerve" birim durumlarından çıkarıldı. |
 | 2026-09-24 | v1.2 | Dış kiralama ekipmanının isteğe bağlı QR ile takibi S1'e eklendi. |
+| 2026-09-24 | v1.3 | İş kuralı kararları: saat hassasiyetinde etkinlik zamanı ve hazırlık/dönüş payı, ayarlar ekranı, opsiyon süresi işaretleri, teknik hizmette opsiyon. |

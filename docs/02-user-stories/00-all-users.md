@@ -6,6 +6,7 @@
 **Kullanıcı olarak** e-posta ve şifremle sisteme girmek **istiyorum**, **çünkü** yalnızca yetkili çalışanlar şirket verisine erişebilmeli.
 
 Öncelik: Must · Demo adımı: —
+Kurallar: BR-SYS-005, BR-SYS-006, BR-SYS-008
 
 **Kabul kriterleri**
 1. Kullanıcı e-posta ve şifreyle giriş yapar; hatalı bilgide hangi alanın yanlış olduğu söylenmez.
@@ -19,6 +20,7 @@
 **Kullanıcı olarak** şifremi değiştirmek **istiyorum**, **çünkü** şifremin güvenliğinden ben sorumluyum.
 
 Öncelik: Should · Demo adımı: —
+Kurallar: BR-SYS-007
 
 **Kabul kriterleri**
 1. Değişiklik için mevcut şifre istenir.
@@ -29,6 +31,7 @@
 **Kullanıcı olarak** yalnızca yetkim olan ekranları ve işlemleri görmek **istiyorum**, **çünkü** yapamayacağım işlemlerin düğmeleri kafa karıştırır.
 
 Öncelik: Must · Demo adımı: —
+Kurallar: BR-SYS-002
 
 **Kabul kriterleri**
 1. Menüde yalnızca kullanıcının rollerinden en az birinin erişebildiği ekranlar görünür.
