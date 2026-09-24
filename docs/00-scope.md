@@ -1,6 +1,6 @@
 # 00 — Kapsam ve MVP Sınırları
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-24
+> **Durum:** v1.1 · **Son güncelleme:** 2026-09-24
 > **Kararlar:** [Bölüm 10](#10-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -86,15 +86,15 @@ Aşağıdaki akış seed verili bir ortamda baştan sona çalıştığında S1 t
 
 1. Booking müdürü bir konser talebi oluşturur ve mekan için 2. opsiyonu alır.
 2. 1. opsiyon düşürülür; sistem etkinliğin opsiyonunu otomatik olarak 1. sıraya yükseltir.
-3. Etkinlik "Anlaşma" ve "Onaylı" durumlarına geçer; her geçiş durum geçmişine yazılır.
+3. Etkinlik "Müzakere" ve "Onaylı" durumlarına geçer; her geçiş durum geçmişine yazılır.
 4. Sanatçının prodüksiyonuna ait rider'ın güncel versiyonu etkinliğe bağlanır.
 5. "Hazırlık" durumuna geçişte sistem net ihtiyacı hesaplar: rider brüt ihtiyacı − mekanın kendi ekipmanı − muadil eşleşmeler.
-6. Net ihtiyaç, etkinliğin çıkış deposundaki müsaitlikle (hazırlık ve dönüş payı dahil) karşılaştırılır; karşılanabilen kalemler için rezervasyon önerisi çıkar, teknik müdür onaylar.
-7. Çıkış deposunda yetmeyen kalemlerin bir kısmı başka bir depoda bulunur. Sistem depolar arası transfer önerir. Transfer onaylanınca birimler "Yolda" görünür ve planlanan varış tarihinden itibaren hedef depoda müsait sayılır.
+6. Net ihtiyaç, etkinliğin kaynak deposundaki müsaitlikle (hazırlık ve dönüş payı dahil) karşılaştırılır; karşılanabilen kalemler için rezervasyon önerisi çıkar, teknik müdür onaylar.
+7. Kaynak depoda yetmeyen kalemlerin bir kısmı başka bir depoda bulunur. Sistem depolar arası transfer önerir. Transfer onaylanınca birimler "Yolda" görünür ve planlanan varış tarihinden itibaren hedef depoda müsait sayılır.
 8. Aynı tarihlerde ikinci bir etkinlik aynı ekipmanı isteyince çakışma panelinde görünür.
 9. Hiçbir depoda bulunmayan kalemler için dış kiralama önerisi çıkar ve bir tedarikçiye dış kiralama siparişi açılır.
 10. Rider karşılama raporu (PDF) her rider satırının nereden karşılandığını gösterir: hangi depo, mekan, muadil veya dış kiralama.
-11. Depo sorumlusu QR kodlu pick list ile telefonundan çıkış yapar. Seri no'lu birimler tek tek okutulur; adetli kalemlerde kasa okutulur ve hazır gelen adet onaylanır. Birimlerin durumu "Etkinlikte" olur.
+11. Depo sorumlusu QR kodlu toplama listesiyle telefonundan çıkış yapar. Seri no'lu birimler tek tek okutulur; adetli kalemlerde kasa okutulur ve hazır gelen adet onaylanır. Birimlerin durumu "Etkinlikte" olur.
 12. Dönüşte giriş yapılır. Eksik ve hasarlı birimler kaydedilir; hasarlı birim "Bakımda" durumuna geçer, adetli kalemlerdeki sayım farkı etkinliğe bağlı kayıp olarak işlenir.
 13. İki farklı depodaki sorumlular aynı anda çalışırken stok değişiklikleri birbirlerinin ekranına sayfa yenilemeden yansır. Aynı birim iki kez çıkış yapılamaz.
 14. Tüm değişiklikler audit log'da görünür.
@@ -103,7 +103,7 @@ Aşağıdaki akış seed verili bir ortamda baştan sona çalıştığında S1 t
 
 - **Ekip planlama:** MRP II'nin konusu, S2'de. S1'de çakışma motoru yalnızca ekipman için çalışır, ama ileride dört kaynak türüne genişleyecek şekilde tasarlanır.
 - **Sözleşme ve hesaplaşma:** Etkinlik durum makinesi S1'de eksiksiz kurulur. Henüz yazılmamış modüllere bağlı geçiş kuralları ("Onaylı için imzalı sözleşme", "Kapandı için hesaplaşma onayı") S1'de elle onay adımıyla karşılanır. İlgili modül geldiğinde gerçek kontrolle değiştirilir (bkz. K-07).
-- **Mesafeye göre depo seçimi:** S1'de etkinliğin çıkış deposunu kullanıcı seçer; transferlerin varış tarihi elle girilir. Mesafe ve nakliye süresine göre otomatik seçim S5'te gelir.
+- **Mesafeye göre depo seçimi:** S1'de etkinliğin kaynak deposunu kullanıcı seçer; transferlerin varış tarihi elle girilir. Mesafe ve nakliye süresine göre otomatik seçim S5'te gelir.
 - **Gantt görünümlü kaynak takvimi:** S1'de müsaitlik liste ve tablo ile gösterilir; Gantt S2'de gelir.
 - **Güç hesabı:** Veri S1'de toplanır (ekipman watt değeri, mekan amper kapasitesi), hesap ve uyarı S2'de gelir.
 
@@ -162,7 +162,7 @@ Aşağıdaki akış seed verili bir ortamda baştan sona çalıştığında S1 t
 | Özellik | Sürüm |
 |---|---|
 | Etkinlik kaydı ve tipi (kendi etkinliği / teknik hizmet) | S1 |
-| Etkinliğin çıkış deposu | S1 |
+| Etkinliğin kaynak deposu | S1 |
 | Tam durum makinesi, geçiş kuralları, durum geçmişi | S1 |
 | Opsiyon (hold) sırası ve otomatik yükselme | S1 |
 | İptal ve iptal nedeni | S1 |
@@ -194,7 +194,7 @@ Aşağıdaki akış seed verili bir ortamda baştan sona çalıştığında S1 t
 | Birden fazla depo; her birimin ve adetli stoğun bulunduğu depo | S1 |
 | Depo bazında stok görünümü: toplam, rezerve, etkinlikte, yolda, bakımda | S1 |
 | Depolar arası transfer ("Yolda" durumu, planlanan ve gerçekleşen varış) | S1 |
-| Birim durumu: depoda, rezerve, yolda, etkinlikte, bakımda, kayıp, hurda | S1 |
+| Birim durumu: depoda, yolda, etkinlikte, bakımda, kayıp, hurda (rezervasyon bir durum değildir, bkz. sözlük) | S1 |
 | QR ile depo çıkış ve giriş (telefon tarayıcısından) | S1 |
 | Dönüşte eksik, hasarlı ve sayım farkı kaydı | S1 |
 | Bakım kayıtları ve periyodik bakım hatırlatması | S2 |
@@ -208,7 +208,7 @@ Adetli kalemler binlerce parçadan oluşur. Takip, depo çalışanına ek yük g
 
 - **QR etiketi kasaya yapıştırılır, parçaya değil.** Kablolar ve klempler kasalarda durur (ör. "XLR 10 m kasası"). Çalışan tek tek parça okutmaz.
 - **Kasanın standart içeriği tanımlıdır** (ör. "20 × XLR 10 m"). Tam kasa gidip tam dönüyorsa tek okutma yeterlidir.
-- **Beklenen adet ekrana hazır gelir.** Çıkışta pick list'teki adet, dönüşte çıkan adet önceden doldurulur. Çalışan yalnızca fark varsa düzeltir.
+- **Beklenen adet ekrana hazır gelir.** Çıkışta toplama listesindeki adet, dönüşte çıkan adet önceden doldurulur. Çalışan yalnızca fark varsa düzeltir.
 - **Mobil ekran depo koşullarına göre tasarlanır.** Büyük +/− butonları, tek elle kullanım, eldivenle basılabilecek boyutlar.
 - **Kayıp etkinliğe bağlanır.** Sayım farkı, hangi etkinlikte ve hangi depoda oluştuğuyla birlikte kaydedilir.
 - **Yönetici tek ekranda görür:** Model bazında her depodaki toplam, rezerve, etkinlikte ve yolda olan adet ile kayıp oranı en yüksek kalemler.
@@ -219,12 +219,12 @@ Adetli kalemler binlerce parçadan oluşur. Takip, depo çalışanına ek yük g
 |---|---|
 | Net ihtiyaç hesabı: rider − mekan ekipmanı − muadil | S1 |
 | Tüm depolarda müsaitlik kontrolü (hazırlık ve dönüş payı, yoldaki transferler dahil) | S1 |
-| Rezervasyon önerisi (önce çıkış deposu, sonra diğer depolar) ve elle onay | S1 |
+| Rezervasyon önerisi (önce kaynak depo, sonra diğer depolar) ve elle onay | S1 |
 | Depolar arası transfer önerisi | S1 |
 | Ekipman çakışma tespiti ve çakışma paneli | S1 |
 | Dış kiralama önerisi ve dış kiralama siparişi | S1 |
 | Rider karşılama raporu (PDF) | S1 |
-| QR kodlu pick list (PDF) | S1 |
+| QR kodlu toplama listesi (PDF) | S1 |
 | Güç hesabı ve jeneratör uyarısı | S2 |
 | Dış kiralama sipariş formu (PDF) | S3 |
 | Mesafe ve nakliye süresine göre otomatik depo seçimi | S5 |
@@ -341,3 +341,4 @@ Bunlar hiçbir sürümde yapılmayacak. Gerekçe: ya başka bir yazılımın iş
 |---|---|---|
 | 2026-09-24 | v0.1 | İlk taslak |
 | 2026-09-24 | v1.0 | Açık sorular karara bağlandı. Çoklu depo ve depolar arası transfer S1'e alındı; adetli kalem ilkeleri eklendi; etkinliğe özel rider versiyonu, kiralama fiyat listesi ve sıralama gerekçesi eklendi. |
+| 2026-09-24 | v1.1 | Terimler sözlüğüyle uyum: "çıkış deposu" → "kaynak depo", "pick list" → "toplama listesi", etkinlik durumu "Anlaşma" → "Müzakere"; "rezerve" birim durumlarından çıkarıldı. |
