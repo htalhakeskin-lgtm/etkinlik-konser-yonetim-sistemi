@@ -10,9 +10,10 @@ Konser ve etkinlik sektöründe hem kendi etkinliklerini düzenleyen hem de tekn
 
 | Belge | Durum |
 |---|---|
-| [00 — Kapsam ve MVP sınırları](docs/00-scope.md) | v1.1 |
-| [01 — Terimler sözlüğü](docs/01-glossary.md) | v1.0 |
-| 02 — Kullanıcı hikayeleri | Sırada |
+| [00 — Kapsam ve MVP sınırları](docs/00-scope.md) | v1.2 |
+| [01 — Terimler sözlüğü](docs/01-glossary.md) | v1.1 |
+| [02 — Kullanıcı hikayeleri](docs/02-user-stories/README.md) | v1.0 |
+| 03 — İş kuralları | Sırada |
 
 ## Teknoloji
 

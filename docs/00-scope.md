@@ -1,6 +1,6 @@
 # 00 — Kapsam ve MVP Sınırları
 
-> **Durum:** v1.1 · **Son güncelleme:** 2026-09-24
+> **Durum:** v1.2 · **Son güncelleme:** 2026-09-24
 > **Kararlar:** [Bölüm 10](#10-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -223,6 +223,7 @@ Adetli kalemler binlerce parçadan oluşur. Takip, depo çalışanına ek yük g
 | Depolar arası transfer önerisi | S1 |
 | Ekipman çakışma tespiti ve çakışma paneli | S1 |
 | Dış kiralama önerisi ve dış kiralama siparişi | S1 |
+| Depoya teslim alınan dış kiralama ekipmanının isteğe bağlı QR ile takibi | S1 |
 | Rider karşılama raporu (PDF) | S1 |
 | QR kodlu toplama listesi (PDF) | S1 |
 | Güç hesabı ve jeneratör uyarısı | S2 |
@@ -342,3 +343,4 @@ Bunlar hiçbir sürümde yapılmayacak. Gerekçe: ya başka bir yazılımın iş
 | 2026-09-24 | v0.1 | İlk taslak |
 | 2026-09-24 | v1.0 | Açık sorular karara bağlandı. Çoklu depo ve depolar arası transfer S1'e alındı; adetli kalem ilkeleri eklendi; etkinliğe özel rider versiyonu, kiralama fiyat listesi ve sıralama gerekçesi eklendi. |
 | 2026-09-24 | v1.1 | Terimler sözlüğüyle uyum: "çıkış deposu" → "kaynak depo", "pick list" → "toplama listesi", etkinlik durumu "Anlaşma" → "Müzakere"; "rezerve" birim durumlarından çıkarıldı. |
+| 2026-09-24 | v1.2 | Dış kiralama ekipmanının isteğe bağlı QR ile takibi S1'e eklendi. |

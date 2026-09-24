@@ -1,6 +1,6 @@
 # 01 — Terimler Sözlüğü
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-24
+> **Durum:** v1.1 · **Son güncelleme:** 2026-09-24
 > **Kararlar:** [Bölüm 5](#5-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -146,6 +146,7 @@ Geçiş kuralları `04-state-machines.md`'de tanımlanacak.
 | Depo | `Warehouse` | Ekipmanın saklandığı fiziksel yer. Şirketin birden fazla deposu vardır. | S1 |
 | Konum | `Location` | Bir birimin ya da adetli stoğun şu an fiziksel olarak nerede olduğu: bir depo, bir etkinlik, bir transfer ya da servis. | S1 |
 | Stok | `Stock` | Bir modelin belirli bir konumdaki miktarı; seri no'lu birimlerin sayısı ya da adetli stok. | S1 |
+| Sahiplik | `Ownership` | Ekipmanın kime ait olduğu: **Şirket** (`Owned`) veya **Dış kiralama** (`SubRented`, QR ile takibe alınmış dış kiralama ekipmanı). | S1 |
 | Birim durumu | `UnitStatus` | Birimin fiziksel durumu. Değerler aşağıdaki tabloda. Rezervasyon bir durum değildir (bkz. 3.8 Müsaitlik). | S1 |
 | Transfer | `WarehouseTransfer` | Ekipmanın bir depodan diğerine taşınması. Planlanan ve gerçekleşen varış zamanı vardır. | S1 |
 | Transfer durumu | `TransferStatus` | **Planlandı** (`Planned`), **Yolda** (`InTransit`), **Tamamlandı** (`Completed`), **İptal** (`Cancelled`). | S1 |
@@ -168,6 +169,7 @@ Geçiş kuralları `04-state-machines.md`'de tanımlanacak.
 | Bakımda | `InMaintenance` | Birim hasarlı ya da bakımda; kullanılamaz. |
 | Kayıp | `Lost` | Birim kayboldu. |
 | Hurda | `Retired` | Birim kalıcı olarak kullanımdan çıkarıldı. |
+| Tedarikçiye iade edildi | `ReturnedToSupplier` | Dış kiralama birimi tedarikçiye geri verildi. Yalnızca dış kiralama birimleri için geçerlidir. |
 
 ### 3.8 İhtiyaç hesabı ve rezervasyon (MRP)
 
@@ -294,3 +296,4 @@ Bu kelimeler arayüzde, belgelerde ve kodda kullanılmaz; yerine sağ sütundaki
 |---|---|---|
 | 2026-09-24 | v0.1 | İlk taslak |
 | 2026-09-24 | v1.0 | Açık sorular varsayılanlarla karara bağlandı. Kullanıcı hikayeleri yazılırken çıkan terimler eklendi: pasif kayıt, dış opsiyon, opsiyon son tarihi, transfer durumu, dış kiralama siparişi durumu. |
+| 2026-09-24 | v1.1 | Dış kiralamanın QR ile takibi için sahiplik terimi ve "Tedarikçiye iade edildi" birim durumu eklendi. |
