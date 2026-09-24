@@ -1,6 +1,6 @@
 # 03 — İş Kuralları Kataloğu
 
-> **Durum:** v1.2 · **Son güncelleme:** 2026-09-24
+> **Durum:** v1.4 · **Son güncelleme:** 2026-09-24
 > **Kararlar:** [Bölüm 7](#7-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -53,20 +53,21 @@ Kurallarda geçen sayısal değerler sabit kodlanmaz. P-06, P-07 ve P-14 sistem 
 | P-05 | Opsiyon son tarihi uyarı eşiği | 3 gün | BR-EVT-008 |
 | P-06 | Varsayılan hazırlık payı | 1 gün (24 saat) | BR-MRP-001 |
 | P-07 | Varsayılan dönüş payı | 1 gün (24 saat) | BR-MRP-001 |
-| P-08 | Anlık güncelleme gecikmesi üst sınırı | 2 saniye | BR-SYS-012 |
-| P-09 | İhtiyaç hesabı süre hedefi (50 satır, 5.000 birim) | 2 saniye | BR-MRP-019 |
+| P-08 | Anlık güncelleme gecikmesi hedefi (işlemlerin %95'i) | 300 milisaniye | BR-SYS-012 |
+| P-09 | İhtiyaç hesabı süre hedefi (50 satır, 5.000 birim) | 1 saniye | BR-MRP-019 |
 | P-10 | Kayıp raporu varsayılan dönemi | 90 gün | BR-EQP-010 |
 | P-11 | Kayıp raporunda öne çıkan model sayısı | 10 | BR-EQP-010 |
 | P-12 | Günlük çakışma kontrolü saati | 03:00 | BR-MRP-017 |
 | P-13 | Otomatik operasyon geçişlerinin kontrol aralığı | 5 dakika | BR-EVT-018 |
 | P-14 | Varsayılan operasyon geçiş modu | Otomatik | BR-EVT-018 |
+| P-15 | Anlık güncelleme gecikmesi üst sınırı (normal koşullar) | 1 saniye | BR-SYS-012 |
 
 ## 5. Kurallar
 
 ### 5.1 Çekirdek ve sistem (SYS)
 
 #### BR-SYS-001 · Silme yerine pasifleştirme
-Başka bir kaydın bağlı olduğu kayıt silinmez, pasifleştirilir. Pasif kayıt yeni işlemlerde seçilemez; bağlı olduğu mevcut kayıtlarda görünmeye devam eder.
+Başka modüllerin kimliğiyle referans verebildiği kayıtlar (kullanıcı, taraf, mekan, depo, kategori, model, kit, prodüksiyon) hiç silinmez, yalnızca pasifleştirilir. Bir modül, başka modüllerde kendisine referans olup olmadığını bilemez ([05-module-map.md](05-module-map.md#2-temel-ilkeler), ilke 7). Modül içindeki kayıtlar, kendisine bağlı kayıt yoksa silinebilir. Pasif kayıt yeni işlemlerde seçilemez; bağlı olduğu mevcut kayıtlarda görünmeye devam eder.
 *Tür:* Kısıt · *Hikayeler:* US-SYS-002, US-PTY-002, US-EQP-001, US-SYS-005
 
 #### BR-SYS-002 · Yetki birleşimi ve sunucu kontrolü
@@ -110,7 +111,7 @@ Kullanıcı bir kaydı açtıktan sonra kayıt başkası tarafından değiştiri
 *Tür:* Kısıt · *Hikayeler:* US-WHS-005, US-MRP-002
 
 #### BR-SYS-012 · Anlık yayın
-Stok, birim durumu, rezervasyon, transfer ve çakışma değişiklikleri, ilgili ekranı açık olan tüm kullanıcılara en geç P-08 içinde sayfa yenilemeden yansır. Bağlantı koptuğunda ekran uyarı gösterir. Bağlantı geri geldiğinde güncel veri yeniden yüklenir.
+Stok, birim durumu, rezervasyon, transfer ve çakışma değişiklikleri, ilgili ekranı açık olan tüm kullanıcılara sayfa yenilemeden yansır: normal koşullarda işlemlerin %95'inde P-08, en geç P-15 içinde. İşlemi yapan kullanıcının kendi ekranı beklemeden güncellenir. Bağlantı koptuğunda ekran uyarı gösterir. Bağlantı geri geldiğinde güncel veri yeniden yüklenir.
 *Tür:* Tetikleyici · *Hikayeler:* US-WHS-005, US-WHS-001, US-EQP-008
 
 #### BR-SYS-013 · Depo kısıtları
@@ -557,3 +558,5 @@ Rider karşılama raporu, son ihtiyaç hesabından ve güncel onaylı rezervasyo
 | 2026-09-24 | v1.0 | Açık sorular karara bağlandı: rezervasyon ve müsaitlik hesapları saat hassasiyetine geçti; süresi geçmiş opsiyon işaretleri ve onay engeli eklendi; teknik hizmette opsiyon isteğe bağlı oldu. |
 | 2026-09-25 | v1.1 | Durum makineleriyle uyum: kesinleşmiş opsiyon (BR-EVT-002, 009, 017), kendi etkinliğinde her gün için opsiyon (BR-EVT-009), kapanışta rezervasyonların tamamlanması (BR-EVT-012), iptal edilen etkinliğin ekipmanının müsaitlikten çıkarılması (BR-MRP-002), çıkış için etkinlik durumu (BR-WHS-003), transferde varmayan birim (BR-WHS-011). |
 | 2026-09-25 | v1.2 | BR-EVT-018 (otomatik operasyon geçişleri, P-13, P-14) ve BR-EVT-019 (onaydan geri alma) eklendi; BR-EVT-011 ve BR-MRP-012 buna göre güncellendi. |
+| 2026-09-25 | v1.3 | BR-SYS-001, modüller arası referanslar nedeniyle güncellendi: başka modüllerin referans verebildiği ana veriler hiç silinmez. |
+| 2026-09-25 | v1.4 | Gecikme hedefleri sıkılaştırıldı: anlık güncelleme %95'te 300 ms (P-08), en geç 1 s (P-15); ihtiyaç hesabı 1 s (P-09). |

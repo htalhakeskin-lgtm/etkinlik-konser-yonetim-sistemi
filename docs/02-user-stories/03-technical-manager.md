@@ -123,7 +123,7 @@ Kurallar: BR-VEN-001, BR-EVT-010, BR-MRP-001, BR-MRP-002, BR-MRP-003, BR-MRP-004
 6. Müsaitlik, rezervasyon aralığı (etkinliğin başlangıç ve bitiş zamanı, hazırlık payı ve dönüş payı) üzerinden, saat hassasiyetinde hesaplanır. Başka etkinliklerin onaylı rezervasyonları düşülür. **Bakımda**, **Kayıp** ve **Hurda** birimler sayılmaz. Yoldaki transferler planlanan varış tarihinden itibaren hedef depoda sayılır.
 7. Yeniden hesaplamada **Önerildi** rezervasyonlar silinip yeniden üretilir, **Onaylandı** rezervasyonlar korunur. Yeni net ihtiyacı aşan onaylı rezervasyonlar "fazla" olarak işaretlenir.
 8. Her hesabın zamanı, çalıştıran kullanıcı ve kullanılan rider versiyonu kaydedilir.
-9. 50 satırlık bir rider ve 5.000 birimlik stokla hesap 2 saniyeden kısa sürer.
+9. 50 satırlık bir rider ve 5.000 birimlik stokla hesap 1 saniyeden kısa sürer.
 
 ### US-MRP-002 · Rezervasyon önerisini onaylama
 **Teknik müdür olarak** ihtiyaç hesabının önerdiği rezervasyonları kontrol edip onaylamak **istiyorum**, **çünkü** ekipman ancak onayımla ayrılmış sayılmalı.

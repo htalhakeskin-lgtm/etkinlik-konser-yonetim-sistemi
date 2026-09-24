@@ -130,7 +130,7 @@ Kurallar: BR-SYS-003, BR-WHS-008, BR-WHS-011, BR-WHS-012
 Kurallar: BR-SYS-011, BR-SYS-012, BR-WHS-002, BR-WHS-006
 
 **Kabul kriterleri**
-1. Stok görünümü, toplama listesi ve çakışma paneli, başka bir kullanıcının yaptığı değişikliği en geç 2 saniye içinde sayfa yenilemeden gösterir.
+1. Stok görünümü, toplama listesi ve çakışma paneli, başka bir kullanıcının yaptığı değişikliği sayfa yenilemeden gösterir: genellikle 300 milisaniye, en geç 1 saniye içinde.
 2. Aynı birim iki cihazda aynı anda okutulursa yalnızca biri başarılı olur; diğerine birimin kim tarafından, ne zaman çıkış yapıldığı gösterilir.
 3. Bağlantı koparsa ekranda uyarı görünür. Bağlantı geri gelince güncel veri yeniden yüklenir.
 

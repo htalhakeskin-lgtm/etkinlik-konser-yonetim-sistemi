@@ -1,6 +1,6 @@
 # 01 — Terimler Sözlüğü
 
-> **Durum:** v1.5 · **Son güncelleme:** 2026-09-24
+> **Durum:** v1.6 · **Son güncelleme:** 2026-09-24
 > **Kararlar:** [Bölüm 5](#5-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -16,7 +16,7 @@ Sözlük tüm sistemi kapsar; her terimin hangi sürümde devreye girdiği [00-s
 3. **Sektör terimleri korunur.** Sektörde Türkçe karşılığı yerleşmemiş terimler (rider, day sheet, call sheet, run of show, stage plot, input list) arayüzde de İngilizce kalır.
 4. **Önce sözlük, sonra kod.** Yeni bir kavram koda girmeden önce bu sözlüğe eklenir. PR kontrol listesinde bu madde yer alacak.
 5. **Durum ve varlık adları çakışmaz.** Bir durum adı, başka bir varlığın adıyla aynı olamaz. Örneğin "Etkinlik" bir varlık olduğu için etkinliğin durumlarından biri "Etkinlik" olamaz.
-6. **"Event" kelimesi yalnızca etkinlik varlığı içindir.** Modüller arası haberleşmedeki domain event'ler kodda her zaman `DomainEvent` sonekiyle adlandırılır (ör. `EventConfirmedDomainEvent`).
+6. **"Event" kelimesi yalnızca etkinlik varlığı içindir.** Olaylar kodda her zaman sonekle adlandırılır: modül içi olaylar `DomainEvent` (ör. `EventConfirmedDomainEvent`), modüller arası olaylar `IntegrationEvent` (ör. `EventStatusChangedIntegrationEvent`). Ayrıntı: [05-module-map.md](05-module-map.md#7-entegrasyon-olayları-s1).
 
 ## 3. Terimler
 
@@ -88,6 +88,7 @@ Sözlük tüm sistemi kapsar; her terimin hangi sürümde devreye girdiği [00-s
 | Operasyon geçiş modu | `TransitionMode` | Etkinliğin Kurulum, Canlı, Söküm ve Hesaplaşma geçişlerinin **Elle** (`Manual`) mi, zamanı gelince **Otomatik** (`Automatic`) mi yapılacağı. Varsayılanı ayarlardan gelir, etkinlik bazında değiştirilir. | S1 |
 | Kaynak depo | `SourceWarehouse` | Etkinliğin ekipmanını hazırlayıp gönderen depo. İhtiyaç önce buradan karşılanmaya çalışılır. | S1 |
 | Seans | `Performance` | Bir etkinlik içindeki tek bir gösterim (ör. matine ve akşam seansı). | S2 |
+| Elle onay | `EventApproval` | S1'de bir geçiş için elle verilen onayın kaydı: "Sözleşme imzalandı", "Hesaplaşma onaylandı", "Mekan yeni tarihi onayladı". Onayı veren kullanıcı ve zamanla tutulur. | S1 |
 | İptal nedeni | `CancellationReason` | Etkinliğin neden iptal edildiğinin kaydı. | S1 |
 | Durum geçmişi | `EventStatusHistory` | Etkinliğin geçtiği her durumun, geçiş zamanı ve geçişi yapan kullanıcıyla kaydı. | S1 |
 
@@ -127,6 +128,7 @@ Geçiş kuralları `04-state-machines.md`'de tanımlanacak.
 | Rider | `Rider` | Bir prodüksiyonun ya da teknik hizmet müşterisinin ekipman ihtiyaç listesi. Kaynak müşteri olduğunda arayüzde **İhtiyaç listesi** olarak gösterilir; yapısı ve kod adı aynıdır. | S1 |
 | Rider kaynağı | `RiderSource` | Rider'ın kime ait olduğu: prodüksiyon (`Production`) veya müşteri (`Customer`). | S1 |
 | Rider versiyonu | `RiderVersion` | Rider'ın belirli bir tarihteki değiştirilemez hali. Rider güncellenince yeni versiyon oluşur. | S1 |
+| Rider ataması | `EventRiderAssignment` | Bir etkinliğe hangi rider versiyonunun bağlı olduğunun kaydı. | S1 |
 | Etkinliğe özel versiyon | `RiderVersion` (`EventId` dolu) | Belirli bir etkinlik için, prodüksiyon versiyonundan türetilerek değiştirilmiş versiyon. | S1 |
 | Rider satırı | `RiderLine` | Rider'da tek bir ihtiyaç: bir ekipman modeli ya da kategorisi ve adedi. | S1 |
 | Satır esnekliği | `LineFlexibility` | Satırın **Zorunlu** (`Required`, yalnızca belirtilen model) mi, **Esnek** (`Flexible`, muadil kabul edilir) mi olduğu. | S1 |
@@ -156,6 +158,7 @@ Geçiş kuralları `04-state-machines.md`'de tanımlanacak.
 | Transfer | `WarehouseTransfer` | Ekipmanın bir depodan diğerine taşınması. Planlanan ve gerçekleşen varış zamanı vardır. | S1 |
 | Gecikmiş transfer | `WarehouseTransfer.IsOverdue` | Planlanan varış zamanı geçtiği halde tamamlanmamış transfer. Kalemleri hedef depoda müsait sayılmaz. | S1 |
 | Transfer durumu | `TransferStatus` | **Planlandı** (`Planned`), **Yolda** (`InTransit`), **Tamamlandı** (`Completed`), **İptal** (`Cancelled`). | S1 |
+| Stok hareketi | `StockMovement` | Ekipmanın fiziksel her hareketinin kaydı: çıkış, giriş, transfer çıkışı ve varışı, stok düzeltmesi, çıkışın geri alınması. Hangi birimin ya da kaç adedin, nereden nereye, kim tarafından, ne zaman hareket ettiğini tutar. | S1 |
 | Çıkış | `CheckOut` | Ekipmanın QR okutularak depodan etkinliğe ya da transfere çıkarılması. | S1 |
 | Çıkışın geri alınması | `CheckOutReversal` | Yanlış yapılan çıkışın, etkinlik Canlı olmadan geri alınması. | S1 |
 | Giriş | `CheckIn` | Ekipmanın QR okutularak depoya geri alınması. | S1 |
@@ -314,3 +317,4 @@ Bu kelimeler arayüzde, belgelerde ve kodda kullanılmaz; yerine sağ sütundaki
 | 2026-09-24 | v1.3 | Etkinlik zamanı ve süresi geçmiş opsiyon eklendi; hazırlık payı, dönüş payı ve rezervasyon aralığı saat hassasiyetine göre yeniden tanımlandı. |
 | 2026-09-25 | v1.4 | Durum makineleriyle uyum: opsiyon durumu, çakışma durumu, rezervasyonun Tamamlandı durumu eklendi; etkinlik zamanı, mekanın bizde olduğu süre olarak netleştirildi. |
 | 2026-09-25 | v1.5 | Operasyon geçiş modu eklendi; kapı açılışı ve söküm başlangıcı S1'e alındı; kurulum başlangıcı ve söküm bitişi etkinlik zamanıyla eşlendi. |
+| 2026-09-25 | v1.6 | Modül haritasıyla uyum: olay adlandırma kuralı (DomainEvent / IntegrationEvent), elle onay, rider ataması ve stok hareketi terimleri eklendi. |

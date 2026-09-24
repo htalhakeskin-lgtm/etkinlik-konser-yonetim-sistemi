@@ -1,6 +1,6 @@
 # 04 — Durum Makineleri
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 12](#12-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -43,7 +43,7 @@ Durum makinesi olmayanlar:
 ## 2. Genel kurallar
 
 1. Her durum geçişi, önceki ve yeni durum, kullanıcı (otomatik geçişte tetikleyen işlem), zaman ve isteğe bağlı notla işlem geçmişine yazılır (BR-SYS-010).
-2. Otomatik geçişler, onları tetikleyen işlemle aynı işlem biriminde (transaction) gerçekleşir. İşlem başarısız olursa hiçbir geçiş kalıcı olmaz.
+2. Aynı modüldeki otomatik geçişler, onları tetikleyen işlemle aynı işlem biriminde (transaction) gerçekleşir; işlem başarısız olursa hiçbir geçiş kalıcı olmaz. Başka bir modülde tetiklenen otomatik geçişler ise işlem tamamlandıktan sonra, entegrasyon olayıyla ve kaybolmadan gerçekleşir. Bu geçişlerin listesi [05-module-map.md §9.4](05-module-map.md#94-modüller-arası-otomatik-geçişler)'te.
 3. Bir geçişin koşulu sağlanmıyorsa geçiş reddedilir ve kullanıcıya ilgili kuralın numarası gösterilir.
 4. Arayüz, o an koşulları sağlanan elle geçişleri sunar. Koşulu sağlanmayan geçiş, nedeniyle birlikte pasif gösterilebilir.
 
@@ -248,7 +248,7 @@ stateDiagram-v2
 | T-TRF-03 | Planlandı → İptal | Elle ya da otomatik (bağlı etkinliğin iptali) | Teknik müdür, transferi oluşturan depo sorumlusu | Henüz hiçbir kalem okutulmamış | Gönderen depodaki ayırma kalkar | BR-EVT-014 |
 | T-TRF-04 | Yolda → Tamamlandı | Okutma: tüm kalemlerin varışı okutulur ya da alan depo eksiklerle tamamlar | Alan deponun sorumlusu | — | Birimler hedef depoda **Depoda** (T-UNT-05); varışı okutulmayan birimler **Kayıp** (T-UNT-12); adetli eksikler sayım farkı olur; gerçekleşen varış zamanı kaydedilir | BR-WHS-008, BR-WHS-011 |
 
-**Yolda** transfer iptal edilemez. Yanlış gönderilen ekipman için transfer tamamlanır ve ters yönde yeni bir transfer açılır. **Gecikmiş** bir işarettir: planlanan varış geçtiği halde **Yolda** olan transfere konur. Gecikmiş transferin kalemleri hedef depoda müsait sayılmaz (BR-MRP-002).
+Transferin planı ve durumu **Planning**'de, okutmaları **Inventory**'de tutulur ([05-module-map.md §6](05-module-map.md#6-tartışmalı-sahiplik-kararları)). T-TRF-02 ve T-TRF-04, Inventory'deki okutmaların olaylarıyla Planning'de gerçekleşir. **Yolda** transfer iptal edilemez. Yanlış gönderilen ekipman için transfer tamamlanır ve ters yönde yeni bir transfer açılır. **Gecikmiş** bir işarettir: planlanan varış geçtiği halde **Yolda** olan transfere konur. Gecikmiş transferin kalemleri hedef depoda müsait sayılmaz (BR-MRP-002).
 
 ---
 
@@ -421,3 +421,4 @@ stateDiagram-v2
 |---|---|---|
 | 2026-09-24 | v0.1 | İlk taslak: S1 durum makineleri |
 | 2026-09-25 | v1.0 | Kararlar: otomatik operasyon geçişleri (BR-EVT-018), onaydan geri alma (T-EVT-13, T-HLD-07). |
+| 2026-09-25 | v1.1 | Modül haritasıyla uyum: modüller arası otomatik geçişlerin olayla gerçekleşmesi; transferin plan ve okutma sahipliği. |

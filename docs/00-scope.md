@@ -1,6 +1,6 @@
 # 00 — Kapsam ve MVP Sınırları
 
-> **Durum:** v1.4 · **Son güncelleme:** 2026-09-24
+> **Durum:** v1.5 · **Son güncelleme:** 2026-09-24
 > **Kararlar:** [Bölüm 10](#10-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -321,7 +321,7 @@ Bunlar hiçbir sürümde yapılmayacak. Gerekçe: ya başka bir yazılımın iş
 | Konu | Karar |
 |---|---|
 | Kurulum | Tek şirket, tek kurulum; tüm depolar aynı sistemi ve aynı veritabanını kullanır |
-| Eşzamanlılık | Aynı kayıt üzerindeki çakışan değişiklikler sessizce ezilmez (iyimser kilitleme). Aynı birim iki kez rezerve edilemez ya da çıkış yapılamaz. Stok ve durum değişiklikleri açık ekranlara anında yansır |
+| Eşzamanlılık | Aynı kayıt üzerindeki çakışan değişiklikler sessizce ezilmez (iyimser kilitleme). Aynı birim iki kez rezerve edilemez ya da çıkış yapılamaz. Stok ve durum değişiklikleri açık ekranlara anında yansır: işlemlerin %95'inde 300 milisaniye, en geç 1 saniye içinde |
 | Platform | Web. Ofis ekranları masaüstü öncelikli; depo ve crew ekranları mobil öncelikli |
 | Tarayıcı | Chrome, Edge, Firefox, Safari'nin güncel sürümleri |
 | Zaman | Veritabanında UTC, arayüzde Europe/Istanbul |
@@ -353,3 +353,4 @@ Bunlar hiçbir sürümde yapılmayacak. Gerekçe: ya başka bir yazılımın iş
 | 2026-09-24 | v1.2 | Dış kiralama ekipmanının isteğe bağlı QR ile takibi S1'e eklendi. |
 | 2026-09-24 | v1.3 | İş kuralı kararları: saat hassasiyetinde etkinlik zamanı ve hazırlık/dönüş payı, ayarlar ekranı, opsiyon süresi işaretleri, teknik hizmette opsiyon. |
 | 2026-09-25 | v1.4 | Durum makinesi kararları: otomatik operasyon geçişleri, kapı açılışı ve söküm başlangıcı S1'e alındı; onaydan geri alma eklendi. |
+| 2026-09-25 | v1.5 | Anlık güncelleme için ölçülebilir gecikme hedefi eklendi. |
