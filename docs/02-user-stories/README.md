@@ -1,6 +1,6 @@
 # 02 — Kullanıcı Hikayeleri
 
-> **Durum:** v1.2 · **Son güncelleme:** 2026-09-24
+> **Durum:** v1.4 · **Son güncelleme:** 2026-09-24
 > **Kararlar:** [Bölüm 6](#6-kararlar)
 
 ## 1. Bu klasör ne işe yarar
@@ -56,7 +56,7 @@ Her hikaye, işi asıl yapan rolün dosyasındadır.
 |---|---|---|
 | [00-all-users.md](00-all-users.md) | Tüm kullanıcılar | 3 |
 | [01-system-admin.md](01-system-admin.md) | Sistem yöneticisi | 5 |
-| [02-booking-manager.md](02-booking-manager.md) | Booking / prodüksiyon müdürü | 11 |
+| [02-booking-manager.md](02-booking-manager.md) | Booking / prodüksiyon müdürü | 12 |
 | [03-technical-manager.md](03-technical-manager.md) | Teknik müdür | 17 |
 | [04-warehouse-manager.md](04-warehouse-manager.md) | Depo sorumlusu | 12 |
 | [05-general-manager.md](05-general-manager.md) | Genel müdür | 3 |
@@ -84,7 +84,7 @@ Demo senaryosunun her adımı en az bir `Must` hikayeyle karşılanır:
 | 13. Anlık güncelleme ve eşzamanlı çıkış | US-WHS-005, US-EQP-008 |
 | 14. İşlem geçmişi | US-SYS-004 |
 
-Demo için gerekli ana veriler (depo, taraf, mekan, sanatçı, katalog, birim, kasa) US-SYS-005, US-PTY-001, US-VEN-001, US-ART-001 ve US-EQP-001…004 ile girilir. S1'de toplam 51 hikaye var.
+Demo için gerekli ana veriler (depo, taraf, mekan, sanatçı, katalog, birim, kasa) US-SYS-005, US-PTY-001, US-VEN-001, US-ART-001 ve US-EQP-001…004 ile girilir. S1'de toplam 52 hikaye var.
 
 ## 5. S2–S6 epic listesi
 
@@ -141,3 +141,5 @@ Demo için gerekli ana veriler (depo, taraf, mekan, sanatçı, katalog, birim, k
 | 2026-09-24 | v1.0 | Açık sorular karara bağlandı; dış kiralamanın QR ile takibi için US-WHS-007 eklendi. |
 | 2026-09-24 | v1.1 | Her hikayeye ilgili iş kuralları eklendi. US-MRP-001: hesap Onaylı durumunda da çalıştırılabilir. US-WHS-002: her okutma anında kaydedilir. |
 | 2026-09-24 | v1.2 | İş kuralı kararları: US-SYS-007 ve US-MRP-008 eklendi (saat hassasiyetinde hazırlık ve dönüş payı); etkinlik zamanı saatli oldu; süresi geçmiş opsiyon işaretleri; teknik hizmette isteğe bağlı opsiyon. |
+| 2026-09-25 | v1.3 | Durum makineleriyle uyum: US-EVT-001, US-EVT-004, US-EVT-005, US-WHS-004. |
+| 2026-09-25 | v1.4 | US-EVT-008 (otomatik operasyon geçişleri) eklendi; US-SYS-007 etkinlik varsayılanlarına genişledi; US-EVT-004'e onaydan geri alma eklendi. |

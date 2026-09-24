@@ -1,6 +1,6 @@
 # 00 — Kapsam ve MVP Sınırları
 
-> **Durum:** v1.3 · **Son güncelleme:** 2026-09-24
+> **Durum:** v1.4 · **Son güncelleme:** 2026-09-24
 > **Kararlar:** [Bölüm 10](#10-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -118,7 +118,7 @@ Aşağıdaki akış seed verili bir ortamda baştan sona çalıştığında S1 t
 | E-posta ve şifre ile giriş | S1 |
 | Sabit roller ve rol bazlı yetkiler | S1 |
 | Kullanıcı ve rol yönetimi ekranı | S1 |
-| Ayarlar ekranı: varsayılan hazırlık ve dönüş payı | S1 |
+| Ayarlar ekranı: varsayılan hazırlık ve dönüş payı, varsayılan operasyon geçiş modu | S1 |
 | Kullanıcının bağlı olduğu depo (depo sorumlusu kendi deposunda işlem yapar) | S1 |
 | Audit log (kim, neyi, ne zaman, eski ve yeni değer) | S1 |
 | Anlık güncellenen ekranlar (stok ve durum değişiklikleri sayfa yenilemeden yansır) | S1 |
@@ -171,7 +171,10 @@ Aşağıdaki akış seed verili bir ortamda baştan sona çalıştığında S1 t
 | Opsiyon son tarihi, "yaklaşıyor" ve "süresi geçti" işaretleri | S1 |
 | İptal ve iptal nedeni | S1 |
 | Seanslar (matine, akşam gibi birden fazla performans) | S2 |
-| Günlük zaman çizelgesi (yükleme, ses provası, kapı, sahne, sessizlik saati) | S2 |
+| Operasyon geçiş modu: elle / otomatik (kurulum, canlı, söküm, hesaplaşma) | S1 |
+| Kapı açılışı ve söküm başlangıcı zamanları | S1 |
+| Onaylı etkinliği müzakereye geri alma | S1 |
+| Diğer zaman noktaları (ses provası, sahne saati) | S2 |
 
 ### 7.6 Teknik rider (BOM)
 
@@ -349,3 +352,4 @@ Bunlar hiçbir sürümde yapılmayacak. Gerekçe: ya başka bir yazılımın iş
 | 2026-09-24 | v1.1 | Terimler sözlüğüyle uyum: "çıkış deposu" → "kaynak depo", "pick list" → "toplama listesi", etkinlik durumu "Anlaşma" → "Müzakere"; "rezerve" birim durumlarından çıkarıldı. |
 | 2026-09-24 | v1.2 | Dış kiralama ekipmanının isteğe bağlı QR ile takibi S1'e eklendi. |
 | 2026-09-24 | v1.3 | İş kuralı kararları: saat hassasiyetinde etkinlik zamanı ve hazırlık/dönüş payı, ayarlar ekranı, opsiyon süresi işaretleri, teknik hizmette opsiyon. |
+| 2026-09-25 | v1.4 | Durum makinesi kararları: otomatik operasyon geçişleri, kapı açılışı ve söküm başlangıcı S1'e alındı; onaydan geri alma eklendi. |

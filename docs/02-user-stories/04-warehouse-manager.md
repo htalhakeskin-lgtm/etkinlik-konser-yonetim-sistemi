@@ -119,7 +119,7 @@ Kurallar: BR-SYS-003, BR-WHS-008, BR-WHS-011, BR-WHS-012
 **Kabul kriterleri**
 1. Gönderen depo sorumlusu **Planlandı** durumundaki transferleri görür ve okutarak çıkış yapar; transfer ve birimler **Yolda** durumuna geçer.
 2. Alan depo sorumlusu gelen kalemleri okutur; transfer **Tamamlandı** olur, birimler hedef depoda **Depoda** durumuna geçer ve gerçekleşen varış zamanı kaydedilir.
-3. Gelen adet eksikse sayım farkı transferle birlikte kaydedilir.
+3. Gelen adet eksikse sayım farkı transferle birlikte kaydedilir. Varışı okutulmayan seri no'lu birimler **Kayıp** olur.
 4. Planlanan varış zamanı geçmiş ama tamamlanmamış transferler vurgulanır ve çakışma kontrolüne dahil edilir.
 5. Etkinliğe bağlı olmayan, stok dengelemek için elle transfer de oluşturulabilir.
 

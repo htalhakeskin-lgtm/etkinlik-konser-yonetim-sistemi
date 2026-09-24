@@ -59,7 +59,7 @@ Kurallar: BR-PTY-004
 Kurallar: BR-PTY-004, BR-EVT-016, BR-MRP-001
 
 **Kabul kriterleri**
-1. Ad, etkinlik türü, başlangıç ve bitiş zamanı zorunludur; bitiş başlangıçtan önce olamaz. Talep aşamasında yalnızca tarih girilebilir; saat girilmezse başlangıç 00:00, bitiş 23:59 kabul edilir.
+1. Ad, etkinlik türü, başlangıç ve bitiş zamanı zorunludur; bitiş başlangıçtan önce olamaz. Etkinlik zamanı, mekanın bizde olduğu süredir (kurulum başlangıcından söküm bitişine). Talep aşamasında yalnızca tarih girilebilir; saat girilmezse başlangıç 00:00, bitiş 23:59 kabul edilir.
 2. Etkinlik türü **Kendi etkinliği** ise prodüksiyon, **Teknik hizmet** ise müşteri zorunludur.
 3. Mekan ve kaynak depo talep aşamasında boş bırakılabilir.
 4. Yeni etkinlik **Talep** durumunda başlar ve durum geçmişine ilk kayıt yazılır.
@@ -97,14 +97,16 @@ Kurallar: BR-EVT-005, BR-EVT-006, BR-EVT-007
 **Booking müdürü olarak** etkinliği müzakereye ve ardından onaya taşımak **istiyorum**, **çünkü** hangi etkinliklerin kesinleştiği herkes için net olmalı.
 
 Öncelik: Must · Demo adımı: 3
-Kurallar: BR-EVT-001, BR-EVT-009, BR-EVT-015
+Kurallar: BR-EVT-001, BR-EVT-009, BR-EVT-015, BR-EVT-019
 
 **Kabul kriterleri**
 1. **Kendi etkinliği** **Opsiyonda** durumundan **Müzakere**'ye geçer. **Teknik hizmet** **Talep** ya da **Opsiyonda** durumundan geçebilir: mekanı müşteri tuttuysa opsiyon gerekmez, müşteri adına mekanı biz tutuyorsak opsiyon alınır.
 2. **Müzakere**'den **Onaylı**'ya geçişte etkinliğin opsiyonları varsa hepsi 1. sırada olmalı ve hiçbirinin süresi geçmemiş olmalıdır.
 3. **Onaylı**'ya geçişte "Sözleşme imzalandı" elle onayı zorunludur; onayı veren kullanıcı kaydedilir. S3'te bu onay sözleşme kontrolüyle değiştirilecek.
-4. Her geçiş durum geçmişine önceki durum, yeni durum, kullanıcı, zaman ve isteğe bağlı notla yazılır.
-5. O an geçerli olmayan geçişler arayüzde sunulmaz. Tam geçiş tablosu `04-state-machines.md`'de tanımlanacak.
+4. Kendi etkinliğinin, etkinlik zamanının kapsadığı her gün için opsiyonu olmalıdır. Onaylanınca opsiyonlar kesinleşir ve artık elle düşürülemez.
+5. Her geçiş durum geçmişine önceki durum, yeni durum, kullanıcı, zaman ve isteğe bağlı notla yazılır.
+6. O an geçerli olmayan geçişler arayüzde sunulmaz. Tam geçiş tablosu [04-state-machines.md](../04-state-machines.md)'de.
+7. **Onaylı** ya da **Hazırlık** durumundaki etkinlik, çıkışı yapılmış ekipman yoksa, neden girilerek **Müzakere**'ye geri alınabilir. Kesinleşmiş opsiyonlar yeniden aktif olur, sözleşme onayı geçersiz olur, onaylı rezervasyonlar korunur.
 
 ### US-EVT-005 · Hazırlıktan kapanışa ilerletme
 **Booking müdürü olarak** onaylı etkinliği operasyon aşamalarından geçirip kapatmak **istiyorum**, **çünkü** etkinliğin hangi aşamada olduğu depo ve teknik ekip için yol gösterici.
@@ -115,9 +117,23 @@ Kurallar: BR-EVT-010, BR-EVT-011, BR-EVT-012, BR-EVT-013, BR-EVT-015
 **Kabul kriterleri**
 1. **Onaylı** → **Hazırlık** geçişi için mekan, kaynak depo ve bir rider versiyonu tanımlı olmalıdır. Geçişte ihtiyaç hesabı otomatik çalışır (US-MRP-001).
 2. **Hazırlık** → **Kurulum** geçişinde çıkışı tamamlanmamış onaylı rezervasyon varsa uyarı gösterilir; kullanıcı onaylarsa geçiş yapılır.
-3. **Kurulum** → **Canlı** → **Söküm** → **Hesaplaşma** geçişleri elle yapılır.
+3. **Kurulum** → **Canlı** → **Söküm** → **Hesaplaşma** geçişleri elle yapılır. **Onaylı**'dan **Hesaplaşma**'ya kadarki geçişleri teknik müdür de yapabilir.
 4. **Hesaplaşma** → **Kapandı** geçişi için etkinlikten çıkışı yapılıp girişi yapılmamış birim ya da adet kalmamalıdır (kayıp olarak işaretlenenler hariç). Ayrıca "Hesaplaşma onaylandı" elle onayı zorunludur. S4'te bu onay hesaplaşma kontrolüyle değiştirilecek.
-5. **Kapandı** durumundaki etkinlik ve bağlı kayıtları değiştirilemez.
+5. Kapanışta onaylı rezervasyonlar **Tamamlandı** olur. **Kapandı** durumundaki etkinlik ve bağlı kayıtları değiştirilemez.
+
+### US-EVT-008 · Operasyon geçişlerinin otomatik yapılması
+**Booking müdürü olarak** etkinliğin kurulum, canlı, söküm ve hesaplaşma aşamalarına zamanı geldiğinde kendiliğinden geçmesini **istiyorum**, **çünkü** sahadaki ekip yoğunken durumu güncellemeyi unutabiliyor.
+
+Öncelik: Should · Demo adımı: —
+Kurallar: BR-EVT-018
+
+**Kabul kriterleri**
+1. Her etkinliğin operasyon geçiş modu **Elle** ya da **Otomatik**tir. Yeni etkinlik modu ayarlardaki varsayılandan alır; mod etkinlik sayfasında değiştirilebilir.
+2. Kapı açılışı ve söküm başlangıcı zamanları etkinlikte isteğe bağlı olarak girilir.
+3. Otomatik modda etkinlik başlangıç zamanında **Kurulum**'a, kapı açılışında **Canlı**'ya, söküm başlangıcında **Söküm**'e, bitiş zamanında **Hesaplaşma**'ya geçer. Girilmemiş zaman noktası atlanır; geçiş bir sonraki zaman noktasında yapılır.
+4. Otomatik geçiş yalnızca **Hazırlık** ve sonraki durumlardan ileri doğru yapılır. Başlangıç zamanı geldiği halde **Hazırlık**'a geçmemiş etkinlik listede uyarıyla işaretlenir.
+5. Otomatik modda da geçişler elle, zamanından önce yapılabilir.
+6. Otomatik geçişler durum geçmişine "sistem" tarafından yapılmış olarak yazılır.
 
 ### US-EVT-006 · Etkinliği iptal etme
 **Booking müdürü olarak** bir etkinliği herhangi bir aşamada iptal etmek **istiyorum**, **çünkü** iptal edilen etkinlik ayırdığı mekan ve ekipmanı bırakmalı.

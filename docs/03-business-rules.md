@@ -1,6 +1,6 @@
 # 03 — İş Kuralları Kataloğu
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-24
+> **Durum:** v1.2 · **Son güncelleme:** 2026-09-24
 > **Kararlar:** [Bölüm 7](#7-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -42,7 +42,7 @@ Bu sürüm S1 kurallarını içerir. Sonraki sürümlerin kuralları, o sürüm�
 
 ## 4. Parametreler
 
-Kurallarda geçen sayısal değerler sabit kodlanmaz. P-06 ve P-07 sistem yöneticisi tarafından ayarlar ekranından değiştirilir (US-SYS-007); diğerleri S1'de yapılandırma dosyasından okunur.
+Kurallarda geçen sayısal değerler sabit kodlanmaz. P-06, P-07 ve P-14 sistem yöneticisi tarafından ayarlar ekranından değiştirilir (US-SYS-007); diğerleri S1'de yapılandırma dosyasından okunur.
 
 | No | Parametre | Varsayılan | Kullanan kural |
 |---|---|---|---|
@@ -58,6 +58,8 @@ Kurallarda geçen sayısal değerler sabit kodlanmaz. P-06 ve P-07 sistem yönet
 | P-10 | Kayıp raporu varsayılan dönemi | 90 gün | BR-EQP-010 |
 | P-11 | Kayıp raporunda öne çıkan model sayısı | 10 | BR-EQP-010 |
 | P-12 | Günlük çakışma kontrolü saati | 03:00 | BR-MRP-017 |
+| P-13 | Otomatik operasyon geçişlerinin kontrol aralığı | 5 dakika | BR-EVT-018 |
+| P-14 | Varsayılan operasyon geçiş modu | Otomatik | BR-EVT-018 |
 
 ## 5. Kurallar
 
@@ -150,7 +152,7 @@ Opsiyon, **Talep**, **Opsiyonda** veya **Müzakere** durumundaki etkinliklere ek
 *Tür:* Kısıt · *Hikayeler:* US-EVT-002, US-EVT-004
 
 #### BR-EVT-002 · Opsiyon günü ve sırası
-Bir opsiyon tek bir mekan ve tek bir takvim günü içindir; çok günlü etkinlik her günü için ayrı opsiyon tutar. Aynı mekan ve gündeki aktif opsiyonlar (kendi ve dış) 1'den başlayarak boşluksuz sıralanır.
+Bir opsiyon tek bir mekan ve tek bir takvim günü içindir; çok günlü etkinlik her günü için ayrı opsiyon tutar. Aynı mekan ve gündeki **Aktif** ve **Kesinleşti** opsiyonlar (kendi ve dış) 1'den başlayarak boşluksuz sıralanır; **Düştü** opsiyonlar sıraya girmez.
 *Tür:* Kısıt · *Hikayeler:* US-EVT-002
 
 #### BR-EVT-003 · Opsiyonu sıraya yerleştirme
@@ -184,10 +186,11 @@ Bir etkinliğin opsiyon sırası, opsiyon tuttuğu günlerdeki en büyük sırad
 
 #### BR-EVT-009 · Onay koşulu
 **Müzakere** → **Onaylı** geçişi için:
-- Etkinliğin opsiyonu varsa, opsiyon tuttuğu her günde 1. sırada olmalı ve hiçbir opsiyonunun süresi geçmemiş olmalıdır. Süresi geçmiş opsiyon için kullanıcı önce son tarihi günceller ya da opsiyonu düşürür.
+- **Kendi etkinliği**nin, etkinlik zamanının kapsadığı her takvim günü için bir opsiyonu olmalıdır.
+- Etkinliğin tüm aktif opsiyonları 1. sırada olmalı ve hiçbirinin süresi geçmemiş olmalıdır. Süresi geçmiş opsiyon için kullanıcı önce son tarihi günceller ya da opsiyonu düşürür. **Teknik hizmet** etkinliğinin opsiyonu yoksa bu koşul aranmaz.
 - "Sözleşme imzalandı" elle onayı verilmelidir; onayı veren kullanıcı ve zaman kaydedilir.
 
-Onaylı etkinliğin opsiyonları ancak etkinlik iptal edilirse düşer.
+Onaylanan etkinliğin opsiyonları **Kesinleşti** olur. Kesinleşmiş opsiyon elle düşürülemez; yalnızca etkinlik iptalinde ya da zaman değişikliğiyle günü aralık dışında kaldığında düşer.
 *Tür:* Geçiş · *Hikayeler:* US-EVT-004 · *Değişecek:* S3'te elle onay, imzalı sözleşme kontrolüyle değiştirilir.
 
 #### BR-EVT-010 · Hazırlık koşulu
@@ -195,13 +198,15 @@ Onaylı etkinliğin opsiyonları ancak etkinlik iptal edilirse düşer.
 *Tür:* Geçiş · *Hikayeler:* US-EVT-005, US-MRP-001
 
 #### BR-EVT-011 · Kurulum uyarısı
-**Hazırlık** → **Kurulum** geçişinde çıkışı tamamlanmamış onaylı rezervasyon varsa uyarı gösterilir. Geçiş ancak kullanıcı onaylarsa yapılır.
+**Hazırlık** → **Kurulum** geçişinde çıkışı tamamlanmamış onaylı rezervasyon varsa uyarı gösterilir. Elle geçiş ancak kullanıcı onaylarsa yapılır. Otomatik geçişte uyarı onay beklemez; etkinliğe not olarak düşer ve etkinlik listesinde işaretlenir (BR-EVT-018).
 *Tür:* Geçiş · *Hikayeler:* US-EVT-005
 
 #### BR-EVT-012 · Kapanış koşulu
 **Hesaplaşma** → **Kapandı** geçişi için:
 - Etkinlik için **Etkinlikte** durumunda birim ya da girişi yapılmamış adet kalmamalıdır. **Kayıp** olarak işaretlenenler engel değildir.
 - "Hesaplaşma onaylandı" elle onayı verilmelidir.
+
+Kapanışta etkinliğin onaylı rezervasyonları **Tamamlandı** olur.
 
 *Tür:* Geçiş · *Hikayeler:* US-EVT-005 · *Değişecek:* S4'te elle onay, hesaplaşma kontrolüyle değiştirilir.
 
@@ -231,10 +236,36 @@ Her durum geçişi önceki durum, yeni durum, kullanıcı, zaman ve isteğe bağ
 Etkinliğin başlangıç ve bitiş zamanı **Kapandı** ve **İptal** dışındaki her durumda değiştirilebilir. Değişiklikte:
 - Yeni tarih aralığının dışında kalan günlerin opsiyonları "tarih değişti" nedeniyle düşer.
 - **Talep**, **Opsiyonda** ve **Müzakere** durumlarında yeni günler için opsiyonlar ayrıca eklenir (BR-EVT-003).
-- **Onaylı** ve sonraki durumlarda değişiklik için "Mekan yeni tarihi onayladı" elle onayı zorunludur. Yeni günlerin opsiyonları 1. sıraya kaydedilir (BR-EVT-003).
+- **Onaylı** ve sonraki durumlarda değişiklik için "Mekan yeni tarihi onayladı" elle onayı zorunludur. Yeni günlerin opsiyonları **Kesinleşti** olarak 1. sıraya kaydedilir (BR-EVT-003).
 - İhtiyaç hesabı "güncel değil" olur (BR-MRP-010) ve aşırı rezervasyon kontrolü çalışır (BR-MRP-017).
 
 *Tür:* Tetikleyici · *Hikayeler:* US-EVT-007
+
+#### BR-EVT-018 · Otomatik operasyon geçişleri
+Her etkinliğin operasyon geçiş modu **Elle** ya da **Otomatik**tir. Yeni etkinlik, modu ayarlardaki varsayılandan (P-14) alır; mod etkinlik bazında değiştirilebilir. Otomatik modda sistem her P-13'te zamanı gelen geçişleri yapar:
+
+| Zaman noktası | Geçiş |
+|---|---|
+| Etkinliğin başlangıç zamanı | **Hazırlık** → **Kurulum** |
+| Kapı açılışı | **Kurulum** → **Canlı** |
+| Söküm başlangıcı | **Canlı** → **Söküm** |
+| Etkinliğin bitiş zamanı | **Söküm** → **Hesaplaşma** |
+
+- Kapı açılışı ve söküm başlangıcı isteğe bağlıdır. Girilmemiş bir zaman noktası geçişi tetiklemez; o geçiş bir sonraki zaman noktası geldiğinde yapılır. Zamanı gelmiş birden fazla geçiş varsa etkinlik ara durumlardan sırayla geçer ve her geçiş ayrı kaydedilir.
+- Otomatik geçiş yalnızca ileri doğru ve yalnızca **Hazırlık** ve sonraki durumlardan yapılır. Başlangıç zamanı geldiği halde **Hazırlık**'a geçmemiş etkinlik geçirilmez; listede uyarıyla işaretlenir.
+- Otomatik modda da geçişler elle, zamanından önce yapılabilir.
+- Otomatik geçişler durum geçmişine "sistem" tarafından yapılmış olarak yazılır.
+
+*Tür:* Tetikleyici · *Hikayeler:* US-EVT-008, US-SYS-007
+
+#### BR-EVT-019 · Onaydan geri alma
+**Onaylı** ya da **Hazırlık** durumundaki etkinlik, neden girilerek **Müzakere**'ye geri alınabilir. Koşul: etkinlik için çıkışı yapılmış ekipman bulunmamalıdır. Etkileri:
+- Kesinleşmiş opsiyonlar **Aktif** olur; sıraları değişmez.
+- "Sözleşme imzalandı" onayı geçersiz olur; yeniden onayda tekrar istenir.
+- Onaylı rezervasyonlar ve planlanmış transferler korunur, böylece şartlar görüşülürken ekipman kaybedilmez. **Müzakere**'de yeni rezervasyon onaylanamaz ve ihtiyaç hesabı çalıştırılamaz; korunan rezervasyonlar serbest bırakılabilir.
+- Yeniden onaylanan etkinlik, **Hazırlık**'tan geri alınmış olsa da **Onaylı** durumuna döner.
+
+*Tür:* Geçiş · *Hikayeler:* US-EVT-004
 
 ### 5.5 Teknik rider (RDR)
 
@@ -333,6 +364,7 @@ Her okutma anında kaydedilir ve birimin durumunu hemen değiştirir. Çıkış�
 
 #### BR-WHS-003 · Çıkış koşulları
 Bir birimin çıkışı yapılabilmesi için:
+- etkinlik **Onaylı**, **Hazırlık**, **Kurulum** veya **Canlı** durumunda olmalı,
 - durumu **Depoda** olmalı,
 - konumu kullanıcının bağlı olduğu depo olmalı,
 - sahipliği **Şirket** olmalı ya da siparişi o etkinliğe bağlı bir dış kiralama olmalıdır.
@@ -374,7 +406,8 @@ Girişte hasarlı işaretlenen birim için açıklamalı hasar kaydı açılır 
 #### BR-WHS-011 · Transferin işleyişi
 - Transfer çıkışı yalnızca gönderen depoda, varışı yalnızca alan depoda okutulur.
 - İlk çıkış okutmasıyla transfer **Yolda** olur.
-- Tüm kalemlerin varışı okutulduğunda ya da alan depo eksiklerle tamamladığında transfer **Tamamlandı** olur. Eksikler sayım farkı olarak transferle birlikte kaydedilir (BR-WHS-008).
+- Tüm kalemlerin varışı okutulduğunda ya da alan depo eksiklerle tamamladığında transfer **Tamamlandı** olur. Adetli eksikler sayım farkı olarak transferle birlikte kaydedilir (BR-WHS-008); varışı okutulmayan seri no'lu birimler **Kayıp** olur.
+- **Yolda** transfer iptal edilemez. Yanlış gönderilen ekipman için transfer tamamlanır ve ters yönde yeni transfer açılır.
 - Planlanan varış zamanı geçmiş ve tamamlanmamış transfer "gecikmiş" olarak işaretlenir.
 
 *Tür:* Geçiş · *Hikayeler:* US-WHS-004
@@ -408,7 +441,7 @@ Müsait(an) = Havuz(an)
 
 **Havuz(an)**, sahipliği **Şirket** olan ve şu kalemlerin toplamıdır:
 - Konumu o depo olan ve durumu **Depoda** olan birimler ile o depodaki adetli stok.
-- O depodan bir etkinliğe çıkmış, etkinliğin rezervasyon aralığı o an henüz bitmemiş birimler ve adetler. Bunların kaynak depoya döneceği varsayılır.
+- O depodan bir etkinliğe çıkmış, etkinliğin rezervasyon aralığı o an henüz bitmemiş ve etkinliği iptal edilmemiş birimler ve adetler. Bunların kaynak depoya döneceği varsayılır. İptal edilen etkinlikten dönmemiş ekipman, girişi yapılana kadar havuza girmez.
 - O depoya gelen, gecikmemiş ve planlanan varış zamanı o andan önce olan transferlerdeki kalemler.
 
 Bir zaman aralığındaki müsaitlik, aralıktaki tüm anların en düşük değeridir. Hesap her an için değil, değerin değişebildiği anlarda (rezervasyon ve transferlerin başlangıç ve bitişlerinde) yapılır. **Bakımda**, **Kayıp** ve **Hurda** birimler; gecikmiş transferler; rezervasyon aralığı bittiği halde dönmemiş birimler havuza girmez. **Önerildi** durumundaki rezervasyonlar müsaitliği düşürmez.
@@ -462,7 +495,7 @@ Her hesap çalıştığı zaman, çalıştıran kullanıcı, kullanılan rider v
 *Tür:* Tetikleyici · *Hikayeler:* US-MRP-001
 
 #### BR-MRP-012 · Rezervasyon hangi durumlarda yapılır
-Rezervasyon yalnızca **Onaylı**, **Hazırlık**, **Kurulum**, **Canlı** ve **Söküm** durumlarındaki etkinlikler için oluşturulur ve onaylanır. İhtiyaç hesabı **Hazırlık**'a geçişte otomatik çalışır; **Onaylı**, **Hazırlık** ve **Kurulum** durumlarında elle çalıştırılabilir. Böylece kıt ekipman etkinlik kesinleşir kesinleşmez ayrılabilir (bkz. R-03).
+Rezervasyon yalnızca **Onaylı**, **Hazırlık**, **Kurulum**, **Canlı** ve **Söküm** durumlarındaki etkinlikler için oluşturulur ve onaylanır. Onaydan geri alınan etkinliğin mevcut onaylı rezervasyonları korunur (BR-EVT-019). İhtiyaç hesabı **Hazırlık**'a geçişte otomatik çalışır; **Onaylı**, **Hazırlık** ve **Kurulum** durumlarında elle çalıştırılabilir. Böylece kıt ekipman etkinlik kesinleşir kesinleşmez ayrılabilir (bkz. R-03).
 *Tür:* Kısıt · *Hikayeler:* US-MRP-001, US-MRP-002
 
 #### BR-MRP-013 · Onayda yeniden doğrulama
@@ -522,3 +555,5 @@ Rider karşılama raporu, son ihtiyaç hesabından ve güncel onaylı rezervasyo
 |---|---|---|
 | 2026-09-24 | v0.1 | İlk taslak: S1 kuralları |
 | 2026-09-24 | v1.0 | Açık sorular karara bağlandı: rezervasyon ve müsaitlik hesapları saat hassasiyetine geçti; süresi geçmiş opsiyon işaretleri ve onay engeli eklendi; teknik hizmette opsiyon isteğe bağlı oldu. |
+| 2026-09-25 | v1.1 | Durum makineleriyle uyum: kesinleşmiş opsiyon (BR-EVT-002, 009, 017), kendi etkinliğinde her gün için opsiyon (BR-EVT-009), kapanışta rezervasyonların tamamlanması (BR-EVT-012), iptal edilen etkinliğin ekipmanının müsaitlikten çıkarılması (BR-MRP-002), çıkış için etkinlik durumu (BR-WHS-003), transferde varmayan birim (BR-WHS-011). |
+| 2026-09-25 | v1.2 | BR-EVT-018 (otomatik operasyon geçişleri, P-13, P-14) ve BR-EVT-019 (onaydan geri alma) eklendi; BR-EVT-011 ve BR-MRP-012 buna göre güncellendi. |

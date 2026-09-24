@@ -48,13 +48,14 @@ Kurallar: BR-SYS-001, BR-SYS-013
 2. İçinde stok, açık transfer ya da açık rezervasyon bulunan depo pasifleştirilemez.
 3. Sistemde her zaman en az bir aktif depo bulunur.
 
-### US-SYS-007 · Varsayılan hazırlık ve dönüş payı
-**Sistem yöneticisi olarak** yeni etkinliklere gelecek varsayılan hazırlık ve dönüş payını ayarlardan değiştirmek **istiyorum**, **çünkü** şirketin çalışma temposu zamanla değişir.
+### US-SYS-007 · Etkinlik varsayılanları
+**Sistem yöneticisi olarak** yeni etkinliklere gelecek varsayılan hazırlık ve dönüş payını ve operasyon geçiş modunu ayarlardan değiştirmek **istiyorum**, **çünkü** şirketin çalışma temposu zamanla değişir.
 
 Öncelik: Should · Demo adımı: —
-Kurallar: BR-MRP-001
+Kurallar: BR-EVT-018, BR-MRP-001
 
 **Kabul kriterleri**
 1. Varsayılan paylar ayarlar ekranında gün ve saat olarak girilir; başlangıç değerleri 1'er gündür.
-2. Değişiklik yalnızca bundan sonra oluşturulan etkinlikleri etkiler; mevcut etkinliklerin payları değişmez.
-3. Değişiklik işlem geçmişine yazılır.
+2. Varsayılan operasyon geçiş modu **Elle** ya da **Otomatik** olarak seçilir; başlangıç değeri **Otomatik**tir.
+3. Değişiklik yalnızca bundan sonra oluşturulan etkinlikleri etkiler; mevcut etkinliklerin ayarları değişmez.
+4. Değişiklik işlem geçmişine yazılır.
