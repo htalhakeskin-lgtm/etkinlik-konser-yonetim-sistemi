@@ -8,6 +8,9 @@ Kod yazılırken uyulan kurallar. Her standart, kuralın **ne** olduğunu, **ned
 | [code-style.md](code-style.md) | Kod biçimi, yazım kuralları, analizörler ve lint araçları | v1.0 |
 | [database.md](database.md) | Roller, kimlik tipi, kolon tipleri, zaman, para, ortak kolonlar, eşzamanlılık, kısıtlar, işlem geçmişi, migration'lar | v1.0 |
 | [api.md](api.md) | Adres yapısı, yöntemler ve durum kodları, JSON biçimi, listeler, hata yanıtları, eşzamanlı düzenleme, tekrar güvenliği, güvenlik, sürümleme, anlık bildirimler, OpenAPI | v1.0 |
+| [security.md](security.md) | Yetki modeli ve roller, oturum ve şifre, gizli bilgiler, veri koruma anahtarları, tarayıcı güvenlik başlıkları, girdi doğrulama, kişisel veri | v1.0 |
+| [observability.md](observability.md) | Loglar, izler, ölçümler, sağlık kontrolleri, uyarılar | v1.0 |
+| [configuration.md](configuration.md) | Ortamlar, ayar kaynakları, ayar doğrulama, parametre eşlemesi, dosya saklama, dış servis çağrıları | v1.0 |
 | `git.md` | Dal düzeni, commit biçimi, PR kontrol listesi | D bölümünde yazılacak |
 
 Standartlar [08-architecture.md](../08-architecture.md)'deki yapıya ve [07-tech-stack.md](../07-tech-stack.md)'deki araç seçimlerine dayanır.

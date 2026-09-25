@@ -22,7 +22,8 @@ Konser ve etkinlik sektöründe hem kendi etkinliklerini düzenleyen hem de tekn
 | [Standartlar: isimlendirme](docs/standards/naming.md) · [kod stili](docs/standards/code-style.md) | v1.0 |
 | [Standartlar: veritabanı](docs/standards/database.md) | v1.0 |
 | [Standartlar: API](docs/standards/api.md) | v1.0 |
-| C.6 — Çapraz kesen konular | Sırada |
+| Standartlar: [güvenlik](docs/standards/security.md) · [gözlemlenebilirlik](docs/standards/observability.md) · [yapılandırma](docs/standards/configuration.md) | v1.0 |
+| D — Çalışma süreci | Sırada |
 
 ## Teknoloji
 

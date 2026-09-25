@@ -1,6 +1,6 @@
 # Veritabanı Standardı
 
-> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 18](#18-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -375,6 +375,7 @@ Yapı [ADR-0010](../adr/0010-messaging-infrastructure.md)'daki kararları fiziks
 | `ordering_key` | Sıra garantisi verilen kaydın kimliği (ör. etkinlik) |
 | `payload` | `jsonb` olay içeriği |
 | `occurred_at` | Olayın oluşma zamanı |
+| `trace_parent` | Olayı doğuran isteğin iz bağlamı (W3C `traceparent`); dinleyicinin izi bununla ilişkilendirilir ([observability §4](observability.md#4-dağıtık-izleme)) |
 | `dispatched_at` | Gönderildiği zaman; gönderilmediyse boş |
 | `attempt_count`, `next_attempt_at`, `last_error` | Yeniden deneme bilgisi |
 
@@ -474,3 +475,4 @@ Gerçek PostgreSQL 18 üzerinde (Testcontainers) çalışan testler. Yer: `tests
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | V-01, V-02, V-03 kararlaştırıldı; ADR-0020, ADR-0021, ADR-0022 kabul edildi. |
 | 2026-09-25 | v1.1 | Tekrar güvenliği tablosu eklendi (C.5). |
+| 2026-09-25 | v1.2 | Outbox'a iz bağlamı kolonu eklendi (C.6). |

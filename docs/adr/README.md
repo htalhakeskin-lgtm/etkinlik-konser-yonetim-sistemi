@@ -82,3 +82,5 @@ Her alternatif ve neden seçilmediği.
 | [0023](0023-api-error-model.md) | API hata modeli | Kabul edildi |
 | [0024](0024-http-optimistic-concurrency.md) | HTTP üzerinden iyimser kilit — ETag ve If-Match | Kabul edildi |
 | [0025](0025-idempotency-keys.md) | Tekrar güvenliği anahtarları | Kabul edildi |
+| [0026](0026-authorization-model.md) | Yetki modeli — kodda tanımlı yetki kataloğu ve sabit roller | Kabul edildi |
+| [0027](0027-session-and-password-security.md) | Oturum ve şifre güvenliği ayrıntıları | Kabul edildi |

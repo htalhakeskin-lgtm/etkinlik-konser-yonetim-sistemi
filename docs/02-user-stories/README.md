@@ -1,6 +1,6 @@
 # 02 — Kullanıcı Hikayeleri
 
-> **Durum:** v1.6 · **Son güncelleme:** 2026-09-24
+> **Durum:** v1.7 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 6](#6-kararlar)
 
 ## 1. Bu klasör ne işe yarar
@@ -145,3 +145,4 @@ Demo için gerekli ana veriler (depo, taraf, mekan, sanatçı, katalog, birim, k
 | 2026-09-25 | v1.4 | US-EVT-008 (otomatik operasyon geçişleri) eklendi; US-SYS-007 etkinlik varsayılanlarına genişledi; US-EVT-004'e onaydan geri alma eklendi. |
 | 2026-09-25 | v1.5 | Gecikme hedefleri sıkılaştırıldı: US-WHS-005 (300 ms / 1 s), US-MRP-001 (1 s). |
 | 2026-09-25 | v1.6 | US-VEN-002: mekan ekipmanının geçerlilik aralığı ve geçici kullanılamama dönemleri. |
+| 2026-09-25 | v1.7 | US-SYS-010: 24 saatlik mutlak oturum süresi; US-SYS-011: en az 15 karakter, boşluk yok, yaygın şifre kontrolü. |

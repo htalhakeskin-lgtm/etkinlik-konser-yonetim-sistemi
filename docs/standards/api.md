@@ -1,6 +1,6 @@
 # API Standardı
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 15](#15-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -67,7 +67,7 @@ Adların yazımı (kebab-case adres, camelCase JSON, işlem adı) [naming §6](n
 |---|---|---|
 | `400 Bad Request` | Bozuk JSON, yanlış tip, bilinmeyen alan, alan doğrulama hatası (zorunlu alan, uzunluk, biçim) | `validation`, `malformedRequest` |
 | `401 Unauthorized` | Oturum yok ya da süresi dolmuş | `unauthenticated` |
-| `403 Forbidden` | Oturum var, yetki yok | `forbidden` |
+| `403 Forbidden` | Oturum var, yetki yok; ya da yetki türündeki bir kural izin vermiyor | `forbidden` ya da kural numarası (ör. `BR-SYS-003` depo kapsamı, `BR-SYS-006` geçici şifre; [security §3.4](security.md#34-kayıt-düzeyinde-kontrol-kapsam)) |
 | `404 Not Found` | Kayıt yok | `notFound` |
 | `409 Conflict` | Aynı tekrar güvenliği anahtarıyla bir istek hâlâ işleniyor | `idempotencyKeyInProgress` |
 | `412 Precondition Failed` | Kayıt, istemcinin gördüğü sürümden sonra değişmiş | `concurrencyConflict` |
@@ -223,6 +223,8 @@ Hata eşlemesi Host'taki tek bir hata işleyicidedir (`IExceptionHandler`; [kayn
 | JSON okuma ve bağlama hatası | 400 | `malformedRequest` |
 | `BusinessRuleViolationException` | 422 | Kural numarası |
 | Veritabanı kısıt ihlali (kural koduna eşlenmiş) | 422 | Eşlenen kural numarası ([database §12.1](database.md#121-kısıtlar)) |
+| Yetki eksikliği | 403 | `forbidden` |
+| `BusinessRuleViolationException` (yetki türündeki kural) | 403 | Kural numarası |
 | `NotFoundException` | 404 | `notFound` |
 | Sürüm çakışması | 412 | `concurrencyConflict` |
 | Beklenmeyen her şey | 500 | `internalError`; `detail` genel bir metindir, yığın izi (stack trace) asla dönmez |
@@ -376,3 +378,4 @@ Oturum [ADR-0011](../adr/0011-authentication.md)'deki gibi sunucu tarafı oturum
 |---|---|---|
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | A-01, A-02, A-03 kararlaştırıldı; ADR-0023, ADR-0024, ADR-0025 kabul edildi. |
+| 2026-09-25 | v1.1 | Yetki türündeki kurallar `403` ile kural numarası döner (C.6). |

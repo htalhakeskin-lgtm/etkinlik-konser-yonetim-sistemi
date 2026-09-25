@@ -1,6 +1,6 @@
 # 07 — Teknoloji Yığını
 
-> **Durum:** v1.3 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.4 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 8](#8-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -33,6 +33,8 @@ Yığına yeni bir kütüphane eklemek ya da bir kütüphaneyi değiştirmek iç
 | Nesne eşleme | Elle yazılır; gerekirse Mapperly (kaynak kod üretimi) | — | Apache 2.0 | [0006](adr/0006-backend-platform.md) |
 | Anlık güncelleme | ASP.NET Core SignalR | .NET 10 ile | MIT | [0012](adr/0012-realtime-signalr.md) |
 | Kimlik doğrulama | ASP.NET Core çerez kimlik doğrulaması, sunucu tarafında saklanan oturumlar, ASP.NET Core Identity parola özetleme | .NET 10 ile | MIT | [0011](adr/0011-authentication.md) |
+| Veri koruma anahtarları | ASP.NET Core Data Protection, anahtarlar veritabanında (EF Core sağlayıcısı) | .NET 10 ile | MIT | [0027](adr/0027-session-and-password-security.md) |
+| Yaygın şifre listesi | SecLists'ten derlenmiş liste, uygulamayla birlikte dağıtılır | — | MIT | [security §5.1](standards/security.md#51-şifre-politikası) |
 | Olaylar, outbox, inbox | Kendi yazdığımız, süreç içi olay yolu | — | — | [0010](adr/0010-messaging-infrastructure.md) |
 | Zamanlanmış işler | .NET hosted service + Cronos (cron ifadesi) + PostgreSQL advisory lock | — | MIT | [0013](adr/0013-scheduled-jobs.md) |
 | PDF | QuestPDF | 2026.x | Topluluk lisansı* | [0014](adr/0014-documents-and-qr.md) |
@@ -157,3 +159,4 @@ Yaygın oldukları halde bilinçli olarak kullanılmayanlar:
 | 2026-09-25 | v1.1 | Derleme analizörleri ve derleme sırasında OpenAPI üretimi eklendi (C.2). |
 | 2026-09-25 | v1.2 | C.3: kod biçimi ve statik analiz araçları (CSharpier, Meziantou.Analyzer, ESLint 10, Prettier), React Compiler ve EFCore.NamingConventions eklendi; TypeScript 6.x'e sabitlendi (ADR-0019). |
 | 2026-09-25 | v1.3 | C.4: PostgreSQL eklentileri eklendi. |
+| 2026-09-25 | v1.4 | C.6: veri koruma anahtarlarının saklanması ve yaygın şifre listesi eklendi. |

@@ -1,6 +1,6 @@
 # 08 — Mimari ve Klasör Yapısı
 
-> **Durum:** v1.3 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.4 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -248,6 +248,8 @@ builder.AddModules(
 | API belgesi | OpenAPI belgesi; geliştirmede Scalar arayüzü. |
 | Ön yüzün sunulması | Yayın ortamında derlenmiş ön yüzü aynı adresten sunar; bilinmeyen adresleri ön yüzün giriş sayfasına yönlendirir. |
 | Kültür ayarı | Sunucu kodu sabit kültürle (invariant) çalışır ([§9](#9-türkçe-karakter-güvenliği)). |
+| Güvenlik başlıkları | Ön yüz ve API yanıtlarına güvenlik başlıklarını ekler ([security §8](standards/security.md#8-tarayıcı-güvenlik-başlıkları), [api §11](standards/api.md#11-güvenlik-kuralları)). |
+| Sağlık uçları | `/alive` ve `/health`; demo ve yayında dışarıya açılmayan iç portta ([observability §6](standards/observability.md#6-sağlık-kontrolleri)). |
 
 **Adres düzeni:**
 
@@ -454,3 +456,4 @@ Yasak API kullanımı (`DateTime.UtcNow` gibi) mimari testle değil, derleyici a
 | 2026-09-25 | v1.1 | C.3 ile uyum: standart belgelerine bağlantılar, Türkçe karakter önlemleri genişletildi, uyarıların hata sayılma kapsamı netleşti, ön yüz sınır aracı seçildi, AT-12…AT-14 eklendi. |
 | 2026-09-25 | v1.2 | Veritabanı testleri projesi eklendi (C.4). |
 | 2026-09-25 | v1.3 | C.5 ile uyum: `/api/v1` kökü, hata biçimi bağlantısı, AT-14 genişletildi, AT-15 eklendi. |
+| 2026-09-25 | v1.4 | Host görevlerine güvenlik başlıkları ve sağlık uçları eklendi (C.6). |

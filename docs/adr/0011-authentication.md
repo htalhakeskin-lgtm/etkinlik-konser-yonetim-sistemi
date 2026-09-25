@@ -2,6 +2,7 @@
 
 - **Durum:** Kabul edildi
 - **Tarih:** 2026-09-25
+- **Genişletildi:** [ADR-0027](0027-session-and-password-security.md) — oturum süreleri, anahtar saklama, şifre politikası, veri koruma anahtarları
 - **İlgili:** BR-SYS-002, BR-SYS-005…BR-SYS-008, [ADR-0008](0008-frontend-architecture.md), [ADR-0012](0012-realtime-signalr.md)
 
 ## Bağlam

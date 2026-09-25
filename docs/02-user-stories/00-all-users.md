@@ -13,7 +13,7 @@ Kurallar: BR-SYS-005, BR-SYS-006, BR-SYS-008
 2. Aynı hesapla art arda 5 hatalı denemeden sonra hesap 15 dakika kilitlenir.
 3. Pasif kullanıcı giriş yapamaz.
 4. Sistem yöneticisinin verdiği geçici şifreyle ilk girişte kullanıcı yeni şifre belirlemeden devam edemez.
-5. Oturum 12 saat hareketsizlikten sonra sona erer. Depo ekranları bir vardiya boyunca yeniden giriş istemez.
+5. Oturum 12 saat hareketsizlikten sonra ya da açıldıktan 24 saat sonra sona erer. Depo ekranları bir vardiya boyunca yeniden giriş istemez.
 6. Kullanıcı her ekrandan çıkış yapabilir; çıkıştan sonra geri tuşuyla korumalı sayfalar açılmaz.
 
 ### US-SYS-011 · Şifre değiştirme
@@ -24,7 +24,7 @@ Kurallar: BR-SYS-007
 
 **Kabul kriterleri**
 1. Değişiklik için mevcut şifre istenir.
-2. Yeni şifre en az 10 karakterdir ve mevcut şifreyle aynı olamaz.
+2. Yeni şifre en az 15 karakterdir, boşluk içeremez, yaygın şifreler listesinde olamaz ve mevcut şifreyle aynı olamaz. Harf, rakam ya da sembol karışımı zorunlu değildir.
 3. Şifre değişince kullanıcının diğer cihazlardaki oturumları sonlanır.
 
 ### US-SYS-012 · Role göre arayüz

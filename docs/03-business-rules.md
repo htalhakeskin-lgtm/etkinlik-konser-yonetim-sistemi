@@ -1,6 +1,6 @@
 # 03 — İş Kuralları Kataloğu
 
-> **Durum:** v1.6 · **Son güncelleme:** 2026-09-24
+> **Durum:** v1.7 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 7](#7-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -49,7 +49,7 @@ Kurallarda geçen sayısal değerler sabit kodlanmaz. P-06, P-07 ve P-14 sistem 
 | P-01 | Hesap kilidinden önceki hatalı giriş sayısı | 5 | BR-SYS-005 |
 | P-02 | Hesap kilidi süresi | 15 dakika | BR-SYS-005 |
 | P-03 | Hareketsizlik oturum süresi | 12 saat | BR-SYS-008 |
-| P-04 | En kısa şifre uzunluğu | 10 karakter | BR-SYS-007 |
+| P-04 | En kısa şifre uzunluğu | 15 karakter | BR-SYS-007 |
 | P-05 | Opsiyon son tarihi uyarı eşiği | 3 gün | BR-EVT-008 |
 | P-06 | Varsayılan hazırlık payı | 1 gün (24 saat) | BR-MRP-001 |
 | P-07 | Varsayılan dönüş payı | 1 gün (24 saat) | BR-MRP-001 |
@@ -61,6 +61,7 @@ Kurallarda geçen sayısal değerler sabit kodlanmaz. P-06, P-07 ve P-14 sistem 
 | P-13 | Otomatik operasyon geçişlerinin kontrol aralığı | 5 dakika | BR-EVT-018 |
 | P-14 | Varsayılan operasyon geçiş modu | Otomatik | BR-EVT-018 |
 | P-15 | Anlık güncelleme gecikmesi üst sınırı (normal koşullar) | 1 saniye | BR-SYS-012 |
+| P-16 | Mutlak oturum süresi | 24 saat | BR-SYS-008 |
 
 ## 5. Kurallar
 
@@ -91,11 +92,11 @@ Sistem yöneticisinin ürettiği şifre yalnızca bir kez gösterilir. Geçici �
 *Tür:* Kısıt · *Hikayeler:* US-SYS-001, US-SYS-002, US-SYS-010
 
 #### BR-SYS-007 · Şifre politikası
-Şifre en az P-04 karakterdir ve mevcut şifreyle aynı olamaz. Şifre değişince kullanıcının diğer oturumları sona erer.
+Şifre en az P-04 karakterdir, boşluk içeremez, yaygın şifreler listesinde olamaz ve mevcut şifreyle aynı olamaz. Şifre değişince kullanıcının diğer oturumları sona erer.
 *Tür:* Kısıt · *Hikayeler:* US-SYS-011
 
 #### BR-SYS-008 · Oturum sonu
-Oturum P-03 hareketsizlikten sonra sona erer. Pasifleştirilen kullanıcının tüm oturumları hemen sona erer.
+Oturum P-03 hareketsizlikten sonra ya da açıldıktan P-16 sonra, hangisi önce gelirse, sona erer. Pasifleştirilen kullanıcının tüm oturumları hemen sona erer.
 *Tür:* Kısıt · *Hikayeler:* US-SYS-010, US-SYS-002
 
 #### BR-SYS-009 · Sistem yöneticisi koruması
@@ -580,3 +581,4 @@ Rider karşılama raporu, son ihtiyaç hesabından ve güncel onaylı rezervasyo
 | 2026-09-25 | v1.4 | Gecikme hedefleri sıkılaştırıldı: anlık güncelleme %95'te 300 ms (P-08), en geç 1 s (P-15); ihtiyaç hesabı 1 s (P-09). |
 | 2026-09-25 | v1.5 | Kavramsal modelle uyum: BR-EVT-020 (zaman noktalarının sırası) eklendi; BR-EQP-006 (kasa içeriği ile stok), BR-MRP-007 (transferin depoları ve tarihleri), BR-MRP-008 (sipariş satırının ihtiyaçla eşleşmesi) genişletildi. |
 | 2026-09-25 | v1.6 | Mekan ekipmanı tarihe göre değişebilir: BR-VEN-001 genişletildi, BR-VEN-002 eklendi, BR-MRP-010 güncellendi. |
+| 2026-09-25 | v1.7 | Güvenlik standardıyla uyum: P-04 15 karaktere çıktı; BR-SYS-007'ye boşluk yasağı ve yaygın şifre kontrolü, BR-SYS-008'e mutlak oturum süresi (yeni P-16) eklendi. |

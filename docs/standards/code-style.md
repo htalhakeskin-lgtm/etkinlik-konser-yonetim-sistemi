@@ -1,6 +1,6 @@
 # Kod Stili ve Statik Analiz
 
-> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 10](#10-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -205,6 +205,7 @@ Biçimle ilgili kural içeren eklenti kullanılmaz. Bu yüzden Prettier ile ESLi
 | Yerel ayarsız harf dönüşümü ve sıralama yasağı | `no-restricted-syntax`: argümansız `toLocaleLowerCase()`, `toLocaleUpperCase()`, `localeCompare(x)` | Tarayıcının diline göre değişen sonuç; bkz. §5.5 |
 | Sunucuya yalnızca üretilen istemciyle gidilir | `no-restricted-globals: fetch` (istemci sarmalayıcısı hariç) | Tüm istekler aynı hata işleme, kimlik doğrulama ve tip katmanından geçer |
 | `console` | Yalnızca `console.warn` ve `console.error` | Geliştirme artığı log kalmaz |
+| HTML'i doğrudan basma | `no-restricted-syntax`: `dangerouslySetInnerHTML` yasak | XSS ([security §9](security.md#9-girdi-doğrulama-katmanları)) |
 | Eşitlik | `eqeqeq` | `==`'nin tip dönüştürme sürprizleri |
 
 Üretilen kod (`src/api/`) ve shadcn/ui bileşenleri (`src/components/ui/`) lint dışında tutulur.
@@ -281,3 +282,4 @@ Bu belgedeki bir kural değiştirilecekse önce belge güncellenir, sonra araç 
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | S-11: kod içi yorumlar ve XML belgeleri İngilizce. ADR-0019 kabul edildi. |
 | 2026-09-25 | v1.1 | Yasak API listesine veritabanı standardından gelen kurallar eklendi (C.4). |
+| 2026-09-25 | v1.2 | `dangerouslySetInnerHTML` yasağı eklendi (C.6). |
