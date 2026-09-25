@@ -1,6 +1,6 @@
 # Sürekli Entegrasyon Standardı
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -61,7 +61,7 @@ flowchart LR
 | `docs` | Belge değiştiyse | Bağlantı denetimi; kural referansları betiği çalıştırıldıktan sonra fark kalmamalı ([tools/docs](../../tools/docs/README.md)). |
 | `backend` | Sunucu ya da test kodu değiştiyse | .NET araçlarının geri yüklenmesi; kilitli paket geri yükleme (NuGet açık denetimi dahil, §10); `dotnet build -c Release` (uyarılar hata); `dotnet csharpier check .`; birim ve mimari testler; OpenAPI belgesinin güncelliği (derlemenin ürettiği belgeyle repodaki arasında fark olmamalı); kod kapsamı özeti. |
 | `backend-integration` | Sunucu ya da test kodu değiştiyse | Modül entegrasyon testleri ve veritabanı testleri (Testcontainers). Test projeleri paralel matris işlerine bölünür. |
-| `frontend` | Ön yüz ya da OpenAPI belgesi değiştiyse | `pnpm install --frozen-lockfile`; API istemcisinin Orval ile yeniden üretilmesi ve fark denetimi; `pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm build`. |
+| `frontend` | Ön yüz ya da OpenAPI belgesi değiştiyse | `pnpm install --frozen-lockfile`; API istemcisinin Orval ile yeniden üretilmesi ve fark denetimi; `pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test` (tasarım sistemi örnekleri tarayıcıda dahil), `pnpm build`, paket boyutu denetimi (size-limit, [ui §16](ui.md#16-performans)). |
 | `e2e` | `backend` ve `frontend` başarılıysa, sunucu ya da ön yüz değiştiyse | Uygulama imajı yerel olarak üretilir (x64). Demo yığınının bir kopyası (Caddy, uygulama, PostgreSQL) aynı Compose tanımıyla ve `Demo` yapılandırmasıyla açılır; `migrate` ve `seed-demo` çalışır. Playwright testleri Chromium'da ve erişilebilirlik taraması ([testing §8](testing.md#8-uçtan-uca-testler)). Başarısızlıkta Playwright raporu ve iz kayıtları eser (artifact) olarak saklanır. |
 | `security` | Her zaman | gitleaks (PR'ın commit'leri); lisans denetimi (§9); `pnpm audit` (§10); iş akışları değiştiyse actionlint ve zizmor (§7). |
 | `traceability` | Sunucu, test ya da belge değiştiyse | Kural ve geçiş izlenebilirliği ([testing §10](testing.md#10-kural-ve-geçiş-izlenebilirliği)). |
@@ -131,7 +131,7 @@ flowchart LR
 
 | Konu | Kural |
 |---|---|
-| İzin listesi | `tools/licenses/allowed-licenses.json`: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, 0BSD, ISC, PostgreSQL. MPL-2.0 yalnızca değiştirilmeden kullanılan paketlerde ve istisna listesi üzerinden. |
+| İzin listesi | `tools/licenses/allowed-licenses.json`: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, 0BSD, ISC, PostgreSQL; yazı tipi paketlerinde OFL-1.1 ([ADR-0033](../adr/0033-design-system.md)). MPL-2.0 yalnızca değiştirilmeden kullanılan paketlerde ve istisna listesi üzerinden. |
 | İstisna listesi | `tools/licenses/exceptions.json`: paket, sürüm aralığı, lisans, gerekçe ve varsa ADR. Ör. QuestPDF'in topluluk lisansı ([ADR-0014](../adr/0014-documents-and-qr.md)). |
 | .NET | [nuget-license](https://github.com/sensslen/nuget-license) (Apache 2.0), yerel .NET aracı olarak; tüm projelerin doğrudan ve dolaylı paketleri. |
 | npm | `pnpm licenses list --json` çıktısı `tools/licenses/check-npm.mjs` ile aynı listeye göre denetlenir. |
@@ -190,3 +190,4 @@ Uçtan uca testler yerelde Aspire ile açılan uygulamaya karşı ya da `deploy/
 |---|---|---|
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | Kesinleşti. |
+| 2026-09-25 | v1.1 | Ön yüz işine tasarım sistemi testleri ve paket boyutu denetimi; yazı tipleri için OFL (D.4). |

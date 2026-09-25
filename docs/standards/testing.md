@@ -1,6 +1,6 @@
 # Test Stratejisi
 
-> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 14](#14-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -117,7 +117,8 @@ Yerelde konteynerin her test çalıştırmasında yeniden açılmaması için Te
 - **Yaklaşım:** Bileşen kullanıcının gördüğü gibi sınanır. Öğeler rol ve erişilebilir adla bulunur (`getByRole('button', { name: … })`). CSS sınıfı ya da iç durum sorgulanmaz.
 - **Öncelikli davranışlar:** Problem Details hatalarının ilgili alana yerleşmesi; kural kodlarının `errors:` çevirisiyle gösterilmesi; `412` sonrası çakışma uyarısı; "Yeni sürüm hazır" şeridi; yetkiye göre gizlenen işlemler; okutma ekranında elle kod girişi ve hata geri bildirimi.
 - **Anlık görüntü (snapshot) testi kullanılmaz.** Her görsel değişiklikte kırılır ve neyin doğru olduğunu söylemez.
-- **Ortam:** jsdom. Kamera ve gerçek tarayıcı gerektiren davranışlar uçtan uca testlerdedir.
+- **Ortam:** Modül ekranlarının davranış testleri jsdom'da çalışır. Kamera ve gerçek tarayıcı gerektiren davranışlar uçtan uca testlerdedir.
+- **Tasarım sistemi bileşenleri** (`components/ui/`, `components/common/`) Storybook örnekleriyle sınanır: her örnek Vitest'in tarayıcı kipinde (Chromium) test olarak çalışır ve otomatik erişilebilirlik taramasından geçer ([ui §18](ui.md#18-tasarım-sisteminin-belgelenmesi-ve-testi)).
 
 ## 8. Uçtan uca testler
 
@@ -152,6 +153,7 @@ Yerelde konteynerin her test çalıştırmasında yeniden açılmaması için Te
 - Kapsam [00 §9](../00-scope.md#9-fonksiyonel-olmayan-varsayımlar)'daki gibidir: klavyeyle kullanım ve yeterli kontrast; tam WCAG denetimi hedeflenmez.
 - Uçtan uca testlerde her ana ekran açıldığında [axe-core](https://playwright.dev/docs/accessibility-testing) taraması yapılır. **Ciddi (serious) ve kritik (critical)** ihlaller testi düşürür; daha düşük seviyeler raporlanır.
 - Yazarken `eslint-plugin-jsx-a11y` kuralları çalışır ([code-style §5.3](code-style.md#53-lint-eslint)).
+- Tasarım sistemi bileşenlerinin her örneği de otomatik taramadan geçer (§7); tasarım değişkenlerindeki renk çiftlerinin kontrastı birim testiyle ölçülür.
 - Araç MPL 2.0 lisanslıdır ve değiştirilmeden kullanılır; [ADR-0005](../adr/0005-dependency-license-policy.md)'e uygundur.
 
 ## 10. Kural ve geçiş izlenebilirliği
@@ -240,3 +242,4 @@ Hedef aşılırsa önce yavaş testler incelenir; test silmek son çaredir.
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | Kesinleşti; ADR-0029 kabul edildi. |
 | 2026-09-25 | v1.1 | CI hattı, uçtan uca test yığını ve demo verisi bağlandı (D.3). |
+| 2026-09-25 | v1.2 | Tasarım sistemi bileşenleri için Storybook örnekleriyle tarayıcı testleri ve erişilebilirlik taraması (D.4). |

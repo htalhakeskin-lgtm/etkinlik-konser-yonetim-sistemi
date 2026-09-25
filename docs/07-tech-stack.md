@@ -1,6 +1,6 @@
 # 07 — Teknoloji Yığını
 
-> **Durum:** v1.6 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.7 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 8](#8-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -64,9 +64,17 @@ Yığına yeni bir kütüphane eklemek ya da bir kütüphaneyi değiştirmek iç
 | Yönlendirme | TanStack Router (tip güvenli) | 1.x | MIT | [0008](adr/0008-frontend-architecture.md) |
 | Sunucu verisi | TanStack Query | 5.x | MIT | [0008](adr/0008-frontend-architecture.md) |
 | API istemcisi | Orval: OpenAPI belgesinden tipler ve TanStack Query kancaları üretir | — | MIT | [0008](adr/0008-frontend-architecture.md) |
-| Arayüz bileşenleri | shadcn/ui + Tailwind CSS | Tailwind 4 | MIT | [0009](adr/0009-ui-components.md) |
+| Arayüz bileşenleri | shadcn/ui (Base UI temelli) + Tailwind CSS | Base UI 1.x, Tailwind 4 | MIT | [0009](adr/0009-ui-components.md), [0033](adr/0033-design-system.md) |
 | Tablolar | TanStack Table | 8.x | MIT | [0009](adr/0009-ui-components.md) |
-| Formlar | React Hook Form + Zod | — | MIT | [0009](adr/0009-ui-components.md) |
+| Formlar | React Hook Form + Zod (derleyici uyumlu kalıplarla) | — | MIT | [0009](adr/0009-ui-components.md), [0033](adr/0033-design-system.md) |
+| Tarih seçici | react-day-picker (shadcn/ui takvimi) | 9.x | MIT | [0033](adr/0033-design-system.md) |
+| Kısa bildirimler | Sonner | — | MIT | [0033](adr/0033-design-system.md) |
+| Hızlı erişim penceresi | cmdk (shadcn/ui komut bileşeni) | — | MIT | [0033](adr/0033-design-system.md) |
+| Uzun listelerde sanal kaydırma | TanStack Virtual | — | MIT | [0033](adr/0033-design-system.md) |
+| Simgeler | lucide | — | ISC | [0009](adr/0009-ui-components.md) |
+| Yazı tipi | Inter (değişken, uygulamayla birlikte sunulur; PDF'lerde de) | 4.x | SIL OFL 1.1 | [0033](adr/0033-design-system.md) |
+| Tasarım sistemi kataloğu | Storybook (Vitest tarayıcı testleri ve erişilebilirlik eklentisiyle) | 10.x | MIT | [0033](adr/0033-design-system.md) |
+| Paket boyutu denetimi | size-limit | — | MIT | [ui](standards/ui.md) |
 | Çok dillilik altyapısı | react-i18next (S1'de yalnızca Türkçe, K-02) | — | MIT | [0008](adr/0008-frontend-architecture.md) |
 | Tarih ve saat | date-fns + @date-fns/tz | 4.x | MIT | [0008](adr/0008-frontend-architecture.md) |
 | Anlık güncelleme istemcisi | @microsoft/signalr | — | MIT | [0012](adr/0012-realtime-signalr.md) |
@@ -195,3 +203,4 @@ Yaygın oldukları halde bilinçli olarak kullanılmayanlar:
 | 2026-09-25 | v1.4 | C.6: veri koruma anahtarlarının saklanması ve yaygın şifre listesi eklendi. |
 | 2026-09-25 | v1.5 | D.1–D.2: geliştirme süreci araçları (§3.6) ve test stratejisinin araçları (CsCheck, Stryker.NET, coverlet, axe-core) eklendi; MSW tabloya işlendi; bağımlılık güncelleme politikası bağlandı (ADR-0028, ADR-0029). |
 | 2026-09-25 | v1.6 | D.3: ortamlar ve yayın araçları (§3.7), CI denetim araçları eklendi (ADR-0030…0032). |
+| 2026-09-25 | v1.7 | D.4: Base UI, tarih seçici, bildirimler, hızlı erişim, sanal kaydırma, Inter, Storybook ve size-limit eklendi (ADR-0033, ADR-0034). |

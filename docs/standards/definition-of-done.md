@@ -1,6 +1,6 @@
 # Bitti Tanımı
 
-> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 7](#7-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -49,7 +49,10 @@ Bir hikaye, kabul kriterlerinin tamamı **ve** bu belgedeki koşullar karşılan
 - [ ] **Hatalar anlaşılır.** Hikayenin kural ihlalleri kullanıcıya Türkçe ve ne yapması gerektiğini söyleyen bir mesajla gösteriliyor.
 - [ ] **İşlem geçmişi.** Hikayenin değiştirdiği kayıtlar işlem geçmişinde görünüyor.
 - [ ] **Anlık güncelleme.** Başka kullanıcıların açık ekranında görünen bir kaydı değiştiriyorsa, o ekranlar sayfa yenilenmeden güncelleniyor (BR-SYS-012).
-- [ ] **Mobil.** Depo ve saha ekranları telefonda, tek elle kullanılabiliyor (ayrıntılar arayüz standartlarında, D.4).
+- [ ] **Mobil.** Depo ve saha ekranları telefonda, tek elle ve eldivenle kullanılabiliyor: dokunma hedefleri, okutma geri bildirimi, sabit işlem çubuğu ([ui §14](ui.md#14-depo-ekranları)).
+- [ ] **Durumlar.** Ekranın yükleniyor, boş ve hata durumları tasarlandı ([ui §10](ui.md#10-yükleniyor-boş-ve-hata-durumları)); anlık güncelleme ve sürüm çakışması ([ui §11](ui.md#11-anlık-güncelleme-ve-eşzamanlı-düzenleme)) kullanıcıya doğru yansıyor.
+- [ ] **Metinler.** Cümle düzeni, fiille düğme adları, değişken değerlere ek getirmeyen cümleler ve Türkçe biçimler ([ui §13](ui.md#13-metinler-ve-türkçe)).
+- [ ] **Şablon.** Ekran [11](../11-screens.md)'deki bir şablona oturuyor; yeni bir şablon gerektiyse o belgeye eklendi.
 - [ ] **Klavye.** Ofis ekranlarının işlemleri klavyeyle yapılabiliyor ([00 §9](../00-scope.md#9-fonksiyonel-olmayan-varsayımlar)).
 - [ ] **Demo.** Hikaye MVP demo senaryosunun bir adımıysa, uçtan uca testi ve demo verisi güncel.
 - [ ] **Gözlemlenebilirlik.** Yeni iş olayları ve zamanlanmış işler [observability](observability.md) standardına göre loglanıyor ve ölçülüyor.
@@ -92,3 +95,4 @@ S1'in bitti tanımı MVP demo senaryosudur ([00 §6.1](../00-scope.md#61-bitti-k
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | Kesinleşti. |
 | 2026-09-25 | v1.1 | Yayın ve işletim belgelerine bağlandı (D.3). |
+| 2026-09-25 | v1.2 | Arayüz standardına göre mobil, durumlar, metinler ve şablon maddeleri (D.4). |

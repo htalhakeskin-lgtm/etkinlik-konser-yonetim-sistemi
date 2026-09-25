@@ -1,6 +1,6 @@
 # API Standardı
 
-> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.3 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 15](#15-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -189,7 +189,7 @@ Tüm hatalar RFC 9457 "Problem Details" biçimindedir (`Content-Type: applicatio
 }
 ```
 
-Ön yüz `errors:BR-WHS-006` anahtarıyla Türkçe metni bulur ve `params` ile doldurur: "Bu birim 17:03'te Ayşe Yılmaz tarafından çıkışı yapıldı." ([naming §7.1](naming.md#71-çeviri-anahtarları)).
+Ön yüz `errors:BR-WHS-006` anahtarıyla Türkçe metni bulur ve `params` ile doldurur: "Bu birimin çıkışı zaten yapıldı. Çıkışı yapan: Ayşe Yılmaz · Saat: 17:03" ([naming §7.1](naming.md#71-çeviri-anahtarları)). Değişken değerlere Türkçe ek getirilmez ("17:03'te" değil); ek, değerin okunuşuna göre değişir ve çeviri dosyası doğru eki bilemez ([ui §13.4](ui.md#134-türkçeye-özgü-kurallar)).
 
 ### 8.2 Doğrulama hataları
 
@@ -380,3 +380,4 @@ Oturum [ADR-0011](../adr/0011-authentication.md)'deki gibi sunucu tarafı oturum
 | 2026-09-25 | v1.0 | A-01, A-02, A-03 kararlaştırıldı; ADR-0023, ADR-0024, ADR-0025 kabul edildi. |
 | 2026-09-25 | v1.1 | Yetki türündeki kurallar `403` ile kural numarası döner (C.6). |
 | 2026-09-25 | v1.2 | HTTPS ve HSTS'in yeri bağlandı (D.3). |
+| 2026-09-25 | v1.3 | Hata mesajı örneği Türkçe ek kuralına göre düzeltildi (D.4). |

@@ -1,6 +1,6 @@
 # 00 — Kapsam ve MVP Sınırları
 
-> **Durum:** v1.6 · **Son güncelleme:** 2026-09-24
+> **Durum:** v1.7 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 10](#10-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -328,7 +328,7 @@ Bunlar hiçbir sürümde yapılmayacak. Gerekçe: ya başka bir yazılımın iş
 | Zaman | Veritabanında UTC, arayüzde Europe/Istanbul |
 | Para birimi | S4'e kadar yalnızca TRY; çoklu para birimi S4'te |
 | Dil | Arayüz Türkçe; metinler kaynak dosyalarında (bkz. K-02) |
-| Erişilebilirlik | Klavye ile kullanım ve yeterli kontrast; tam WCAG denetimi hedeflenmiyor |
+| Erişilebilirlik | Tasarım hedefi WCAG 2.2 AA kriterleri: klavye, kontrast, odak, dokunma alanı, durum mesajları ([standards/ui.md §15](standards/ui.md#15-erişilebilirlik)). Resmî uygunluk denetimi hedeflenmiyor. |
 | Kişisel veri (KVKK) | Rol bazlı erişim ve audit log. Demo verisi tamamen kurgusaldır; aydınlatma metni, silme talebi gibi KVKK süreçleri kapsam dışı |
 
 ## 10. Kararlar
@@ -356,3 +356,4 @@ Bunlar hiçbir sürümde yapılmayacak. Gerekçe: ya başka bir yazılımın iş
 | 2026-09-25 | v1.4 | Durum makinesi kararları: otomatik operasyon geçişleri, kapı açılışı ve söküm başlangıcı S1'e alındı; onaydan geri alma eklendi. |
 | 2026-09-25 | v1.5 | Anlık güncelleme için ölçülebilir gecikme hedefi eklendi. |
 | 2026-09-25 | v1.6 | Mekan ekipmanının tarihe göre değişmesi S1'e eklendi. |
+| 2026-09-25 | v1.7 | Erişilebilirlik hedefi WCAG 2.2 AA kriterleri olarak netleşti (D.4). |

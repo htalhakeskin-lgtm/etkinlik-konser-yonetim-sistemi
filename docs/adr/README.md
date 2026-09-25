@@ -89,3 +89,5 @@ Her alternatif ve neden seçilmediği.
 | [0030](0030-demo-environment-and-deployment.md) | Demo ortamı ve yayın modeli | Kabul edildi |
 | [0031](0031-backup-and-point-in-time-recovery.md) | Yedekleme ve zamana göre geri dönüş | Kabul edildi |
 | [0032](0032-production-telemetry-and-alerts.md) | Yayın ortamında telemetri ve uyarılar | Kabul edildi |
+| [0033](0033-design-system.md) | Tasarım sistemi | Kabul edildi |
+| [0034](0034-warehouse-scanning-screens.md) | Depo okutma ekranları | Kabul edildi |

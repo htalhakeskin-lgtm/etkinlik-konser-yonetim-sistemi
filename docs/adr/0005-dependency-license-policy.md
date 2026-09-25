@@ -2,6 +2,7 @@
 
 - **Durum:** Kabul edildi
 - **Tarih:** 2026-09-25
+- **Genişletildi:** [ADR-0033](0033-design-system.md) — yazı tipleri için SIL Open Font License 1.1
 - **İlgili:** [07-tech-stack.md §5](../07-tech-stack.md#5-kullanılmayan-kütüphaneler)
 
 ## Bağlam
@@ -11,6 +12,7 @@
 ## Karar
 
 - **İzin verilen lisanslar:** MIT, Apache 2.0, BSD, ISC, PostgreSQL lisansı. MPL 2.0 yalnızca kütüphane değiştirilmeden kullanılıyorsa kabul edilir.
+- **Yazı tipleri:** SIL Open Font License 1.1 kabul edilir. Bu lisans yazı tipinin uygulamaya ve belgelere gömülmesine izin verir; yalnızca yazı tipinin tek başına satılmasını yasaklar ([ADR-0033](0033-design-system.md)).
 - **İzin verilmeyen lisanslar:** GPL, AGPL ve kaynak kodu açma yükümlülüğü getiren diğer lisanslar; kullanım sınırı ya da gelir eşiği olan ticari lisanslar.
 - **İstisnalar:** Gelir eşikli topluluk lisansları (ör. QuestPDF), yalnızca ayrı bir ADR ile ve eşik aşıldığında ne yapılacağı yazılarak kabul edilir ([ADR-0014](0014-documents-and-qr.md)).
 - **Lisansı değişen bağımlılık:** Son ücretsiz sürümde kalınır, alternatif değerlendirilir ve yeni bir ADR yazılır.

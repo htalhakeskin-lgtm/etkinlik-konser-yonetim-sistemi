@@ -1,6 +1,6 @@
 # 08 — Mimari ve Klasör Yapısı
 
-> **Durum:** v1.6 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.7 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -401,9 +401,11 @@ src/web/
 │   │   ├── identity/ · audit/
 │   ├── components/
 │   │   ├── ui/                     shadcn/ui bileşenleri (projeye kopyalanmış)
-│   │   └── common/                 uygulama geneli bileşenler: veri tablosu, sayfa başlığı, durum rozeti, okutma alanı
-│   ├── lib/                        SignalR istemcisi, sorgu istemcisi, i18n kurulumu, tarih yardımcıları
+│   │   └── common/                 uygulama geneli bileşenler: veri tablosu, sayfa başlığı, durum rozeti, okutma alanı ([ui §6.2](standards/ui.md#62-ortak-bileşenler))
+│   ├── styles/                     tasarım değişkenleri (tokens.css) ve yazı tipi
+│   ├── lib/                        SignalR istemcisi, sorgu istemcisi, i18n kurulumu, tarih ve sayı biçimleri (format)
 │   └── locales/tr/                 modül başına çeviri dosyaları
+├── .storybook/                     tasarım sistemi kataloğunun ayarı ([ui §18](standards/ui.md#18-tasarım-sisteminin-belgelenmesi-ve-testi))
 ├── vite.config.ts                  geliştirmede /api ve /hubs isteklerini Host'a yönlendirir
 └── orval.config.ts
 ```
@@ -471,3 +473,4 @@ Yasak API kullanımı (`DateTime.UtcNow` gibi) mimari testle değil, derleyici a
 | 2026-09-25 | v1.4 | Host görevlerine güvenlik başlıkları ve sağlık uçları eklendi (C.6). |
 | 2026-09-25 | v1.5 | Repo ağacına geliştirme süreci dosyaları eklendi: `.github/`, kök pnpm çalışma alanı, Lefthook, gitleaks, release-please (D.1). |
 | 2026-09-25 | v1.6 | D.3 ile uyum: `deploy/`, `.config/dotnet-tools.json`, `tools/licenses/`; Host'un komutları ve ters proxy ayarı; `IDemoDataSeeder`; yayında migration komutu. |
+| 2026-09-25 | v1.7 | Ön yüz ağacına `styles/`, `.storybook/` ve biçim yardımcıları eklendi (D.4). |

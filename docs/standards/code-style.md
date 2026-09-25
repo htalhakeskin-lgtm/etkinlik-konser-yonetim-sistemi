@@ -1,6 +1,6 @@
 # Kod Stili ve Statik Analiz
 
-> **Durum:** v1.4 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.5 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 10](#10-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -218,6 +218,7 @@ Biçimle ilgili kural içeren eklenti kullanılmaz. Bu yüzden Prettier ile ESLi
 - Sunucu verisi yalnızca üretilen TanStack Query kancalarıyla alınır. `useEffect` içinde veri çekilmez ([08 §11](../08-architecture.md#11-ön-yüz-yapısı)).
 - Liste filtreleri, sıralama ve sayfa numarası adres çubuğunda (TanStack Router arama parametreleri, Zod ile doğrulanmış) tutulur. Böylece sayfa yenilendiğinde ya da bağlantı paylaşıldığında aynı görünüm açılır, geri tuşu beklendiği gibi çalışır.
 - Formlar React Hook Form + Zod ile yazılır. Zod şemaları mümkünse OpenAPI'den üretilir; elle yazılan şema, üretilen tiple uyumlu olmak zorundadır.
+- React Compiler ile uyum için formlarda alan değeri `useWatch({ control, name })`, form durumu `useFormState({ control })` ile okunur ve tüm girişler `Controller` ile bağlanır. `watch()` ve `formState` nesnesinden doğrudan okuma lint kuralıyla yasaktır ([ui §7.1](ui.md#71-araç), [U-05](ui.md#19-kararlar)).
 - Tüm kullanıcı metinleri çeviri dosyalarındadır; bileşende sabit Türkçe metin yazılmaz (K-02).
 
 ### 5.5 Türkçe metin
@@ -285,3 +286,4 @@ Bu belgedeki bir kural değiştirilecekse önce belge güncellenir, sonra araç 
 | 2026-09-25 | v1.2 | `dangerouslySetInnerHTML` yasağı eklendi (C.6). |
 | 2026-09-25 | v1.3 | Commit öncesi kanca aracı: Lefthook (D.1). |
 | 2026-09-25 | v1.4 | Konteyner imajı ve CI ayrıntısı bağlandı (D.3). |
+| 2026-09-25 | v1.5 | React Hook Form için derleyici uyumlu kalıplar zorunlu (D.4). |

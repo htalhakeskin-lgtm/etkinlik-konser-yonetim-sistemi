@@ -15,7 +15,7 @@ S2'de bunlara day sheet, run of show ve call sheet eklenecek. Etiketlerde ve top
 
 ## Karar
 
-- **PDF:** QuestPDF. Belge yerleşimi C# ile yazılır. Türkçe karakterleri destekleyen bir yazı tipi belgeye gömülür.
+- **PDF:** QuestPDF. Belge yerleşimi C# ile yazılır. Türkçe karakterleri destekleyen yazı tipi (arayüzle aynı Inter, [ADR-0033](0033-design-system.md)) belgeye gömülür.
 - **Lisans:** QuestPDF'in topluluk lisansı; bireyler, açık kaynak projeler ve yıllık geliri 1 milyon ABD dolarının altındaki şirketler için ücretsizdir. Bu, [ADR-0005](0005-dependency-license-policy.md)'teki istisna kuralıyla kabul edilir ve **bu projede hiçbir ücret ödenmez**. Proje ileride bu eşiği aşan bir şirkete ürün olarak sunulursa lisans satın alınmaz; PDF üretimi MIT lisanslı PDFsharp / MigraDoc'a taşınır. PDF üretimi tek bir arayüzün arkasında tutulduğu için bu değişiklik yalnızca o arayüzün uygulamasını etkiler.
 - **QR üretimi:** QRCoder. QR yalnızca etiket kodunu içerir (BR-EQP-004).
 - **Tarayıcıda QR okuma:** Tarayıcının yerleşik `BarcodeDetector` arayüzü kullanılır. Bu arayüzü desteklemeyen tarayıcılar (ör. iOS Safari) için aynı arayüzü sağlayan barcode-detector yedek kütüphanesi yüklenir. Kamera erişimi HTTPS gerektirir. Kamera kullanılamazsa etiket kodu elle girilir (US-WHS-002).

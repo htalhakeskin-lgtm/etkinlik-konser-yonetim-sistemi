@@ -1,6 +1,6 @@
 # Güvenlik Standardı
 
-> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.3 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -176,7 +176,7 @@ ASP.NET Core, oturum çerezini ve antiforgery belirtecini "veri koruma" (Data Pr
 | `Strict-Transport-Security` | Caddy'de: `max-age=31536000` ([09 §6](../09-environments-and-deployment.md#6-ters-proxy-ve-https)) | Tarayıcı siteye bir daha HTTP ile bağlanmaz. |
 | `Cache-Control` | `index.html`: `no-cache`; adında özet (hash) olan statik dosyalar: bir yıl, `immutable` | Yeni sürüm hemen yüklenir; değişmeyen dosyalar yeniden indirilmez ([api §12](api.md#12-sürümleme-ve-uyumluluk)). |
 
-**Bilinen ödün — `style-src 'unsafe-inline'`:** Radix tabanlı bazı bileşenler (ör. diyalog açıkken sayfa kaydırmasını kilitleyen yardımcı) çalışma anında `<style>` etiketi ekler ([kaynak](https://gist.github.com/rbonestell/4fcba81d05413f4e27bab8ebf787624c)). Satır içi stil, satır içi betiğe göre çok daha düşük risklidir. S1'de bu izin olmadan çalışıp çalışmadığı denenir; çalışırsa kaldırılır. Yazı tipleri de kendi sunucumuzdan sunulur; Google Fonts gibi dış kaynaklar kullanılmaz.
+**Bilinen ödün — `style-src 'unsafe-inline'`:** Bazı temel bileşen kütüphaneleri çalışma anında `<style>` etiketi ekler; ör. Radix'teki, diyalog açıkken sayfa kaydırmasını kilitleyen yardımcı ([kaynak](https://gist.github.com/rbonestell/4fcba81d05413f4e27bab8ebf787624c)). Satır içi stil, satır içi betiğe göre çok daha düşük risklidir. Seçilen Base UI ile ([ADR-0033](../adr/0033-design-system.md)) S1'de bu izin olmadan çalışıp çalışmadığı denenir; çalışırsa kaldırılır. Yazı tipleri de kendi sunucumuzdan sunulur; Google Fonts gibi dış kaynaklar kullanılmaz.
 
 ## 9. Girdi doğrulama katmanları
 
@@ -248,3 +248,4 @@ Kapsam 00-scope'taki karara göre sınırlıdır: rol bazlı erişim ve işlem g
 | 2026-09-25 | v1.0 | G-01 (en az 15 karakter, boşluk yok), G-02 (P-16 = 24 saat), G-03 (iki adımlı doğrulama S1'de yok) kararlaştırıldı; ADR-0026 ve ADR-0027 kabul edildi. |
 | 2026-09-25 | v1.1 | Gizli bilgi taraması (gitleaks) ve bağımlılık güncelleme aracı (Dependabot) bağlandı (D.1). |
 | 2026-09-25 | v1.2 | HSTS, gizli bilgi yenileme yordamı ve CI denetimleri bağlandı (D.3). |
+| 2026-09-25 | v1.3 | Satır içi stil ödünü Base UI seçimine göre güncellendi (D.4). |
