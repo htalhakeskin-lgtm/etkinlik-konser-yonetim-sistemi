@@ -1,3 +1,26 @@
+# Line endings: LF everywhere, CRLF only for Windows scripts.
+# Git does not expand {a,b} in attribute patterns, so each extension has its own line.
 * text=auto eol=lf
-*.{cmd,bat,ps1} text eol=crlf
-*.{png,jpg,jpeg,gif,ico,pdf,woff,woff2} binary
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.y4m binary
+
+# Generated files: collapsed in pull request diffs
+pnpm-lock.yaml linguist-generated=true
+**/packages.lock.json linguist-generated=true
+src/web/src/api/** linguist-generated=true
+src/web/openapi/** linguist-generated=true
+**/Migrations/*.Designer.cs linguist-generated=true
+**/Migrations/*ModelSnapshot.cs linguist-generated=true

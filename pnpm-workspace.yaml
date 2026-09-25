@@ -1,0 +1,14 @@
+packages:
+  - src/web
+  - tests/e2e
+
+# New releases are installed only after three days (in minutes); see docs/standards/git.md §9.
+minimumReleaseAge: 4320
+
+# Dependencies are recorded with exact versions; Dependabot proposes updates.
+saveExact: true
+
+# Install scripts of dependencies run only when explicitly allowed here.
+# lefthook: its script only installs the git hooks, which the root "prepare" script already does.
+allowBuilds:
+  lefthook: false

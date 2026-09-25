@@ -1,12 +1,35 @@
 # OS / editor
 .DS_Store
 Thumbs.db
+.vs/
 .vscode/*
 !.vscode/extensions.json
 .idea/
+*.user
+*.suo
+
+# .NET
+bin/
+obj/
+artifacts/
+TestResults/
+*.trx
+coverage/
+StrykerOutput/
+
+# Node / front end
+node_modules/
+dist/
+storybook-static/
+playwright-report/
+test-results/
+blob-report/
+.vite/
+*.tsbuildinfo
 
 # Local tool state
 .gstack/
+.aspire/
 .claude/settings.local.json
 
 # Secrets

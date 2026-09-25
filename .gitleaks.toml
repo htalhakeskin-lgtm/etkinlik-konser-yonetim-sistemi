@@ -1,0 +1,6 @@
+# Secret scanning rules (docs/standards/git.md §10). The default rule set is used as is.
+# Deliberately fake values in test data are allowed one by one below, never by folder.
+title = "FestOS gitleaks configuration"
+
+[extend]
+useDefault = true

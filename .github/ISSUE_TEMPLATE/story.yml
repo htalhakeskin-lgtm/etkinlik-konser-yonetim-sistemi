@@ -1,0 +1,26 @@
+name: Kullanıcı hikayesi
+description: Belgelerdeki bir kullanıcı hikayesinin geliştirilmesi (docs/standards/git.md §6)
+title: "US-XXX-000 · "
+labels: ["type:story"]
+body:
+  - type: input
+    id: story
+    attributes:
+      label: Hikaye numarası
+      description: Örnek US-EVT-003
+      placeholder: US-EVT-003
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: Hikayenin belgesi
+      description: Kabul kriterleri kopyalanmaz; belge tek kaynaktır.
+      placeholder: https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/blob/main/docs/02-user-stories/…
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notlar
+      description: Tasarım belgesi, bağımlılıklar, açık sorular

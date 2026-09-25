@@ -1,0 +1,20 @@
+P:System.DateTime.Now;Use TimeProvider (ADR-0017).
+P:System.DateTime.UtcNow;Use TimeProvider (ADR-0017).
+P:System.DateTime.Today;Use TimeProvider (ADR-0017).
+P:System.DateTimeOffset.Now;Use TimeProvider (ADR-0017).
+P:System.DateTimeOffset.UtcNow;Use TimeProvider (ADR-0017).
+M:System.Threading.Tasks.Task.Wait;Use await.
+M:System.Threading.Tasks.Task.Wait(System.Int32);Use await.
+M:System.Threading.Tasks.Task.Wait(System.TimeSpan);Use await.
+M:System.Threading.Tasks.Task.Wait(System.Threading.CancellationToken);Use await.
+M:System.Threading.Tasks.Task.Wait(System.Int32,System.Threading.CancellationToken);Use await.
+M:System.Threading.Tasks.Task.Wait(System.TimeSpan,System.Threading.CancellationToken);Use await.
+P:System.Threading.Tasks.Task`1.Result;Use await.
+M:System.Threading.Thread.Sleep(System.Int32);Use await Task.Delay(…, timeProvider, cancellationToken).
+M:System.Threading.Thread.Sleep(System.TimeSpan);Use await Task.Delay(…, timeProvider, cancellationToken).
+T:System.Console;Use ILogger.
+M:System.Guid.NewGuid;Use Guid.CreateVersion7 with a TimeProvider timestamp (database §5).
+M:System.Math.Round(System.Decimal);Use the Money rounding method; the .NET default is banker's rounding (database §8.2).
+M:System.Math.Round(System.Decimal,System.Int32);Use the Money rounding method; the .NET default is banker's rounding (database §8.2).
+M:System.Decimal.Round(System.Decimal);Use the Money rounding method; the .NET default is banker's rounding (database §8.2).
+M:System.Decimal.Round(System.Decimal,System.Int32);Use the Money rounding method; the .NET default is banker's rounding (database §8.2).

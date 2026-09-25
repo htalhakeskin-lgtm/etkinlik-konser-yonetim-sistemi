@@ -1,0 +1,30 @@
+# Commit hooks (docs/standards/git.md §8). They are a fast convenience; CI runs the same checks.
+source_dir: tools/git/
+
+pre-commit:
+  parallel: true
+  commands:
+    csharpier:
+      glob: "*.{cs,csproj,props,targets,slnx}"
+      run: dotnet csharpier format {staged_files}
+      stage_fixed: true
+    prettier:
+      glob: "*.{ts,tsx,js,mjs,cjs,json,css,yml,yaml}"
+      run: pnpm exec prettier --write --ignore-unknown {staged_files}
+      stage_fixed: true
+    gitleaks:
+      run: gitleaks git --staged --redact --no-banner
+
+commit-msg:
+  commands:
+    commitlint:
+      run: pnpm exec commitlint --edit {1}
+
+pre-push:
+  scripts:
+    # Changes reach main only through pull requests (R-03). A script, not a command: Lefthook skips
+    # pre-push commands when the push adds no new files (e.g. "git push origin feature:main" after the
+    # branch is already pushed), and it wraps inline commands in sh -c "…", which breaks quoting on Windows.
+    "protect-main.sh":
+      runner: sh
+      use_stdin: true

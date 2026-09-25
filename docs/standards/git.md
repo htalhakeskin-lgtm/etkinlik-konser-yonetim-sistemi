@@ -1,6 +1,6 @@
 # Git ve İş Akışı Standardı
 
-> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.3 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -331,6 +331,8 @@ Güncellemeler [Dependabot](https://docs.github.com/en/code-security/reference/s
 
 **Bekleme süresi neden var:** Son yıllardaki paket saldırılarının çoğu, ele geçirilen bir hesapla kötü amaçlı bir sürüm yayımlayıp otomatik kurulumların onu hemen çekmesine dayanıyor. Eylül 2025'teki `chalk` / `debug` saldırısı yaklaşık 2,5 saatte, Shai-Hulud saldırısı yaklaşık 12 saatte fark edildi; birkaç günlük bekleme ikisini de engellerdi ([kaynak](https://socket.dev/blog/pnpm-11-adds-new-supply-chain-protection-defaults), [kaynak](https://pnpm.io/supply-chain-security)). Aynı koruma pnpm'de de açılır: `pnpm-workspace.yaml`'da `minimumReleaseAge: 4320` (3 gün, dakika cinsinden). Acil bir güvenlik düzeltmesi bu sınırdan tek tek muaf tutulabilir (`minimumReleaseAgeExclude`).
 
+**Kurulum betikleri:** Bağımlılıkların kurulum sırasında çalıştırdığı betikler yalnızca `pnpm-workspace.yaml`'daki `allowBuilds` listesinde açıkça izin verilirse çalışır (pnpm 10'dan beri varsayılan). Ele geçirilmiş bir paketin en yaygın saldırı yolu kurulum betiğidir. Her izin gerekçesiyle yazılır; betiği gerekmeyen pakete izin verilmez (ör. Lefthook'un betiği yalnızca kancaları kurar, bunu kökteki `prepare` betiği zaten yapar).
+
 **GitHub Actions sabitleme:** İş akışlarındaki dış eylemler (actions) sürüm etiketiyle değil, tam commit kimliğiyle (SHA) sabitlenir; yanına okunur sürüm yorum olarak yazılır (`uses: actions/checkout@<sha> # v5.0.0`). Mart 2025'te `tj-actions/changed-files` eylemi ele geçirildi ve saldırgan tüm sürüm etiketlerini kötü amaçlı koda yönlendirdi; commit kimliğiyle sabitlenmiş iş akışları etkilenmedi ([kaynak](https://www.cisa.gov/news-events/alerts/2025/03/18/supply-chain-compromise-third-party-tj-actionschanged-files-cve-2025-30066-and-reviewdogaction), [kaynak](https://docs.github.com/en/actions/reference/security/secure-use)). Dependabot sabitlenmiş kimlikleri de günceller.
 
 **Neden Renovate değil:** Renovate daha fazla ekosistemi ve daha esnek gruplamayı destekliyor ([kaynak](https://appsecsanta.com/sca-tools/dependabot-vs-renovate)). Ama barındırılan sürümü, gizli repoya erişim izni verilen üçüncü taraf bir uygulamadır; kendi çalıştırıcımızda çalıştırmak ise CI dakikası harcar. Bu projenin ihtiyaçlarını (merkezi NuGet sürümleri, tek pnpm çalışma alanı, gruplama, bekleme süresi) Dependabot karşılıyor ve GitHub'ın içinde çalışıyor.
@@ -412,3 +414,4 @@ Repo Faz 0 bitince açılır ([R-01](#13-kararlar)). Açılmadan önce şu kontr
 | 2026-09-25 | v1.0 | R-01 (Faz 0 sonunda herkese açık), R-02 (lisans yok, tüm hakları saklı), R-03 (her değişiklik PR ile) kararlaştırıldı; ADR-0028 kabul edildi. |
 | 2026-09-25 | v1.1 | CI, yayın ve gizli bilgi yenileme belgelerine bağlandı (D.3). |
 | 2026-09-25 | v1.2 | Kural setinin aşamaları (repo açılınca / CI kurulunca), Actions'ın PR açma izni, CodeQL zamanı ve repo tanıtımı netleşti. |
+| 2026-09-26 | v1.3 | Bağımlılık kurulum betiklerine yalnızca açık izinle izin verilmesi (pnpm `allowBuilds`). |

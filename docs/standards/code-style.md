@@ -1,6 +1,6 @@
 # Kod Stili ve Statik Analiz
 
-> **Durum:** v1.5 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.6 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 10](#10-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -173,7 +173,7 @@ TypeScript 6 katı modu (`strict`) varsayılan olarak açar. Buna ek olarak:
 
 Prettier varsayılan ayarlarıyla kullanılır; yalnızca satır uzunluğu (`printWidth: 100`) değiştirilir. Tailwind sınıfları `prettier-plugin-tailwindcss` ile Tailwind'in önerdiği sıraya dizilir. Tailwind 4'te eklentiye stil dosyasının yolu (`tailwindStylesheet`) verilir.
 
-Prettier'ın dışında tutulanlar (`.prettierignore`): `docs/` (Prettier Markdown tablolarını hizalar; uzun tablolarda her küçük değişiklik tüm tabloyu değiştirir), üretilen API istemcisi (`src/web/src/api/`), kilit dosyaları.
+Prettier'ın dışında tutulanlar (`.prettierignore`): tüm Markdown dosyaları, yani `docs/` ve kökteki belgeler (Prettier Markdown tablolarını hizalar; uzun tablolarda her küçük değişiklik tüm tabloyu değiştirir), üretilen API istemcisi (`src/web/src/api/`), kilit dosyaları, CSharpier'ın biçimlendirdiği C# ve MSBuild dosyaları.
 
 ### 5.3 Lint (ESLint)
 
@@ -273,7 +273,7 @@ Bu belgedeki bir kural değiştirilecekse önce belge güncellenir, sonra araç 
 | S-07 | Dışa aktarım biçimi | Yalnızca adlı dışa aktarım | Yeniden adlandırma güvenli, arama tek adla. |
 | S-08 | TypeScript `enum` | Yasak (`erasableSyntaxOnly`) | Orval zaten sabit nesne üretir; enum'un çalışma zamanı kodu ve tip tuhaflıkları gereksizdir. |
 | S-09 | API tiplerinde zorunluluk ve boş değer | `required` + C# nullable bilgisi tek kaynak; OpenAPI ve TypeScript tipleri buradan türer | Sunucu ile ön yüz arasındaki en yaygın uyumsuzluk sınıfı derleme aşamasında kapanır. |
-| S-10 | Prettier'ın kapsamı | `docs/` dışarıda | Markdown tablolarının yeniden hizalanması belge farklarını okunmaz hale getirir. |
+| S-10 | Prettier'ın kapsamı | Markdown dosyaları dışarıda | Markdown tablolarının yeniden hizalanması belge farklarını okunmaz hale getirir. |
 | S-11 | Kod içi yorumların ve XML belgelerinin dili | İngilizce | K-01 kodu İngilizce tanımlıyor; yorumlar da kodun parçası. OpenAPI açıklamaları XML belgelerinden üretildiği için API belgesi de aynı dilde olur. Portfolyoyu yabancı okuyucular da inceleyebilir. |
 
 ## 11. Değişiklik kaydı
@@ -287,3 +287,4 @@ Bu belgedeki bir kural değiştirilecekse önce belge güncellenir, sonra araç 
 | 2026-09-25 | v1.3 | Commit öncesi kanca aracı: Lefthook (D.1). |
 | 2026-09-25 | v1.4 | Konteyner imajı ve CI ayrıntısı bağlandı (D.3). |
 | 2026-09-25 | v1.5 | React Hook Form için derleyici uyumlu kalıplar zorunlu (D.4). |
+| 2026-09-26 | v1.6 | Prettier'ın dışında tutulanlar tüm Markdown dosyalarını kapsayacak şekilde netleşti (Faz 1.0). |

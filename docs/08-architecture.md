@@ -1,6 +1,6 @@
 # 08 — Mimari ve Klasör Yapısı
 
-> **Durum:** v1.7 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.8 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -54,6 +54,7 @@ etkinlik-konser-yonetim-sistemi/
 │   └── e2e/                        Playwright uçtan uca testleri
 ├── tools/
 │   ├── docs/                       belge ve izlenebilirlik kontrol betikleri
+│   ├── git/                        Git kancalarının betikleri
 │   ├── licenses/                   lisans izin ve istisna listeleri, npm lisans denetimi
 │   └── templates/                  yeni modül iskeleti üreten şablon
 ├── deploy/                         demo sunucusu: Compose tanımı, Caddy ve Alloy ayarları, PostgreSQL imajı, kurulum, yayın ve yedekleme betikleri
@@ -65,6 +66,8 @@ etkinlik-konser-yonetim-sistemi/
 ├── Directory.Packages.props        merkezi paket sürümleri
 ├── BannedSymbols.txt               kodda kullanımı yasak API'ler
 ├── .editorconfig                   kod biçimi kuralları (C.3)
+├── .nvmrc                          Node.js sürümü
+├── commitlint.config.mjs           commit mesajı kuralları
 ├── package.json                    kök pnpm çalışma alanı: commit kancaları, commit mesajı denetimi, Prettier
 ├── pnpm-workspace.yaml             çalışma alanı paketleri (src/web, tests/e2e) ve paket güvenliği ayarları
 ├── lefthook.yml                    commit öncesi kontroller
@@ -474,3 +477,4 @@ Yasak API kullanımı (`DateTime.UtcNow` gibi) mimari testle değil, derleyici a
 | 2026-09-25 | v1.5 | Repo ağacına geliştirme süreci dosyaları eklendi: `.github/`, kök pnpm çalışma alanı, Lefthook, gitleaks, release-please (D.1). |
 | 2026-09-25 | v1.6 | D.3 ile uyum: `deploy/`, `.config/dotnet-tools.json`, `tools/licenses/`; Host'un komutları ve ters proxy ayarı; `IDemoDataSeeder`; yayında migration komutu. |
 | 2026-09-25 | v1.7 | Ön yüz ağacına `styles/`, `.storybook/` ve biçim yardımcıları eklendi (D.4). |
+| 2026-09-26 | v1.8 | Repo ağacına `.nvmrc`, `commitlint.config.mjs` ve `tools/git/` eklendi (Faz 1.0). |
