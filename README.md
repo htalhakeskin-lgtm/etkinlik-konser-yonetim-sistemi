@@ -116,8 +116,8 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 
 | Belge | Sürüm |
 |---|---|
-| [07 — Teknoloji yığını](docs/07-tech-stack.md) | v1.7 |
-| [08 — Mimari ve klasör yapısı](docs/08-architecture.md) | v1.7 |
+| [07 — Teknoloji yığını](docs/07-tech-stack.md) | v1.8 |
+| [08 — Mimari ve klasör yapısı](docs/08-architecture.md) | v1.8 |
 | [Mimari karar kayıtları (ADR)](docs/adr/README.md) | 34 kayıt |
 
 **Standartlar** ([dizin](docs/standards/README.md))
@@ -125,7 +125,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | Belge | Sürüm |
 |---|---|
 | [İsimlendirme](docs/standards/naming.md) | v1.3 |
-| [Kod stili ve statik analiz](docs/standards/code-style.md) | v1.5 |
+| [Kod stili ve statik analiz](docs/standards/code-style.md) | v1.6 |
 | [Veritabanı](docs/standards/database.md) | v1.3 |
 | [API](docs/standards/api.md) | v1.3 |
 | [Güvenlik](docs/standards/security.md) | v1.3 |
@@ -137,11 +137,11 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 
 | Belge | Sürüm |
 |---|---|
-| [Git ve iş akışı](docs/standards/git.md) | v1.1 |
+| [Git ve iş akışı](docs/standards/git.md) | v1.3 |
 | [Test stratejisi](docs/standards/testing.md) | v1.2 |
 | [Bitti tanımı](docs/standards/definition-of-done.md) | v1.2 |
 | [Sürekli entegrasyon](docs/standards/ci.md) | v1.2 |
-| [09 — Ortamlar ve yayın](docs/09-environments-and-deployment.md) | v1.0 |
+| [09 — Ortamlar ve yayın](docs/09-environments-and-deployment.md) | v1.1 |
 | [10 — İşletim el kitabı](docs/10-operations.md) | v1.0 |
 | [11 — Ekran şablonları ve envanteri](docs/11-screens.md) | v1.0 |
 | [12 — Uygulama planı (Faz 1: S1)](docs/12-implementation-plan.md) | v1.0 |

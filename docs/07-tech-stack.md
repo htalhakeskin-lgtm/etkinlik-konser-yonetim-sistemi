@@ -1,6 +1,6 @@
 # 07 — Teknoloji Yığını
 
-> **Durum:** v1.7 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.8 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 8](#8-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -65,7 +65,7 @@ Yığına yeni bir kütüphane eklemek ya da bir kütüphaneyi değiştirmek iç
 | Sunucu verisi | TanStack Query | 5.x | MIT | [0008](adr/0008-frontend-architecture.md) |
 | API istemcisi | Orval: OpenAPI belgesinden tipler ve TanStack Query kancaları üretir | — | MIT | [0008](adr/0008-frontend-architecture.md) |
 | Arayüz bileşenleri | shadcn/ui (Base UI temelli) + Tailwind CSS | Base UI 1.x, Tailwind 4 | MIT | [0009](adr/0009-ui-components.md), [0033](adr/0033-design-system.md) |
-| Tablolar | TanStack Table | 8.x | MIT | [0009](adr/0009-ui-components.md) |
+| Tablolar | TanStack Table | 9.x | MIT | [0009](adr/0009-ui-components.md) |
 | Formlar | React Hook Form + Zod (derleyici uyumlu kalıplarla) | — | MIT | [0009](adr/0009-ui-components.md), [0033](adr/0033-design-system.md) |
 | Tarih seçici | react-day-picker (shadcn/ui takvimi) | 9.x | MIT | [0033](adr/0033-design-system.md) |
 | Kısa bildirimler | Sonner | — | MIT | [0033](adr/0033-design-system.md) |
@@ -81,19 +81,19 @@ Yığına yeni bir kütüphane eklemek ya da bir kütüphaneyi değiştirmek iç
 | QR okuma | Tarayıcının `BarcodeDetector` arayüzü + desteklemeyen tarayıcılar için barcode-detector yedeği | — | MIT | [0014](adr/0014-documents-and-qr.md) |
 | Lint | ESLint 10 + typescript-eslint (tip bilgili) + React Hooks, TanStack, erişilebilirlik ve modül sınırı eklentileri | — | MIT | [0019](adr/0019-code-style-and-static-analysis-tools.md) |
 | Kod biçimi | Prettier + Tailwind sınıf sıralama eklentisi | 3.x | MIT | [0019](adr/0019-code-style-and-static-analysis-tools.md) |
-| Çalışma ortamı ve paket yöneticisi | Node.js LTS + pnpm | Node 24 (Ekim 2026'da LTS olunca 26) | MIT | — |
+| Çalışma ortamı ve paket yöneticisi | Node.js LTS + pnpm | Node 24 (28 Ekim 2026'da LTS olunca 26); pnpm 12 | MIT | — |
 
 ### 3.4 Test
 
 | Konu | Seçim | Lisans | ADR |
 |---|---|---|---|
-| Birim ve entegrasyon test çatısı | xUnit v3 | Apache 2.0 | [0015](adr/0015-testing-tools.md) |
+| Birim ve entegrasyon test çatısı | xUnit v3 (paket sürümü 4.x), Microsoft Testing Platform ile | Apache 2.0 | [0015](adr/0015-testing-tools.md) |
 | Doğrulama ifadeleri | Shouldly | BSD | [0015](adr/0015-testing-tools.md) |
 | Sahte nesneler | NSubstitute | BSD | [0015](adr/0015-testing-tools.md) |
 | Gerçek veritabanıyla test | Testcontainers (PostgreSQL) + Respawn (testler arası temizlik) | MIT / Apache 2.0 | [0015](adr/0015-testing-tools.md) |
 | Zamanı ilerletme | `FakeTimeProvider` | MIT | [0015](adr/0015-testing-tools.md) |
 | Mimari testler | ArchUnitNET; tablo adlarının çoğul denetimi için yalnızca test projesinde Humanizer | Apache 2.0 / MIT | [0015](adr/0015-testing-tools.md) |
-| Ön yüz testleri | Vitest + Testing Library; API sahteleme için MSW | MIT | [0015](adr/0015-testing-tools.md) |
+| Ön yüz testleri | Vitest 4 + Testing Library; API sahteleme için MSW. Vitest 5'e, Storybook'un Vitest eklentisi desteklediğinde geçilir. | MIT | [0015](adr/0015-testing-tools.md) |
 | Uçtan uca testler | Playwright | Apache 2.0 | [0015](adr/0015-testing-tools.md) |
 | Özellik tabanlı testler | CsCheck (yalnızca hesaplama motorlarında) | Apache 2.0 | [0029](adr/0029-test-strategy-and-rule-traceability.md) |
 | Mutasyon testi | Stryker.NET (sürüm öncesi, elle) | Apache 2.0 | [0029](adr/0029-test-strategy-and-rule-traceability.md) |
@@ -178,7 +178,8 @@ Yaygın oldukları halde bilinçli olarak kullanılmayanlar:
 | Bileşen | Politika |
 |---|---|
 | .NET | Yalnızca LTS. Sıradaki geçiş .NET 12 LTS'e (Kasım 2027). .NET 11 atlanır, çünkü desteği .NET 10 ile aynı tarihte (Kasım 2028) biter. |
-| Node.js | Güncel LTS. Node 26, Ekim 2026'da LTS olduğunda ona geçilir. |
+| Node.js | Güncel LTS; sürüm `.nvmrc`'de tam olarak sabit. Node 26, 28 Ekim 2026'da LTS olduğunda ona geçilir. |
+| pnpm | 12.x (Rust ile yeniden yazılan sürüm). Kök `package.json`'daki `packageManager` alanı sürümü sabitler; pnpm bu sürüme kendiliğinden geçer. Windows'ta npm ile kurulur (`npm install -g pnpm@12`). Corepack kullanılmaz; Node 25'ten beri Node ile birlikte gelmiyor. |
 | TypeScript | 6.x'e sabit. TypeScript 7.x'e, programatik API'yi sunan sürüm (7.1 bekleniyor) çıkıp typescript-eslint onu desteklediğinde geçilir ([0019](adr/0019-code-style-and-static-analysis-tools.md)). |
 | PostgreSQL | Ana sürüm 18. Yeni ana sürüme, desteği bitmeden önce planlı olarak geçilir. |
 | Kütüphaneler | Sürümler merkezi olarak sabitlenir (.NET'te merkezi paket yönetimi, ön yüzde kilit dosyası). Güncellemeler Dependabot ile haftalık PR olarak gelir; yeni yayımlanan sürümler 3 gün, büyük sürümler 7 gün bekletilir ([git §9](standards/git.md#9-bağımlılık-güncellemeleri)). |
@@ -204,3 +205,4 @@ Yaygın oldukları halde bilinçli olarak kullanılmayanlar:
 | 2026-09-25 | v1.5 | D.1–D.2: geliştirme süreci araçları (§3.6) ve test stratejisinin araçları (CsCheck, Stryker.NET, coverlet, axe-core) eklendi; MSW tabloya işlendi; bağımlılık güncelleme politikası bağlandı (ADR-0028, ADR-0029). |
 | 2026-09-25 | v1.6 | D.3: ortamlar ve yayın araçları (§3.7), CI denetim araçları eklendi (ADR-0030…0032). |
 | 2026-09-25 | v1.7 | D.4: Base UI, tarih seçici, bildirimler, hızlı erişim, sanal kaydırma, Inter, Storybook ve size-limit eklendi (ADR-0033, ADR-0034). |
+| 2026-09-26 | v1.8 | Faz 1.0 sürüm araştırması: pnpm 12 ve kurulum yolu, TanStack Table 9, Vitest 4 sabitlemesi, xUnit v3 paket sürümü, `.nvmrc`. |

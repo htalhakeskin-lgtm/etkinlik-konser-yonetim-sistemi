@@ -1,0 +1,21 @@
+name: Teknik iş
+description: Bir hikayeye bağlı olmayan iş (araç kurulumu, iyileştirme, borç)
+labels: ["type:tech"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: Ne yapılacak
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Neden
+    validations:
+      required: true
+  - type: textarea
+    id: done
+    attributes:
+      label: Bitince
+      description: İşin bittiğini gösteren somut sonuç

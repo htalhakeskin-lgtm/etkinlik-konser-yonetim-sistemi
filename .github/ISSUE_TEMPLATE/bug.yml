@@ -1,0 +1,44 @@
+name: Hata
+description: Beklenmeyen bir davranışın bildirimi (docs/standards/git.md §6)
+labels: ["type:bug"]
+body:
+  - type: textarea
+    id: steps
+    attributes:
+      label: Adımlar
+      description: Hatayı yeniden üretmek için yapılanlar
+      placeholder: "1. …\n2. …"
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Beklenen
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Gerçekleşen
+    validations:
+      required: true
+  - type: input
+    id: trace
+    attributes:
+      label: İz numarası (traceId)
+      description: Hata mesajındaki "Ayrıntılar" altında görünür; logları ve izleri doğrudan bulmayı sağlar.
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Önem
+      options:
+        - "critical: veri kaybı, güvenlik açığı ya da demo senaryosu ilerleyemiyor"
+        - "high: bir iş akışı çalışmıyor ve geçici bir yol yok"
+        - "medium: iş akışı çalışıyor ama yanlış ya da zahmetli"
+        - "low: görünüm, metin, küçük rahatsızlık"
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Ekran görüntüleri

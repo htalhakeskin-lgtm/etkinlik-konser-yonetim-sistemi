@@ -1,6 +1,6 @@
 # 09 — Ortamlar ve Yayın
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.1 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -36,16 +36,17 @@ Sürekli entegrasyon hattı [standards/ci.md](standards/ci.md)'de, adım adım i
 | Gerekli | Sürüm | Not |
 |---|---|---|
 | .NET SDK | `global.json`'daki sürüm | Yalnızca yama güncellemesine izin verilir |
-| Node.js | Güncel LTS ([07 §7](07-tech-stack.md#7-sürüm-politikası)) | pnpm, Node'la gelen Corepack ile etkinleştirilir; sürümü kök `package.json`'daki `packageManager` alanından gelir |
+| Node.js | `.nvmrc`'deki sürüm ([07 §7](07-tech-stack.md#7-sürüm-politikası)) | — |
+| pnpm | Kök `package.json`'daki `packageManager` alanı | `npm install -g pnpm@12` ile bir kez kurulur; sonra projedeki sürüme kendiliğinden geçer |
 | Docker | Docker Desktop ya da Docker Engine | Aspire ve Testcontainers için |
-| gitleaks | Güncel | Commit öncesi gizli bilgi taraması ([git §10](standards/git.md#10-gizli-bilgi-taraması)) |
+| gitleaks | Güncel | Commit öncesi gizli bilgi taraması ([git §10](standards/git.md#10-gizli-bilgi-taraması)); Windows'ta `winget install Gitleaks.Gitleaks` |
+| Aspire komut satırı aracı | Aspire paketleriyle aynı | İsteğe bağlı (`dotnet tool install -g Aspire.Cli`); uygulama `dotnet run` ile de açılır |
 
 İlk kurulum:
 
 ```
 git clone <repo>
 cd etkinlik-konser-yonetim-sistemi
-corepack enable
 pnpm install                              # JavaScript bağımlılıkları ve commit kancaları
 dotnet tool restore                       # CSharpier, dotnet-ef, lisans aracı
 dotnet run --project src/AppHost          # PostgreSQL, API ve ön yüz birlikte açılır
@@ -355,3 +356,4 @@ Demo ortamındaki gizli bilgiler ve yerleri ([security §6](standards/security.m
 |---|---|---|
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | E-01 (Oracle Always Free), E-02 (kapalı demo, hesaplar istek üzerine), E-03 (deSEC ücretsiz alt alan adı) kararlaştırıldı; ADR-0030…0032 kabul edildi. |
+| 2026-09-26 | v1.1 | Geliştirme ortamı kurulumu: pnpm npm ile kurulur, Corepack kullanılmaz; Aspire komut satırı aracı isteğe bağlı. |

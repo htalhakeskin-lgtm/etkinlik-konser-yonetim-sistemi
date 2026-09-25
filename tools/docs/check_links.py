@@ -33,11 +33,13 @@ def anchors(path):
             seen[s] = n + 1
     return res
 
-md_files = []
-for d, _, fs in os.walk(ROOT):
-    if ".git" in d:
-        continue
-    md_files += [os.path.join(d, f) for f in fs if f.endswith(".md")]
+# Only files that git tracks or would track: ignored folders (node_modules, bin, tool state) are skipped.
+import subprocess
+listed = subprocess.run(
+    ["git", "-C", ROOT, "ls-files", "--cached", "--others", "--exclude-standard", "--", "*.md"],
+    capture_output=True, text=True, encoding="utf-8", check=True,
+).stdout.splitlines()
+md_files = [os.path.join(ROOT, p) for p in listed if os.path.exists(os.path.join(ROOT, p))]
 
 cache, broken = {}, []
 for f in md_files:

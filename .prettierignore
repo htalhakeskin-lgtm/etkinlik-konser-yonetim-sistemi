@@ -1,0 +1,25 @@
+# Markdown is not reformatted: Prettier realigns whole tables on every small change (S-10).
+**/*.md
+
+# Generated code and lock files
+src/web/src/api/
+src/web/openapi/
+pnpm-lock.yaml
+**/packages.lock.json
+# Rewritten by `dotnet tool install` in its own layout.
+.config/dotnet-tools.json
+
+# Build output
+**/bin/
+**/obj/
+**/dist/
+**/storybook-static/
+**/playwright-report/
+**/test-results/
+
+# C# and MSBuild files are formatted by CSharpier.
+**/*.cs
+**/*.csproj
+**/*.props
+**/*.targets
+**/*.slnx

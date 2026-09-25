@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\FestOS.BuildingBlocks.Domain\FestOS.BuildingBlocks.Domain.csproj" />
+  </ItemGroup>
+</Project>

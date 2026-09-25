@@ -1,0 +1,22 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/AppHost/">
+    <Project Path="src/AppHost/FestOS.AppHost.csproj" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/">
+    <Project Path="src/BuildingBlocks/FestOS.BuildingBlocks.Application/FestOS.BuildingBlocks.Application.csproj" />
+    <Project Path="src/BuildingBlocks/FestOS.BuildingBlocks.Contracts/FestOS.BuildingBlocks.Contracts.csproj" />
+    <Project Path="src/BuildingBlocks/FestOS.BuildingBlocks.Domain/FestOS.BuildingBlocks.Domain.csproj" />
+    <Project Path="src/BuildingBlocks/FestOS.BuildingBlocks.Infrastructure/FestOS.BuildingBlocks.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Host/">
+    <Project Path="src/Host/FestOS.Host.csproj" />
+  </Folder>
+  <Folder Name="/src/ServiceDefaults/">
+    <Project Path="src/ServiceDefaults/FestOS.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/ArchitectureTests/">
+    <Project Path="tests/ArchitectureTests/FestOS.ArchitectureTests/FestOS.ArchitectureTests.csproj" />
+  </Folder>
+</Solution>
