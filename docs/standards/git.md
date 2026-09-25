@@ -1,6 +1,6 @@
 # Git ve İş Akışı Standardı
 
-> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -360,18 +360,19 @@ Repo açılışında bir kez yapılır ve bu listeyle doğrulanır:
 | Squash commit mesajı | "Pull request title and commit details" |
 | Dalı otomatik silme | Açık ("Automatically delete head branches") |
 | Dependabot | Bağımlılık grafiği, uyarılar ve güvenlik güncellemeleri açık |
-| Actions izinleri | `GITHUB_TOKEN` varsayılanı salt okunur; her iş akışı ihtiyacı olan izni açıkça ister |
+| Actions izinleri | `GITHUB_TOKEN` varsayılanı salt okunur; her iş akışı ihtiyacı olan izni açıkça ister. Actions'ın PR açmasına izin verilir ("Allow GitHub Actions to create and approve pull requests"); release-please sürüm PR'ını bununla açar (§7). |
 | Şablonlar | `.github/pull_request_template.md`; `.github/ISSUE_TEMPLATE/` altında hikaye, hata ve teknik iş şablonları |
 
 Repo açıksa ek olarak:
 
 | Ayar | Değer |
 |---|---|
-| `main` için kural seti | PR zorunlu (onay sayısı 0, tek geliştirici), CI kontrolleri zorunlu, doğrusal geçmiş zorunlu, zorla yazma ve dal silme engelli |
+| `main` için kural seti | Repo açılınca: doğrusal geçmiş zorunlu, zorla yazma ve dal silme engelli. CI kurulunca (Faz 1'in ilk adımı, [R-03](#13-kararlar)): PR zorunlu (onay sayısı 0, tek geliştirici) ve zorunlu kontroller `ci-result`, `pr-title` ([ci §11](ci.md#11-zorunlu-kontroller)). |
 | Gizli bilgi taraması | Açık, push protection açık |
-| Kod taraması | CodeQL varsayılan kurulum (C#, JavaScript / TypeScript) |
+| Kod taraması | CodeQL varsayılan kurulum (C#, JavaScript / TypeScript); taranacak kod geldiğinde (Faz 1) |
 | Güvenlik açığı bildirimi | Özel bildirim (private vulnerability reporting) açık; `SECURITY.md` dosyası |
 | Dış katkılar | Fork'lardan gelen PR'larda iş akışları onaysız çalışmaz |
+| Repo tanıtımı | Açıklama ve konu etiketleri (topics) doldurulur; README'deki İngilizce özetle uyumlu |
 
 ## 12. Repo herkese açılmadan önce
 
@@ -410,3 +411,4 @@ Repo Faz 0 bitince açılır ([R-01](#13-kararlar)). Açılmadan önce şu kontr
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | R-01 (Faz 0 sonunda herkese açık), R-02 (lisans yok, tüm hakları saklı), R-03 (her değişiklik PR ile) kararlaştırıldı; ADR-0028 kabul edildi. |
 | 2026-09-25 | v1.1 | CI, yayın ve gizli bilgi yenileme belgelerine bağlandı (D.3). |
+| 2026-09-25 | v1.2 | Kural setinin aşamaları (repo açılınca / CI kurulunca), Actions'ın PR açma izni, CodeQL zamanı ve repo tanıtımı netleşti. |
