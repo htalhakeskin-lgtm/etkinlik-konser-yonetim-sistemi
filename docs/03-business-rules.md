@@ -1,6 +1,6 @@
 # 03 — İş Kuralları Kataloğu
 
-> **Durum:** v1.4 · **Son güncelleme:** 2026-09-24
+> **Durum:** v1.6 · **Son güncelleme:** 2026-09-24
 > **Kararlar:** [Bölüm 7](#7-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -144,7 +144,19 @@ Bir tarafın bir alana seçilebilmesi için aktif olması ve ilgili role sahip o
 
 #### BR-VEN-001 · Hesaba giren mekan ekipmanı
 Mekan ekipmanının yalnızca bir katalog modeline ya da kategorisine bağlı satırları ihtiyaç hesabında kullanılır. Serbest açıklamalı satırlar bilgi amaçlıdır.
+
+Bir etkinlik için bir satırdan kullanılabilecek adet:
+- Satır, etkinlik zamanının (başlangıçtan bitişe) tamamında geçerli değilse sıfırdır.
+- Geçerliyse satırın adedinden, etkinlik zamanıyla örtüşen kullanılamama dönemlerindeki kullanılamayan adetlerin en yükseği düşülür.
+
 *Tür:* Hesaplama · *Hikayeler:* US-VEN-002, US-MRP-001
+
+#### BR-VEN-002 · Mekan ekipmanının tarihe göre değişmesi
+- Mekan ekipmanı satırının geçerlilik başlangıcı ve bitişi isteğe bağlıdır; boş bırakılan uç sınırsız sayılır. Bitiş başlangıçtan önce olamaz.
+- Kullanılamama döneminde kullanılamayan adet, satırın adedini aşamaz; dönem satırın geçerlilik aralığının içinde kalır.
+- Mekanın elden çıkardığı ekipman silinmez, geçerlilik bitişi girilir. Böylece geçmiş etkinliklerin hesabı değişmez.
+
+*Tür:* Kısıt · *Hikayeler:* US-VEN-002
 
 ### 5.4 Etkinlik ve opsiyon (EVT)
 
@@ -268,6 +280,10 @@ Her etkinliğin operasyon geçiş modu **Elle** ya da **Otomatik**tir. Yeni etki
 
 *Tür:* Geçiş · *Hikayeler:* US-EVT-004
 
+#### BR-EVT-020 · Zaman noktalarının sırası
+Etkinliğin girilmiş zaman noktaları şu sırayı bozamaz: başlangıç ≤ kapı açılışı ≤ söküm başlangıcı ≤ bitiş. Kapı açılışı ve söküm başlangıcı isteğe bağlıdır; girilmemiş olanlar kontrole katılmaz.
+*Tür:* Kısıt · *Hikayeler:* US-EVT-001, US-EVT-008
+
 ### 5.5 Teknik rider (RDR)
 
 #### BR-RDR-001 · Rider satırının hedefi
@@ -325,7 +341,7 @@ Adetli stok eksiye düşemez ve her düzeltmenin nedeni kaydedilir. Düzeltme so
 *Tür:* Kısıt · *Hikayeler:* US-EQP-004
 
 #### BR-EQP-006 · Kasa bütünlüğü
-Bir birim aynı anda en fazla bir kasada olur. Bir kasa kendini doğrudan ya da dolaylı olarak içeremez. Kasa ile içeriği her zaman aynı konumdadır: kasa okutularak taşındığında içindeki her şey de taşınmış olur.
+Bir birim aynı anda en fazla bir kasada olur. Bir kasa kendini doğrudan ya da dolaylı olarak içeremez. Kasa ile içeriği her zaman aynı konumdadır: kasa okutularak taşındığında içindeki her şey de taşınmış olur. Kasadaki adetli miktar (kasa içeriği), kasanın bulunduğu konumdaki aynı modelin adetli stoğunu aşamaz; kasa içeriği bu stoğun bir parçasıdır, ona eklenmez.
 *Tür:* Kısıt · *Hikayeler:* US-EQP-006, US-WHS-002
 
 #### BR-EQP-007 · Eksik kasa
@@ -476,11 +492,13 @@ Diğer depolardan karşılanan adetler, o depodan kaynak depoya bir transfer ön
 *Tür:* Hesaplama · *Hikayeler:* US-MRP-003
 
 #### BR-MRP-007 · Transfer tarihleri
-Transferin planlanan varış zamanı, etkinliğin rezervasyon aralığının başlangıcından sonra olamaz. Transferdeki adetler, planlanan çıkış zamanından itibaren gönderen depoda ayrılmış sayılır. Planlanan varış zamanından itibaren hedef depoda etkinliğe rezerve sayılır.
+Transferin gönderen ve alan deposu farklıdır ve planlanan varış, planlanan çıkıştan önce olamaz. Etkinlik için yapılan transferin planlanan varış zamanı, etkinliğin rezervasyon aralığının başlangıcından sonra olamaz. Transferdeki adetler, planlanan çıkış zamanından itibaren gönderen depoda ayrılmış sayılır. Planlanan varış zamanından itibaren hedef depoda etkinliğe rezerve sayılır.
 *Tür:* Kısıt · *Hikayeler:* US-MRP-003
 
 #### BR-MRP-008 · Dış kiralama önerisi ve sayılması
 Hiçbir depodan karşılanamayan net ihtiyaç için istenen modelle (kategori satırında kategoriyle) dış kiralama önerisi oluşur. **Sipariş verildi** ve **Teslim alındı** durumundaki sipariş satırları ihtiyaç hesabında karşılanmış sayılır; **Taslak** satırlar sayılmaz.
+
+Her sipariş satırı, oluşturulduğu önerinin rider satırını saklar ve o satırın ihtiyacını karşılar. Etkinliğe başka bir rider versiyonu atanırsa katalog modeli olan sipariş satırı, o modeli kabul eden yeni rider satırıyla eşleştirilir (BR-MRP-004). Serbest açıklamalı satır ise otomatik eşleştirilmez; ihtiyaç ekranında elle eşleştirilmek üzere işaretlenir.
 *Tür:* Hesaplama · *Hikayeler:* US-MRP-005
 
 #### BR-MRP-009 · Yeniden hesaplama
@@ -488,7 +506,7 @@ Yeniden hesaplamada **Önerildi** rezervasyonlar silinip yeniden üretilir. **On
 *Tür:* Hesaplama · *Hikayeler:* US-MRP-001
 
 #### BR-MRP-010 · Güncel olmayan hesap
-Şu değişikliklerden sonra etkinliğin ihtiyaç hesabı "güncel değil" olarak işaretlenir: bağlı rider versiyonu, mekan, mekan ekipmanı, etkinliğin başlangıç veya bitiş zamanı, hazırlık veya dönüş payı, kaynak depo. Onaylı rezervasyonları etkileyebileceği için sistem hesabı kendiliğinden yeniden çalıştırmaz.
+Şu değişikliklerden sonra etkinliğin ihtiyaç hesabı "güncel değil" olarak işaretlenir: bağlı rider versiyonu, mekan, etkinlik zamanıyla örtüşen mekan ekipmanı değişikliği (satır ya da kullanılamama dönemi), etkinliğin başlangıç veya bitiş zamanı, hazırlık veya dönüş payı, kaynak depo. Onaylı rezervasyonları etkileyebileceği için sistem hesabı kendiliğinden yeniden çalıştırmaz.
 *Tür:* Tetikleyici · *Hikayeler:* US-VEN-002, US-RDR-003, US-MRP-001, US-MRP-008
 
 #### BR-MRP-011 · Hesabın kaydı
@@ -560,3 +578,5 @@ Rider karşılama raporu, son ihtiyaç hesabından ve güncel onaylı rezervasyo
 | 2026-09-25 | v1.2 | BR-EVT-018 (otomatik operasyon geçişleri, P-13, P-14) ve BR-EVT-019 (onaydan geri alma) eklendi; BR-EVT-011 ve BR-MRP-012 buna göre güncellendi. |
 | 2026-09-25 | v1.3 | BR-SYS-001, modüller arası referanslar nedeniyle güncellendi: başka modüllerin referans verebildiği ana veriler hiç silinmez. |
 | 2026-09-25 | v1.4 | Gecikme hedefleri sıkılaştırıldı: anlık güncelleme %95'te 300 ms (P-08), en geç 1 s (P-15); ihtiyaç hesabı 1 s (P-09). |
+| 2026-09-25 | v1.5 | Kavramsal modelle uyum: BR-EVT-020 (zaman noktalarının sırası) eklendi; BR-EQP-006 (kasa içeriği ile stok), BR-MRP-007 (transferin depoları ve tarihleri), BR-MRP-008 (sipariş satırının ihtiyaçla eşleşmesi) genişletildi. |
+| 2026-09-25 | v1.6 | Mekan ekipmanı tarihe göre değişebilir: BR-VEN-001 genişletildi, BR-VEN-002 eklendi, BR-MRP-010 güncellendi. |

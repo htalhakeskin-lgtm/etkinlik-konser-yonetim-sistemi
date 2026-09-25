@@ -1,6 +1,6 @@
 # 00 — Kapsam ve MVP Sınırları
 
-> **Durum:** v1.5 · **Son güncelleme:** 2026-09-24
+> **Durum:** v1.6 · **Son güncelleme:** 2026-09-24
 > **Kararlar:** [Bölüm 10](#10-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -147,6 +147,7 @@ Aşağıdaki akış seed verili bir ortamda baştan sona çalıştığında S1 t
 |---|---|
 | Mekan kaydı: kapasite, sahne ölçüleri, yükleme kapısı ve rampa, amper kapasitesi, sessizlik saati | S1 |
 | Mekanın kendi ekipmanı (house equipment) | S1 |
+| Mekan ekipmanının tarihe göre değişmesi: geçerlilik aralığı ve geçici kullanılamama dönemleri | S1 |
 | Tarih bazlı müsaitlik ve opsiyon sırası | S1 |
 | Mekan dosyaları (teknik çizim, fotoğraf) | S2 |
 
@@ -354,3 +355,4 @@ Bunlar hiçbir sürümde yapılmayacak. Gerekçe: ya başka bir yazılımın iş
 | 2026-09-24 | v1.3 | İş kuralı kararları: saat hassasiyetinde etkinlik zamanı ve hazırlık/dönüş payı, ayarlar ekranı, opsiyon süresi işaretleri, teknik hizmette opsiyon. |
 | 2026-09-25 | v1.4 | Durum makinesi kararları: otomatik operasyon geçişleri, kapı açılışı ve söküm başlangıcı S1'e alındı; onaydan geri alma eklendi. |
 | 2026-09-25 | v1.5 | Anlık güncelleme için ölçülebilir gecikme hedefi eklendi. |
+| 2026-09-25 | v1.6 | Mekan ekipmanının tarihe göre değişmesi S1'e eklendi. |

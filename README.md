@@ -10,13 +10,14 @@ Konser ve etkinlik sektöründe hem kendi etkinliklerini düzenleyen hem de tekn
 
 | Belge | Durum |
 |---|---|
-| [00 — Kapsam ve MVP sınırları](docs/00-scope.md) | v1.5 |
-| [01 — Terimler sözlüğü](docs/01-glossary.md) | v1.6 |
-| [02 — Kullanıcı hikayeleri](docs/02-user-stories/README.md) | v1.5 |
-| [03 — İş kuralları](docs/03-business-rules.md) | v1.4 |
+| [00 — Kapsam ve MVP sınırları](docs/00-scope.md) | v1.6 |
+| [01 — Terimler sözlüğü](docs/01-glossary.md) | v1.8 |
+| [02 — Kullanıcı hikayeleri](docs/02-user-stories/README.md) | v1.6 |
+| [03 — İş kuralları](docs/03-business-rules.md) | v1.6 |
 | [04 — Durum makineleri](docs/04-state-machines.md) | v1.1 |
-| [05 — Modül haritası](docs/05-module-map.md) | v1.0 |
-| 06 — Kavramsal ERD | Sırada |
+| [05 — Modül haritası](docs/05-module-map.md) | v1.2 |
+| [06 — Kavramsal veri modeli](docs/06-erd-conceptual.md) | v1.0 |
+| Faz 0 C bölümü: teknoloji ve standartlar | Sırada |
 
 ## Teknoloji
 

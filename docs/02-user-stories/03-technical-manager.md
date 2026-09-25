@@ -42,12 +42,16 @@ Kurallar: BR-EQP-003
 **Teknik müdür olarak** mekanın kendi ekipmanını kaydetmek **istiyorum**, **çünkü** mekanın verdiği ekipmanı depodan götürmemeliyiz.
 
 Öncelik: Must · Demo adımı: 5
-Kurallar: BR-VEN-001, BR-MRP-003, BR-MRP-010
+Kurallar: BR-VEN-001, BR-VEN-002, BR-MRP-003, BR-MRP-010
 
 **Kabul kriterleri**
 1. Her satır bir model ya da kategori ve adettir.
 2. Katalogda olmayan ekipman serbest açıklamayla girilebilir; bu satırlar ihtiyaç hesabında kullanılmaz ve ekranda ayrıca belirtilir.
-3. Mekan ekipmanındaki değişiklik, mekanın **Hazırlık** durumundaki etkinliklerinde "ihtiyaç hesabı güncel değil" uyarısı oluşturur.
+3. Her satıra isteğe bağlı geçerlilik başlangıcı ve bitişi girilir (ör. mekan yeni bir konsol aldı ya da eski birini elden çıkardı). Elden çıkan ekipman silinmez, geçerlilik bitişi girilir.
+4. Bir satır için geçici kullanılamama dönemi girilebilir: tarih aralığı, kullanılamayan adet ve neden (ör. mekan o tarihlerde ekipmanı başka etkinliğe verdi).
+5. Mekan sayfasında seçilen bir tarih aralığında kullanılabilir mekan ekipmanı görüntülenebilir.
+6. İhtiyaç hesabı, etkinlik zamanının tamamında geçerli ve kullanılabilir olan adedi kullanır.
+7. Mekan ekipmanındaki değişiklik, zamanı bu değişiklikle örtüşen **Onaylı**, **Hazırlık** ve **Kurulum** durumundaki etkinliklerde "ihtiyaç hesabı güncel değil" uyarısı oluşturur.
 
 ## Rider
 

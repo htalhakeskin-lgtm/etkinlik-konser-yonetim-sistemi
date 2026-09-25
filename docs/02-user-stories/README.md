@@ -1,6 +1,6 @@
 # 02 — Kullanıcı Hikayeleri
 
-> **Durum:** v1.5 · **Son güncelleme:** 2026-09-24
+> **Durum:** v1.6 · **Son güncelleme:** 2026-09-24
 > **Kararlar:** [Bölüm 6](#6-kararlar)
 
 ## 1. Bu klasör ne işe yarar
@@ -144,3 +144,4 @@ Demo için gerekli ana veriler (depo, taraf, mekan, sanatçı, katalog, birim, k
 | 2026-09-25 | v1.3 | Durum makineleriyle uyum: US-EVT-001, US-EVT-004, US-EVT-005, US-WHS-004. |
 | 2026-09-25 | v1.4 | US-EVT-008 (otomatik operasyon geçişleri) eklendi; US-SYS-007 etkinlik varsayılanlarına genişledi; US-EVT-004'e onaydan geri alma eklendi. |
 | 2026-09-25 | v1.5 | Gecikme hedefleri sıkılaştırıldı: US-WHS-005 (300 ms / 1 s), US-MRP-001 (1 s). |
+| 2026-09-25 | v1.6 | US-VEN-002: mekan ekipmanının geçerlilik aralığı ve geçici kullanılamama dönemleri. |

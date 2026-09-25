@@ -1,6 +1,6 @@
 # 01 — Terimler Sözlüğü
 
-> **Durum:** v1.6 · **Son güncelleme:** 2026-09-24
+> **Durum:** v1.8 · **Son güncelleme:** 2026-09-24
 > **Kararlar:** [Bölüm 5](#5-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -17,6 +17,7 @@ Sözlük tüm sistemi kapsar; her terimin hangi sürümde devreye girdiği [00-s
 4. **Önce sözlük, sonra kod.** Yeni bir kavram koda girmeden önce bu sözlüğe eklenir. PR kontrol listesinde bu madde yer alacak.
 5. **Durum ve varlık adları çakışmaz.** Bir durum adı, başka bir varlığın adıyla aynı olamaz. Örneğin "Etkinlik" bir varlık olduğu için etkinliğin durumlarından biri "Etkinlik" olamaz.
 6. **"Event" kelimesi yalnızca etkinlik varlığı içindir.** Olaylar kodda her zaman sonekle adlandırılır: modül içi olaylar `DomainEvent` (ör. `EventConfirmedDomainEvent`), modüller arası olaylar `IntegrationEvent` (ör. `EventStatusChangedIntegrationEvent`). Ayrıntı: [05-module-map.md](05-module-map.md#7-entegrasyon-olayları-s1).
+7. **Satır ve bağlantı varlıkları ayrıca eklenmez.** Bir varlığın parçası olan satırlar (`TransferLine`, `StockMovementLine`, `QuoteLine` gibi `…Line` adlı varlıklar) ile iki varlığı yalnızca birbirine bağlayan varlıklar (`UserRole`, `RolePermission`, `ConflictEvent`) sözlüğe eklenmez. Kendi başına anlam taşıyanlar (ör. **İhtiyaç satırı**, **Rider satırı**, **Depo ataması**) sözlükte yer alır.
 
 ## 3. Terimler
 
@@ -25,12 +26,16 @@ Sözlük tüm sistemi kapsar; her terimin hangi sürümde devreye girdiği [00-s
 | Terim | Kod adı | Tanım | Sürüm |
 |---|---|---|---|
 | Kullanıcı | `User` | Sisteme giriş yapan şirket çalışanı. Dış kişiler kullanıcı olamaz. | S1 |
+| Depo ataması | `UserWarehouseAssignment` | Bir kullanıcının (depo sorumlusunun) okutma işlemlerini yapabildiği depoya atanması. | S1 |
+| Oturum | `Session` | Kullanıcının girişten çıkışa ya da zaman aşımına kadar süren oturumu. | S1 |
+| Giriş denemesi | `LoginAttempt` | Başarılı ya da başarısız her giriş denemesinin kaydı; hesap kilidi buna dayanır. | S1 |
 | Rol | `Role` | Kullanıcının yetkilerini belirleyen sabit görev tanımı (ör. Depo sorumlusu). | S1 |
 | Yetki | `Permission` | Bir rolün yapabildiği tek bir işlem (ör. rezervasyon onaylama). | S1 |
-| İşlem geçmişi | `AuditLog` | Bir kayıtta kimin, neyi, ne zaman, hangi eski değerden hangi yeni değere değiştirdiğinin kaydı. | S1 |
+| İşlem geçmişi | `AuditEntry` | Bir kayıtta kimin, neyi, ne zaman, hangi eski değerden hangi yeni değere değiştirdiğinin kaydı. | S1 |
 | Pasif | `IsActive = false` | Silinmek yerine kullanımdan kaldırılmış kayıt. Geçmiş kayıtlarda görünür, yeni işlemlerde seçilemez. Başka kayıtların bağlı olduğu hiçbir kayıt silinmez. | S1 |
 | Durum | `Status` | Bir varlığın yaşam döngüsündeki şu anki aşaması. Her varlığın kendi durum listesi vardır (ör. `EventStatus`). | S1 |
 | Belge | `Document` | Sisteme yüklenen dosya (rider PDF'i, stage plot, sözleşme). | S2 |
+| Belge bağlantısı | `DocumentAttachment` | Bir belgenin bağlı olduğu kayıt (modül, kayıt türü, kayıt kimliği). Bir belge birden fazla kayda bağlanabilir. | S2 |
 | Bildirim | `Notification` | Kullanıcıya uygulama içinde gösterilen uyarı. | S2 |
 
 ### 3.2 Kişi ve firma
@@ -49,6 +54,7 @@ Sözlük tüm sistemi kapsar; her terimin hangi sürümde devreye girdiği [00-s
 | Crew | `PartyRole.Crew` | Şirket için sahada çalışan sabit veya freelance kişi. | S2 |
 | Sponsor | `PartyRole.Sponsor` | Bir etkinliğe sponsorluk paketi alan taraf. | S3 |
 | İletişim bilgisi | `ContactPoint` | Bir tarafın telefon, e-posta veya adres kaydı. | S1 |
+| Temsil | `ArtistRepresentation` | Bir ajansın bir sanatçıyı temsil etmesi. Bir sanatçıyı farklı bölgelerde farklı ajanslar temsil edebilir. | S1 |
 | İletişim kişisi | `OrganizationContact` | Bir firma adına muhatap olunan kişi; kendisi de bir `Person` tarafıdır. | S1 |
 
 ### 3.3 Mekan
@@ -60,11 +66,13 @@ Sözlük tüm sistemi kapsar; her terimin hangi sürümde devreye girdiği [00-s
 | Yükleme kapısı | `LoadingDock` | Ekipmanın mekana indirildiği kapı ve rampa bilgisi. | S1 |
 | Güç kapasitesi | `PowerCapacity` | Mekanın sağlayabildiği elektrik, amper cinsinden. | S1 |
 | Sessizlik saati | `Curfew` | Mekanda sesin kesilmesi gereken en geç saat. | S1 |
-| Mekan ekipmanı | `VenueEquipment` | Mekanın kendine ait olup etkinliğe verdiği ekipman (house equipment). İhtiyaç hesabında brüt ihtiyaçtan düşülür. | S1 |
+| Mekan ekipmanı | `VenueEquipment` | Mekanın kendine ait olup etkinliğe verdiği ekipman (house equipment). İhtiyaç hesabında brüt ihtiyaçtan düşülür. Tarihe göre değişebilir: her satırın isteğe bağlı bir geçerlilik aralığı vardır. | S1 |
+| Mekan ekipmanı kullanılamama dönemi | `VenueEquipmentUnavailability` | Mekan ekipmanının bir kısmının belirli bir tarih aralığında kullanılamaması (ör. mekan o tarihlerde başka etkinliğe verdi). | S1 |
 | Opsiyon | `VenueHold` | Mekanın belirli bir tarih için bir etkinliğe verdiği ön rezervasyon (hold). Aynı tarihe birden çok opsiyon verilebilir. | S1 |
 | Dış opsiyon | `VenueHold` (`EventId` boş) | Mekanın aynı tarih için başka bir firmaya verdiği opsiyon. Sahibi bilinmeyebilir. Kendi opsiyonumuzun sırasını doğru tutmak için kaydedilir. | S1 |
 | Opsiyon son tarihi | `HoldExpiresAt` | Mekanın opsiyon için verdiği karar son tarihi. | S1 |
 | Süresi geçmiş opsiyon | `VenueHold.IsExpired` | Son tarihi geçtiği halde düşürülmemiş opsiyon. Sırasını korur ama etkinlik bununla onaylanamaz. | S1 |
+| Opsiyon kuyruğu | `HoldQueue` | Bir mekan ve takvim günündeki tüm opsiyonların (kendi ve dış) sırası. Sıranın tutarlılığı kuyruk bazında korunur. | S1 |
 | Opsiyon sırası | `HoldRank` | Aynı mekan ve tarihteki opsiyonlar arasındaki öncelik (1. opsiyon, 2. opsiyon...). | S1 |
 | Opsiyon yükselmesi | `HoldPromotion` | Öndeki opsiyon düştüğünde arkadakinin sırasının bir öne çıkması. | S1 |
 | Opsiyonun düşmesi | `HoldRelease` | Bir opsiyonun iptal edilmesi ya da süresinin dolması. | S1 |
@@ -76,7 +84,7 @@ Sözlük tüm sistemi kapsar; her terimin hangi sürümde devreye girdiği [00-s
 |---|---|---|---|
 | Prodüksiyon | `Production` | Bir sanatçının belirli bir şovu (ör. "Akustik set", "Full band stadyum şovu"). Rider prodüksiyona bağlıdır. | S1 |
 | Turne | `Tour` | Aynı prodüksiyonun ardışık tarihlerde farklı şehirlerde yapılan etkinlikleri. | S5 |
-| Turne tarihi | `TourDate` | Turnenin tek bir durağı; bir etkinliğe karşılık gelir. | S5 |
+| Turne tarihi | `Event.TourId` | Turneye bağlı etkinlik. Ayrı bir varlık değildir; etkinlik, turnesine bir referansla bağlanır. | S5 |
 
 ### 3.5 Etkinlik
 
@@ -86,6 +94,7 @@ Sözlük tüm sistemi kapsar; her terimin hangi sürümde devreye girdiği [00-s
 | Etkinlik zamanı | `StartsAt`, `EndsAt` | Mekanın etkinlik için bizde olduğu süre: kurulum başlangıcından söküm bitişine (tarih ve saat). Saat girilmezse başlangıç 00:00, bitiş 23:59 kabul edilir. Depodaki hazırlık ve yol hazırlık payına, dönüş yolu ve depodaki kontrol dönüş payına dahildir. | S1 |
 | Etkinlik türü | `EventKind` | Etkinliğin hangi gelir koluna ait olduğu: **Kendi etkinliği** (`Promoted`) veya **Teknik hizmet** (`TechnicalService`). | S1 |
 | Operasyon geçiş modu | `TransitionMode` | Etkinliğin Kurulum, Canlı, Söküm ve Hesaplaşma geçişlerinin **Elle** (`Manual`) mi, zamanı gelince **Otomatik** (`Automatic`) mi yapılacağı. Varsayılanı ayarlardan gelir, etkinlik bazında değiştirilir. | S1 |
+| Etkinlik varsayılanları | `EventDefaults` | Yeni etkinliklere uygulanan varsayılan hazırlık payı, dönüş payı ve operasyon geçiş modu; ayarlar ekranından değiştirilir. | S1 |
 | Kaynak depo | `SourceWarehouse` | Etkinliğin ekipmanını hazırlayıp gönderen depo. İhtiyaç önce buradan karşılanmaya çalışılır. | S1 |
 | Seans | `Performance` | Bir etkinlik içindeki tek bir gösterim (ör. matine ve akşam seansı). | S2 |
 | Elle onay | `EventApproval` | S1'de bir geçiş için elle verilen onayın kaydı: "Sözleşme imzalandı", "Hesaplaşma onaylandı", "Mekan yeni tarihi onayladı". Onayı veren kullanıcı ve zamanla tutulur. | S1 |
@@ -134,7 +143,9 @@ Geçiş kuralları `04-state-machines.md`'de tanımlanacak.
 | Satır esnekliği | `LineFlexibility` | Satırın **Zorunlu** (`Required`, yalnızca belirtilen model) mi, **Esnek** (`Flexible`, muadil kabul edilir) mi olduğu. | S1 |
 | Muadil | `EquivalentModel` | Bir rider satırında istenen modelin yerine kabul edilen başka model. | S1 |
 | Input list | `InputList` | Sahnedeki her ses kaynağının mikser kanalına eşleştiği liste. | S2 |
+| Input kanalı | `InputChannel` | Input list'te tek bir kanal: kanal numarası, ses kaynağı, mikrofon ve stand. | S2 |
 | Hospitality rider | `HospitalityRider` | Sanatçının kulis, yemek ve konaklama talepleri. | S2 |
+| Hospitality kalemi | `HospitalityItem` | Hospitality rider'daki tek bir talep ve adedi. | S2 |
 | Stage plot | `StagePlot` | Sahnedeki ekipman ve müzisyen yerleşiminin çizimi; belge olarak tutulur. | S2 |
 
 ### 3.7 Ekipman ve depo
@@ -148,6 +159,7 @@ Geçiş kuralları `04-state-machines.md`'de tanımlanacak.
 | Adetli stok | `BulkStock` | Adetli bir modelin bir konumdaki miktarı. | S1 |
 | Kasa | `Case` | Ekipmanın içinde taşındığı fiziksel kutu (flight case, kablo kasası). QR etiketi vardır; içinde birimler, adetli kalemler veya başka kasalar olabilir. | S1 |
 | Kasa standart içeriği | `CaseStandardContent` | Bir kasanın dolu olduğunda içermesi gereken kalemler (ör. "20 × XLR 10 m"). Tam kasa tek okutmayla işlem görür. | S1 |
+| Kasa içeriği | `CaseContent` | Kasadaki adetli kalemlerin gerçek miktarı. Seri no'lu birimler kasaya birim üzerinden bağlanır. Kasa içeriği, kasanın bulunduğu konumdaki adetli stoğun bir parçasıdır. | S1 |
 | Kit | `Kit` | Birlikte planlanan modellerin adlandırılmış seti (ör. "Küçük sahne ışık paketi"). Kit mantıksal bir tanımdır, fiziksel değildir; başka kitleri içerebilir. | S1 |
 | QR etiketi | `QrLabel` | Birime veya kasaya yapıştırılan, sistemdeki kaydı tanımlayan etiket. | S1 |
 | Depo | `Warehouse` | Ekipmanın saklandığı fiziksel yer. Şirketin birden fazla deposu vardır. | S1 |
@@ -187,6 +199,7 @@ Geçiş kuralları `04-state-machines.md`'de tanımlanacak.
 |---|---|---|---|
 | İhtiyaç hesabı | `RequirementCalculation` | Bir etkinliğin rider'ından net ihtiyacı ve karşılama önerisini üreten hesap (MRP'deki netleştirme). | S1 |
 | Brüt ihtiyaç | `GrossRequirement` | Rider satırlarında istenen toplam miktar. | S1 |
+| İhtiyaç satırı | `RequirementLine` | Bir ihtiyaç hesabında tek bir rider satırının sonucu: brüt ihtiyaç, mekandan karşılanan ve net ihtiyaç. | S1 |
 | Net ihtiyaç | `NetRequirement` | Brüt ihtiyaçtan mekan ekipmanı ve kabul edilen muadiller düşüldükten sonra kalan, şirketin karşılaması gereken miktar. | S1 |
 | Rezervasyon | `EquipmentReservation` | Bir birimin ya da adetli miktarın belirli bir zaman aralığı için bir etkinliğe ayrılması. Fiziksel durumu değiştirmez. | S1 |
 | Rezervasyon durumu | `ReservationStatus` | **Önerildi** (`Proposed`), **Onaylandı** (`Confirmed`), **Serbest bırakıldı** (`Released`), **Tamamlandı** (`Completed`, etkinlik kapanınca). | S1 |
@@ -201,7 +214,7 @@ Geçiş kuralları `04-state-machines.md`'de tanımlanacak.
 | Çakışma durumu | `ConflictStatus` | **Açık** (`Open`), **Kabul edildi** (`Acknowledged`), **Çözüldü** (`Resolved`). | S1 |
 | Fazla rezervasyon | `EquipmentReservation.IsExcess` | Yeniden hesaplamadan sonra yeni net ihtiyacı aşan onaylı rezervasyon. Otomatik serbest bırakılmaz. | S1 |
 | Güncel olmayan hesap | `RequirementCalculation.IsStale` | Hesaba giren bir veri (rider versiyonu, mekan, tarih, paylar, kaynak depo) değiştiği için yeniden çalıştırılması gereken ihtiyaç hesabı. | S1 |
-| Karşılama | `Fulfillment` | Bir rider satırının nasıl karşılandığı. | S1 |
+| Karşılama | `Fulfillment` | Bir ihtiyaç satırının net ihtiyacının belirli bir kaynaktan karşılanan kısmı (hangi depo, model, rezervasyon, transfer ya da dış kiralama satırı). Rezervasyonlar rider satırına kalıcı bağlanmaz; bu eşleşme her hesapta yeniden üretilir. | S1 |
 | Karşılama kaynağı | `FulfillmentSource` | **Depo** (`Warehouse`), **Mekan** (`Venue`), **Muadil** (`Equivalent`), **Dış kiralama** (`SubRental`). | S1 |
 | Dış kiralama | `SubRental` | Şirketin hiçbir deposunda bulunmayan ekipmanın bir tedarikçiden kiralanması. | S1 |
 | Dış kiralama siparişi | `SubRentalOrder` | Bir tedarikçiye verilen, model, adet ve tarih içeren kiralama siparişi. | S1 |
@@ -217,6 +230,7 @@ Geçiş kuralları `04-state-machines.md`'de tanımlanacak.
 | Çalışma tipi | `EmploymentType` | **Sabit** (`Staff`) veya **Freelance** (`Freelance`). | S2 |
 | Yetkinlik | `Skill` | Bir crew üyesinin yapabildiği iş (ör. rigging, ışık operatörlüğü). | S2 |
 | Sertifika | `Certification` | Geçerlilik tarihi olan resmi belge (ör. yüksekte çalışma, forklift). | S2 |
+| Müsait olmama dönemi | `CrewUnavailability` | Bir crew üyesinin çalışamayacağı tarih aralığı. | S2 |
 | Çağrı | `CrewCall` | Bir crew üyesinin belirli bir etkinliğe, göreve ve saate atanması. | S2 |
 | Çağrı saati | `CallTime` | Crew üyesinin sahada olması gereken saat. | S2 |
 | Dinlenme süresi | `RestPeriod` | Bir crew üyesinin iki çağrı arasında olması gereken en kısa süre. | S2 |
@@ -233,6 +247,8 @@ Geçiş kuralları `04-state-machines.md`'de tanımlanacak.
 | Anlaşma aşaması | `DealStage` | Anlaşmanın satış hunisindeki yeri. | S3 |
 | Aktivite | `Activity` | Bir anlaşma ya da tarafla ilgili görüşme, arama, e-posta veya toplantı kaydı. | S3 |
 | Sanatçı ücret modeli | `ArtistFeeModel` | **Garanti** (`Guarantee`), **Yüzde** (`Percentage`), **Garanti veya yüzde** (`VersusDeal`, hangisi yüksekse), **Bonus** (`Bonus`, eşik aşılınca ek ödeme). | S3 |
+| Sanatçı ücret şartları | `ArtistFeeTerms` | Bir sözleşmedeki ücret modeli ve değerleri: garanti tutarı, yüzde, yüzdenin brüt mü net hasılattan mı alındığı. Hesaplaşmanın girdisidir. | S3 |
+| Bonus eşiği | `BonusTier` | Ücret şartlarında, belirli bir satış ya da hasılat eşiği aşıldığında verilecek ek ödeme. | S3 |
 | Fiyat listesi | `PriceList` | Ekipman modellerinin kiralama fiyatlarının geçerlilik tarihli listesi. | S3 |
 | Kiralama fiyatı | `RentalRate` | Bir modelin fiyat listesindeki birim fiyatı (günlük). | S3 |
 | Teklif | `Quote` | Teknik hizmet müşterisine verilen, rider'dan hesaplanan fiyatlı öneri. | S3 |
@@ -254,6 +270,7 @@ Geçiş kuralları `04-state-machines.md`'de tanımlanacak.
 | Net hasılat | `NetBoxOffice` | Brüt hasılattan vergi ve bilet platformu kesintileri düşüldükten sonra kalan tutar. | S4 |
 | Hesaplaşma | `Settlement` | Etkinlik sonrası sanatçı payının ücret modeline göre hesaplanması ve onaylanması. | S4 |
 | Hesaplaşma föyü | `SettlementSheet` | Hesaplaşmanın hasılat, gider ve sanatçı payını gösteren belgesi. | S4 |
+| Muhasebe aktarımı | `AccountingExport` | Muhasebe yazılımına yapılan bir dışa aktarımın kaydı: dönem, dosya, zaman. | S4 |
 | Para birimi | `Currency` | ISO 4217 kodu (TRY, EUR, USD). | S4 |
 | Kur | `ExchangeRate` | Belirli bir tarihte iki para birimi arasındaki oran. | S4 |
 | Tutar | `Money` | Miktar ve para biriminden oluşan değer. Tutar hiçbir yerde para birimi olmadan tutulmaz. | S1 |
@@ -265,6 +282,8 @@ Geçiş kuralları `04-state-machines.md`'de tanımlanacak.
 | Araç | `Vehicle` | Şirketin ya da kiralanan kamyon ve vanların hacim ve ağırlık kapasitesiyle kaydı. | S5 |
 | Sevkiyat | `Shipment` | Bir aracın belirli bir yükle bir yerden diğerine yaptığı yolculuk. Bir transferi ya da bir etkinliğin yükünü taşıyabilir. | S5 |
 | Yükleme listesi | `LoadList` | Bir sevkiyatta araca yüklenen kasaların listesi; toplam ağırlık ve hacimle. | S5 |
+| Araç ataması | `VehicleBooking` | Bir aracın bir zaman aralığı için bir sevkiyata ayrılması. Rezervasyon gibi bir taahhüttür; çakışma kontrolüne girer. | S5 |
+| Güzergah tahmini | `RouteEstimate` | İki konum arası mesafe ve yol süresi tahmini. | S5 |
 | Geçiş kontrolü | `TransitCheck` | Ardışık iki turne tarihi arasında ekipmanın yetişip yetişmediğinin kontrolü. | S5 |
 
 ## 4. Kullanılmayan terimler
@@ -318,3 +337,5 @@ Bu kelimeler arayüzde, belgelerde ve kodda kullanılmaz; yerine sağ sütundaki
 | 2026-09-25 | v1.4 | Durum makineleriyle uyum: opsiyon durumu, çakışma durumu, rezervasyonun Tamamlandı durumu eklendi; etkinlik zamanı, mekanın bizde olduğu süre olarak netleştirildi. |
 | 2026-09-25 | v1.5 | Operasyon geçiş modu eklendi; kapı açılışı ve söküm başlangıcı S1'e alındı; kurulum başlangıcı ve söküm bitişi etkinlik zamanıyla eşlendi. |
 | 2026-09-25 | v1.6 | Modül haritasıyla uyum: olay adlandırma kuralı (DomainEvent / IntegrationEvent), elle onay, rider ataması ve stok hareketi terimleri eklendi. |
+| 2026-09-25 | v1.7 | Kavramsal modelle uyum: temsil, opsiyon kuyruğu, etkinlik varsayılanları, kasa içeriği, ihtiyaç satırı, oturum ve giriş denemesi (S1); belge bağlantısı, input kanalı, hospitality kalemi, müsait olmama dönemi (S2); sanatçı ücret şartları, bonus eşiği (S3); muhasebe aktarımı (S4); araç ataması, güzergah tahmini (S5) eklendi. İşlem geçmişinin kod adı `AuditEntry` olarak düzeltildi; depo ataması eklendi. Turne tarihi turneye bağlı etkinlik olarak düzeltildi; karşılama tanımı netleştirildi; satır varlıkları için kural 7 eklendi. |
+| 2026-09-25 | v1.8 | Mekan ekipmanının geçerlilik aralığı ve kullanılamama dönemi eklendi. |

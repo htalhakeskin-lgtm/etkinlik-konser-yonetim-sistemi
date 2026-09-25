@@ -56,7 +56,7 @@ Kurallar: BR-PTY-004
 **Booking müdürü olarak** yeni bir etkinlik talebini kaydetmek **istiyorum**, **çünkü** görüşme başladığı andan itibaren etkinliğin tek bir kaydı olmalı.
 
 Öncelik: Must · Demo adımı: 1
-Kurallar: BR-PTY-004, BR-EVT-016, BR-MRP-001
+Kurallar: BR-PTY-004, BR-EVT-016, BR-EVT-020, BR-MRP-001
 
 **Kabul kriterleri**
 1. Ad, etkinlik türü, başlangıç ve bitiş zamanı zorunludur; bitiş başlangıçtan önce olamaz. Etkinlik zamanı, mekanın bizde olduğu süredir (kurulum başlangıcından söküm bitişine). Talep aşamasında yalnızca tarih girilebilir; saat girilmezse başlangıç 00:00, bitiş 23:59 kabul edilir.
@@ -125,7 +125,7 @@ Kurallar: BR-EVT-010, BR-EVT-011, BR-EVT-012, BR-EVT-013, BR-EVT-015
 **Booking müdürü olarak** etkinliğin kurulum, canlı, söküm ve hesaplaşma aşamalarına zamanı geldiğinde kendiliğinden geçmesini **istiyorum**, **çünkü** sahadaki ekip yoğunken durumu güncellemeyi unutabiliyor.
 
 Öncelik: Should · Demo adımı: —
-Kurallar: BR-EVT-018
+Kurallar: BR-EVT-018, BR-EVT-020
 
 **Kabul kriterleri**
 1. Her etkinliğin operasyon geçiş modu **Elle** ya da **Otomatik**tir. Yeni etkinlik modu ayarlardaki varsayılandan alır; mod etkinlik sayfasında değiştirilebilir.

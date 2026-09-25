@@ -1,6 +1,6 @@
 # 05 — Modül Haritası
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 15](#15-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -127,7 +127,7 @@ Listede olmayan bir çağrı yapılamaz. Bu kural, derleme sırasında mimari te
 | Procurement | Parties | Tedarikçinin Tedarikçi rolünde olduğunu doğrulamak | BR-PTY-004 |
 | Procurement | Catalog | Sipariş satırındaki modeli doğrulamak | — |
 | Planning | Riders | Etkinliğe atanmış rider versiyonunun satırlarını almak | BR-MRP-003…005 |
-| Planning | Venues | Mekan ekipmanını almak | BR-VEN-001, BR-MRP-003 |
+| Planning | Venues | Etkinlik zamanında kullanılabilir mekan ekipmanını almak | BR-VEN-001, BR-MRP-003 |
 | Planning | Catalog | Kategori ağacı, kit içeriği ve model bilgisi | BR-MRP-004 |
 | Riders | Catalog | Rider satırındaki model, kategori ve kiti doğrulamak | BR-RDR-001 |
 | Riders | Parties | Prodüksiyonun sanatçısını doğrulamak | BR-PTY-004 |
@@ -146,6 +146,7 @@ Katman kuralı bazı doğal ihtiyaçları doğrudan çağrıyla karşılamayı y
 | Riders, etkinliğe özel versiyon için etkinliğin türünü ve prodüksiyonunu bilmeli | Booking → Riders var | Riders, Booking olaylarından **etkinlik kopyası** tutar |
 | Catalog, takip tipini kilitlemek için modelin stoğu oluştu mu bilmeli | Inventory → Catalog var | Catalog, `StockCreatedForModel` olayıyla modeli işaretler |
 | Identity, pasifleşen depoyu kullanıcı atamalarından düşmeli | Identity → Inventory var | Identity `WarehouseDeactivated` olayını dinler; atamayı kaldırır ve yöneticiyi uyarır |
+| Procurement, siparişte etkinliğin durumunu ve teslim deposunu doğrulamalı | Inventory ile aynı katmanda, Booking ise üst katmanda | Procurement, Booking ve Inventory olaylarından **etkinlik ve depo kopyası** tutar |
 | Etkinlik listesi çakışma sayısını, dönmemiş ekipmanı ve yeni rider versiyonunu göstermeli | Booking bu modüllerin üstünde ama liste filtrelenebilir olmalı | Booking, bu göstergeleri olaylardan **etkinlik göstergeleri** kopyasında tutar |
 
 ### 4.5 Sonraki sürümlerde beklenen bağımlılıklar
@@ -190,7 +191,7 @@ Her kartta modülün sahip olduğu veriler, sunduğu senkron sözleşmeler, yay�
 
 ### 5.3 Parties — Taraflar
 
-- **Sahip olduğu veriler:** Taraf (kişi, firma), taraf rolü, iletişim bilgisi, iletişim kişisi.
+- **Sahip olduğu veriler:** Taraf (kişi, firma), taraf rolü, iletişim bilgisi, iletişim kişisi, temsil (ajans–sanatçı).
 - **Senkron sözleşme:** Tarafları kimlikle getirme; bir tarafın belirli bir rolde ve aktif olup olmadığı.
 - **Bağımlı olduğu:** Yok.
 - **Yayınladığı / dinlediği olaylar:** S1'de yok.
@@ -209,8 +210,8 @@ Her kartta modülün sahip olduğu veriler, sunduğu senkron sözleşmeler, yay�
 
 ### 5.5 Venues — Mekanlar
 
-- **Sahip olduğu veriler:** Mekan, mekan ekipmanı.
-- **Senkron sözleşme:** Mekanı getirme ve doğrulama; mekan ekipmanı listesi.
+- **Sahip olduğu veriler:** Mekan, mekan ekipmanı, mekan ekipmanı kullanılamama dönemleri.
+- **Senkron sözleşme:** Mekanı getirme ve doğrulama; belirli bir zaman aralığında kullanılabilir mekan ekipmanı.
 - **Bağımlı olduğu:** Catalog, Parties.
 - **Yayınladığı olaylar:** `VenueEquipmentChanged`.
 - **Dinlediği olaylar:** Yok.
@@ -230,7 +231,7 @@ Her kartta modülün sahip olduğu veriler, sunduğu senkron sözleşmeler, yay�
 
 ### 5.7 Booking — Etkinlik ve opsiyon
 
-- **Sahip olduğu veriler:** Etkinlik (tür, zamanlar, kapı açılışı, söküm başlangıcı, paylar, operasyon geçiş modu, mekan, kaynak depo, prodüksiyon ya da müşteri, iptal nedeni), durum geçmişi, elle onaylar, opsiyon (dış opsiyon dahil), etkinlik varsayılanları (ayarlar).
+- **Sahip olduğu veriler:** Etkinlik (tür, zamanlar, kapı açılışı, söküm başlangıcı, paylar, operasyon geçiş modu, mekan, kaynak depo, prodüksiyon ya da müşteri, iptal nedeni), durum geçmişi, elle onaylar, opsiyon kuyruğu ve opsiyonlar (dış opsiyon dahil), etkinlik varsayılanları (ayarlar).
 - **Yerel kopya:** Etkinlik göstergeleri (açık çakışma sayısı, dönmemiş ekipman, rider atanmış mı, yeni rider versiyonu var mı).
 - **Senkron sözleşme:** S1'de yok (en üst katman).
 - **Bağımlı olduğu:** Parties, Venues, Riders, Inventory.
@@ -242,7 +243,7 @@ Her kartta modülün sahip olduğu veriler, sunduğu senkron sözleşmeler, yay�
 
 ### 5.8 Planning — Planlama (MRP)
 
-- **Sahip olduğu veriler:** İhtiyaç hesabı ve satır sonuçları, rezervasyon, transfer (plan ve durum), çakışma.
+- **Sahip olduğu veriler:** İhtiyaç hesabı, ihtiyaç satırları ve karşılamalar, rezervasyon, transfer (plan, kalemler ve durum), çakışma.
 - **Yerel kopyalar:**
   - Etkinlik kopyası: durum, zamanlar, paylar, mekan, kaynak depo.
   - Stok kopyası: birimlerin modeli, sahipliği, durumu ve konumu; adetli stok kümeleri; etkinliklere çıkmış ekipman.
@@ -275,11 +276,12 @@ Her kartta modülün sahip olduğu veriler, sunduğu senkron sözleşmeler, yay�
 
 ### 5.10 Procurement — Satın alma ve dış kiralama
 
-- **Sahip olduğu veriler:** Dış kiralama siparişi ve satırları (QR ile takip seçimi dahil).
+- **Sahip olduğu veriler:** Dış kiralama siparişi ve satırları (QR ile takip seçimi ve karşıladığı rider satırı dahil).
+- **Yerel kopyalar:** Etkinlik kopyası (durum); depo kopyası.
 - **Senkron sözleşme:** S1'de yok.
 - **Bağımlı olduğu:** Planning, Parties, Catalog.
 - **Yayınladığı olaylar:** `SubRentalOrderPlaced`, `SubRentalOrderCancelled`, `SubRentalOrderReceived`, `SubRentalOrderReturned`.
-- **Dinlediği olaylar:** `EventStatusChanged` (iptal), `SubRentedItemsReturned`, `UnitStatusChanged` (dış kiralama birimleri için).
+- **Dinlediği olaylar:** `EventCreated`, `EventStatusChanged`, `WarehouseCreated`, `WarehouseDeactivated`, `SubRentedItemsReturned`, `UnitStatusChanged` (dış kiralama birimleri için).
 - **Hikayeler:** US-MRP-005'in sipariş kısmı; US-WHS-007'nin teslim alma kısmı. **Kurallar:** BR-MRP-008, BR-WHS-013 (ilgili kısımlar).
 - **Sonraki sürümler:** Sipariş formu PDF (S3); siparişlerin gider olarak finansa aktarılması (S4); satın alma önerileri (S6).
 
@@ -311,7 +313,7 @@ Olay adları kodda `IntegrationEvent` sonekiyle yazılır (ör. `EventStatusChan
 
 | Olay | Ne zaman | Dinleyen → ne yapar |
 |---|---|---|
-| `EventCreated` | Etkinlik oluşturuldu | Riders, Planning, Inventory → etkinlik kopyasını oluşturur |
+| `EventCreated` | Etkinlik oluşturuldu | Riders, Planning, Inventory, Procurement → etkinlik kopyasını oluşturur |
 | `EventDetailsChanged` | Mekan, kaynak depo, tür, prodüksiyon, müşteri ya da ad değişti | Riders, Inventory → kopyayı günceller. Planning → kopyayı günceller; mekan ya da kaynak depo değiştiyse hesabı "güncel değil" yapar (T-CLC-01) |
 | `EventScheduleChanged` | Zamanlar ya da hazırlık / dönüş payı değişti | Planning → etkinliğin rezervasyon aralıklarını günceller, hesabı "güncel değil" yapar (T-CLC-01), aşırı rezervasyon kontrolü çalıştırır (BR-MRP-017) |
 | `EventStatusChanged` | Her durum geçişi (yeni durum, önceki durum, elle / otomatik, neden) | Bkz. [7.7](#77-etkinlik-durum-değişikliklerinin-diğer-modüllerdeki-etkileri) |
@@ -327,7 +329,7 @@ Olay adları kodda `IntegrationEvent` sonekiyle yazılır (ör. `EventStatusChan
 
 | Olay | Ne zaman | Dinleyen → ne yapar |
 |---|---|---|
-| `VenueEquipmentChanged` | Mekan ekipmanı değişti | Planning → o mekandaki **Onaylı**, **Hazırlık** ve **Kurulum** etkinliklerinin hesabını "güncel değil" yapar (T-CLC-01) |
+| `VenueEquipmentChanged` | Mekan ekipmanı satırı ya da kullanılamama dönemi değişti (etkilenen tarih aralığıyla) | Planning → o mekandaki, zamanı bu aralıkla örtüşen **Onaylı**, **Hazırlık** ve **Kurulum** etkinliklerinin hesabını "güncel değil" yapar (T-CLC-01) |
 
 ### 7.4 Planning
 
@@ -346,8 +348,8 @@ Olay adları kodda `IntegrationEvent` sonekiyle yazılır (ör. `EventStatusChan
 
 | Olay | Ne zaman | Dinleyen → ne yapar |
 |---|---|---|
-| `WarehouseCreated` | Depo tanımlandı | Planning → stok kopyasına depo ekler |
-| `WarehouseDeactivated` | Depo pasifleştirildi | Planning → depoyu hesaptan çıkarır. Identity → depo atamalarını kaldırır, deposu kalmayan depo sorumlularını yöneticiye bildirir |
+| `WarehouseCreated` | Depo tanımlandı | Planning → stok kopyasına depo ekler. Procurement → depo kopyasına ekler |
+| `WarehouseDeactivated` | Depo pasifleştirildi | Planning → depoyu hesaptan çıkarır. Identity → depo atamalarını kaldırır, deposu kalmayan depo sorumlularını yöneticiye bildirir. Procurement → depoyu teslim yeri seçeneklerinden çıkarır |
 | `StockCreatedForModel` | Bir modelin ilk birimi ya da ilk adetli stoğu oluştu | Catalog → modelin takip tipini kilitler (BR-EQP-001) |
 | `UnitRegistered` | Birim oluşturuldu (T-UNT-01) | Planning → stok kopyasına ekler |
 | `UnitStatusChanged` | Birim durumu ya da konumu değişti | Planning → stok kopyasını günceller, aşırı rezervasyon kontrolü çalıştırır (BR-MRP-017). Procurement → dış kiralama birimiyse iade durumunu değerlendirir (T-SRO-04) |
@@ -375,7 +377,7 @@ Olay adları kodda `IntegrationEvent` sonekiyle yazılır (ör. `EventStatusChan
 
 | Yeni durum | Planning | Inventory | Riders | Procurement |
 |---|---|---|---|---|
-| Her durum | Etkinlik kopyasını günceller | Etkinlik kopyasını günceller (çıkışa izin var mı?) | Etkinlik kopyasını günceller | — |
+| Her durum | Etkinlik kopyasını günceller | Etkinlik kopyasını günceller (çıkışa izin var mı?) | Etkinlik kopyasını günceller | Etkinlik kopyasını günceller (sipariş açılıp verilebilir mi?) |
 | Onaylı | Rezervasyona izin verir (BR-MRP-012) | Çıkışa izin verir | — | — |
 | Hazırlık | İhtiyaç hesabını çalıştırır (T-CLC-02) | — | — | — |
 | Müzakere (geri alma) | Yeni rezervasyonu ve hesabı durdurur; mevcut rezervasyonları korur (BR-EVT-019) | Çıkışı durdurur | — | — |
@@ -396,6 +398,8 @@ Yerel kopya, bir modülün başka bir modülün verisinden ihtiyaç duyduğu kı
 | Inventory | Etkinlik kopyası | Booking'in olayları | Çıkışa izin verilen durumlar (BR-WHS-003), ekranlarda etkinlik adı |
 | Inventory | Rezervasyon talebi | Planning'in rezervasyon olayları | Toplama listesi (BR-WHS-001), çıkış eşleşmesi (BR-WHS-004) |
 | Inventory | Transfer beklentisi | `TransferPlanned`, `TransferPlanCancelled` | Transfer çıkış ve varış ekranları |
+| Procurement | Etkinlik kopyası | `EventCreated`, `EventStatusChanged` | Sipariş açma ve verme koşulları (T-SRO-01, T-SRO-02), iptal etkileri |
+| Procurement | Depo kopyası | `WarehouseCreated`, `WarehouseDeactivated` | Teslim deposunun seçimi ve doğrulanması |
 
 ## 9. Tutarlılık ve işlem kuralları
 
@@ -484,7 +488,7 @@ sequenceDiagram
     BK->>IN: Kaynak depo geçerli mi?
     BK--)PL: EventStatusChanged (Hazırlık)
     PL->>RD: Atanmış rider versiyonunun satırları
-    PL->>VN: Mekan ekipmanı
+    PL->>VN: Etkinlik zamanında kullanılabilir mekan ekipmanı
     Note over PL: İhtiyaç hesabı: öneriler ve çakışmalar
     PL--)BK: ConflictOpened
     TM->>PL: Rezervasyonları onayla
@@ -603,3 +607,5 @@ Bu kararlar Faz 0'ın C bölümünde ADR olarak kaydedilecek: modüler monolit, 
 |---|---|---|
 | 2026-09-25 | v0.1 | İlk taslak: S1 modülleri, bağımlılıklar, entegrasyon olayları, tutarlılık kuralları |
 | 2026-09-25 | v1.0 | M-01: olayların anında gönderimi; gecikme hedefi %95'te 300 ms, en geç 1 s. |
+| 2026-09-25 | v1.1 | Kavramsal modelle uyum: Procurement'a etkinlik ve depo kopyası eklendi (katman kuralı gereği); Parties, Booking, Planning ve Procurement kartlarındaki veri listeleri güncellendi. |
+| 2026-09-25 | v1.2 | Mekan ekipmanı tarihe göre değişir: Venues sözleşmesi ve `VenueEquipmentChanged` olayı etkilenen tarih aralığını taşır. |
