@@ -1,4 +1,6 @@
 # Commit hooks (docs/standards/git.md §8). They are a fast convenience; CI runs the same checks.
+source_dir: tools/git/
+
 pre-commit:
   parallel: true
   commands:
@@ -19,9 +21,10 @@ commit-msg:
       run: pnpm exec commitlint --edit {1}
 
 pre-push:
-  commands:
-    protect-main:
-      # Changes reach main only through pull requests (R-03). The script reads the pushed refs
-      # from stdin; an inline command would break on Windows, where Lefthook wraps it in sh -c "…".
-      run: sh tools/git/protect-main.sh
+  scripts:
+    # Changes reach main only through pull requests (R-03). A script, not a command: Lefthook skips
+    # pre-push commands when the push adds no new files (e.g. "git push origin feature:main" after the
+    # branch is already pushed), and it wraps inline commands in sh -c "…", which breaks quoting on Windows.
+    "protect-main.sh":
+      runner: sh
       use_stdin: true
