@@ -1,6 +1,6 @@
 # Yapılandırma ve Altyapı Hizmetleri Standardı
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 10](#10-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -81,7 +81,7 @@ P-06, P-07 ve P-14 sistem yöneticisi tarafından ayarlar ekranından değiştir
 
 ## 7. Özellik bayrakları
 
-S1'de özellik bayrağı (feature flag) kullanılmaz. Bitmemiş bir özelliği gizlemek için bayrak yerine dal ve PR düzeni kullanılır (D bölümü). İhtiyaç doğarsa .NET'in kendi özellik yönetimi kütüphanesi bu belge güncellenerek eklenir.
+S1'de özellik bayrağı (feature flag) kullanılmaz. Bitmemiş bir özelliği gizlemek için bayrak yerine dikey dilimler ve dal düzeni kullanılır ([git §3.3](git.md#33-bitmemiş-işler)). İhtiyaç doğarsa .NET'in kendi özellik yönetimi kütüphanesi bu belge güncellenerek eklenir.
 
 ## 8. Dosya saklama
 
@@ -131,3 +131,4 @@ S1'de dış servis yoktur. Sonraki sürümlerde (e-posta S6, güzergah hesabı S
 |---|---|---|
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | P-04 = 15, P-16 = 24 saat. |
+| 2026-09-25 | v1.1 | Özellik bayrağı yerine bitmemiş işlerin nasıl ele alınacağı bağlandı (D.1). |

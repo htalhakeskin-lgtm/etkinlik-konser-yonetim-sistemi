@@ -1,6 +1,6 @@
 # 08 — Mimari ve Klasör Yapısı
 
-> **Durum:** v1.4 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.5 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -53,14 +53,21 @@ etkinlik-konser-yonetim-sistemi/
 │   ├── Testing/                    ortak test yardımcıları (veritabanı konteyneri, sahte zaman, veri kurucular)
 │   └── e2e/                        Playwright uçtan uca testleri
 ├── tools/
-│   ├── docs/                       belge kontrol betikleri
+│   ├── docs/                       belge ve izlenebilirlik kontrol betikleri
 │   └── templates/                  yeni modül iskeleti üreten şablon
+├── .github/                        CI iş akışları, PR ve issue şablonları, Dependabot ayarı
 ├── FestOS.slnx                   solution dosyası (.NET 10'un XML biçimi)
 ├── global.json                     .NET SDK sürümünün sabitlenmesi
 ├── Directory.Build.props           tüm projelerin ortak derleme ayarları
 ├── Directory.Packages.props        merkezi paket sürümleri
 ├── BannedSymbols.txt               kodda kullanımı yasak API'ler
 ├── .editorconfig                   kod biçimi kuralları (C.3)
+├── package.json                    kök pnpm çalışma alanı: commit kancaları, commit mesajı denetimi, Prettier
+├── pnpm-workspace.yaml             çalışma alanı paketleri (src/web, tests/e2e) ve paket güvenliği ayarları
+├── lefthook.yml                    commit öncesi kontroller
+├── .gitleaks.toml                  gizli bilgi taraması ayarı
+├── release-please-config.json      sürüm PR'ı ayarı
+├── CHANGELOG.md                    değişiklik günlüğü (otomatik üretilir)
 └── README.md
 ```
 
@@ -457,3 +464,4 @@ Yasak API kullanımı (`DateTime.UtcNow` gibi) mimari testle değil, derleyici a
 | 2026-09-25 | v1.2 | Veritabanı testleri projesi eklendi (C.4). |
 | 2026-09-25 | v1.3 | C.5 ile uyum: `/api/v1` kökü, hata biçimi bağlantısı, AT-14 genişletildi, AT-15 eklendi. |
 | 2026-09-25 | v1.4 | Host görevlerine güvenlik başlıkları ve sağlık uçları eklendi (C.6). |
+| 2026-09-25 | v1.5 | Repo ağacına geliştirme süreci dosyaları eklendi: `.github/`, kök pnpm çalışma alanı, Lefthook, gitleaks, release-please (D.1). |

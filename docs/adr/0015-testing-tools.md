@@ -2,6 +2,7 @@
 
 - **Durum:** Kabul edildi
 - **Tarih:** 2026-09-25
+- **Genişletildi:** [ADR-0029](0029-test-strategy-and-rule-traceability.md) — test stratejisi, kural izlenebilirliği kapısı, özellik tabanlı ve mutasyon testi
 - **İlgili:** [03-business-rules.md §3](../03-business-rules.md#3-biçim-ve-kullanım), [04-state-machines.md](../04-state-machines.md), [ADR-0002](0002-module-boundaries-and-layers.md), [ADR-0005](0005-dependency-license-policy.md)
 
 ## Bağlam
@@ -11,7 +12,7 @@
 - Modül sınırları her derlemede otomatik doğrulanmalıdır.
 - Her kural ve geçiş, numarasıyla etiketlenmiş testlerle izlenebilmelidir.
 
-Test stratejisi ve "bitti" tanımı Faz 0 D bölümünde yazılacak; bu ADR yalnızca araçları seçer.
+Bu ADR yalnızca araçları seçer. Test stratejisi [standards/testing.md](../standards/testing.md)'de, bitti tanımı [standards/definition-of-done.md](../standards/definition-of-done.md)'dedir.
 
 ## Karar
 

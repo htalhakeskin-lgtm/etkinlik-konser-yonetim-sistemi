@@ -84,3 +84,5 @@ Her alternatif ve neden seçilmediği.
 | [0025](0025-idempotency-keys.md) | Tekrar güvenliği anahtarları | Kabul edildi |
 | [0026](0026-authorization-model.md) | Yetki modeli — kodda tanımlı yetki kataloğu ve sabit roller | Kabul edildi |
 | [0027](0027-session-and-password-security.md) | Oturum ve şifre güvenliği ayrıntıları | Kabul edildi |
+| [0028](0028-development-workflow.md) | Geliştirme iş akışı ve repo araçları | Kabul edildi |
+| [0029](0029-test-strategy-and-rule-traceability.md) | Test stratejisi ve kural izlenebilirliği | Kabul edildi |

@@ -1,6 +1,6 @@
 # 07 — Teknoloji Yığını
 
-> **Durum:** v1.4 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.5 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 8](#8-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -85,8 +85,12 @@ Yığına yeni bir kütüphane eklemek ya da bir kütüphaneyi değiştirmek iç
 | Gerçek veritabanıyla test | Testcontainers (PostgreSQL) + Respawn (testler arası temizlik) | MIT / Apache 2.0 | [0015](adr/0015-testing-tools.md) |
 | Zamanı ilerletme | `FakeTimeProvider` | MIT | [0015](adr/0015-testing-tools.md) |
 | Mimari testler | ArchUnitNET; tablo adlarının çoğul denetimi için yalnızca test projesinde Humanizer | Apache 2.0 / MIT | [0015](adr/0015-testing-tools.md) |
-| Ön yüz testleri | Vitest + Testing Library | MIT | [0015](adr/0015-testing-tools.md) |
+| Ön yüz testleri | Vitest + Testing Library; API sahteleme için MSW | MIT | [0015](adr/0015-testing-tools.md) |
 | Uçtan uca testler | Playwright | Apache 2.0 | [0015](adr/0015-testing-tools.md) |
+| Özellik tabanlı testler | CsCheck (yalnızca hesaplama motorlarında) | Apache 2.0 | [0029](adr/0029-test-strategy-and-rule-traceability.md) |
+| Mutasyon testi | Stryker.NET (sürüm öncesi, elle) | Apache 2.0 | [0029](adr/0029-test-strategy-and-rule-traceability.md) |
+| Kod kapsamı | coverlet (Microsoft Testing Platform eklentisi) + ReportGenerator | MIT / Apache 2.0 | [0029](adr/0029-test-strategy-and-rule-traceability.md) |
+| Erişilebilirlik testi | @axe-core/playwright | MPL 2.0 (değiştirilmeden) | [0029](adr/0029-test-strategy-and-rule-traceability.md) |
 
 ### 3.5 Gözlemlenebilirlik ve yerel geliştirme
 
@@ -95,6 +99,18 @@ Yığına yeni bir kütüphane eklemek ya da bir kütüphaneyi değiştirmek iç
 | Log, iz (trace) ve ölçüm | .NET'in yerleşik loglaması + OpenTelemetry | Apache 2.0 | [0016](adr/0016-observability-and-local-dev.md) |
 | Yerel geliştirme | Aspire: PostgreSQL konteynerini, API'yi ve ön yüzü tek komutla başlatır; logları, izleri ve ölçümleri tek panelde gösterir | MIT | [0016](adr/0016-observability-and-local-dev.md) |
 | Konteyner | Docker (Aspire ve Testcontainers için) | — | — |
+
+### 3.6 Geliştirme süreci
+
+| Konu | Seçim | Lisans | ADR |
+|---|---|---|---|
+| Kod barındırma, görev takibi, sürekli entegrasyon | GitHub (Issues, Projects, Actions) | Ücretsiz plan | [0028](adr/0028-development-workflow.md) |
+| Commit kancaları | Lefthook | MIT | [0028](adr/0028-development-workflow.md) |
+| Commit mesajı ve PR başlığı denetimi | commitlint; action-semantic-pull-request | MIT | [0028](adr/0028-development-workflow.md) |
+| Sürüm numarası | MinVer (git etiketlerinden) | Apache 2.0 | [0028](adr/0028-development-workflow.md) |
+| Sürüm PR'ı ve değişiklik günlüğü | release-please | Apache 2.0 | [0028](adr/0028-development-workflow.md) |
+| Bağımlılık güncellemeleri | Dependabot | GitHub özelliği | [0028](adr/0028-development-workflow.md) |
+| Gizli bilgi taraması | gitleaks (CLI) | MIT | [0028](adr/0028-development-workflow.md) |
 
 ## 4. Mimari kararlar (Faz 0 B bölümünden)
 
@@ -140,7 +156,7 @@ Yaygın oldukları halde bilinçli olarak kullanılmayanlar:
 | Node.js | Güncel LTS. Node 26, Ekim 2026'da LTS olduğunda ona geçilir. |
 | TypeScript | 6.x'e sabit. TypeScript 7.x'e, programatik API'yi sunan sürüm (7.1 bekleniyor) çıkıp typescript-eslint onu desteklediğinde geçilir ([0019](adr/0019-code-style-and-static-analysis-tools.md)). |
 | PostgreSQL | Ana sürüm 18. Yeni ana sürüme, desteği bitmeden önce planlı olarak geçilir. |
-| Kütüphaneler | Sürümler merkezi olarak sabitlenir (.NET'te merkezi paket yönetimi, ön yüzde kilit dosyası). Güncellemeler otomatik araçla PR olarak gelir (Faz 0 D bölümü). |
+| Kütüphaneler | Sürümler merkezi olarak sabitlenir (.NET'te merkezi paket yönetimi, ön yüzde kilit dosyası). Güncellemeler Dependabot ile haftalık PR olarak gelir; yeni yayımlanan sürümler 3 gün, büyük sürümler 7 gün bekletilir ([git §9](standards/git.md#9-bağımlılık-güncellemeleri)). |
 
 ## 8. Kararlar
 
@@ -160,3 +176,4 @@ Yaygın oldukları halde bilinçli olarak kullanılmayanlar:
 | 2026-09-25 | v1.2 | C.3: kod biçimi ve statik analiz araçları (CSharpier, Meziantou.Analyzer, ESLint 10, Prettier), React Compiler ve EFCore.NamingConventions eklendi; TypeScript 6.x'e sabitlendi (ADR-0019). |
 | 2026-09-25 | v1.3 | C.4: PostgreSQL eklentileri eklendi. |
 | 2026-09-25 | v1.4 | C.6: veri koruma anahtarlarının saklanması ve yaygın şifre listesi eklendi. |
+| 2026-09-25 | v1.5 | D.1–D.2: geliştirme süreci araçları (§3.6) ve test stratejisinin araçları (CsCheck, Stryker.NET, coverlet, axe-core) eklendi; MSW tabloya işlendi; bağımlılık güncelleme politikası bağlandı (ADR-0028, ADR-0029). |

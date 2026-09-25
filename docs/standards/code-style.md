@@ -1,6 +1,6 @@
 # Kod Stili ve Statik Analiz
 
-> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.3 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 10](#10-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -244,7 +244,7 @@ Biçimle ilgili kural içeren eklenti kullanılmaz. Bu yüzden Prettier ile ESLi
 | Aşama | Ne çalışır |
 |---|---|
 | Editör | Kaydederken CSharpier ve Prettier biçimlendirir. Analizör ve ESLint uyarıları yazarken görünür. |
-| Commit öncesi | Değişen dosyalarda biçim ve lint denetimi. Kanca aracı Faz 0 D bölümünde seçilecek. |
+| Commit öncesi | Değişen dosyalarda biçim ve lint denetimi; Lefthook ile ([git §8](git.md#8-commit-öncesi-kontroller)). |
 | Sürekli entegrasyon | `dotnet build -c Release` (uyarılar hata), `dotnet csharpier check .`, mimari testler, `pnpm lint`, `pnpm format:check`, `pnpm typecheck`, üretilen API istemcisinin güncelliği. Ayrıntısı D bölümündedir. |
 
 ## 8. Kuraldan sapma
@@ -283,3 +283,4 @@ Bu belgedeki bir kural değiştirilecekse önce belge güncellenir, sonra araç 
 | 2026-09-25 | v1.0 | S-11: kod içi yorumlar ve XML belgeleri İngilizce. ADR-0019 kabul edildi. |
 | 2026-09-25 | v1.1 | Yasak API listesine veritabanı standardından gelen kurallar eklendi (C.4). |
 | 2026-09-25 | v1.2 | `dangerouslySetInnerHTML` yasağı eklendi (C.6). |
+| 2026-09-25 | v1.3 | Commit öncesi kanca aracı: Lefthook (D.1). |

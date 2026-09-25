@@ -1,6 +1,6 @@
 # Güvenlik Standardı
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -146,7 +146,7 @@ Gizli bilgiler: 10 modül rolünün ve migration rolünün veritabanı parolalar
 **Kurallar:**
 - Gizli bilgiler ortam değişkeniyle geçirilmez. Ortam değişkenleri konteyner inceleme çıktılarında ve süreç listelerinde görünür ([kaynak](https://snapdeploy.dev/blog/environment-variables-security-best-practices)).
 - `appsettings*.json` dosyalarında gizli bilgi bulunmaz. Bağlantı dizelerinin parolasız kısmı yapılandırmada, parola gizli bilgi kaynağından gelir.
-- Depoya yanlışlıkla gizli bilgi eklenmesi, sürekli entegrasyondaki gizli bilgi taramasıyla engellenir (araç Faz 0 D bölümünde).
+- Depoya yanlışlıkla gizli bilgi eklenmesi, commit öncesinde ve sürekli entegrasyonda gitleaks taramasıyla engellenir ([git §10](git.md#10-gizli-bilgi-taraması)).
 - Parolalar kod değişikliği olmadan döndürülebilir (rotation); yordam işletim belgesinde (D) yazılır.
 
 ## 7. Veri koruma anahtarları
@@ -209,7 +209,7 @@ Kapsam 00-scope'taki karara göre sınırlıdır: rol bazlı erişim ve işlem g
 
 - Paket sürümleri kilit dosyalarıyla sabittir ([07 §7](../07-tech-stack.md#7-sürüm-politikası)).
 - .NET derlemesi bilinen güvenlik açığı olan paketleri raporlar (NuGet denetimi). Yüksek ve kritik açıklar sürekli entegrasyonda derlemeyi durdurur; ön yüzde `pnpm audit` aynı işi yapar.
-- Güncellemeler otomatik PR olarak gelir (araç D bölümünde).
+- Güncellemeler Dependabot ile otomatik PR olarak gelir; yeni yayımlanan sürümler birkaç gün bekletilir ([git §9](git.md#9-bağımlılık-güncellemeleri)).
 
 ## 12. Denetim
 
@@ -221,7 +221,7 @@ Kapsam 00-scope'taki karara göre sınırlıdır: rol bazlı erişim ve işlem g
 | Oturum süreleri, çıkışta sunucu kaydının silinmesi, şifre değişince diğer oturumların bitmesi | Entegrasyon testleri (sahte saatle) |
 | CSRF katmanları, güvenlik başlıkları | Entegrasyon testleri |
 | Veritabanı rol yetkileri | DT-02 |
-| Gizli bilgi taraması, bağımlılık açıkları | Sürekli entegrasyon (D) |
+| Gizli bilgi taraması, bağımlılık açıkları | gitleaks, NuGet denetimi, `pnpm audit`, Dependabot uyarıları ([git §9–10](git.md#9-bağımlılık-güncellemeleri)); CI adımları D.3'te |
 
 ## 13. Kararlar
 
@@ -246,3 +246,4 @@ Kapsam 00-scope'taki karara göre sınırlıdır: rol bazlı erişim ve işlem g
 |---|---|---|
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | G-01 (en az 15 karakter, boşluk yok), G-02 (P-16 = 24 saat), G-03 (iki adımlı doğrulama S1'de yok) kararlaştırıldı; ADR-0026 ve ADR-0027 kabul edildi. |
+| 2026-09-25 | v1.1 | Gizli bilgi taraması (gitleaks) ve bağımlılık güncelleme aracı (Dependabot) bağlandı (D.1). |
