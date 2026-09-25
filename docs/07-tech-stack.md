@@ -1,6 +1,6 @@
 # 07 — Teknoloji Yığını
 
-> **Durum:** v1.5 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.6 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 8](#8-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -98,7 +98,7 @@ Yığına yeni bir kütüphane eklemek ya da bir kütüphaneyi değiştirmek iç
 |---|---|---|---|
 | Log, iz (trace) ve ölçüm | .NET'in yerleşik loglaması + OpenTelemetry | Apache 2.0 | [0016](adr/0016-observability-and-local-dev.md) |
 | Yerel geliştirme | Aspire: PostgreSQL konteynerini, API'yi ve ön yüzü tek komutla başlatır; logları, izleri ve ölçümleri tek panelde gösterir | MIT | [0016](adr/0016-observability-and-local-dev.md) |
-| Konteyner | Docker (Aspire ve Testcontainers için) | — | — |
+| Konteyner | Docker (Aspire ve Testcontainers için); demo ortamında Docker Compose | — | — |
 
 ### 3.6 Geliştirme süreci
 
@@ -111,6 +111,23 @@ Yığına yeni bir kütüphane eklemek ya da bir kütüphaneyi değiştirmek iç
 | Sürüm PR'ı ve değişiklik günlüğü | release-please | Apache 2.0 | [0028](adr/0028-development-workflow.md) |
 | Bağımlılık güncellemeleri | Dependabot | GitHub özelliği | [0028](adr/0028-development-workflow.md) |
 | Gizli bilgi taraması | gitleaks (CLI) | MIT | [0028](adr/0028-development-workflow.md) |
+| İş akışı denetimi | actionlint; zizmor | MIT | [ci](standards/ci.md) |
+| Lisans denetimi | nuget-license; `pnpm licenses` | Apache 2.0 | [ci](standards/ci.md) |
+| İmaj güvenlik taraması | Grype | Apache 2.0 | [ci](standards/ci.md) |
+
+### 3.7 Ortamlar ve yayın
+
+| Konu | Seçim | Lisans | ADR |
+|---|---|---|---|
+| Konteyner imajı | .NET SDK'nın yerleşik konteyner üretimi; `aspnet:10.0-noble-chiseled-extra` temel imajı; x64 + ARM64 | MIT | [0030](adr/0030-demo-environment-and-deployment.md) |
+| İmaj kaydı | GitHub Container Registry (`ghcr.io`) | GitHub özelliği | [0030](adr/0030-demo-environment-and-deployment.md) |
+| Ters proxy ve HTTPS | Caddy | Apache 2.0 | [0030](adr/0030-demo-environment-and-deployment.md) |
+| Yedekleme ve zamana göre geri dönüş | WAL-G | Apache 2.0 | [0031](adr/0031-backup-and-point-in-time-recovery.md) |
+| Telemetri toplayıcı | Grafana Alloy | Apache 2.0 | [0032](adr/0032-production-telemetry-and-alerts.md) |
+| Telemetri ve uyarı hizmeti | Grafana Cloud (ücretsiz plan, AB bölgesi) | Hizmet | [0032](adr/0032-production-telemetry-and-alerts.md) |
+| Demo verisi üretimi | Bogus (sabit tohumla) | MIT | [0030](adr/0030-demo-environment-and-deployment.md) |
+| Demo sunucusu | Oracle Cloud "Always Free" ARM sunucusu ve nesne deposu | Ücretsiz plan | [0030](adr/0030-demo-environment-and-deployment.md) |
+| Demo alan adı | deSEC, ücretsiz `dedyn.io` alt alan adı | Ücretsiz hizmet | [0030](adr/0030-demo-environment-and-deployment.md) |
 
 ## 4. Mimari kararlar (Faz 0 B bölümünden)
 
@@ -177,3 +194,4 @@ Yaygın oldukları halde bilinçli olarak kullanılmayanlar:
 | 2026-09-25 | v1.3 | C.4: PostgreSQL eklentileri eklendi. |
 | 2026-09-25 | v1.4 | C.6: veri koruma anahtarlarının saklanması ve yaygın şifre listesi eklendi. |
 | 2026-09-25 | v1.5 | D.1–D.2: geliştirme süreci araçları (§3.6) ve test stratejisinin araçları (CsCheck, Stryker.NET, coverlet, axe-core) eklendi; MSW tabloya işlendi; bağımlılık güncelleme politikası bağlandı (ADR-0028, ADR-0029). |
+| 2026-09-25 | v1.6 | D.3: ortamlar ve yayın araçları (§3.7), CI denetim araçları eklendi (ADR-0030…0032). |

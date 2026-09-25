@@ -1,6 +1,6 @@
 # Git ve İş Akışı Standardı
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -15,7 +15,7 @@ Kodun bilgisayardan ana dala nasıl ulaştığını tanımlar:
 - bağımlılık güncellemeleri ve gizli bilgi taraması,
 - GitHub repo ayarları.
 
-Bir işin ne zaman "bitti" sayılacağı [definition-of-done.md](definition-of-done.md)'de, hangi testlerin yazılacağı [testing.md](testing.md)'de tanımlıdır. Sürekli entegrasyon hattının adımları ve yayın, D.3'te (ortamlar ve sürekli entegrasyon) yazılacak.
+Bir işin ne zaman "bitti" sayılacağı [definition-of-done.md](definition-of-done.md)'de, hangi testlerin yazılacağı [testing.md](testing.md)'de tanımlıdır. Sürekli entegrasyon hattı [ci.md](ci.md)'de, yayın [09 §7](../09-environments-and-deployment.md#7-yayın-akışı)'dedir.
 
 Proje tek geliştiricilidir. Kurallar buna göre seçildi: ekip içi onay adımları yok, ama her değişiklik ana dala girmeden önce otomatik kontrollerden geçer ve izlenebilir kalır.
 
@@ -261,7 +261,7 @@ Hata önem seviyeleri:
 | S1 sonrası | `feat` küçük sürümü, `fix` ve `perf` yamayı artırır (§4.2). Büyük sürüm yalnızca geriye uyumsuz değişiklikte (§4.4) artar. |
 | Derlemedeki sürüm | [MinVer](https://github.com/adamralph/minver) (Apache 2.0) sürümü git etiketlerinden hesaplar: etiketli commit'te `1.4.0`, sonraki commit'lerde `1.4.1-alpha.0.3` gibi. CI, sürümün sonuna commit kimliğini ekler (`+a1b2c3d`). Sürüm numarası hiçbir dosyada elle tutulmaz. |
 | Uygulamadaki sürüm | Sunucu `X-App-Version` başlığında bu sürümü döner ([api §12](api.md#12-sürümleme-ve-uyumluluk)); ön yüz aynı derlemede aynı sürümü alır. Sürümler farklıysa kullanıcı "Yeni sürüm hazır" uyarısını görür. |
-| Sürüm yayınlama | [release-please](https://github.com/googleapis/release-please-action) (Apache 2.0) `main`'e giren commit'lerden bir **sürüm PR'ı** hazırlar ve günceller: sürüm numarası ve `CHANGELOG.md`. Sürüm PR'ı birleştirildiğinde etiket ve GitHub sürüm sayfası (release) oluşur. Sürümün demo ortamına yayını D.3'te bağlanacak. |
+| Sürüm yayınlama | [release-please](https://github.com/googleapis/release-please-action) (Apache 2.0) `main`'e giren commit'lerden bir **sürüm PR'ı** hazırlar ve günceller: sürüm numarası ve `CHANGELOG.md`. Sürüm PR'ı birleştirildiğinde etiket ve GitHub sürüm sayfası (release) oluşur. Sürüm oluşunca demo ortamına otomatik yayınlanır ([09 §7](../09-environments-and-deployment.md#7-yayın-akışı)). |
 | Değişiklik günlüğü | `CHANGELOG.md` elle yazılmaz; commit başlıklarından üretilir. Bu yüzden commit başlıkları kullanıcıya anlamlı yazılır. |
 
 **Neden MinVer:** Yalnızca etiketlere bakar; dal adından ya da ayar dosyasından sürüm çıkarmaz. GitVersion daha karmaşıktır ve dal modeline bağlıdır. Nerdbank.GitVersioning sürümü bir dosyada tutar ve yama numarasını commit sayısından üretir; her commit yayınlanmadığında numaralarda boşluk olur ([kaynak](https://github.com/adamralph/minver)).
@@ -322,7 +322,7 @@ Güncellemeler [Dependabot](https://docs.github.com/en/code-security/reference/s
 
 | Konu | Kural |
 |---|---|
-| Kapsam | NuGet (`Directory.Packages.props`), npm (pnpm çalışma alanı), GitHub Actions, .NET SDK (`global.json`), konteyner imajları (D.3) |
+| Kapsam | NuGet (`Directory.Packages.props`), npm (pnpm çalışma alanı), GitHub Actions, .NET SDK (`global.json`), Compose dosyalarındaki konteyner imajları (Caddy, Alloy, PostgreSQL temel imajı). Uygulama imajının temel imajı her derlemede güncel yamasıyla çekilir ([09 §5](../09-environments-and-deployment.md#5-konteyner-imajı)). |
 | Sıklık | Haftalık, pazartesi. Güvenlik güncellemeleri beklemeden gelir. |
 | Gruplama | Her ekosistemde küçük sürüm ve yama güncellemeleri tek PR'da; büyük sürümler ayrı ayrı |
 | Bekleme süresi | Yeni bir sürüm yayımlandıktan **3 gün** sonra önerilir, büyük sürümler 7 gün sonra (`cooldown`). Güvenlik güncellemeleri beklemez. |
@@ -348,7 +348,7 @@ Parola, anahtar ya da bağlantı dizesinin repoya girmesi [gitleaks](https://git
 
 - gitleaks CLI doğrudan çalıştırılır. Resmi GitHub eylemi (`gitleaks-action`) ayrı bir lisansla dağıtılıyor: kişisel hesaplarda ücretsiz, kuruluş hesaplarında lisans anahtarı istiyor ([kaynak](https://github.com/gitleaks/gitleaks-action)). Tarayıcının kendisi MIT'dir ve bu koşula bağlı değildir.
 - Test verisindeki bilerek sahte değerler `.gitleaks.toml`'da tek tek muaf tutulur; klasör bazında genel muafiyet verilmez.
-- **Gizli bilgi sızarsa** önce değeri geçersiz kılıp yenisini üret (rotation), sonra repodan kaldır. Commit geçmişe girdiği anda değer ele geçmiş sayılır; geçmişi yeniden yazmak tek başına yeterli değildir. Yenileme yordamı işletim belgesindedir (D.3).
+- **Gizli bilgi sızarsa** önce değeri geçersiz kılıp yenisini üret (rotation), sonra repodan kaldır. Commit geçmişe girdiği anda değer ele geçmiş sayılır; geçmişi yeniden yazmak tek başına yeterli değildir. Yenileme yordamı [10 §6](../10-operations.md#6-gizli-bilgilerin-yenilenmesi)'dadır.
 
 ## 11. GitHub repo ayarları
 
@@ -409,3 +409,4 @@ Repo Faz 0 bitince açılır ([R-01](#13-kararlar)). Açılmadan önce şu kontr
 |---|---|---|
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | R-01 (Faz 0 sonunda herkese açık), R-02 (lisans yok, tüm hakları saklı), R-03 (her değişiklik PR ile) kararlaştırıldı; ADR-0028 kabul edildi. |
+| 2026-09-25 | v1.1 | CI, yayın ve gizli bilgi yenileme belgelerine bağlandı (D.3). |

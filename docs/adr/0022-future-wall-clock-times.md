@@ -35,7 +35,7 @@ Ayrıca S5'teki turnelerde yurt dışı mekanlar olabilir. O mekanın saati İst
 **Olumsuz / bedeli:**
 - Etkinlik zaman noktası başına iki kolon vardır ve ikisinin tutarlılığı alan katmanında korunur: kaynak değişince türetilen değer aynı işlemde yeniden hesaplanır.
 - Yaz saati uygulanan bir saat diliminde "olmayan" (ileri alınan saat) ya da "iki kez yaşanan" (geri alınan saat) yerel saatler için bir kural gerekir. Türkiye'de yaz saati uygulaması yok; kural yurt dışı mekanlar geldiğinde (S5) belirlenir.
-- Bakım komutu, saat dilimi veritabanı güncellemesinden sonra çalıştırılmalıdır; bu, işletim belgesine (D bölümü) yazılır.
+- Bakım komutu, saat dilimi veritabanı güncellemesinden sonra çalıştırılmalıdır. Bu yüzden her yayından sonra otomatik çalışır ([10 §7](../10-operations.md#7-saat-dilimi-verisi-güncellemesi)).
 
 ## Değerlendirilen alternatifler
 

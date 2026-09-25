@@ -1,6 +1,6 @@
 # Bitti Tanımı
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 7](#7-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -72,9 +72,9 @@ S1'in bitti tanımı MVP demo senaryosudur ([00 §6.1](../00-scope.md#61-bitti-k
 - [ ] **Gece testleri yeşil.** Tüm tarayıcılarda uçtan uca testler, performans testleri (P-08, P-09, P-15) ve erişilebilirlik taraması son çalıştırmada geçti.
 - [ ] **Mutasyon testi.** Hesaplama motorlarında Stryker.NET çalıştırıldı ve yakalanmayan mutasyonlar incelendi ([testing §13](testing.md#13-kod-kapsamı)).
 - [ ] **Güvenlik.** Bilinen yüksek ya da kritik açığı olan bağımlılık yok; gizli bilgi taraması tüm geçmişte temiz; güvenlik başlıkları testleri geçiyor.
-- [ ] **Yayında.** Sürüm demo ortamında çalışıyor; migration'lar yayın hattında uygulandı (D.3).
+- [ ] **Yayında.** Sürüm demo ortamında çalışıyor; migration'lar yayın betiğinde uygulandı ([09 §7](../09-environments-and-deployment.md#7-yayın-akışı)); son geri yükleme tatbikatı başarılı ([09 §8.3](../09-environments-and-deployment.md#83-geri-yükleme-tatbikatı)).
 - [ ] **Sürüm kaydı.** Sürüm etiketi ve değişiklik günlüğü release-please ile oluştu; S1 için `v1.0.0` ([git §7](git.md#7-sürüm-numaraları-ve-etiketler)).
-- [ ] **Belgeler.** README'deki durum tablosu ve işletim belgesi (D.3) güncel.
+- [ ] **Belgeler.** README'deki durum tablosu ve [işletim el kitabı](../10-operations.md) güncel.
 
 ## 7. Kararlar
 
@@ -91,3 +91,4 @@ S1'in bitti tanımı MVP demo senaryosudur ([00 §6.1](../00-scope.md#61-bitti-k
 |---|---|---|
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | Kesinleşti. |
+| 2026-09-25 | v1.1 | Yayın ve işletim belgelerine bağlandı (D.3). |

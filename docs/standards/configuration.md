@@ -1,6 +1,6 @@
 # Yapılandırma ve Altyapı Hizmetleri Standardı
 
-> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 10](#10-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -23,6 +23,8 @@ Gizli bilgilerin kaynağı [security §6](security.md#6-gizli-bilgiler)'dadır. 
 | `Testing` | Otomatik testler ve sürekli entegrasyon | Testcontainers veritabanı, sahte saat; dış servis yok |
 | `Demo` | Portfolyo için yayındaki demo | Kurgusal veri; yayın ayarlarıyla aynı güvenlik; migration'lar ayrı adımda |
 | `Production` | İleride gerçek kullanım | Demo ile aynı kurallar |
+
+Ortamların nerede ve nasıl çalıştığı [09 §2](../09-environments-and-deployment.md#2-ortamlar)'dedir.
 
 **Kural:** İş mantığı ortama göre dallanmaz. Ortam kontrolü (`IsDevelopment()`) yalnızca altyapıda kullanılır: migration'ın açılışta uygulanması, API belgesi arayüzü, ayrıntılı hata sayfaları.
 
@@ -132,3 +134,4 @@ S1'de dış servis yoktur. Sonraki sürümlerde (e-posta S6, güzergah hesabı S
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | P-04 = 15, P-16 = 24 saat. |
 | 2026-09-25 | v1.1 | Özellik bayrağı yerine bitmemiş işlerin nasıl ele alınacağı bağlandı (D.1). |
+| 2026-09-25 | v1.2 | Ortamlar belgesine bağlantı (D.3). |

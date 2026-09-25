@@ -1,6 +1,6 @@
 # API Standardı
 
-> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 15](#15-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -282,7 +282,7 @@ Oturum [ADR-0011](../adr/0011-authentication.md)'deki gibi sunucu tarafı oturum
 | Anonim uç noktalar | Yalnızca giriş, antiforgery belirteci alma ve sağlık kontrolleri (AT-09) |
 | İstek sınırı | Giriş uç noktasında IP başına ve hesap başına ayrı sınır; aşılınca `429` ve `Retry-After` ([kaynak](https://learn.microsoft.com/en-us/aspnet/core/performance/rate-limit?view=aspnetcore-10.0)). Hesap kilidi (BR-SYS-005) alan kuralı olarak ayrıca işler. |
 | Yanıt başlıkları | Tüm `/api` yanıtlarında `Cache-Control: no-store` (kişisel ve güncel veri tarayıcıda ya da arada önbelleğe alınmaz) ve `X-Content-Type-Options: nosniff` |
-| HTTPS | Yalnızca HTTPS; yönlendirme ve HSTS ters proxy'de (D bölümü) |
+| HTTPS | Yalnızca HTTPS; yönlendirme ve HSTS ters proxy'de (Caddy, [09 §6](../09-environments-and-deployment.md#6-ters-proxy-ve-https)) |
 
 ## 12. Sürümleme ve uyumluluk
 
@@ -379,3 +379,4 @@ Oturum [ADR-0011](../adr/0011-authentication.md)'deki gibi sunucu tarafı oturum
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | A-01, A-02, A-03 kararlaştırıldı; ADR-0023, ADR-0024, ADR-0025 kabul edildi. |
 | 2026-09-25 | v1.1 | Yetki türündeki kurallar `403` ile kural numarası döner (C.6). |
+| 2026-09-25 | v1.2 | HTTPS ve HSTS'in yeri bağlandı (D.3). |

@@ -1,6 +1,6 @@
 # Güvenlik Standardı
 
-> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -135,7 +135,7 @@ Sistem yöneticisinin ürettiği geçici şifre (BR-SYS-006) kriptografik rastge
 
 ## 6. Gizli bilgiler
 
-Gizli bilgiler: 10 modül rolünün ve migration rolünün veritabanı parolaları ([ADR-0021](../adr/0021-database-roles-per-module.md)), veri koruma anahtarlarını şifreleyen sertifika (§7) ve sonraki sürümlerde e-posta gibi dış servislerin anahtarları.
+Gizli bilgiler: 10 modül rolünün ve migration rolünün veritabanı parolaları ([ADR-0021](../adr/0021-database-roles-per-module.md)), veri koruma anahtarlarını şifreleyen sertifika (§7), yedeklerin şifreleme ve depo anahtarları, telemetri belirteci, demo ortamında demo hesaplarının parolaları ve sonraki sürümlerde e-posta gibi dış servislerin anahtarları. Demo ortamındaki tam liste [09 §10](../09-environments-and-deployment.md#10-gizli-bilgiler)'dadır.
 
 | Ortam | Kaynak |
 |---|---|
@@ -147,7 +147,7 @@ Gizli bilgiler: 10 modül rolünün ve migration rolünün veritabanı parolalar
 - Gizli bilgiler ortam değişkeniyle geçirilmez. Ortam değişkenleri konteyner inceleme çıktılarında ve süreç listelerinde görünür ([kaynak](https://snapdeploy.dev/blog/environment-variables-security-best-practices)).
 - `appsettings*.json` dosyalarında gizli bilgi bulunmaz. Bağlantı dizelerinin parolasız kısmı yapılandırmada, parola gizli bilgi kaynağından gelir.
 - Depoya yanlışlıkla gizli bilgi eklenmesi, commit öncesinde ve sürekli entegrasyonda gitleaks taramasıyla engellenir ([git §10](git.md#10-gizli-bilgi-taraması)).
-- Parolalar kod değişikliği olmadan döndürülebilir (rotation); yordam işletim belgesinde (D) yazılır.
+- Parolalar kod değişikliği olmadan döndürülebilir (rotation); yordam [10 §6](../10-operations.md#6-gizli-bilgilerin-yenilenmesi)'dadır. Demo ortamındaki gizli bilgilerin listesi [09 §10](../09-environments-and-deployment.md#10-gizli-bilgiler)'dadır.
 
 ## 7. Veri koruma anahtarları
 
@@ -173,7 +173,7 @@ ASP.NET Core, oturum çerezini ve antiforgery belirtecini "veri koruma" (Data Pr
 | `Referrer-Policy` | `no-referrer` | Adresler (kayıt kimlikleri) başka sitelere taşınmaz. |
 | `X-Content-Type-Options` | `nosniff` | — |
 | `Cross-Origin-Opener-Policy` | `same-origin` | Başka sitenin açtığı pencere uygulamaya erişemez. |
-| `Strict-Transport-Security` | Ters proxy'de (D bölümü) | — |
+| `Strict-Transport-Security` | Caddy'de: `max-age=31536000` ([09 §6](../09-environments-and-deployment.md#6-ters-proxy-ve-https)) | Tarayıcı siteye bir daha HTTP ile bağlanmaz. |
 | `Cache-Control` | `index.html`: `no-cache`; adında özet (hash) olan statik dosyalar: bir yıl, `immutable` | Yeni sürüm hemen yüklenir; değişmeyen dosyalar yeniden indirilmez ([api §12](api.md#12-sürümleme-ve-uyumluluk)). |
 
 **Bilinen ödün — `style-src 'unsafe-inline'`:** Radix tabanlı bazı bileşenler (ör. diyalog açıkken sayfa kaydırmasını kilitleyen yardımcı) çalışma anında `<style>` etiketi ekler ([kaynak](https://gist.github.com/rbonestell/4fcba81d05413f4e27bab8ebf787624c)). Satır içi stil, satır içi betiğe göre çok daha düşük risklidir. S1'de bu izin olmadan çalışıp çalışmadığı denenir; çalışırsa kaldırılır. Yazı tipleri de kendi sunucumuzdan sunulur; Google Fonts gibi dış kaynaklar kullanılmaz.
@@ -221,7 +221,7 @@ Kapsam 00-scope'taki karara göre sınırlıdır: rol bazlı erişim ve işlem g
 | Oturum süreleri, çıkışta sunucu kaydının silinmesi, şifre değişince diğer oturumların bitmesi | Entegrasyon testleri (sahte saatle) |
 | CSRF katmanları, güvenlik başlıkları | Entegrasyon testleri |
 | Veritabanı rol yetkileri | DT-02 |
-| Gizli bilgi taraması, bağımlılık açıkları | gitleaks, NuGet denetimi, `pnpm audit`, Dependabot uyarıları ([git §9–10](git.md#9-bağımlılık-güncellemeleri)); CI adımları D.3'te |
+| Gizli bilgi taraması, bağımlılık açıkları | gitleaks, NuGet denetimi, `pnpm audit`, Dependabot uyarıları ([git §9–10](git.md#9-bağımlılık-güncellemeleri), [ci §9–10](ci.md#9-lisans-denetimi)) |
 
 ## 13. Kararlar
 
@@ -247,3 +247,4 @@ Kapsam 00-scope'taki karara göre sınırlıdır: rol bazlı erişim ve işlem g
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | G-01 (en az 15 karakter, boşluk yok), G-02 (P-16 = 24 saat), G-03 (iki adımlı doğrulama S1'de yok) kararlaştırıldı; ADR-0026 ve ADR-0027 kabul edildi. |
 | 2026-09-25 | v1.1 | Gizli bilgi taraması (gitleaks) ve bağımlılık güncelleme aracı (Dependabot) bağlandı (D.1). |
+| 2026-09-25 | v1.2 | HSTS, gizli bilgi yenileme yordamı ve CI denetimleri bağlandı (D.3). |

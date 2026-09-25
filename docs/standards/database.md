@@ -1,6 +1,6 @@
 # Veritabanı Standardı
 
-> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.3 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 18](#18-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -49,6 +49,7 @@ Her modül veritabanına **kendi rolüyle** bağlanır ([V-02](#18-kararlar)). R
 | `festos_{modül}` (ör. `festos_booking`) | Modülün veritabanı bağlamı | Kendi şemasında `USAGE`; tablolarında `SELECT`, `INSERT`, `UPDATE`, `DELETE` (aşağıdaki istisnalarla); `audit.audit_entries` tablosunda yalnızca `INSERT` |
 | `festos_audit` | Audit modülü | `audit` şemasında `SELECT` |
 | `festos_readonly` | Elle inceleme, ileride raporlama (S6) | Tüm şemalarda `SELECT` |
+| `festos_monitor` | Telemetri toplayıcısı (Alloy) | PostgreSQL'in yerleşik `pg_monitor` rolünün üyesi: sunucu istatistikleri (bağlantılar, WAL arşivleme, boyut). Hiçbir tabloda yetkisi yoktur ([09 §8.1](../09-environments-and-deployment.md#81-kurulum)). |
 
 **Yetki istisnaları, yani kuralların veritabanında zorlanması:**
 - **Değişmez tablolar** ([06 §8](../06-erd-conceptual.md#8-değişmez-kayıtlar)): modül rolüne `UPDATE` ve `DELETE` verilmez. İşlem geçmişi, stok hareketi ve rider versiyonu gibi kayıtlar koddaki bir hatayla bile değiştirilemez (BR-SYS-010).
@@ -404,7 +405,7 @@ Yapı [ADR-0010](../adr/0010-messaging-infrastructure.md)'daki kararları fiziks
 | Ortam | Nasıl |
 |---|---|
 | Geliştirme | Host açılırken tüm modüllerin migration'larını uygular ([08 §5](../08-architecture.md#5-ana-uygulama-host-ve-modüllerin-kaydı)). |
-| Demo ve yayın | Uygulama başlamadan önce yayın hattında ayrı bir adım: EF migration paketi (bundle), `festos_migrator` rolüyle. |
+| Demo ve yayın | Uygulama başlamadan önce yayın betiğinde ayrı bir adım: aynı imajdaki `migrate` komutu, `festos_migrator` rolüyle ([09 §5](../09-environments-and-deployment.md#5-konteyner-imajı)). |
 
 Yayında uygulamanın açılışta migration çalıştırmaması önerilen yoldur: birden fazla örnek aynı anda migration uygulamaya çalışabilir, ayrıca uygulama rolünün şema değiştirme yetkisi olmamalıdır ([kaynak](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying)). EF 9'dan beri migration'lar veritabanı kilidi altında çalışır; yine de ayrı adım tercih edilir.
 
@@ -435,7 +436,7 @@ Yayında uygulamanın açılışta migration çalıştırmaması önerilen yoldu
 
 **Ham SQL:** Yalnızca altyapı katmanında ve her zaman parametreli yazılır. EF'in `FromSql` / `ExecuteSql` gibi enterpolasyonlu metotları değerleri otomatik olarak parametreye çevirir. Metin birleştirmeye açık `FromSqlRaw`, `ExecuteSqlRaw` ve `SqlQueryRaw` yasak API listesine eklenir (SQL enjeksiyonu).
 
-Yedekleme ve zamana göre geri dönüş (PITR) Faz 0 D bölümünde tanımlanacak.
+Yedekleme ve zamana göre geri dönüş (PITR) [09 §8.2](../09-environments-and-deployment.md#82-yedekleme-ve-zamana-göre-geri-dönüş)'de ve [ADR-0031](../adr/0031-backup-and-point-in-time-recovery.md)'dedir.
 
 ### 17.1 Veritabanı testleri
 
@@ -466,7 +467,8 @@ Gerçek PostgreSQL 18 üzerinde (Testcontainers) çalışan testler. Yer: `tests
 | V-11 | Yabancı anahtar silme davranışı | Varsayılan `RESTRICT`; `CASCADE` yalnızca toplu kökün alt varlıklarında | §10.2 |
 | V-12 | Aralık biçimi | Yarı açık `[başlangıç, bitiş)`, iki kolon | §7.3 |
 | V-13 | Toplu güncelleme | Yalnızca teknik tablolarda; iş tablolarında yasak | §14.2 |
-| V-14 | Migration uygulama | Geliştirmede açılışta; yayında ayrı adım, migration paketiyle | §16.2 |
+| V-14 | Migration uygulama | Geliştirmede açılışta; yayında ayrı adım, aynı imajdaki `migrate` komutuyla (migration paketi yerine; [09 E-08](../09-environments-and-deployment.md#13-kararlar)) | §16.2 |
+| V-15 | İzleme rolü | `festos_monitor`, yalnızca `pg_monitor` üyeliği | §4 |
 
 ## 19. Değişiklik kaydı
 
@@ -476,3 +478,4 @@ Gerçek PostgreSQL 18 üzerinde (Testcontainers) çalışan testler. Yer: `tests
 | 2026-09-25 | v1.0 | V-01, V-02, V-03 kararlaştırıldı; ADR-0020, ADR-0021, ADR-0022 kabul edildi. |
 | 2026-09-25 | v1.1 | Tekrar güvenliği tablosu eklendi (C.5). |
 | 2026-09-25 | v1.2 | Outbox'a iz bağlamı kolonu eklendi (C.6). |
+| 2026-09-25 | v1.3 | D.3 ile uyum: yayında migration aynı imajdaki `migrate` komutuyla (V-14); izleme rolü `festos_monitor` (V-15); yedekleme ve PITR bağlandı. |

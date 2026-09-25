@@ -86,3 +86,6 @@ Her alternatif ve neden seçilmediği.
 | [0027](0027-session-and-password-security.md) | Oturum ve şifre güvenliği ayrıntıları | Kabul edildi |
 | [0028](0028-development-workflow.md) | Geliştirme iş akışı ve repo araçları | Kabul edildi |
 | [0029](0029-test-strategy-and-rule-traceability.md) | Test stratejisi ve kural izlenebilirliği | Kabul edildi |
+| [0030](0030-demo-environment-and-deployment.md) | Demo ortamı ve yayın modeli | Kabul edildi |
+| [0031](0031-backup-and-point-in-time-recovery.md) | Yedekleme ve zamana göre geri dönüş | Kabul edildi |
+| [0032](0032-production-telemetry-and-alerts.md) | Yayın ortamında telemetri ve uyarılar | Kabul edildi |

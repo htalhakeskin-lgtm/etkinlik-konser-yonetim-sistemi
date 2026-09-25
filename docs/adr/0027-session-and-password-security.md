@@ -49,7 +49,7 @@ Bu ayrıntılar sonradan değişirse tüm kullanıcıların şifresini ya da otu
 **Olumsuz / bedeli:**
 - Giriş başına özetleme süresi artar (onlarca milisaniye); giriş sık yapılan bir işlem olmadığı için kabul edilebilir.
 - Mutlak süre dolunca, etkin çalışan kullanıcı da yeniden giriş yapar.
-- Sertifika bir gizli bilgi olarak yönetilmeli ve süresi dolmadan yenilenmelidir (D bölümü).
+- Sertifika bir gizli bilgi olarak yönetilmeli ve süresi dolmadan yenilenmelidir ([10 §6.2](../10-operations.md#62-veri-koruma-sertifikası)).
 
 ## Değerlendirilen alternatifler
 

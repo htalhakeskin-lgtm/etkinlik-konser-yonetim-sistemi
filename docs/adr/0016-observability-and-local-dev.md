@@ -2,6 +2,7 @@
 
 - **Durum:** Kabul edildi
 - **Tarih:** 2026-09-25
+- **Genişletildi:** [ADR-0032](0032-production-telemetry-and-alerts.md) — yayın ortamında telemetri Grafana Cloud'a, sunucudaki Alloy toplayıcı üzerinden; uyarılar
 - **İlgili:** [05-module-map.md §9.2](../05-module-map.md#92-olayların-teslimi), P-08, P-09, P-15, [ADR-0010](0010-messaging-infrastructure.md)
 
 ## Bağlam
@@ -21,7 +22,7 @@
   - başarısız olay sayısı,
   - SignalR bağlantı sayısı.
 - **Yerel geliştirme:** Aspire. Tek bir başlatıcı proje (AppHost) PostgreSQL konteynerini, API'yi ve Vite ön yüzünü birlikte başlatır. Aspire paneli logları, izleri ve ölçümleri gösterir. Sağlık kontrolleri ve telemetri ayarları modüllerde ortak bir yapılandırmayla tanımlanır.
-- **Yayın ortamı:** Demo ortamının telemetriyi nereye göndereceği Faz 0 D bölümünde (ortamlar ve CI) seçilecek.
+- **Yayın ortamı:** Telemetri sunucudaki Grafana Alloy toplayıcısı üzerinden Grafana Cloud'a gider ([ADR-0032](0032-production-telemetry-and-alerts.md)).
 
 ## Sonuçlar
 

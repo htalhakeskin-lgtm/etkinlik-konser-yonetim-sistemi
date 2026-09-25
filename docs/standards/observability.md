@@ -1,11 +1,11 @@
 # Gözlemlenebilirlik Standardı
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 9](#9-kararlar)
 
 ## 1. Bu belge ne işe yarar
 
-Uygulamanın çalışırken ne yaptığının nasıl görüleceğini tanımlar: loglar, izler (trace), ölçümler (metric), sağlık kontrolleri ve uyarılar. Araç seçimi [ADR-0016](../adr/0016-observability-and-local-dev.md)'dadır: .NET'in yerleşik loglaması ve OpenTelemetry; yerel geliştirmede Aspire paneli. Telemetrinin yayın ortamında nereye gönderileceği Faz 0 D bölümünde seçilecek.
+Uygulamanın çalışırken ne yaptığının nasıl görüleceğini tanımlar: loglar, izler (trace), ölçümler (metric), sağlık kontrolleri ve uyarılar. Araç seçimi [ADR-0016](../adr/0016-observability-and-local-dev.md)'dadır: .NET'in yerleşik loglaması ve OpenTelemetry; yerel geliştirmede Aspire paneli. Yayın ortamında telemetri, sunucudaki Grafana Alloy toplayıcısı üzerinden Grafana Cloud'a gider ([ADR-0032](../adr/0032-production-telemetry-and-alerts.md), [09 §11](../09-environments-and-deployment.md#11-telemetri-ve-uyarılar)).
 
 Log şablonlarının yazımı [code-style §4.7](code-style.md#47-loglama)'de, telemetri adları [naming §9](naming.md#9-telemetri-ve-log-adları)'dadır.
 
@@ -76,7 +76,7 @@ Framework loglarını `Warning`'e çekip uygulama loglarını `Information`'da t
 | Komut ve sorgu izi | İşlem birimi dekoratörü her komut için bir iz aralığı (span) açar; adı komutun adıdır (`ConfirmEvent`) |
 | Olayların izi | Outbox kaydı, olayı doğuran isteğin iz bağlamını (`traceparent`) saklar. Dinleyicinin iz aralığı bu bağlamla ilişkilendirilir. Böylece bir onayın Planning ve Inventory'deki etkileri aynı iz zincirinde görünür ([ADR-0016](../adr/0016-observability-and-local-dev.md)). |
 | Özel öznitelikler | `festos.` önekli, yalnızca kimlik ve teknik değer ([naming §9](naming.md#9-telemetri-ve-log-adları)) |
-| Örnekleme (sampling) | Tüm izler alınır (üst izin kararına uyan, her zaman açık örnekleme). Bu hacimde örnekleme gerekmez; yayın ortamında hacim ölçülüp D bölümünde yeniden değerlendirilir. |
+| Örnekleme (sampling) | Tüm izler alınır (üst izin kararına uyan, her zaman açık örnekleme). Bu hacimde örnekleme gerekmez; demo ortamında da tüm izler alınır. Gerçek kullanım hacminde yeniden değerlendirilir. |
 | Hata yanıtı | Problem Details'teki `traceId`, kullanıcının gördüğü hatayı ize bağlar ([api §8](api.md#8-hata-yanıtları)) |
 
 ## 5. Ölçümler
@@ -111,7 +111,7 @@ Framework loglarını `Warning`'e çekip uygulama loglarını `Information`'da t
 
 ## 7. Uyarılar
 
-S1'de izlenecek durumlar aşağıdadır. Uyarıların nereye (e-posta, mesaj) gideceği D bölümünde belirlenir.
+S1'de izlenecek durumlar aşağıdadır. Uyarılar Grafana Cloud'da tanımlanır ve e-postayla gelir; yedekleme ve sunucu uyarılarıyla birlikte tam liste [09 §11](../09-environments-and-deployment.md#11-telemetri-ve-uyarılar)'dedir.
 
 | Durum | Neden önemli |
 |---|---|
@@ -133,7 +133,7 @@ Aspire paneli logları, izleri ve ölçümleri aynı ekranda gösterir. Gelişti
 | O-02 | İstek logu | Yok; istek bilgisi izlerde | §3.3 |
 | O-03 | Kişisel veri | Yalnızca kimlik loglanır; maskeleme kütüphanesi S1'de yok | §3.4 |
 | O-04 | Olayların izi | Outbox iz bağlamını saklar; dinleyici aynı zincire bağlanır | §4 |
-| O-05 | Örnekleme | Tüm izler; D'de yeniden değerlendirilir | §4 |
+| O-05 | Örnekleme | Tüm izler, demo ortamında da; gerçek kullanım hacminde yeniden değerlendirilir | §4 |
 | O-06 | Sağlık uçlarının erişimi | Demo ve yayında iç port | §6 |
 | O-07 | Saklama süreleri | Log 30, iz 7, ölçüm 90 gün; işlem geçmişi silinmez | §2 |
 
@@ -143,3 +143,4 @@ Aspire paneli logları, izleri ve ölçümleri aynı ekranda gösterir. Gelişti
 |---|---|---|
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | Kesinleşti. |
+| 2026-09-25 | v1.1 | Yayın ortamındaki telemetri hedefi ve uyarıların yeri bağlandı; örnekleme kararı kesinleşti (D.3). |

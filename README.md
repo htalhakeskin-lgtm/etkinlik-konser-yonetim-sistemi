@@ -17,11 +17,11 @@ Konser ve etkinlik sektöründe hem kendi etkinliklerini düzenleyen hem de tekn
 | [04 — Durum makineleri](docs/04-state-machines.md) | v1.1 |
 | [05 — Modül haritası](docs/05-module-map.md) | v1.3 |
 | [06 — Kavramsal veri modeli](docs/06-erd-conceptual.md) | v1.0 |
-| [07 — Teknoloji yığını](docs/07-tech-stack.md) ve [ADR'ler](docs/adr/README.md) | v1.5 |
-| [08 — Mimari ve klasör yapısı](docs/08-architecture.md) | v1.5 |
+| [07 — Teknoloji yığını](docs/07-tech-stack.md) ve [ADR'ler](docs/adr/README.md) | v1.6 |
+| [08 — Mimari ve klasör yapısı](docs/08-architecture.md) | v1.6 |
 | [Standartlar](docs/standards/README.md): [isimlendirme](docs/standards/naming.md) · [kod stili](docs/standards/code-style.md) · [veritabanı](docs/standards/database.md) · [API](docs/standards/api.md) · [güvenlik](docs/standards/security.md) · [gözlemlenebilirlik](docs/standards/observability.md) · [yapılandırma](docs/standards/configuration.md) | Tamamlandı |
 | Çalışma süreci: [git ve iş akışı](docs/standards/git.md) · [test stratejisi](docs/standards/testing.md) · [bitti tanımı](docs/standards/definition-of-done.md) | Tamamlandı |
-| Çalışma süreci: ortamlar ve sürekli entegrasyon | Sırada |
+| Çalışma süreci: [09 — Ortamlar ve yayın](docs/09-environments-and-deployment.md) · [10 — İşletim el kitabı](docs/10-operations.md) · [sürekli entegrasyon](docs/standards/ci.md) | Tamamlandı |
 | Çalışma süreci: arayüz standartları | Sırada |
 
 ## Teknoloji

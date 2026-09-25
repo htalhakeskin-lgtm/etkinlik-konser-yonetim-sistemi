@@ -1,6 +1,6 @@
 # Kod Stili ve Statik Analiz
 
-> **Durum:** v1.3 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.4 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 10](#10-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -111,7 +111,7 @@ Türkçe kültürde `"I".ToLower()` sonucu `"ı"`, `1234.5` ise `"1234,5"` olur.
 
 Son satırdaki kuralı .NET'in kendi analizörleri yakalamaz. Sunucu sabit kültürle çalışsa bile migration, test ve araçlar geliştiricinin Türkçe bilgisayarında çalışır; bu yüzden kurallar derlemede zorlanır ([kaynak](https://github.com/meziantou/Meziantou.Analyzer/blob/main/docs/Rules/MA0076.md)).
 
-Kullanıcıya giden metinler (PDF, e-posta) açıkça `tr-TR` kültürüyle biçimlenir. Bu nedenle uygulamada `InvariantGlobalization` açılmaz ve konteyner imajında ICU kütüphanesi bulunur (Faz 0 D bölümü).
+Kullanıcıya giden metinler (PDF, e-posta) açıkça `tr-TR` kültürüyle biçimlenir. Bu nedenle uygulamada `InvariantGlobalization` açılmaz ve konteyner imajı ICU ile saat dilimi verisini içeren `chiseled-extra` sürümüdür ([09 §5](../09-environments-and-deployment.md#5-konteyner-imajı)).
 
 ### 4.7 Loglama
 
@@ -245,7 +245,7 @@ Biçimle ilgili kural içeren eklenti kullanılmaz. Bu yüzden Prettier ile ESLi
 |---|---|
 | Editör | Kaydederken CSharpier ve Prettier biçimlendirir. Analizör ve ESLint uyarıları yazarken görünür. |
 | Commit öncesi | Değişen dosyalarda biçim ve lint denetimi; Lefthook ile ([git §8](git.md#8-commit-öncesi-kontroller)). |
-| Sürekli entegrasyon | `dotnet build -c Release` (uyarılar hata), `dotnet csharpier check .`, mimari testler, `pnpm lint`, `pnpm format:check`, `pnpm typecheck`, üretilen API istemcisinin güncelliği. Ayrıntısı D bölümündedir. |
+| Sürekli entegrasyon | `dotnet build -c Release` (uyarılar hata), `dotnet csharpier check .`, mimari testler, `pnpm lint`, `pnpm format:check`, `pnpm typecheck`, üretilen API istemcisinin güncelliği. Ayrıntısı [ci.md](ci.md)'dedir. |
 
 ## 8. Kuraldan sapma
 
@@ -284,3 +284,4 @@ Bu belgedeki bir kural değiştirilecekse önce belge güncellenir, sonra araç 
 | 2026-09-25 | v1.1 | Yasak API listesine veritabanı standardından gelen kurallar eklendi (C.4). |
 | 2026-09-25 | v1.2 | `dangerouslySetInnerHTML` yasağı eklendi (C.6). |
 | 2026-09-25 | v1.3 | Commit öncesi kanca aracı: Lefthook (D.1). |
+| 2026-09-25 | v1.4 | Konteyner imajı ve CI ayrıntısı bağlandı (D.3). |

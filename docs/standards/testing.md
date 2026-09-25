@@ -1,6 +1,6 @@
 # Test Stratejisi
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 14](#14-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -12,7 +12,7 @@ Neyin, hangi katmanda ve ne kadar test edileceğini tanımlar. Test araçları [
 - test verisi, zaman ve kültür,
 - kararsız testler ve kod kapsamı.
 
-Bir işin ne zaman bitmiş sayılacağı [definition-of-done.md](definition-of-done.md)'dedir. Testlerin CI'da hangi sırayla çalıştığı D.3'te yazılacak.
+Bir işin ne zaman bitmiş sayılacağı [definition-of-done.md](definition-of-done.md)'dedir. Testlerin CI'da nasıl çalıştığı [ci.md](ci.md)'dedir.
 
 ## 2. İlkeler
 
@@ -124,7 +124,7 @@ Yerelde konteynerin her test çalıştırmasında yeniden açılmaması için Te
 | Konu | Kural |
 |---|---|
 | Kapsam | MVP demo senaryosu ([00 §6.1](../00-scope.md#61-bitti-kriteri-mvp-demo-senaryosu)) ve kritik akışlar: giriş ve oturum, depo çıkış ve dönüşü, eşzamanlı iki depo sorumlusu. Kural ayrıntıları burada değil, entegrasyon testlerinde sınanır. |
-| Hedef | Yayındakine benzer derleme: Release derlemesi, ön yüzü sunan Host, temiz PostgreSQL, demo verisi. |
+| Hedef | Yayındaki yığının kopyası: aynı uygulama imajı ve Compose tanımı, `Demo` yapılandırması, Caddy ile HTTPS, temiz PostgreSQL, demo verisi ([ci §4](ci.md#4-pr-hattı)). |
 | Veri | Her test, kendi etkinliğini ve rezervasyonunu önce API üzerinden hızlıca oluşturur; yalnızca sınanan adım arayüzden yapılır. Testler birbirinin verisine dayanmaz. |
 | Eşzamanlılık | Demo senaryosunun 13. adımı iki ayrı tarayıcı bağlamıyla (iki kullanıcı) sınanır: birinde yapılan çıkış, diğerinde sayfa yenilenmeden görünür; aynı birimin ikinci çıkışı reddedilir. |
 | Mobil | Depo ekranları telefon görünümünde (dokunmatik, dar ekran) çalıştırılır. |
@@ -179,7 +179,7 @@ Bu denetimle "BR-MRP-002'yi hangi testler doğruluyor?" sorusunun cevabı her za
 |---|---|
 | Veri kurucular | Her varlığın geçerli varsayılanlarla dolu bir kurucusu vardır (`EventBuilder`). Test yalnızca sınadığı alanı belirtir; okuyan, testin neye baktığını hemen görür. |
 | Veri paylaşımı | Testler ortak, değiştirilebilir bir başlangıç verisine dayanmaz; her test kendi verisini oluşturur. Sabit başvuru verisi (ör. roller) migration'la gelir. |
-| Demo verisi | Uçtan uca testler ve demo ortamı aynı kurgusal veri setini kullanır. Veri tamamen kurgusaldır; gerçek kişi ya da şirket bilgisi içermez ([00 §9](../00-scope.md#9-fonksiyonel-olmayan-varsayımlar)). Veri setinin yeri ve yükleme yöntemi D.3'te belirlenecek. |
+| Demo verisi | Uçtan uca testler ve demo ortamı aynı kurgusal veri setini kullanır. Veri tamamen kurgusaldır; gerçek kişi ya da şirket bilgisi içermez ([00 §9](../00-scope.md#9-fonksiyonel-olmayan-varsayımlar)). Veri setinin yapısı ve yükleme yöntemi [09 §9](../09-environments-and-deployment.md#9-demo-verisi-ve-sıfırlama)'dadır. |
 | Zaman | Sahte saatin varsayılan başlangıcı sabit bir andır (Europe/Istanbul'da bir iş günü sabahı). Gün ve ay sonu, yıl dönümü ve aralık sınırları ayrıca sınanır. |
 | Kültür | Tüm .NET testleri **`tr-TR`** kültüründe çalışır (xUnit v3 `culture` ayarı; [kaynak](https://xunit.net/docs/config-xunit-runner-json)). Sunucu değişmez kültürle (invariant) çalışır ve analizörler kültürsüz metin işlemlerini yasaklar ([code-style §4.6](code-style.md#46-kültür-ve-metin)). Testlerin Türkçe kültürde çalışması, bu korumadan kaçan bir `ToUpper()` ya da sayı biçimlendirme hatasını ("I" / "ı" sorunu, ondalık virgül) yakalayan son katmandır. |
 | Kimlikler | Test sonuçları kimlik değerine ya da kimlik sırasına bağlı olmaz (UUIDv7 zaman sırası için kullanılmaz; [ADR-0020](../adr/0020-entity-identifiers.md)). |
@@ -201,7 +201,7 @@ Bu denetimle "BR-MRP-002'yi hangi testler doğruluyor?" sorusunun cevabı her za
 |---|---|
 | Birim testleri (tümü) | 1 dakikanın altı |
 | Bir modülün entegrasyon testleri | 3 dakikanın altı |
-| PR hattının tamamı | 10 dakikanın altı (paralel işlerle; D.3) |
+| PR hattının tamamı | 10 dakikanın altı (paralel işlerle; [ci §4](ci.md#4-pr-hattı)) |
 
 Hedef aşılırsa önce yavaş testler incelenir; test silmek son çaredir.
 
@@ -239,3 +239,4 @@ Hedef aşılırsa önce yavaş testler incelenir; test silmek son çaredir.
 |---|---|---|
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | Kesinleşti; ADR-0029 kabul edildi. |
+| 2026-09-25 | v1.1 | CI hattı, uçtan uca test yığını ve demo verisi bağlandı (D.3). |

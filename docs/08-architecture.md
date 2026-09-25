@@ -1,6 +1,6 @@
 # 08 — Mimari ve Klasör Yapısı
 
-> **Durum:** v1.5 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.6 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -54,8 +54,11 @@ etkinlik-konser-yonetim-sistemi/
 │   └── e2e/                        Playwright uçtan uca testleri
 ├── tools/
 │   ├── docs/                       belge ve izlenebilirlik kontrol betikleri
+│   ├── licenses/                   lisans izin ve istisna listeleri, npm lisans denetimi
 │   └── templates/                  yeni modül iskeleti üreten şablon
+├── deploy/                         demo sunucusu: Compose tanımı, Caddy ve Alloy ayarları, PostgreSQL imajı, kurulum, yayın ve yedekleme betikleri
 ├── .github/                        CI iş akışları, PR ve issue şablonları, Dependabot ayarı
+├── .config/dotnet-tools.json       .NET yerel araçları: CSharpier, dotnet-ef, nuget-license
 ├── FestOS.slnx                   solution dosyası (.NET 10'un XML biçimi)
 ├── global.json                     .NET SDK sürümünün sabitlenmesi
 ├── Directory.Build.props           tüm projelerin ortak derleme ayarları
@@ -211,7 +214,7 @@ FestOS.Modules.Booking.IntegrationEvents/
 |---|---|
 | `BuildingBlocks.Domain` | Varlık ve toplu kök temel sınıfları (modül içi olay listesi, sürüm numarası), `IDomainEvent`, kural numarasını taşıyan `BusinessRuleViolationException`, `Money`, zaman aralığı (`TimeRange`: çakışma ve kapsama hesapları), Europe/Istanbul takvim günü dönüşümleri |
 | `BuildingBlocks.Application` | Komut ve sorgu arayüzleri (`ICommand<TResult>`, `ICommandHandler<,>`, `IQuery<TResult>`, `IQueryHandler<,>`); dekoratörler (loglama, doğrulama, işlem birimi); `IIntegrationEventHandler<T>`; oturumdaki kullanıcı (`ICurrentUser`); `NotFoundException`, `ConcurrencyConflictException`; sayfalama tipleri |
-| `BuildingBlocks.Infrastructure` | Modül veritabanı bağlamı temel sınıfı (şema, sürüm kontrolü, işlem geçmişi ve outbox yazımı); outbox ve inbox tabloları; olay dağıtıcısı ve süreç içi olay yolu; inbox dekoratörü; PostgreSQL advisory lock; zamanlanmış iş temel sınıfı (Cronos + kilit); modül kayıt arayüzü (`IModuleDefinition`) |
+| `BuildingBlocks.Infrastructure` | Modül veritabanı bağlamı temel sınıfı (şema, sürüm kontrolü, işlem geçmişi ve outbox yazımı); outbox ve inbox tabloları; olay dağıtıcısı ve süreç içi olay yolu; inbox dekoratörü; PostgreSQL advisory lock; zamanlanmış iş temel sınıfı (Cronos + kilit); modül kayıt arayüzü (`IModuleDefinition`); demo verisi yükleyici arayüzü (`IDemoDataSeeder`, [09 §9](09-environments-and-deployment.md#9-demo-verisi-ve-sıfırlama)) |
 | `BuildingBlocks.Contracts` | `IIntegrationEvent` ve olay temel tipi (olay kimliği, oluşma zamanı, ilişki kimliği, sıra anahtarı olarak kayıt kimliği) |
 
 BuildingBlocks iş kuralı içermez; hiçbir modüle referans vermez.
@@ -257,6 +260,8 @@ builder.AddModules(
 | Kültür ayarı | Sunucu kodu sabit kültürle (invariant) çalışır ([§9](#9-türkçe-karakter-güvenliği)). |
 | Güvenlik başlıkları | Ön yüz ve API yanıtlarına güvenlik başlıklarını ekler ([security §8](standards/security.md#8-tarayıcı-güvenlik-başlıkları), [api §11](standards/api.md#11-güvenlik-kuralları)). |
 | Sağlık uçları | `/alive` ve `/health`; demo ve yayında dışarıya açılmayan iç portta ([observability §6](standards/observability.md#6-sağlık-kontrolleri)). |
+| Ters proxy arkasında çalışma | Yalnızca Caddy'nin iç ağ adresinden gelen `X-Forwarded-For` ve `X-Forwarded-Proto` başlıklarına güvenir ([09 §6](09-environments-and-deployment.md#6-ters-proxy-ve-https)). |
+| Komutlar | Aynı çalıştırılabilir dosya `migrate`, `seed-demo`, `reset-demo`, `recalculate-local-times` ve `probe-health` komutlarını da çalıştırır ([09 §5](09-environments-and-deployment.md#5-konteyner-imajı)). |
 
 **Adres düzeni:**
 
@@ -268,7 +273,7 @@ builder.AddModules(
 | `/health`, `/alive` | Sağlık kontrolleri |
 | diğer her şey | Ön yüz |
 
-**Migration'lar:** Her modülün kendi migration seti vardır ve şemalar arası yabancı anahtar olmadığı için sıra önemli değildir. Geliştirmede Host açılırken tüm modüllerin migration'larını uygular. Demo ve yayın ortamlarında migration'lar, uygulama başlamadan önce yayın hattında ayrı bir adım olarak çalışır (Faz 0 D bölümü).
+**Migration'lar:** Her modülün kendi migration seti vardır ve şemalar arası yabancı anahtar olmadığı için sıra önemli değildir. Geliştirmede Host açılırken tüm modüllerin migration'larını uygular. Demo ve yayın ortamlarında migration'lar, uygulama başlamadan önce yayın betiğinde aynı imajdaki `migrate` komutuyla ayrı bir adım olarak çalışır ([09 §5](09-environments-and-deployment.md#5-konteyner-imajı)).
 
 **Ayarlar:** Her modülün ayarları yapılandırmada kendi bölümündedir (`Modules:Booking:…`) ve tip güvenli ayar sınıflarıyla okunur. İş kuralı parametreleri (P-01…P-15) bu bölümlerdedir. Arayüzden değiştirilen parametreler (P-06, P-07, P-14) veritabanında, sahibi olan modülde tutulur.
 
@@ -465,3 +470,4 @@ Yasak API kullanımı (`DateTime.UtcNow` gibi) mimari testle değil, derleyici a
 | 2026-09-25 | v1.3 | C.5 ile uyum: `/api/v1` kökü, hata biçimi bağlantısı, AT-14 genişletildi, AT-15 eklendi. |
 | 2026-09-25 | v1.4 | Host görevlerine güvenlik başlıkları ve sağlık uçları eklendi (C.6). |
 | 2026-09-25 | v1.5 | Repo ağacına geliştirme süreci dosyaları eklendi: `.github/`, kök pnpm çalışma alanı, Lefthook, gitleaks, release-please (D.1). |
+| 2026-09-25 | v1.6 | D.3 ile uyum: `deploy/`, `.config/dotnet-tools.json`, `tools/licenses/`; Host'un komutları ve ters proxy ayarı; `IDemoDataSeeder`; yayında migration komutu. |

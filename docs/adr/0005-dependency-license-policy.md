@@ -14,7 +14,7 @@
 - **İzin verilmeyen lisanslar:** GPL, AGPL ve kaynak kodu açma yükümlülüğü getiren diğer lisanslar; kullanım sınırı ya da gelir eşiği olan ticari lisanslar.
 - **İstisnalar:** Gelir eşikli topluluk lisansları (ör. QuestPDF), yalnızca ayrı bir ADR ile ve eşik aşıldığında ne yapılacağı yazılarak kabul edilir ([ADR-0014](0014-documents-and-qr.md)).
 - **Lisansı değişen bağımlılık:** Son ücretsiz sürümde kalınır, alternatif değerlendirilir ve yeni bir ADR yazılır.
-- **Denetim:** Bağımlılıkların lisansları sürekli entegrasyon hattında otomatik kontrol edilir (Faz 0 D bölümü).
+- **Denetim:** Bağımlılıkların lisansları sürekli entegrasyon hattında otomatik kontrol edilir ([ci §9](../standards/ci.md#9-lisans-denetimi)).
 
 ## Sonuçlar
 
