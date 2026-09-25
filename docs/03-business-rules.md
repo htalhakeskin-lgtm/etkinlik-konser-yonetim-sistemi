@@ -34,7 +34,7 @@ Bu sürüm S1 kurallarını içerir. Sonraki sürümlerin kuralları, o sürüm�
 
 **Kodda ve testlerde kullanımı:**
 
-- Kural ihlali kodda kural numarasını taşıyan bir hata olarak fırlatılır. API bu numarayı hata yanıtında döner (ayrıntısı `standards/api.md`'de).
+- Kural ihlali kodda kural numarasını taşıyan bir hata olarak fırlatılır. API bu numarayı hata yanıtının `code` alanında döner ([standards/api.md §8](standards/api.md#8-hata-yanıtları)).
 - Her kuralın en az bir otomatik testi olur ve test, kural numarasıyla etiketlenir. Böylece "BR-MRP-002'yi hangi testler doğruluyor?" sorusu tek aramayla cevaplanır.
 - Bir kuralın metni değişirse [değişiklik kaydına](#8-değişiklik-kaydı) yazılır. Metni değişen kuralın testleri de aynı PR'da güncellenir.
 

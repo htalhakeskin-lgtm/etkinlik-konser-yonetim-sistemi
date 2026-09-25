@@ -79,3 +79,6 @@ Her alternatif ve neden seçilmediği.
 | [0020](0020-entity-identifiers.md) | Varlık kimlikleri — UUIDv7 | Kabul edildi |
 | [0021](0021-database-roles-per-module.md) | Modül başına veritabanı rolü | Kabul edildi |
 | [0022](0022-future-wall-clock-times.md) | Gelecekteki duvar saati zamanları | Kabul edildi |
+| [0023](0023-api-error-model.md) | API hata modeli | Kabul edildi |
+| [0024](0024-http-optimistic-concurrency.md) | HTTP üzerinden iyimser kilit — ETag ve If-Match | Kabul edildi |
+| [0025](0025-idempotency-keys.md) | Tekrar güvenliği anahtarları | Kabul edildi |

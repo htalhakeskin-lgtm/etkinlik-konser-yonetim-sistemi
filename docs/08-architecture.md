@@ -1,6 +1,6 @@
 # 08 — Mimari ve Klasör Yapısı
 
-> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.3 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -217,7 +217,7 @@ Her modül, Infrastructure projesinde bir **modül tanımı** (`IModuleDefinitio
 |---|---|
 | `Name`, `Schema` | Modülün adı ve veritabanı şeması |
 | `RegisterServices` | Veritabanı bağlamı, işleyiciler, dekoratörler, senkron sözleşme uygulaması, olay dinleyicileri, zamanlanmış işler, modül ayarları |
-| `MapEndpoints` | Modülün uç nokta grubu (`/api/…`) |
+| `MapEndpoints` | Modülün uç noktaları (`/api/v1/…`, [api §3](standards/api.md#3-adres-yapısı)) |
 | `Permissions` | Modülün tanımladığı yetkiler (ör. `Planning.Reservations.Confirm`) |
 
 Host, modülleri **açık bir liste** ile kaydeder; yansıma (reflection) ile otomatik tarama yapılmaz. Yeni bir modülün eklendiği tek yer bu listedir:
@@ -242,7 +242,7 @@ builder.AddModules(
 |---|---|
 | Modüllerin kaydı | Yukarıdaki liste; tüm modüllerin yetkileri birleştirilerek yetki kataloğu oluşturulur ve Identity'ye verilir. Böylece Identity, diğer modüllere referans vermeden rolleri yetkilerle eşleyebilir. |
 | Kimlik doğrulama ve yetki | Çerez ve oturum doğrulaması ([ADR-0011](adr/0011-authentication.md)); her uç nokta bir yetki ister. |
-| Hata biçimi | Tüm hatalar tek bir hata işleyicide standart API hata biçimine çevrilir (ayrıntı `standards/api.md`, C.5). |
+| Hata biçimi | Tüm hatalar tek bir hata işleyicide Problem Details biçimine çevrilir ([api §8](standards/api.md#8-hata-yanıtları)). |
 | Anlık yayın | SignalR hub'ı (`/hubs/notifications`). Tüm modüllerin entegrasyon olaylarını dinler ve ilgili gruplara değişiklik bildirimi gönderir ([ADR-0012](adr/0012-realtime-signalr.md)). |
 | Zamanlanmış işler | Modüllerin kaydettiği işleri çalıştırır ([ADR-0013](adr/0013-scheduled-jobs.md)). |
 | API belgesi | OpenAPI belgesi; geliştirmede Scalar arayüzü. |
@@ -253,7 +253,7 @@ builder.AddModules(
 
 | Adres | İçerik |
 |---|---|
-| `/api/…` | Modüllerin uç noktaları (sürümleme ve biçim C.5'te) |
+| `/api/v1/…` | Modüllerin uç noktaları ([api §3](standards/api.md#3-adres-yapısı)) |
 | `/hubs/notifications` | SignalR |
 | `/openapi/…`, `/scalar` | API belgesi (Scalar yalnızca geliştirmede) |
 | `/health`, `/alive` | Sağlık kontrolleri |
@@ -278,7 +278,7 @@ sequenceDiagram
     participant DB as BookingDbContext
     participant OB as Olay dağıtıcısı
 
-    UI->>EP: POST /api/…/events/{id}/confirm
+    UI->>EP: POST /api/v1/events/{id}/confirm
     Note over EP: Oturum ve yetki kontrolü (Booking.Events.Confirm)
     EP->>PIPE: ConfirmEventCommand
     PIPE->>PIPE: Loglama, doğrulama (FluentValidation)
@@ -434,7 +434,8 @@ Her derlemede çalışır; biri başarısız olursa derleme başarısız olur.
 | AT-11 | Uygulama katmanındaki tipler `internal`'dır; modül dışına yalnızca Contracts ve IntegrationEvents tipleri açılır. | Tip erişim belirleyicileri |
 | AT-12 | Tüm tip ve üye adları yalnızca ASCII harf, rakam ve alt çizgiden oluşur. | Tip ve üye adları |
 | AT-13 | Veritabanı adları: şema, tablo, kolon, indeks ve kısıt adları küçük harf snake_case ve ASCII; en fazla 63 bayt; PostgreSQL ayrılmış kelimesi değil; tablo adları çoğul; indeks ve kısıt önekleri `pk_`, `fk_`, `ix_`, `ux_`, `ck_`, `ex_` ([naming §5](standards/naming.md#5-veritabanı-adları)). | EF Core modelinin çalışma zamanında incelenmesi |
-| AT-14 | Her uç noktanın tüm API'de benzersiz bir işlem adı (operationId), modül adıyla aynı bir OpenAPI etiketi ve bir açıklaması (summary) vardır ([naming §6](standards/naming.md#6-api-adları)). | Uç noktaların çalışma zamanında listelenmesi |
+| AT-14 | Her uç noktanın tüm API'de benzersiz bir işlem adı (operationId), modül adıyla aynı bir OpenAPI etiketi ve bir açıklaması (summary) vardır; adres kalıbı + yöntem tekildir ve her kalıbın ilk bölümü tek bir modüle aittir ([naming §6](standards/naming.md#6-api-adları)). | Uç noktaların çalışma zamanında listelenmesi |
+| AT-15 | Toplu kök değiştiren her uç nokta OpenAPI'de zorunlu `If-Match`, değiştiren her uç nokta zorunlu `Idempotency-Key` başlığı bildirir ([api §9–10](standards/api.md#9-eşzamanlı-düzenleme)). | OpenAPI belgesinin incelenmesi |
 
 Yasak API kullanımı (`DateTime.UtcNow` gibi) mimari testle değil, derleyici analizörüyle (`BannedSymbols.txt`) engellenir.
 
@@ -452,3 +453,4 @@ Yasak API kullanımı (`DateTime.UtcNow` gibi) mimari testle değil, derleyici a
 | 2026-09-25 | v1.0 | A-01: kök ad `FestOS`. ADR-0018 kabul edildi. |
 | 2026-09-25 | v1.1 | C.3 ile uyum: standart belgelerine bağlantılar, Türkçe karakter önlemleri genişletildi, uyarıların hata sayılma kapsamı netleşti, ön yüz sınır aracı seçildi, AT-12…AT-14 eklendi. |
 | 2026-09-25 | v1.2 | Veritabanı testleri projesi eklendi (C.4). |
+| 2026-09-25 | v1.3 | C.5 ile uyum: `/api/v1` kökü, hata biçimi bağlantısı, AT-14 genişletildi, AT-15 eklendi. |

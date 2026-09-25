@@ -1,6 +1,6 @@
 # İsimlendirme Standardı
 
-> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 12](#12-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -50,7 +50,7 @@ Sözlükteki kod adı `VenueHold` (opsiyon) örneğiyle:
 | Veritabanı tablosu | snake_case, **çoğul** | `booking.venue_holds` |
 | Veritabanı kolonu | snake_case | `venue_hold_id` |
 | JSON alanı | camelCase | `venueHoldId` |
-| Adres bölümü | kebab-case, çoğul | `/venue-holds/{venueHoldId}` |
+| Adres bölümü | kebab-case, çoğul | `/api/v1/venue-holds/{venueHoldId}` |
 | OpenAPI işlem adı (operationId) | fiil + ad, PascalCase | `PlaceVenueHold` |
 | Üretilen ön yüz kancası (Orval) | `use` + işlem adı | `usePlaceVenueHold` |
 | TypeScript tipi | PascalCase | `VenueHold` |
@@ -183,6 +183,7 @@ Dönüşüm elle yapılmaz. EF Core'a [EFCore.NamingConventions](https://github.
 | Dışlama kısıtı (zaman çakışması) | `ex_` + tablo + kural | `ex_venue_holds_active_overlap` |
 | Migration geçmişi tablosu | Her şemada `__ef_migrations_history` | `booking.__ef_migrations_history` |
 | Outbox / inbox tabloları | Her şemada | `booking.outbox_messages`, `booking.inbox_messages` |
+| Tekrar güvenliği tablosu | Her şemada | `booking.idempotency_keys` |
 | Migration dosyası | Tarih damgası (EF üretir) + PascalCase açıklama | `20261102143000_AddHoldQueue` |
 
 **Kurallar:**
@@ -224,13 +225,15 @@ Gelecekteki duvar saati zamanlarının kaynak değeri `…AtLocal` / `_at_local`
 
 ## 6. API adları
 
-Adres yapısı, sürümleme, sayfalama ve hata biçimi C.5'te tanımlanacak. Bu bölüm yalnızca adların yazımını sabitler.
+Adres yapısı, sürümleme, sayfalama ve hata biçimi [api.md](api.md)'dedir. Bu bölüm yalnızca adların yazımını sabitler.
 
 | Öğe | Biçim | Örnek |
 |---|---|---|
+| Adres kökü | `/api/v1`; modül adı adreste yer almaz | `/api/v1/events` |
 | Adres bölümü | kebab-case, kaynaklar çoğul | `/venue-holds`, `/equipment-units` |
 | Adres parametresi | camelCase + `Id` | `/events/{eventId}/holds` |
 | Durum geçişi eylemi | Kaynağın altında fiil, kebab-case | `POST /events/{eventId}/confirm` |
+| Süre alanı | Dakika cinsinden tamsayı, `…Minutes` | `prepBufferMinutes` |
 | Sorgu parametresi | camelCase | `?status=confirmed&pageSize=20` |
 | JSON alanı | camelCase | `"startsAt": "…"` |
 | JSON enum değeri | camelCase metin | `"status": "holdPlaced"` |
@@ -312,11 +315,12 @@ Kalıcı silme yetkisi gerekirse C.6'daki yetki modeliyle birlikte eklenir.
 | Öğe | Kalıp | Örnek |
 |---|---|---|
 | Hub adresi | `/hubs/{ad}` | `/hubs/notifications` |
-| Kayıt grubu | `{modül}:{kaynakÇoğul}:{kimlik}` | `booking:events:{eventId}` |
-| Liste grubu | `{modül}:{kaynakÇoğul}` | `inventory:equipment-units` |
+| Kayıt grubu | `{kaynakÇoğul}:{kimlik}` | `events:{eventId}`, `warehouses:{warehouseId}` |
+| Liste grubu | `{kaynakÇoğul}` | `equipment-units` |
+| Kullanıcı grubu | `users:{kimlik}` | `users:{userId}` |
 | İstemci metodu | camelCase fiil | `resourceChanged` |
 
-Grup adları, ön yüzün hangi sorguyu yenileyeceğini belirler ([ADR-0012](../adr/0012-realtime-signalr.md)). Bu yüzden grup adının kaynak bölümü, adresin kaynak bölümüyle aynıdır.
+Grup adları, ön yüzün hangi sorguyu yenileyeceğini belirler ([ADR-0012](../adr/0012-realtime-signalr.md), [api §13](api.md#13-anlık-bildirimler)). Bu yüzden grup adının kaynak bölümü, adresin kaynak bölümüyle aynıdır. Kaynak adları sözlükten geldiği ve tekil olduğu için grup adında modül yer almaz.
 
 ## 9. Telemetri ve log adları
 
@@ -391,3 +395,4 @@ Araçların kurulumu ve kuralların tam listesi [code-style.md](code-style.md)'d
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | Kararlar kesinleşti. |
 | 2026-09-25 | v1.1 | Veritabanı standardıyla uyum: ortak ve özel amaçlı kolon adları, duvar saati kolonları (C.4). |
+| 2026-09-25 | v1.2 | API standardıyla uyum: `/api/v1` kökü, süre alanları, tekrar güvenliği tablosu, SignalR grup adlarından modül çıkarıldı (C.5). |

@@ -1,6 +1,6 @@
 # Veritabanı Standardı
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 18](#18-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -386,6 +386,8 @@ Yapı [ADR-0010](../adr/0010-messaging-infrastructure.md)'daki kararları fiziks
 - Gönderilmemiş kayıtlar için `sequence` üzerinde koşullu indeks bulunur (`WHERE dispatched_at IS NULL`).
 - **Saklama süresi:** Gönderilmiş outbox kayıtları ve inbox kayıtları 30 gün sonra, küçük gruplar halinde silinir. Temizlenmeyen outbox tablosu zamanla veritabanının en yavaş tablosuna dönüşür ([kaynak](https://dev.to/nainikmehta/transactional-outbox-pattern-prevent-lost-events-in-eda-2e95)). Hatalı olaylar çözülene kadar silinmez.
 
+**`idempotency_keys`:** Tekrar güvenliği anahtarları ([api §10](api.md#10-tekrar-güvenliği)). Birincil anahtar `(user_id, key)`; isteğin parmak izi, saklanan yanıtın durum kodu ve gövdesi (`jsonb`) ile oluşturma zamanı tutulur. Kayıt, komutun işlem biriminin ilk adımında eklenir; 24 saat sonra silinir.
+
 ## 16. Migration'lar
 
 ### 16.1 Üretme ve inceleme
@@ -471,3 +473,4 @@ Gerçek PostgreSQL 18 üzerinde (Testcontainers) çalışan testler. Yer: `tests
 |---|---|---|
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | V-01, V-02, V-03 kararlaştırıldı; ADR-0020, ADR-0021, ADR-0022 kabul edildi. |
+| 2026-09-25 | v1.1 | Tekrar güvenliği tablosu eklendi (C.5). |

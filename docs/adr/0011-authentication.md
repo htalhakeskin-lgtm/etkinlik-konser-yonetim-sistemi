@@ -17,7 +17,7 @@
 - **Oturum çerezi:** Giriş başarılı olunca tarayıcıya yalnızca oturum kimliğini taşıyan bir çerez verilir. Çerez JavaScript'ten okunamaz (`HttpOnly`), yalnızca HTTPS'te gönderilir (`Secure`) ve başka sitelerden gelen isteklerde gönderilmez (`SameSite`).
 - **Sunucu tarafı oturum:** Oturumun kendisi Identity modülünün `Session` tablosunda tutulur. Her istekte doğrulanır; sık erişim için kısa süreli önbellek kullanılır. Oturum sunucuda sonlandırılınca kullanıcı bir sonraki istekte düşer.
 - **Şifre:** ASP.NET Core Identity'nin parola özetleme bileşeni kullanılır. Kilit kuralı Identity modülünde uygulanır.
-- **İstek sahteciliğine karşı koruma:** Çerezle kimlik doğrulamada, veri değiştiren isteklerde ASP.NET Core'un antiforgery belirteci istenir.
+- **İstek sahteciliğine karşı koruma:** Çerezle kimlik doğrulamada, veri değiştiren isteklerde ASP.NET Core'un antiforgery belirteci istenir. Uygulama ayrıntısı (`SameSite=Strict`, başlıkta belirteç, `Sec-Fetch-Site` kontrolü): [api §11](../standards/api.md#11-güvenlik-kuralları).
 - **Yetki:** Her uç nokta, modülün tanımladığı bir yetkiyi ister. Kullanıcının rollerinden gelen yetkiler oturum açılırken yüklenir ve oturumla birlikte tutulur (BR-SYS-002).
 - **SignalR:** Aynı çerezle kimlik doğrular.
 

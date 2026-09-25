@@ -13,7 +13,7 @@
 ## Karar
 
 - **Teknoloji:** ASP.NET Core SignalR. Hub, ana uygulamada (Host) bulunur.
-- **Gruplar:** İstemciler ilgilendikleri gruplara katılır: `warehouse:{id}`, `event:{id}`, `user:{id}`.
+- **Gruplar:** İstemciler ilgilendikleri gruplara katılır: `warehouses:{id}`, `events:{id}`, `users:{id}` (adlandırma [naming §8.3](../standards/naming.md#83-anlık-bildirim-signalr), mesaj sözleşmesi [api §13](../standards/api.md#13-anlık-bildirimler)).
 - **Tetikleme:** Host entegrasyon olaylarını dinler ve ilgili gruplara kısa bir **değişiklik bildirimi** gönderir: ne değişti, hangi kayıt.
 - **Veri akışı:** İstemci bildirimi alınca ilgili TanStack Query sorgularını geçersiz kılar ve veriyi API'den yeniden alır. Böylece verinin tek kaynağı API olarak kalır; ekranın gösterdiği veri ile API'nin döndürdüğü hiçbir zaman farklılaşmaz.
 - **Bağlantı:** Kopunca SignalR istemcisi otomatik yeniden bağlanır. Arayüz bu sırada uyarı gösterir; bağlantı geri gelince açık sorguların hepsi yenilenir.

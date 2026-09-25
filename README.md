@@ -21,7 +21,8 @@ Konser ve etkinlik sektöründe hem kendi etkinliklerini düzenleyen hem de tekn
 | [08 — Mimari ve klasör yapısı](docs/08-architecture.md) | v1.0 |
 | [Standartlar: isimlendirme](docs/standards/naming.md) · [kod stili](docs/standards/code-style.md) | v1.0 |
 | [Standartlar: veritabanı](docs/standards/database.md) | v1.0 |
-| C.5 — API standartları | Sırada |
+| [Standartlar: API](docs/standards/api.md) | v1.0 |
+| C.6 — Çapraz kesen konular | Sırada |
 
 ## Teknoloji
 
