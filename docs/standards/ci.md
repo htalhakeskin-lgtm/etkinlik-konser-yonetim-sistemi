@@ -1,6 +1,6 @@
 # Sürekli Entegrasyon Standardı
 
-> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -97,6 +97,7 @@ flowchart LR
 
 - `deploy.yml` aynı `deploy` adımını elle girilen bir sürüm için çalıştırır. Sürüm numarası biçim olarak doğrulanır.
 - Yayın işleri aynı anda yalnızca bir tane çalışır (`concurrency: deploy-demo`); çalışan yayın iptal edilmez.
+- **Sürüm PR'ında CI onayı:** Sürüm PR'ını release-please, Actions'ın kendi kimliğiyle (`github-actions[bot]`) açar. GitHub Haziran 2026'dan beri böyle açılan PR'larda iş akışlarını, yazma yetkisi olan bir kullanıcı onaylayınca çalıştırıyor; daha önce hiç çalıştırmıyordu ve sürüm PR'ı CI'dan geçmeden birleştirilebiliyordu ([kaynak](https://github.blog/changelog/2026-06-11-bot-created-pull-requests-can-run-workflows-if-approved/)). Bu yüzden sürüm PR'ında iş akışları PR sayfasından bir kez onaylanır; zorunlu kontroller (§11) ancak böyle geçer. Onayı atlamak için kişisel erişim belirteci ya da GitHub App kullanılmaz: ek bir gizli bilgi ve yenileme yükü getirir, sürüm PR'ını birleştirmek zaten bilinçli bir adımdır.
 - `release-please`'in `GITHUB_TOKEN` ile oluşturduğu etiket başka iş akışlarını tetiklemez ([kaynak](https://github.com/googleapis/release-please-action)). Bu yüzden yayın, ayrı bir etiket iş akışında değil, aynı iş akışında `release_created` sonucuna bağlı adımlarla yapılır.
 
 ## 7. İş akışı güvenliği
@@ -191,3 +192,4 @@ Uçtan uca testler yerelde Aspire ile açılan uygulamaya karşı ya da `deploy/
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | Kesinleşti. |
 | 2026-09-25 | v1.1 | Ön yüz işine tasarım sistemi testleri ve paket boyutu denetimi; yazı tipleri için OFL (D.4). |
+| 2026-09-26 | v1.2 | Sürüm PR'ında iş akışlarının elle onaylanması (GitHub'ın Haziran 2026 değişikliği). |

@@ -140,7 +140,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | [Git ve iş akışı](docs/standards/git.md) | v1.1 |
 | [Test stratejisi](docs/standards/testing.md) | v1.2 |
 | [Bitti tanımı](docs/standards/definition-of-done.md) | v1.2 |
-| [Sürekli entegrasyon](docs/standards/ci.md) | v1.1 |
+| [Sürekli entegrasyon](docs/standards/ci.md) | v1.2 |
 | [09 — Ortamlar ve yayın](docs/09-environments-and-deployment.md) | v1.0 |
 | [10 — İşletim el kitabı](docs/10-operations.md) | v1.0 |
 | [11 — Ekran şablonları ve envanteri](docs/11-screens.md) | v1.0 |
