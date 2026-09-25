@@ -1,6 +1,6 @@
 # Kod Stili ve Statik Analiz
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 10](#10-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -147,8 +147,10 @@ Meziantou, .NET'in kendi analizörlerinin kaçırdığı kültür ve asenkron ha
 | `Task.Wait()`, `Task<T>.Result` | `await` | Kilitlenme ve iş parçacığı tükenmesi |
 | `Thread.Sleep` | `await Task.Delay(…, timeProvider, cancellationToken)` | Aynı neden, ayrıca zaman testte kontrol edilemez |
 | `Console.WriteLine` | `ILogger` | Loglar yapılandırılmış ve izlenebilir olmalı |
-
-Kimlik üretimi (`Guid.NewGuid` gibi) için kural, kimlik tipi seçildiğinde C.4'te eklenecek.
+| `Guid.NewGuid()` | `Guid.CreateVersion7()` | Rastgele (sürüm 4) kimlik indeksi dağıtır ([database §5](database.md#5-kimlik)) |
+| Yöntem belirtmeyen `Math.Round(decimal…)` ve `decimal.Round(…)` | `Money` tipinin yuvarlama yöntemi | .NET varsayılanı bankacı yuvarlamasıdır; proje kuralı sıfırdan uzağa ([database §8.2](database.md#82-yuvarlama)) |
+| `FromSqlRaw`, `ExecuteSqlRaw`, `SqlQueryRaw` | `FromSql`, `ExecuteSql`, `SqlQuery` (enterpolasyonlu, otomatik parametreli) | SQL enjeksiyonu ([database §17](database.md#17-bağlantı-ve-işletim-ayarları)) |
+| `ExecuteUpdate`, `ExecuteDelete` (yalnızca Domain ve Application projelerinde) | Değişiklik takibiyle güncelleme | İşlem geçmişini atlar ([database §14.2](database.md#142-kayıtların-işlem-geçmişi)) |
 
 ## 5. TypeScript ve React
 
@@ -278,3 +280,4 @@ Bu belgedeki bir kural değiştirilecekse önce belge güncellenir, sonra araç 
 |---|---|---|
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | S-11: kod içi yorumlar ve XML belgeleri İngilizce. ADR-0019 kabul edildi. |
+| 2026-09-25 | v1.1 | Yasak API listesine veritabanı standardından gelen kurallar eklendi (C.4). |

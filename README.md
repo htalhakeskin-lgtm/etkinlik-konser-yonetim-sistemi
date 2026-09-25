@@ -20,7 +20,8 @@ Konser ve etkinlik sektöründe hem kendi etkinliklerini düzenleyen hem de tekn
 | [07 — Teknoloji yığını](docs/07-tech-stack.md) ve [ADR'ler](docs/adr/README.md) | v1.0 |
 | [08 — Mimari ve klasör yapısı](docs/08-architecture.md) | v1.0 |
 | [Standartlar: isimlendirme](docs/standards/naming.md) · [kod stili](docs/standards/code-style.md) | v1.0 |
-| C.4 — Veritabanı standartları | Sırada |
+| [Standartlar: veritabanı](docs/standards/database.md) | v1.0 |
+| C.5 — API standartları | Sırada |
 
 ## Teknoloji
 

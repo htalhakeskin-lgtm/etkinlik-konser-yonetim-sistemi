@@ -6,7 +6,7 @@ Kod yazılırken uyulan kurallar. Her standart, kuralın **ne** olduğunu, **ned
 |---|---|---|
 | [naming.md](naming.md) | Koddaki, veritabanındaki, API'deki ve ön yüzdeki adlar; sözlükten diğer biçimlere dönüşüm | v1.0 |
 | [code-style.md](code-style.md) | Kod biçimi, yazım kuralları, analizörler ve lint araçları | v1.0 |
-| `database.md` | Kimlik tipi, ortak kolonlar, para hassasiyeti, zaman, eşzamanlılık, migration kuralları | C.4'te yazılacak |
+| [database.md](database.md) | Roller, kimlik tipi, kolon tipleri, zaman, para, ortak kolonlar, eşzamanlılık, kısıtlar, işlem geçmişi, migration'lar | v1.0 |
 | `api.md` | Adres yapısı, sürümleme, hata biçimi, sayfalama, filtreleme, sıralama | C.5'te yazılacak |
 | `git.md` | Dal düzeni, commit biçimi, PR kontrol listesi | D bölümünde yazılacak |
 

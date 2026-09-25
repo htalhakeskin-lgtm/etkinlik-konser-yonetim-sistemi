@@ -1,6 +1,6 @@
 # 08 — Mimari ve Klasör Yapısı
 
-> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -48,6 +48,7 @@ etkinlik-konser-yonetim-sistemi/
 ├── tests/
 │   ├── ArchitectureTests/          modül sınırlarını ve katman kurallarını doğrulayan testler
 │   ├── BuildingBlocks/             ortak kodun testleri (ör. outbox ve inbox)
+│   ├── Database/                   veritabanı testleri: migration'lar, roller, kısıtlar
 │   ├── Modules/                    her modül için birim ve entegrasyon testleri
 │   ├── Testing/                    ortak test yardımcıları (veritabanı konteyneri, sahte zaman, veri kurucular)
 │   └── e2e/                        Playwright uçtan uca testleri
@@ -409,6 +410,7 @@ src/web/
 | `tests/Modules/{Modül}/FestOS.Modules.{Modül}.IntegrationTests` | Gerçek PostgreSQL ile: kalıcılık, migration'lar, uç noktalar, olay dinleyicileri |
 | `tests/BuildingBlocks/FestOS.BuildingBlocks.IntegrationTests` | Outbox, inbox, dağıtıcı, işlem geçmişi yazıcısı, advisory lock |
 | `tests/ArchitectureTests/FestOS.ArchitectureTests` | Aşağıdaki mimari testler |
+| `tests/Database/FestOS.DatabaseTests` | Gerçek PostgreSQL üzerinde veritabanı testleri DT-01…DT-05 ([database §17.1](standards/database.md#171-veritabanı-testleri)) |
 | `tests/Testing/FestOS.Testing` | Ortak yardımcılar: PostgreSQL konteyneri, Respawn, sahte zaman, veri kurucular |
 | `tests/e2e` | Playwright (TypeScript); MVP demo senaryosu |
 | `src/web` içinde | Ön yüz birim ve bileşen testleri (Vitest), test edilen dosyanın yanında |
@@ -449,3 +451,4 @@ Yasak API kullanımı (`DateTime.UtcNow` gibi) mimari testle değil, derleyici a
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | A-01: kök ad `FestOS`. ADR-0018 kabul edildi. |
 | 2026-09-25 | v1.1 | C.3 ile uyum: standart belgelerine bağlantılar, Türkçe karakter önlemleri genişletildi, uyarıların hata sayılma kapsamı netleşti, ön yüz sınır aracı seçildi, AT-12…AT-14 eklendi. |
+| 2026-09-25 | v1.2 | Veritabanı testleri projesi eklendi (C.4). |

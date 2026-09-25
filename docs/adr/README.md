@@ -76,3 +76,6 @@ Her alternatif ve neden seçilmediği.
 | [0017](0017-time-and-money-types.md) | Zaman ve para tipleri | Kabul edildi |
 | [0018](0018-integration-events-project.md) | Entegrasyon olaylarının ayrı projede tutulması | Kabul edildi |
 | [0019](0019-code-style-and-static-analysis-tools.md) | Kod biçimi ve statik analiz araçları | Kabul edildi |
+| [0020](0020-entity-identifiers.md) | Varlık kimlikleri — UUIDv7 | Kabul edildi |
+| [0021](0021-database-roles-per-module.md) | Modül başına veritabanı rolü | Kabul edildi |
+| [0022](0022-future-wall-clock-times.md) | Gelecekteki duvar saati zamanları | Kabul edildi |

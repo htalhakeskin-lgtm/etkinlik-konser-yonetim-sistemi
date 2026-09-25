@@ -1,6 +1,6 @@
 # İsimlendirme Standardı
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 12](#12-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -207,7 +207,20 @@ Adın soneki, değerin tipini ve anlamını belirler. "Bu tarih mi, zaman damgas
 
 İşlemi yapan kullanıcıya verilen referanslar `…By` ile adlandırılır (`confirmed_by`); bu, referans kolonlarındaki `_id` kuralının tek istisnasıdır, çünkü ad zaman damgasıyla (`confirmed_at`) çift oluşturur.
 
-Sözlükteki zaman adları bu kurala zaten uyar: `StartsAt`, `DoorsAt`, `LoadOutAt`, `HoldExpiresAt`. Ortak kayıt kolonlarının (oluşturma / güncelleme) varlığı C.4'te belirlenecek; varsa adları `created_at`, `created_by`, `updated_at`, `updated_by` olur.
+Sözlükteki zaman adları bu kurala zaten uyar: `StartsAt`, `DoorsAt`, `LoadOutAt`, `HoldExpiresAt`.
+
+Gelecekteki duvar saati zamanlarının kaynak değeri `…AtLocal` / `_at_local` (saat dilimsiz), saat dilimi kimliği `TimeZone` / `time_zone` kolonundadır; türetilen UTC değeri `…At` / `_at` adını taşır ([database §7.2](database.md#72-gelecekteki-duvar-saati-zamanları)).
+
+### 5.3 Ortak ve özel amaçlı kolonlar
+
+| Kolon | Anlamı | Kaynak |
+|---|---|---|
+| `created_at`, `created_by`, `updated_at`, `updated_by` | Oluşturma ve son değişiklik | [database §9](database.md#9-ortak-kolonlar) |
+| `version` | İyimser kilit sürüm numarası (toplu kök) | [database §11.1](database.md#111-sürüm-numarasıyla-iyimser-kilit) |
+| `deactivated_at`, `deactivated_by` | Pasifleştirme; boşsa kayıt aktiftir | [database §10.1](database.md#101-pasifleştirme) |
+| `…_percent` | Yüzde, 0–100 | [database §8.3](database.md#83-oranlar-ve-ölçüler) |
+| `…_search` | Büyük / küçük harf ve Türkçe karakter duyarsız arama anahtarı | [database §13](database.md#13-metin-sıralama-ve-arama) |
+| `…_normalized` | Duyarsız benzersizlik için normalleştirilmiş değer (ör. `email_normalized`) | [database §13](database.md#13-metin-sıralama-ve-arama) |
 
 ## 6. API adları
 
@@ -377,3 +390,4 @@ Araçların kurulumu ve kuralların tam listesi [code-style.md](code-style.md)'d
 |---|---|---|
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | Kararlar kesinleşti. |
+| 2026-09-25 | v1.1 | Veritabanı standardıyla uyum: ortak ve özel amaçlı kolon adları, duvar saati kolonları (C.4). |

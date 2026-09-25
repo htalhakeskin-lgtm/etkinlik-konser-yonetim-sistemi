@@ -2,6 +2,7 @@
 
 - **Durum:** Kabul edildi
 - **Tarih:** 2026-09-25
+- **Genişletildi:** [ADR-0022](0022-future-wall-clock-times.md) — gelecekteki duvar saati zamanları yerel saat + saat dilimiyle de saklanır
 - **İlgili:** [03-business-rules.md §3](../03-business-rules.md#3-biçim-ve-kullanım) (Zaman), BR-MRP-001, BR-EVT-002, BR-EVT-008, [06-erd-conceptual.md karar 15](../06-erd-conceptual.md#4-önemli-modelleme-kararları)
 
 ## Bağlam
@@ -27,7 +28,7 @@ Tutarlar S1'de yok, ama S3–S4'te gelecek ve her zaman para birimiyle birlikte 
 - **Süre:** `TimeSpan`; dakika hassasiyetinde kullanılır.
 - **Saat dilimi:** `TimeZoneInfo` ile IANA kimliği `Europe/Istanbul`. Dönüşümler tek bir yardımcıdan geçer; kod içinde dağınık dönüşüm yapılmaz.
 - **Şimdiki zaman:** Hiçbir kod `DateTime.Now` ya da `DateTimeOffset.UtcNow` okumaz; zaman her yerde `TimeProvider` üzerinden alınır.
-- **Para:** `BuildingBlocks` içinde bir `Money` değer tipi: tutar (`decimal`) ve ISO 4217 para birimi kodu. Farklı para birimlerindeki tutarlar birbirine eklenemez. Yuvarlama kuralları `standards/database.md`'de tanımlanacak.
+- **Para:** `BuildingBlocks` içinde bir `Money` değer tipi: tutar (`decimal`) ve ISO 4217 para birimi kodu. Farklı para birimlerindeki tutarlar birbirine eklenemez. Saklama ve yuvarlama kuralları [standards/database.md §8](../standards/database.md#8-para-oran-ve-ölçüler)'dedir.
 
 ## Sonuçlar
 

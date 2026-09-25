@@ -1,6 +1,6 @@
 # 07 — Teknoloji Yığını
 
-> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.3 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 8](#8-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -48,6 +48,7 @@ Yığına yeni bir kütüphane eklemek ya da bir kütüphaneyi değiştirmek iç
 | Veritabanı | PostgreSQL | 18 | PostgreSQL | [0007](adr/0007-data-access.md) |
 | ORM | Entity Framework Core + Npgsql sağlayıcısı | 10 | MIT / PostgreSQL | [0007](adr/0007-data-access.md) |
 | Şema yönetimi | EF Core migration'ları; modül başına ayrı bağlam ve migration seti | — | — | [0007](adr/0007-data-access.md) |
+| PostgreSQL eklentileri | `btree_gist` (zaman çakışması kısıtları), `pg_trgm` (metin araması); PostgreSQL ile birlikte gelir | 18 | PostgreSQL | [database §3](standards/database.md#3-veritabanı-ve-şemalar) |
 | Veritabanı adları | EFCore.NamingConventions: C# adlarını snake_case'e çevirir (kültür açıkça `InvariantCulture`) | 10.x | Apache 2.0 | [naming §5](standards/naming.md#5-veritabanı-adları) |
 
 ### 3.3 Ön yüz (frontend)
@@ -155,3 +156,4 @@ Yaygın oldukları halde bilinçli olarak kullanılmayanlar:
 | 2026-09-25 | v1.0 | Kararlar: React + Vite SPA, shadcn/ui, ücret ödenmeyecek koşuluyla QuestPDF. ADR-0005…0017 kabul edildi. |
 | 2026-09-25 | v1.1 | Derleme analizörleri ve derleme sırasında OpenAPI üretimi eklendi (C.2). |
 | 2026-09-25 | v1.2 | C.3: kod biçimi ve statik analiz araçları (CSharpier, Meziantou.Analyzer, ESLint 10, Prettier), React Compiler ve EFCore.NamingConventions eklendi; TypeScript 6.x'e sabitlendi (ADR-0019). |
+| 2026-09-25 | v1.3 | C.4: PostgreSQL eklentileri eklendi. |
