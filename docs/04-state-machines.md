@@ -31,7 +31,7 @@ Durum ve kod adları [sözlükteki](01-glossary.md) gibidir. Diyagramlarda durum
 | `SRO` | Dış kiralama siparişi | [7](#7-dış-kiralama-siparişi-subrentalorderstatus) |
 | `UNT` | Birim | [8](#8-birim-unitstatus) |
 | `CNF` | Çakışma | [9](#9-çakışma-conflictstatus) |
-| `CLC` | İhtiyaç hesabı güncelliği | [10](#10-ihtiyaç-hesabı-güncelliği) |
+| `CLC` | İhtiyaç hesabı güncelliği | [10](#10-i̇htiyaç-hesabı-güncelliği) |
 | `USR` | Kullanıcı hesabı | [11](#11-kullanıcı-hesabı) |
 
 Durum makinesi olmayanlar:

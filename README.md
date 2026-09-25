@@ -17,8 +17,15 @@ Konser ve etkinlik sektöründe hem kendi etkinliklerini düzenleyen hem de tekn
 | [04 — Durum makineleri](docs/04-state-machines.md) | v1.1 |
 | [05 — Modül haritası](docs/05-module-map.md) | v1.2 |
 | [06 — Kavramsal veri modeli](docs/06-erd-conceptual.md) | v1.0 |
-| Faz 0 C bölümü: teknoloji ve standartlar | Sırada |
+| [07 — Teknoloji yığını](docs/07-tech-stack.md) ve [ADR'ler](docs/adr/README.md) | v1.0 |
+| C.2 — Mimari ve klasör yapısı | Sırada |
 
 ## Teknoloji
 
-.NET · React / Next.js · PostgreSQL · Modüler monolit
+.NET 10 · ASP.NET Core · PostgreSQL 18 · EF Core · React + Vite · TypeScript · SignalR · Modüler monolit
+
+Ayrıntı: [07 — Teknoloji yığını](docs/07-tech-stack.md)
+
+## Belge araçları
+
+Belgelerdeki linkler ve kural referansları [tools/docs](tools/docs/README.md) altındaki betiklerle doğrulanır.

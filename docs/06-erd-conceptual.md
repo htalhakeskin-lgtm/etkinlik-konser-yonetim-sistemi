@@ -429,7 +429,7 @@ erDiagram
 
 ## 6. Modüller arası referanslar (S1)
 
-Her kesikli ilişkinin yazılırken nasıl doğrulandığı. "Senkron" = sahibi modülün sözleşmesi çağrılır; "kopya" = modülün yerel kopyasından okunur ([05 §4.3](05-module-map.md#43-izin-verilen-senkron-çağrılar), [05 §8](05-module-map.md#8-yerel-kopyalar-projeksiyonlar)).
+Her kesikli ilişkinin yazılırken nasıl doğrulandığı. "Senkron" = sahibi modülün sözleşmesi çağrılır; "kopya" = modülün yerel kopyasından okunur ([05 §4.3](05-module-map.md#43-i̇zin-verilen-senkron-çağrılar), [05 §8](05-module-map.md#8-yerel-kopyalar-projeksiyonlar)).
 
 | Referans veren | Referans verilen | Doğrulama |
 |---|---|---|

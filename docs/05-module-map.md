@@ -303,7 +303,7 @@ Sahibi ilk bakışta belli olmayan veriler ve verilen kararlar:
 | Kasa | Inventory | Kasa fiziksel bir kutudur ve içeriğiyle birlikte hareket eder (BR-EQP-006). |
 | Kit | Catalog | Kit mantıksal bir tanımdır; katalogdaki modellerden oluşur. |
 | Ayarlar | Kuralın sahibi olan modül | Etkinlik varsayılanları (paylar, operasyon geçiş modu) Booking'dedir. Ayarlar ekranı, ilgili modüllerin API'lerini bir araya getirir. |
-| İşlem geçmişi | Audit | Her modül kendi işlem biriminde yazar ([5.2](#52-audit--işlem-geçmişi)). |
+| İşlem geçmişi | Audit | Her modül kendi işlem biriminde yazar ([5.2](#52-audit--i̇şlem-geçmişi)). |
 
 ## 7. Entegrasyon olayları (S1)
 
@@ -571,7 +571,7 @@ tests/
 └── ArchitectureTests/
 ```
 
-- Bir modül başka bir modülün yalnızca `Contracts` projesine referans verebilir. Bu da ancak [4.3](#43-izin-verilen-senkron-çağrılar)'teki tabloda o yönde bir çağrı varsa mümkündür.
+- Bir modül başka bir modülün yalnızca `Contracts` projesine referans verebilir. Bu da ancak [4.3](#43-i̇zin-verilen-senkron-çağrılar)'teki tabloda o yönde bir çağrı varsa mümkündür.
 - `Contracts` projeleri yalnızca `BuildingBlocks`'a referans verir.
 - Mimari testler bu iki kuralı ve katman sırasını her derlemede doğrular.
 
@@ -580,7 +580,7 @@ tests/
 - Her modülün kendi veritabanı bağlamı ve kendi migration'ları vardır.
 - Şemalar arası yabancı anahtar yoktur.
 - Her şemada `outbox` ve `inbox` tabloları bulunur.
-- `audit` şemasına tüm modüller yazar ([5.2](#52-audit--işlem-geçmişi)).
+- `audit` şemasına tüm modüller yazar ([5.2](#52-audit--i̇şlem-geçmişi)).
 
 ## 14. Değerlendirilen alternatifler
 
