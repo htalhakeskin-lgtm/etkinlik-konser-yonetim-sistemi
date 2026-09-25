@@ -1,6 +1,6 @@
 # 05 — Modül Haritası
 
-> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.3 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 15](#15-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -554,7 +554,7 @@ Bir ekran birden fazla modülün verisini gösterebilir. Bu durumda ön yüz, he
 
 Ayrıntılar Faz 0'ın C bölümünde (`standards/` ve ADR'ler) tanımlanacak. Bu belgeden doğan zorunluluklar:
 
-**Kod:** Her modül dört projeden oluşur:
+**Kod:** Her modül beş projeden oluşur (ayrıntı [08-architecture.md §3](08-architecture.md#3-bir-modülün-yapısı)):
 
 ```
 src/
@@ -564,15 +564,17 @@ src/
 │   │   ├── Booking.Domain/          iş kuralları, varlıklar, domain event'ler
 │   │   ├── Booking.Application/     komutlar, sorgular, olay dinleyicileri
 │   │   ├── Booking.Infrastructure/  veritabanı, outbox, dış sistemler
-│   │   └── Booking.Contracts/       senkron sözleşmeler ve entegrasyon olayları
+│   │   ├── Booking.Contracts/       senkron sözleşme
+│   │   └── Booking.IntegrationEvents/ entegrasyon olayları
 │   └── …
 └── Host/                            API, SignalR, zamanlanmış işler
 tests/
 └── ArchitectureTests/
 ```
 
-- Bir modül başka bir modülün yalnızca `Contracts` projesine referans verebilir. Bu da ancak [4.3](#43-i̇zin-verilen-senkron-çağrılar)'teki tabloda o yönde bir çağrı varsa mümkündür.
-- `Contracts` projeleri yalnızca `BuildingBlocks`'a referans verir.
+- Bir modül başka bir modülün `Contracts` projesine yalnızca [4.3](#43-i̇zin-verilen-senkron-çağrılar)'teki tabloda o yönde bir çağrı varsa referans verebilir.
+- Başka bir modülün `IntegrationEvents` projesine, olaylarını dinlemek için her yönde referans verilebilir ([ADR-0018](adr/0018-integration-events-project.md)).
+- `Contracts` ve `IntegrationEvents` projeleri yalnızca `BuildingBlocks`'a referans verir.
 - Mimari testler bu iki kuralı ve katman sırasını her derlemede doğrular.
 
 **Veritabanı:**
@@ -609,3 +611,4 @@ Bu kararlar Faz 0'ın C bölümünde ADR olarak kaydedilecek: modüler monolit, 
 | 2026-09-25 | v1.0 | M-01: olayların anında gönderimi; gecikme hedefi %95'te 300 ms, en geç 1 s. |
 | 2026-09-25 | v1.1 | Kavramsal modelle uyum: Procurement'a etkinlik ve depo kopyası eklendi (katman kuralı gereği); Parties, Booking, Planning ve Procurement kartlarındaki veri listeleri güncellendi. |
 | 2026-09-25 | v1.2 | Mekan ekipmanı tarihe göre değişir: Venues sözleşmesi ve `VenueEquipmentChanged` olayı etkilenen tarih aralığını taşır. |
+| 2026-09-25 | v1.3 | Modül beş projeye çıktı: entegrasyon olayları `Contracts`'tan ayrı `IntegrationEvents` projesinde (ADR-0018). |

@@ -74,3 +74,4 @@ Her alternatif ve neden seçilmediği.
 | [0015](0015-testing-tools.md) | Test araçları | Kabul edildi |
 | [0016](0016-observability-and-local-dev.md) | Gözlemlenebilirlik ve yerel geliştirme ortamı | Kabul edildi |
 | [0017](0017-time-and-money-types.md) | Zaman ve para tipleri | Kabul edildi |
+| [0018](0018-integration-events-project.md) | Entegrasyon olaylarının ayrı projede tutulması | Kabul edildi |

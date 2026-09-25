@@ -1,6 +1,6 @@
 # 07 — Teknoloji Yığını
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 8](#8-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -25,7 +25,8 @@ Yığına yeni bir kütüphane eklemek ya da bir kütüphaneyi değiştirmek iç
 |---|---|---|---|---|
 | Dil ve platform | C# / .NET | .NET 10 LTS (C# 14) | MIT | [0006](adr/0006-backend-platform.md) |
 | Web çatısı | ASP.NET Core Minimal API; her modül kendi uç nokta grubunu tanımlar | .NET 10 ile | MIT | [0006](adr/0006-backend-platform.md) |
-| API belgesi | ASP.NET Core'un dahili OpenAPI üretimi + Scalar arayüzü | — | MIT | [0006](adr/0006-backend-platform.md) |
+| API belgesi | ASP.NET Core'un dahili OpenAPI üretimi + Scalar arayüzü; belge derleme sırasında dosyaya da üretilir (Microsoft.Extensions.ApiDescription.Server) | — | MIT | [0006](adr/0006-backend-platform.md) |
+| Derleme analizörleri | .NET analizörleri (kültür kuralları hata seviyesinde) + BannedApiAnalyzers (yasak API listesi) | — | MIT | [08 §9–10](08-architecture.md#9-türkçe-karakter-güvenliği) |
 | Komut / sorgu işleyicileri | Kendi basit arayüzlerimiz; doğrulama, işlem birimi ve loglama DI dekoratörleriyle (Scrutor) | — | MIT | [0006](adr/0006-backend-platform.md) |
 | Doğrulama | FluentValidation | 12.x | Apache 2.0 | [0006](adr/0006-backend-platform.md) |
 | Nesne eşleme | Elle yazılır; gerekirse Mapperly (kaynak kod üretimi) | — | Apache 2.0 | [0006](adr/0006-backend-platform.md) |
@@ -146,3 +147,4 @@ Yaygın oldukları halde bilinçli olarak kullanılmayanlar:
 |---|---|---|
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | Kararlar: React + Vite SPA, shadcn/ui, ücret ödenmeyecek koşuluyla QuestPDF. ADR-0005…0017 kabul edildi. |
+| 2026-09-25 | v1.1 | Derleme analizörleri ve derleme sırasında OpenAPI üretimi eklendi (C.2). |

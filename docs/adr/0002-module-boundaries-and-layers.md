@@ -3,6 +3,7 @@
 - **Durum:** Kabul edildi
 - **Tarih:** 2026-09-25
 - **İlgili:** [05-module-map.md](../05-module-map.md), [06-erd-conceptual.md](../06-erd-conceptual.md), [ADR-0001](0001-modular-monolith.md)
+- **Genişletildi:** [ADR-0018](0018-integration-events-project.md) — olay tipleri ayrı projede; her yönde referans alınabilir
 
 ## Bağlam
 

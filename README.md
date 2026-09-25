@@ -1,4 +1,4 @@
-# Etkinlik ve Konser Yönetim Sistemi
+# FestOS — Etkinlik ve Konser Yönetim Sistemi
 
 > **English summary:** An ERP for a live-events production company that both promotes its own concerts and rents out sound, light, stage and crew to other events. It covers the full stack of enterprise planning in one product: MRP (equipment needs netted from artist technical riders across multiple warehouses), MRP II (crew and resource scheduling with a conflict engine), CRM (deals, quotes, contracts, sponsorship), finance (budgets, multi-currency, artist settlement) and DRP (tour logistics). Built as a modular monolith with .NET, React/Next.js and PostgreSQL.
 
@@ -18,7 +18,8 @@ Konser ve etkinlik sektöründe hem kendi etkinliklerini düzenleyen hem de tekn
 | [05 — Modül haritası](docs/05-module-map.md) | v1.2 |
 | [06 — Kavramsal veri modeli](docs/06-erd-conceptual.md) | v1.0 |
 | [07 — Teknoloji yığını](docs/07-tech-stack.md) ve [ADR'ler](docs/adr/README.md) | v1.0 |
-| C.2 — Mimari ve klasör yapısı | Sırada |
+| [08 — Mimari ve klasör yapısı](docs/08-architecture.md) | v1.0 |
+| C.3 — İsimlendirme ve kod standartları | Sırada |
 
 ## Teknoloji
 
