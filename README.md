@@ -4,8 +4,8 @@
 
 [English](#english) · [Türkçe](#türkçe)
 
-> **Durum / Status:** Faz 0 (belge öncelikli planlama) tamamlandı; uygulama kodu Faz 1'de başlıyor.
-> Phase 0 (documentation-first planning) is complete; implementation starts in Phase 1.
+> **Durum / Status:** Faz 0 (belge öncelikli planlama) tamamlandı; Faz 1'de S1'in (MVP) geliştirilmesi başladı ([plan](docs/12-implementation-plan.md)).
+> Phase 0 (documentation-first planning) is complete; Phase 1, the implementation of the S1 MVP, has started.
 
 ---
 
@@ -144,6 +144,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | [09 — Ortamlar ve yayın](docs/09-environments-and-deployment.md) | v1.0 |
 | [10 — İşletim el kitabı](docs/10-operations.md) | v1.0 |
 | [11 — Ekran şablonları ve envanteri](docs/11-screens.md) | v1.0 |
+| [12 — Uygulama planı (Faz 1: S1)](docs/12-implementation-plan.md) | v1.0 |
 
 ### Teknoloji
 
