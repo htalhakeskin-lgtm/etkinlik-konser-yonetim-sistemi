@@ -19,7 +19,8 @@ Konser ve etkinlik sektöründe hem kendi etkinliklerini düzenleyen hem de tekn
 | [06 — Kavramsal veri modeli](docs/06-erd-conceptual.md) | v1.0 |
 | [07 — Teknoloji yığını](docs/07-tech-stack.md) ve [ADR'ler](docs/adr/README.md) | v1.0 |
 | [08 — Mimari ve klasör yapısı](docs/08-architecture.md) | v1.0 |
-| C.3 — İsimlendirme ve kod standartları | Sırada |
+| [Standartlar: isimlendirme](docs/standards/naming.md) · [kod stili](docs/standards/code-style.md) | v1.0 |
+| C.4 — Veritabanı standartları | Sırada |
 
 ## Teknoloji
 

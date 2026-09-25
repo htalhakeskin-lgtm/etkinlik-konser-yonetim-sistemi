@@ -1,6 +1,6 @@
 # 01 — Terimler Sözlüğü
 
-> **Durum:** v1.8 · **Son güncelleme:** 2026-09-24
+> **Durum:** v1.9 · **Son güncelleme:** 2026-09-24
 > **Kararlar:** [Bölüm 5](#5-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -12,7 +12,7 @@ Sözlük tüm sistemi kapsar; her terimin hangi sürümde devreye girdiği [00-s
 ## 2. Kurallar
 
 1. **Tek kavram, tek ad.** Tabloda "Terim" sütunundaki ad arayüzde ve belgelerde, "Kod adı" sütunundaki ad kodda kullanılır. Eş anlamlılar kullanılmaz; yasaklı olanlar [Bölüm 4](#4-kullanılmayan-terimler)'te listelenir.
-2. **Kod adları İngilizce, PascalCase ve tekildir** (sınıf adı biçiminde). Tablo, kolon, endpoint ve dosya adlarına dönüşüm kuralları `standards/naming.md`'de tanımlanacak.
+2. **Kod adları İngilizce, PascalCase ve tekildir** (sınıf adı biçiminde). Tablo, kolon, adres, dosya ve diğer adlara dönüşüm kuralları [standards/naming.md](standards/naming.md#3-dönüşüm-tablosu)'dedir.
 3. **Sektör terimleri korunur.** Sektörde Türkçe karşılığı yerleşmemiş terimler (rider, day sheet, call sheet, run of show, stage plot, input list) arayüzde de İngilizce kalır.
 4. **Önce sözlük, sonra kod.** Yeni bir kavram koda girmeden önce bu sözlüğe eklenir. PR kontrol listesinde bu madde yer alacak.
 5. **Durum ve varlık adları çakışmaz.** Bir durum adı, başka bir varlığın adıyla aynı olamaz. Örneğin "Etkinlik" bir varlık olduğu için etkinliğin durumlarından biri "Etkinlik" olamaz.
@@ -339,3 +339,4 @@ Bu kelimeler arayüzde, belgelerde ve kodda kullanılmaz; yerine sağ sütundaki
 | 2026-09-25 | v1.6 | Modül haritasıyla uyum: olay adlandırma kuralı (DomainEvent / IntegrationEvent), elle onay, rider ataması ve stok hareketi terimleri eklendi. |
 | 2026-09-25 | v1.7 | Kavramsal modelle uyum: temsil, opsiyon kuyruğu, etkinlik varsayılanları, kasa içeriği, ihtiyaç satırı, oturum ve giriş denemesi (S1); belge bağlantısı, input kanalı, hospitality kalemi, müsait olmama dönemi (S2); sanatçı ücret şartları, bonus eşiği (S3); muhasebe aktarımı (S4); araç ataması, güzergah tahmini (S5) eklendi. İşlem geçmişinin kod adı `AuditEntry` olarak düzeltildi; depo ataması eklendi. Turne tarihi turneye bağlı etkinlik olarak düzeltildi; karşılama tanımı netleştirildi; satır varlıkları için kural 7 eklendi. |
 | 2026-09-25 | v1.8 | Mekan ekipmanının geçerlilik aralığı ve kullanılamama dönemi eklendi. |
+| 2026-09-25 | v1.9 | Kural 2, isimlendirme standardına bağlandı. |

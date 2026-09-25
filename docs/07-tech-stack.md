@@ -1,6 +1,6 @@
 # 07 — Teknoloji Yığını
 
-> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 8](#8-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -26,7 +26,8 @@ Yığına yeni bir kütüphane eklemek ya da bir kütüphaneyi değiştirmek iç
 | Dil ve platform | C# / .NET | .NET 10 LTS (C# 14) | MIT | [0006](adr/0006-backend-platform.md) |
 | Web çatısı | ASP.NET Core Minimal API; her modül kendi uç nokta grubunu tanımlar | .NET 10 ile | MIT | [0006](adr/0006-backend-platform.md) |
 | API belgesi | ASP.NET Core'un dahili OpenAPI üretimi + Scalar arayüzü; belge derleme sırasında dosyaya da üretilir (Microsoft.Extensions.ApiDescription.Server) | — | MIT | [0006](adr/0006-backend-platform.md) |
-| Derleme analizörleri | .NET analizörleri (kültür kuralları hata seviyesinde) + BannedApiAnalyzers (yasak API listesi) | — | MIT | [08 §9–10](08-architecture.md#9-türkçe-karakter-güvenliği) |
+| Kod biçimi | CSharpier | 1.x | MIT | [0019](adr/0019-code-style-and-static-analysis-tools.md) |
+| Derleme analizörleri | .NET analizörleri (kültür kuralları hata seviyesinde) + Meziantou.Analyzer + BannedApiAnalyzers (yasak API listesi) | — | MIT | [0019](adr/0019-code-style-and-static-analysis-tools.md) |
 | Komut / sorgu işleyicileri | Kendi basit arayüzlerimiz; doğrulama, işlem birimi ve loglama DI dekoratörleriyle (Scrutor) | — | MIT | [0006](adr/0006-backend-platform.md) |
 | Doğrulama | FluentValidation | 12.x | Apache 2.0 | [0006](adr/0006-backend-platform.md) |
 | Nesne eşleme | Elle yazılır; gerekirse Mapperly (kaynak kod üretimi) | — | Apache 2.0 | [0006](adr/0006-backend-platform.md) |
@@ -47,14 +48,16 @@ Yığına yeni bir kütüphane eklemek ya da bir kütüphaneyi değiştirmek iç
 | Veritabanı | PostgreSQL | 18 | PostgreSQL | [0007](adr/0007-data-access.md) |
 | ORM | Entity Framework Core + Npgsql sağlayıcısı | 10 | MIT / PostgreSQL | [0007](adr/0007-data-access.md) |
 | Şema yönetimi | EF Core migration'ları; modül başına ayrı bağlam ve migration seti | — | — | [0007](adr/0007-data-access.md) |
+| Veritabanı adları | EFCore.NamingConventions: C# adlarını snake_case'e çevirir (kültür açıkça `InvariantCulture`) | 10.x | Apache 2.0 | [naming §5](standards/naming.md#5-veritabanı-adları) |
 
 ### 3.3 Ön yüz (frontend)
 
 | Konu | Seçim | Sürüm | Lisans | ADR |
 |---|---|---|---|---|
 | Uygulama türü | Tek sayfalı uygulama (SPA) | — | — | [0008](adr/0008-frontend-architecture.md) |
-| Dil | TypeScript, katı (strict) mod | güncel kararlı | Apache 2.0 | [0008](adr/0008-frontend-architecture.md) |
+| Dil | TypeScript, katı (strict) mod | 6.x (7.x'e typescript-eslint desteğiyle geçilir) | Apache 2.0 | [0008](adr/0008-frontend-architecture.md), [0019](adr/0019-code-style-and-static-analysis-tools.md) |
 | Kütüphane ve derleme | React + Vite | React 19 | MIT | [0008](adr/0008-frontend-architecture.md) |
+| Otomatik önbellekleme | React Compiler | 1.x | MIT | [0019](adr/0019-code-style-and-static-analysis-tools.md) |
 | Yönlendirme | TanStack Router (tip güvenli) | 1.x | MIT | [0008](adr/0008-frontend-architecture.md) |
 | Sunucu verisi | TanStack Query | 5.x | MIT | [0008](adr/0008-frontend-architecture.md) |
 | API istemcisi | Orval: OpenAPI belgesinden tipler ve TanStack Query kancaları üretir | — | MIT | [0008](adr/0008-frontend-architecture.md) |
@@ -65,6 +68,8 @@ Yığına yeni bir kütüphane eklemek ya da bir kütüphaneyi değiştirmek iç
 | Tarih ve saat | date-fns + @date-fns/tz | 4.x | MIT | [0008](adr/0008-frontend-architecture.md) |
 | Anlık güncelleme istemcisi | @microsoft/signalr | — | MIT | [0012](adr/0012-realtime-signalr.md) |
 | QR okuma | Tarayıcının `BarcodeDetector` arayüzü + desteklemeyen tarayıcılar için barcode-detector yedeği | — | MIT | [0014](adr/0014-documents-and-qr.md) |
+| Lint | ESLint 10 + typescript-eslint (tip bilgili) + React Hooks, TanStack, erişilebilirlik ve modül sınırı eklentileri | — | MIT | [0019](adr/0019-code-style-and-static-analysis-tools.md) |
+| Kod biçimi | Prettier + Tailwind sınıf sıralama eklentisi | 3.x | MIT | [0019](adr/0019-code-style-and-static-analysis-tools.md) |
 | Çalışma ortamı ve paket yöneticisi | Node.js LTS + pnpm | Node 24 (Ekim 2026'da LTS olunca 26) | MIT | — |
 
 ### 3.4 Test
@@ -76,7 +81,7 @@ Yığına yeni bir kütüphane eklemek ya da bir kütüphaneyi değiştirmek iç
 | Sahte nesneler | NSubstitute | BSD | [0015](adr/0015-testing-tools.md) |
 | Gerçek veritabanıyla test | Testcontainers (PostgreSQL) + Respawn (testler arası temizlik) | MIT / Apache 2.0 | [0015](adr/0015-testing-tools.md) |
 | Zamanı ilerletme | `FakeTimeProvider` | MIT | [0015](adr/0015-testing-tools.md) |
-| Mimari testler | ArchUnitNET | Apache 2.0 | [0015](adr/0015-testing-tools.md) |
+| Mimari testler | ArchUnitNET; tablo adlarının çoğul denetimi için yalnızca test projesinde Humanizer | Apache 2.0 / MIT | [0015](adr/0015-testing-tools.md) |
 | Ön yüz testleri | Vitest + Testing Library | MIT | [0015](adr/0015-testing-tools.md) |
 | Uçtan uca testler | Playwright | Apache 2.0 | [0015](adr/0015-testing-tools.md) |
 
@@ -130,6 +135,7 @@ Yaygın oldukları halde bilinçli olarak kullanılmayanlar:
 |---|---|
 | .NET | Yalnızca LTS. Sıradaki geçiş .NET 12 LTS'e (Kasım 2027). .NET 11 atlanır, çünkü desteği .NET 10 ile aynı tarihte (Kasım 2028) biter. |
 | Node.js | Güncel LTS. Node 26, Ekim 2026'da LTS olduğunda ona geçilir. |
+| TypeScript | 6.x'e sabit. TypeScript 7.x'e, programatik API'yi sunan sürüm (7.1 bekleniyor) çıkıp typescript-eslint onu desteklediğinde geçilir ([0019](adr/0019-code-style-and-static-analysis-tools.md)). |
 | PostgreSQL | Ana sürüm 18. Yeni ana sürüme, desteği bitmeden önce planlı olarak geçilir. |
 | Kütüphaneler | Sürümler merkezi olarak sabitlenir (.NET'te merkezi paket yönetimi, ön yüzde kilit dosyası). Güncellemeler otomatik araçla PR olarak gelir (Faz 0 D bölümü). |
 
@@ -148,3 +154,4 @@ Yaygın oldukları halde bilinçli olarak kullanılmayanlar:
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | Kararlar: React + Vite SPA, shadcn/ui, ücret ödenmeyecek koşuluyla QuestPDF. ADR-0005…0017 kabul edildi. |
 | 2026-09-25 | v1.1 | Derleme analizörleri ve derleme sırasında OpenAPI üretimi eklendi (C.2). |
+| 2026-09-25 | v1.2 | C.3: kod biçimi ve statik analiz araçları (CSharpier, Meziantou.Analyzer, ESLint 10, Prettier), React Compiler ve EFCore.NamingConventions eklendi; TypeScript 6.x'e sabitlendi (ADR-0019). |

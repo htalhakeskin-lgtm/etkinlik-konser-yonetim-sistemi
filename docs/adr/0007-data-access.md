@@ -20,7 +20,7 @@
 - **Okuma sorguları:** Karmaşık okuma ve hesaplama sorguları (ör. müsaitlik) EF Core üzerinden ham SQL ile yazılabilir. Dapper gibi ek bir kütüphane ancak ihtiyaç kanıtlanırsa eklenir.
 - **Kullanılan PostgreSQL özellikleri:** değişken yapılı veri için `jsonb`, zamanlanmış işlerin tek çalışması için advisory lock ([ADR-0013](0013-scheduled-jobs.md)).
 
-Kolon adlandırması, kimlik tipi, ortak kolonlar ve diğer fiziksel kurallar `standards/database.md`'de tanımlanacak.
+Tablo, kolon, indeks ve kısıt adları [standards/naming.md](../standards/naming.md#5-veritabanı-adları)'dedir. Kimlik tipi, ortak kolonlar ve diğer fiziksel kurallar `standards/database.md`'de tanımlanacak.
 
 ## Sonuçlar
 

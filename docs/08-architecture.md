@@ -1,6 +1,6 @@
 # 08 — Mimari ve Klasör Yapısı
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -14,7 +14,7 @@ Kodun repoda nasıl düzenleneceğini ve parçaların birbirine nasıl bağlanac
 - ön yüz klasör yapısı,
 - testlerin yeri ve modül sınırlarını koruyan mimari testler.
 
-Bu belge [05-module-map.md](05-module-map.md)'deki modül sınırlarını ve [07-tech-stack.md](07-tech-stack.md)'deki teknoloji seçimlerini koda indirger. İsimlendirme ayrıntıları `standards/naming.md`'de (C.3) tanımlanacak; buradaki adlar o belgeyle uyumlu olacak şekilde seçilmiştir.
+Bu belge [05-module-map.md](05-module-map.md)'deki modül sınırlarını ve [07-tech-stack.md](07-tech-stack.md)'deki teknoloji seçimlerini koda indirger. Adlar [standards/naming.md](standards/naming.md)'ye, kod biçimi [standards/code-style.md](standards/code-style.md)'ye uyar.
 
 Kök ad `FestOS`'tur ([A-01](#13-kararlar)).
 
@@ -166,8 +166,8 @@ FestOS.Modules.Booking.Application/
 │   ├── CancelEvent/
 │   └── GetEvents/                  GetEventsQuery, GetEventsHandler, EventListItem
 ├── Holds/
-│   ├── PlaceHold/
-│   └── ReleaseHold/
+│   ├── PlaceVenueHold/
+│   └── ReleaseVenueHold/
 ├── AutomaticTransitions/           RunAutomaticTransitionsCommand (zamanlanmış işin çağırdığı komut)
 ├── IntegrationEventHandlers/       diğer modüllerin olaylarına verilen tepkiler (ör. etkinlik göstergeleri)
 ├── Contracts/                      BookingModule: modülün senkron sözleşmesinin uygulaması (S1'de boş)
@@ -178,7 +178,7 @@ FestOS.Modules.Booking.Infrastructure/
 │   ├── BookingDbContext.cs
 │   ├── Configurations/             varlık başına tablo eşlemesi
 │   └── Migrations/
-├── Api/                            uç nokta grupları (EventEndpoints, HoldEndpoints)
+├── Api/                            uç nokta grupları (EventEndpoints, VenueHoldEndpoints)
 ├── Jobs/                           AutomaticTransitionsJob
 └── BookingModuleDefinition.cs      modülün Host'a kaydı (§5)
 
@@ -282,7 +282,7 @@ sequenceDiagram
     EP->>PIPE: ConfirmEventCommand
     PIPE->>PIPE: Loglama, doğrulama (FluentValidation)
     PIPE->>PIPE: İşlem birimini başlat
-    PIPE->>H: Handle
+    PIPE->>H: HandleAsync
     H->>D: event.Confirm(approval)
     Note over D: BR-EVT-009 kontrolü, ihlalde kural numaralı hata
     D-->>H: EventStatusChangedDomainEvent
@@ -348,7 +348,10 @@ sequenceDiagram
 - Sunucu kodu **sabit kültürle** (`InvariantCulture`) çalışır. Kültüre bağlı dönüşüm yalnızca kullanıcıya gösterilen metinlerde, açıkça `tr-TR` belirtilerek yapılır.
 - Kod içindeki metin karşılaştırmaları sıralı (ordinal) yapılır.
 - .NET analizörlerinin kültür ve karşılaştırma kuralları (CA1304, CA1305, CA1307, CA1309, CA1310, CA1311) hata seviyesinde açıktır; kültür belirtmeyen çağrı derlemeyi durdurur.
-- Ön yüzde arama ve sıralama `tr-TR` yerel ayarıyla yapılır (`localeCompare`, `toLocaleLowerCase`).
+- Ön yüzde arama ve sıralama `tr-TR` yerel ayarıyla yapılır (`localeCompare`, `toLocaleLowerCase`); yerel ayarsız çağrılar lint hatasıdır ([code-style §5.5](standards/code-style.md#55-türkçe-metin)).
+- Metin içine yazılan sayı ve tarihlerin (`$"{amount}"`) örtük kültürle biçimlenmesi de derleme hatasıdır (Meziantou MA0076, [code-style §4.6](standards/code-style.md#46-kültür-ve-metin)).
+- Kod adları yalnızca ASCII harflerdir ([naming §2](standards/naming.md#2-temel-ilkeler)). Veritabanı adları, Türkçe bilgisayarda da doğru üretilmesi için açıkça `InvariantCulture` ile snake_case'e çevrilir ([naming §5](standards/naming.md#5-veritabanı-adları)).
+- Kullanıcıya giden metinler (PDF gibi) açıkça `tr-TR` ile biçimlendiği için `InvariantGlobalization` açılmaz; konteyner imajında ICU bulunur.
 - Veritabanında Türkçe sıralama için ICU tabanlı Türkçe harmanlama kullanılır (ayrıntı `standards/database.md`, C.4).
 
 ## 10. Derleme ayarları
@@ -356,7 +359,7 @@ sequenceDiagram
 | Dosya | İçerik |
 |---|---|
 | `global.json` | .NET 10 SDK sürümü; yalnızca yama güncellemelerine izin verilir |
-| `Directory.Build.props` | Hedef çatı `net10.0`; null güvenliği açık; uyarılar hata sayılır; .NET analizörleri güncel önerilen seviyede; kültür kuralları hata seviyesinde |
+| `Directory.Build.props` | Hedef çatı `net10.0`; null güvenliği açık; uyarılar sürekli entegrasyonda ve Release'te hata sayılır; .NET analizörleri güncel önerilen seviyede; kültür kuralları hata seviyesinde (tam liste [code-style §4](standards/code-style.md#4-c)) |
 | `Directory.Packages.props` | Tüm paket sürümleri tek yerde (merkezi paket yönetimi) |
 | `BannedSymbols.txt` | Yasak API'ler (BannedApiAnalyzers): `DateTime.Now`, `DateTime.UtcNow`, `DateTimeOffset.Now`, `DateTimeOffset.UtcNow` (yerine `TimeProvider`, [ADR-0017](adr/0017-time-and-money-types.md)); `Thread.Sleep`; `Console.WriteLine` |
 | OpenAPI belgesi | Host derlenirken OpenAPI belgesi dosyaya üretilir (`src/web/openapi/festos.json`). Ön yüzün API istemcisi bu dosyadan üretilir; ön yüzü derlemek için API'nin çalışıyor olması gerekmez. Sürekli entegrasyonda üretilen istemcinin güncel olduğu kontrol edilir. |
@@ -391,7 +394,7 @@ src/web/
 ```
 
 **Kurallar:**
-- Bir modül klasörü başka bir modülün yalnızca `index.ts` dosyasından içe aktarma yapabilir; iç dosyalarına erişemez. Bu kural bir lint kuralıyla zorlanır (araç C.3'te seçilecek).
+- Bir modül klasörü başka bir modülün yalnızca `index.ts` dosyasından içe aktarma yapabilir; iç dosyalarına erişemez. Bu kural `eslint-plugin-boundaries` ile zorlanır ([code-style §5.3](standards/code-style.md#53-lint-eslint)).
 - `api/` ve `components/ui/` altındaki üretilmiş ya da kopyalanmış kod elle değiştirilmez. shadcn/ui bileşenleri tasarım sistemine göre bir kez uyarlanır, sonra yalnızca bilinçli güncellemelerle değişir.
 - Sunucu verisi yalnızca TanStack Query ile alınır; sunucu verisini tutan ayrı bir global durum deposu kullanılmaz.
 - Tüm kullanıcı metinleri `locales/` altındadır; bileşenlerde sabit Türkçe metin yazılmaz (K-02).
@@ -427,6 +430,9 @@ Her derlemede çalışır; biri başarısız olursa derleme başarısız olur.
 | AT-09 | Her uç nokta bir yetki ister ya da açıkça anonim olarak işaretlenmiştir (yalnızca giriş ve sağlık uçları). | Uç noktaların çalışma zamanında listelenmesi |
 | AT-10 | Her entegrasyon olayı dinleyicisi inbox dekoratörüyle kaydedilmiştir. | DI kayıtlarının incelenmesi |
 | AT-11 | Uygulama katmanındaki tipler `internal`'dır; modül dışına yalnızca Contracts ve IntegrationEvents tipleri açılır. | Tip erişim belirleyicileri |
+| AT-12 | Tüm tip ve üye adları yalnızca ASCII harf, rakam ve alt çizgiden oluşur. | Tip ve üye adları |
+| AT-13 | Veritabanı adları: şema, tablo, kolon, indeks ve kısıt adları küçük harf snake_case ve ASCII; en fazla 63 bayt; PostgreSQL ayrılmış kelimesi değil; tablo adları çoğul; indeks ve kısıt önekleri `pk_`, `fk_`, `ix_`, `ux_`, `ck_`, `ex_` ([naming §5](standards/naming.md#5-veritabanı-adları)). | EF Core modelinin çalışma zamanında incelenmesi |
+| AT-14 | Her uç noktanın tüm API'de benzersiz bir işlem adı (operationId), modül adıyla aynı bir OpenAPI etiketi ve bir açıklaması (summary) vardır ([naming §6](standards/naming.md#6-api-adları)). | Uç noktaların çalışma zamanında listelenmesi |
 
 Yasak API kullanımı (`DateTime.UtcNow` gibi) mimari testle değil, derleyici analizörüyle (`BannedSymbols.txt`) engellenir.
 
@@ -442,3 +448,4 @@ Yasak API kullanımı (`DateTime.UtcNow` gibi) mimari testle değil, derleyici a
 |---|---|---|
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | A-01: kök ad `FestOS`. ADR-0018 kabul edildi. |
+| 2026-09-25 | v1.1 | C.3 ile uyum: standart belgelerine bağlantılar, Türkçe karakter önlemleri genişletildi, uyarıların hata sayılma kapsamı netleşti, ön yüz sınır aracı seçildi, AT-12…AT-14 eklendi. |
