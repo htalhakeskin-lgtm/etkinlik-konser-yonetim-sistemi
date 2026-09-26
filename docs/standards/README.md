@@ -13,7 +13,7 @@ Kod yazılırken uyulan kurallar. Her standart, kuralın **ne** olduğunu, **ned
 | [configuration.md](configuration.md) | Ortamlar, ayar kaynakları, ayar doğrulama, parametre eşlemesi, dosya saklama, dış servis çağrıları | v1.2 |
 | [git.md](git.md) | Dal düzeni, commit mesajları, PR ve birleştirme, görev takibi, sürüm numaraları, commit kancaları, bağımlılık güncellemeleri, gizli bilgi taraması, repo ayarları | v1.5 |
 | [testing.md](testing.md) | Test katmanları, değişiklik türüne göre gereken testler, kural izlenebilirliği, test verisi, kararsız testler, kod kapsamı | v1.4 |
-| [ci.md](ci.md) | Sürekli entegrasyon: iş akışları, PR hattı, gece ve haftalık işler, yayın hattı, iş akışı güvenliği, lisans ve açık denetimi | v1.3 |
+| [ci.md](ci.md) | Sürekli entegrasyon: iş akışları, PR hattı, gece ve haftalık işler, yayın hattı, iş akışı güvenliği, lisans ve açık denetimi | v1.4 |
 | [definition-of-done.md](definition-of-done.md) | PR, hikaye, hata düzeltmesi ve sürüm için bitti tanımı | v1.2 |
 | [ui.md](ui.md) | Arayüz: tasarım değişkenleri, durum tonları, yazı, yerleşim, gezinme, bileşenler, formlar, tablolar, geri bildirim, durumlar, anlık güncelleme, yetki, Türkçe metin ve biçimler, depo ekranları, erişilebilirlik, performans | v1.3 |
 

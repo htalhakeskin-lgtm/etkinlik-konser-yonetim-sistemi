@@ -1,6 +1,6 @@
 # Sürekli Entegrasyon Standardı
 
-> **Durum:** v1.3 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.4 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -75,6 +75,8 @@ flowchart LR
 
 ## 5. Gece ve haftalık işler
 
+**Kurulum sırası:** Gece işleri şimdilik uçtan uca testler (dört proje) ile açık ve lisans denetimidir; haftalık iş tüm geçmişin gizli bilgi taramasıdır. Performans testleri ölçülebilir ilk ekranlarla, Grype taraması ve eski imajların silinmesi demo ortamıyla (1.9) eklenir. Başarısızlık issue'yu yerel bileşik eylem `.github/actions/report-scheduled-failure` açar; tarama araçlarının sürümleri ve sağlama toplamları tek yerde, `.github/actions/install-scanners`'tadır.
+
 `main` dalında çalışır. Bir iş başarısız olursa iş akışı `type:bug` ve `ci:scheduled` etiketli bir issue açar ya da açık olanı günceller; başarısızlık gözden kaçmaz.
 
 | Sıklık | İş | Neden PR'da değil |
@@ -135,9 +137,8 @@ flowchart LR
 | Konu | Kural |
 |---|---|
 | İzin listesi | `tools/licenses/allowed-licenses.json`: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, 0BSD, ISC, PostgreSQL; yazı tipi paketlerinde OFL-1.1 ([ADR-0033](../adr/0033-design-system.md)). MPL-2.0 yalnızca değiştirilmeden kullanılan paketlerde ve istisna listesi üzerinden. |
-| İstisna listesi | `tools/licenses/exceptions.json`: paket, sürüm aralığı, lisans, gerekçe ve varsa ADR. Ör. QuestPDF'in topluluk lisansı ([ADR-0014](../adr/0014-documents-and-qr.md)). |
-| .NET | [nuget-license](https://github.com/sensslen/nuget-license) (Apache 2.0), yerel .NET aracı olarak; tüm projelerin doğrudan ve dolaylı paketleri. |
-| npm | `pnpm licenses list --json` çıktısı `tools/licenses/check-npm.mjs` ile aynı listeye göre denetlenir. |
+| İstisna listesi | `tools/licenses/exceptions.json`: ekosistem, paketler (`*` ile kalıp), sürüm (`*` ya da `4.x` gibi bir ana sürüm; yeni ana sürüm yeniden inceleme ister), lisans, gerekçe ve varsa ADR. Ör. QuestPDF'in topluluk lisansı ([ADR-0014](../adr/0014-documents-and-qr.md)). Hiçbir pakete uymayan istisna uyarı olarak raporlanır ve silinir. |
+| Denetim betiği | `node tools/licenses/check-licenses.mjs` (dış bağımlılığı yok): .NET paketlerini [nuget-license](https://github.com/sensslen/nuget-license) (Apache 2.0, yerel .NET aracı) çıktısından, npm paketlerini `pnpm licenses list --json` çıktısından okur; doğrudan ve dolaylı bütün paketleri aynı iki listeye göre denetler. SPDX ifadelerini anlar (`MIT OR Apache-2.0`). `--only npm` ya da `--only nuget` ile tek ekosistem denetlenebilir. |
 | Lisansı bilinmeyen paket | Başarısızlık. Lisans elle incelenir ve istisna listesine gerekçesiyle eklenir. |
 | Geliştirme bağımlılıkları | Test ve araç paketleri de denetlenir. GPL, AGPL ve ticari lisanslar onlarda da yasaktır; izin listesi dışındaki diğer serbest lisanslar (ör. CC0, Python-2.0) istisna listesine gerekçeyle eklenebilir. |
 | Ne zaman | Her PR'da (`security` işi) ve her gece |
@@ -196,3 +197,4 @@ Uçtan uca testler yerelde Aspire ile açılan uygulamaya karşı ya da `deploy/
 | 2026-09-25 | v1.1 | Ön yüz işine tasarım sistemi testleri ve paket boyutu denetimi; yazı tipleri için OFL (D.4). |
 | 2026-09-26 | v1.2 | Sürüm PR'ında iş akışlarının elle onaylanması (GitHub'ın Haziran 2026 değişikliği). |
 | 2026-09-26 | v1.3 | Faz 1.0'da kurulan hat ve gelecek işlerin sırası; PR başlığı commitlint'le; pnpm npm ile; zizmor istisnaları dosyada. |
+| 2026-09-26 | v1.4 | Lisans denetim betiği ve istisna biçimi; gece ve haftalık işlerin kurulum sırası (Faz 1.0). |

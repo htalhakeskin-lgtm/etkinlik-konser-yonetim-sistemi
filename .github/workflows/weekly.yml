@@ -1,0 +1,42 @@
+# Weekly checks on main (docs/standards/ci.md §5): the whole history is scanned for secrets, so
+# new gitleaks rules also reach old commits.
+# Arriving with the demo environment (1.9): Grype scan of the published image and pruning old images.
+name: Weekly
+
+on:
+  schedule:
+    - cron: "0 1 * * 0" # Sunday 04:00 Istanbul
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  secret-scan:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: ./.github/actions/install-scanners
+      - name: Scan the whole history
+        run: '"$RUNNER_TEMP/bin/gitleaks" git --redact --no-banner'
+
+  report-failure:
+    needs: [secret-scan]
+    if: failure()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/report-scheduled-failure
+        with:
+          workflow: Weekly

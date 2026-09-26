@@ -1,0 +1,9 @@
+{
+  "$comment": "Licenses allowed without review (ADR-0005, docs/standards/ci.md §9). Anything else needs an entry in exceptions.json.",
+  "licenses": ["MIT", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "0BSD", "ISC", "PostgreSQL"],
+  "fonts": {
+    "$comment": "Font packages may use the SIL Open Font License (ADR-0033).",
+    "packages": ["@fontsource-variable/*"],
+    "licenses": ["OFL-1.1"]
+  }
+}
