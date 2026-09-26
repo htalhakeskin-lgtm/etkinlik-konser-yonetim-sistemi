@@ -11,6 +11,8 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: isCi,
   retries: isCi ? 1 : 0,
+  // A stuck run fails with a report instead of waiting for the job timeout.
+  ...(isCi && { globalTimeout: 10 * 60_000 }),
   reporter: isCi ? [["list"], ["html", { open: "never" }]] : [["list"]],
   use: {
     baseURL,

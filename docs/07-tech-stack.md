@@ -1,6 +1,6 @@
 # 07 — Teknoloji Yığını
 
-> **Durum:** v1.10 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.11 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 8](#8-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -114,7 +114,7 @@ Yığına yeni bir kütüphane eklemek ya da bir kütüphaneyi değiştirmek iç
 |---|---|---|---|
 | Kod barındırma, görev takibi, sürekli entegrasyon | GitHub (Issues, Projects, Actions) | Ücretsiz plan | [0028](adr/0028-development-workflow.md) |
 | Commit kancaları | Lefthook | MIT | [0028](adr/0028-development-workflow.md) |
-| Commit mesajı ve PR başlığı denetimi | commitlint; action-semantic-pull-request | MIT | [0028](adr/0028-development-workflow.md) |
+| Commit mesajı ve PR başlığı denetimi | commitlint (commit'lerde kanca, PR başlığında CI) | MIT | [0028](adr/0028-development-workflow.md) |
 | Sürüm numarası | MinVer (git etiketlerinden) | Apache 2.0 | [0028](adr/0028-development-workflow.md) |
 | Sürüm PR'ı ve değişiklik günlüğü | release-please | Apache 2.0 | [0028](adr/0028-development-workflow.md) |
 | Bağımlılık güncellemeleri | Dependabot | GitHub özelliği | [0028](adr/0028-development-workflow.md) |
@@ -208,3 +208,4 @@ Yaygın oldukları halde bilinçli olarak kullanılmayanlar:
 | 2026-09-26 | v1.8 | Faz 1.0 sürüm araştırması: pnpm 12 ve kurulum yolu, TanStack Table 9, Vitest 4 sabitlemesi, xUnit v3 paket sürümü, `.nvmrc`. |
 | 2026-09-26 | v1.9 | Yazı tipi dosyalarının kaynağı (Fontsource paketi). |
 | 2026-09-26 | v1.10 | shadcn/ui biçimi ve bileşen yardımcıları. |
+| 2026-09-26 | v1.11 | PR başlığı da commitlint'le denetlenir; action-semantic-pull-request çıkarıldı. |

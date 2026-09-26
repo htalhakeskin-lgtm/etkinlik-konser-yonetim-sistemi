@@ -1,0 +1,43 @@
+# Node from .nvmrc and pnpm from the root package.json's packageManager field, installed with npm
+# (no third-party action, ci.md §7), then the workspace packages from the frozen lock file.
+name: Set up Node and pnpm
+description: Installs Node, pnpm and (by default) the workspace packages.
+
+inputs:
+  install:
+    description: Install the workspace packages ("true" or "false").
+    default: "true"
+  filter:
+    description: Optional pnpm filter, e.g. "festos" for the root package only.
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      with:
+        node-version-file: .nvmrc
+    # The exact version comes from packageManager and npm verifies the package integrity.
+    - name: Install pnpm
+      shell: bash
+      run: npm install --global "pnpm@$(node -p "require('./package.json').packageManager.split('@')[1]")" # zizmor: ignore[adhoc-packages]
+    - name: Locate the pnpm store
+      id: store
+      shell: bash
+      run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+    - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ${{ steps.store.outputs.path }}
+        key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+        restore-keys: pnpm-store-${{ runner.os }}-
+    - name: Install packages
+      if: inputs.install == 'true'
+      shell: bash
+      env:
+        FILTER: ${{ inputs.filter }}
+      run: |
+        if [ -n "$FILTER" ]; then
+          pnpm install --frozen-lockfile --filter "$FILTER"
+        else
+          pnpm install --frozen-lockfile
+        fi

@@ -1,0 +1,10 @@
+# zizmor settings (docs/standards/ci.md §7). Every exception carries its reason.
+rules:
+  dependabot-cooldown:
+    config:
+      # Three days, like pnpm's minimumReleaseAge (git.md §9, ADR-0028); security updates skip it.
+      days: 3
+  self-repository:
+    # The "$/" syntax for local actions is newer than the pinned actionlint (1.7.12); switch to it
+    # once actionlint accepts it, so the two linters do not disagree.
+    disable: true

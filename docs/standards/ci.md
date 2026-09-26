@@ -1,6 +1,6 @@
 # Sürekli Entegrasyon Standardı
 
-> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.3 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -28,7 +28,7 @@ Kontrollerin neyi denetlediği ilgili standarttadır: kod biçimi ve lint [code-
 | Dosya | Tetikleyici | Ne yapar |
 |---|---|---|
 | `ci.yml` | PR'daki her push; `main`'e push; başka iş akışlarından çağrılabilir | PR hattı (§4) |
-| `pr-title.yml` | PR açılınca, başlığı değişince, yeni push gelince | PR başlığının commit biçimine uygunluğu ([git §5.3](git.md#53-başlık-ve-açıklama)) |
+| `pr-title.yml` | PR açılınca, başlığı değişince, yeni push gelince | PR başlığının commit biçimine uygunluğu ([git §5.3](git.md#53-başlık-ve-açıklama)); yerel commit'lerle aynı commitlint yapılandırmasıyla |
 | `nightly.yml` | Her gece 00:30 UTC (03:30 İstanbul); elle | Gece işleri (§5) |
 | `weekly.yml` | Pazar 01:00 UTC; elle | Haftalık işler (§5) |
 | `release.yml` | `main`'e push | Sürüm PR'ı; sürüm oluştuysa imaj ve demo yayını (§6) |
@@ -66,6 +66,8 @@ flowchart LR
 | `security` | Her zaman | gitleaks (PR'ın commit'leri); lisans denetimi (§9); `pnpm audit` (§10); iş akışları değiştiyse actionlint ve zizmor (§7). |
 | `traceability` | Sunucu, test ya da belge değiştiyse | Kural ve geçiş izlenebilirliği ([testing §10](testing.md#10-kural-ve-geçiş-izlenebilirliği)). |
 | `ci-result` | Her zaman, en son | Diğer işlerin sonucunu toplar. Atlanan iş başarılı sayılır; başarısız ya da iptal edilen iş varsa bu iş de başarısız olur. |
+
+**Kurulum sırası:** Hat Faz 1.0'da `changes`, `docs`, `backend`, `frontend`, `e2e`, `security` ve `ci-result` işleriyle kuruldu. Tabloda olup henüz bulunmayanlar, sınayacakları kod geldiğinde eklenir: `backend-integration` ve `traceability` ile OpenAPI / Orval fark denetimi Faz 1.1'de; kod kapsamı özeti entegrasyon testleriyle; paket boyutu denetimi (size-limit) ilk ekranlarla; `e2e`'nin yayın kopyası yığınla çalışması `deploy/` hazır olunca (1.9). O zamana kadar `e2e`, Playwright'ın derleyip açtığı ön yüze karşı çalışır. Zorunlu kontrol tek olduğu için (C-01) bu eklemeler kural setini değiştirmez.
 
 **Neden tek toplayıcı iş:** Alan filtresi iş akışının tetikleyicisine yazılırsa (`paths`), iş akışı hiç çalışmadığında zorunlu kontrol "bekliyor" durumunda kalır ve PR birleştirilemez. Filtre iş düzeyinde uygulanır ve zorunlu kontrol olarak yalnızca her zaman çalışan `ci-result` tanımlanır. Böylece yeni bir iş eklemek kural setini değiştirmeyi gerektirmez.
 
@@ -106,7 +108,7 @@ flowchart LR
 |---|---|
 | Her iş akışının başında `permissions: {}`; her iş yalnızca ihtiyacı olan yetkiyi açıkça ister | `GITHUB_TOKEN` ele geçerse yapabilecekleri sınırlı kalır. |
 | Tüm dış eylemler tam commit kimliğiyle sabit, yanında sürüm yorumu | Etiketi değiştirilen bir eylem sessizce kötü amaçlı koda dönüşemez ([git §9](git.md#9-bağımlılık-güncellemeleri)). |
-| Dış eylem sayısı en azda tutulur: GitHub'ın kendi eylemleri (`actions/*`) dışında yalnızca yol filtresi, release-please ve PR başlığı eylemi. Tarama araçları (gitleaks, Grype, actionlint, zizmor) eylem yerine, sürümü ve sağlama toplamı sabitlenmiş komut satırı araçları olarak çalışır. | Mart 2026'da Trivy'nin GitHub eylemlerinin 76 sürüm etiketi kimlik bilgisi çalan koda yönlendirildi ([kaynak](https://github.com/aquasecurity/trivy/security/advisories/GHSA-69fq-xp46-6x23)). Güvenlik araçları da saldırı yüzeyidir. |
+| Dış eylem sayısı en azda tutulur: GitHub'ın kendi eylemleri (`actions/*`) dışında yalnızca yol filtresi ve release-please. PR başlığı ayrı bir eylemle değil, commitlint'le denetlenir. pnpm, `packageManager` alanındaki sürümle npm'den kurulur (yerel bileşik eylem `.github/actions/setup-pnpm`). Tarama araçları (gitleaks, Grype, actionlint, zizmor) eylem yerine, sürümü ve sağlama toplamı sabitlenmiş komut satırı araçları olarak çalışır. zizmor'un istisnaları gerekçeleriyle `.github/zizmor.yml`'dadır. | Mart 2026'da Trivy'nin GitHub eylemlerinin 76 sürüm etiketi kimlik bilgisi çalan koda yönlendirildi ([kaynak](https://github.com/aquasecurity/trivy/security/advisories/GHSA-69fq-xp46-6x23)). Güvenlik araçları da saldırı yüzeyidir. |
 | `actions/checkout` her zaman `persist-credentials: false` ile | Depo belirteci sonraki adımların erişebileceği bir dosyada kalmaz. |
 | `pull_request_target` ve güvenilmeyen eserleri kullanan `workflow_run` yasak | Fork'tan gelen kodu yazma yetkisiyle çalıştırmanın en yaygın yoludur ([kaynak](https://blog.packagist.com/securing-our-github-actions-workflows-with-zizmor/)). |
 | PR başlığı, dal adı gibi dışarıdan gelen değerler `run:` betiğine doğrudan yazılmaz; ortam değişkeniyle geçirilir | Betik enjeksiyonunu önler. |
@@ -121,7 +123,7 @@ flowchart LR
 | .NET SDK | `global.json` ([08 §10](../08-architecture.md#10-derleme-ayarları)) |
 | .NET paketleri | Paket kilit dosyaları açık (`RestorePackagesWithLockFile`); CI'da `--locked-mode`. Kilit dosyasıyla uyuşmayan geri yükleme başarısız olur. Dolaylı bağımlılıklar da sabittir. |
 | .NET araçları | CSharpier, `dotnet-ef` ve lisans aracı yerel araç bildiriminde (`.config/dotnet-tools.json`) sürümle sabit |
-| Node ve pnpm | Node sürümü `.nvmrc`'de; pnpm sürümü kök `package.json`'ın `packageManager` alanında (Corepack); `pnpm install --frozen-lockfile` |
+| Node ve pnpm | Node sürümü `.nvmrc`'de; pnpm sürümü kök `package.json`'ın `packageManager` alanında, npm ile kurulur (Corepack kullanılmaz, [09 §3](../09-environments-and-deployment.md#3-geliştirme-ortamının-kurulumu)); `pnpm install --frozen-lockfile` |
 | Önbellekler | NuGet paketleri (kilit dosyalarının özetiyle) ve pnpm deposu. Playwright tarayıcıları önbelleğe alınmaz, her çalıştırmada kurulur (Playwright'ın önerisi). |
 | Eşzamanlılık | Aynı PR'a yeni push gelince eski çalıştırma iptal edilir. `main` ve yayın çalıştırmaları iptal edilmez. |
 | Test sonuçları | Test raporları iş özetine yazılır; başarısız testler PR'da görünür. Kod kapsamı özeti ReportGenerator ile iş özetinde ([testing §13](testing.md#13-kod-kapsamı)). |
@@ -193,3 +195,4 @@ Uçtan uca testler yerelde Aspire ile açılan uygulamaya karşı ya da `deploy/
 | 2026-09-25 | v1.0 | Kesinleşti. |
 | 2026-09-25 | v1.1 | Ön yüz işine tasarım sistemi testleri ve paket boyutu denetimi; yazı tipleri için OFL (D.4). |
 | 2026-09-26 | v1.2 | Sürüm PR'ında iş akışlarının elle onaylanması (GitHub'ın Haziran 2026 değişikliği). |
+| 2026-09-26 | v1.3 | Faz 1.0'da kurulan hat ve gelecek işlerin sırası; PR başlığı commitlint'le; pnpm npm ile; zizmor istisnaları dosyada. |

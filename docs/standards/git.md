@@ -1,6 +1,6 @@
 # Git ve İş Akışı Standardı
 
-> **Durum:** v1.4 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.5 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -190,7 +190,7 @@ without an If-Match header.
 
 ### 5.3 Başlık ve açıklama
 
-- **Başlık** commit mesajının başlık satırıyla aynı kurala uyar (§4.1), çünkü squash birleştirmede `main`'e giren commit'in başlığı olur. CI başlığı denetler ([action-semantic-pull-request](https://github.com/amannn/action-semantic-pull-request)).
+- **Başlık** commit mesajının başlık satırıyla aynı kurala uyar (§4.1), çünkü squash birleştirmede `main`'e giren commit'in başlığı olur. CI başlığı, yerel commit'lerle aynı commitlint yapılandırmasıyla denetler (`pr-title` iş akışı).
 - **Açıklama** PR şablonundan gelir (`.github/pull_request_template.md`):
 
 ```markdown
@@ -391,3 +391,4 @@ Repo Faz 0 bitince açılır ([R-01](#13-kararlar)). Açılmadan önce şu kontr
 | 2026-09-25 | v1.2 | Kural setinin aşamaları (repo açılınca / CI kurulunca), Actions'ın PR açma izni, CodeQL zamanı ve repo tanıtımı netleşti. |
 | 2026-09-26 | v1.3 | Bağımlılık kurulum betiklerine yalnızca açık izinle izin verilmesi (pnpm `allowBuilds`). |
 | 2026-09-26 | v1.4 | Commit kancalarının kesin hâli: ESLint ve Prettier sırayla çalışır; `main` koruması betikle yapılır (Faz 1.0). |
+| 2026-09-26 | v1.5 | PR başlığı denetimi commitlint'le yapılır; ayrı bir eylem kullanılmaz (Faz 1.0). |
