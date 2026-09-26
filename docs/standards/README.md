@@ -15,6 +15,6 @@ Kod yazılırken uyulan kurallar. Her standart, kuralın **ne** olduğunu, **ned
 | [testing.md](testing.md) | Test katmanları, değişiklik türüne göre gereken testler, kural izlenebilirliği, test verisi, kararsız testler, kod kapsamı | v1.2 |
 | [ci.md](ci.md) | Sürekli entegrasyon: iş akışları, PR hattı, gece ve haftalık işler, yayın hattı, iş akışı güvenliği, lisans ve açık denetimi | v1.2 |
 | [definition-of-done.md](definition-of-done.md) | PR, hikaye, hata düzeltmesi ve sürüm için bitti tanımı | v1.2 |
-| [ui.md](ui.md) | Arayüz: tasarım değişkenleri, durum tonları, yazı, yerleşim, gezinme, bileşenler, formlar, tablolar, geri bildirim, durumlar, anlık güncelleme, yetki, Türkçe metin ve biçimler, depo ekranları, erişilebilirlik, performans | v1.1 |
+| [ui.md](ui.md) | Arayüz: tasarım değişkenleri, durum tonları, yazı, yerleşim, gezinme, bileşenler, formlar, tablolar, geri bildirim, durumlar, anlık güncelleme, yetki, Türkçe metin ve biçimler, depo ekranları, erişilebilirlik, performans | v1.2 |
 
 Standartlar [08-architecture.md](../08-architecture.md)'deki yapıya ve [07-tech-stack.md](../07-tech-stack.md)'deki araç seçimlerine dayanır.

@@ -1,6 +1,6 @@
 # Arayüz Standardı
 
-> **Durum:** v1.1 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.2 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 19](#19-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -199,6 +199,8 @@ Durumların tonları ([01](../01-glossary.md), [04](../04-state-machines.md)):
 
 - Bileşenler shadcn/ui'dan kaynak kodu olarak kopyalanır ([ADR-0009](../adr/0009-ui-components.md)) ve **Base UI** temelli sürümü kullanılır ([ADR-0033](../adr/0033-design-system.md)). Base UI, Radix'i geliştiren ekibin yeni kütüphanesidir; Aralık 2025'te kararlı sürüme ulaştı ve Temmuz 2026'dan beri shadcn/ui'ın varsayılanıdır ([kaynak](https://ui.shadcn.com/docs/changelog/2026-07-base-ui-default)).
 - Kopyalanan bileşenler (`components/ui/`) tasarım değişkenlerine göre bir kez uyarlanır; sonra yalnızca bilinçli güncellemelerle değişir. Güncelleme ayrı bir PR'dır ve tasarım sistemi kataloğunda gözden geçirilir.
+- shadcn/ui'ın **"vega"** biçimi kullanılır: kontrolleri 36 px'tir (§3.5). "nova" ve "mira" daha sıkışıktır ve kontrolleri 36 px'in altına indirir.
+- Uyarlamalar bileşen dosyasının başında yazılıdır. Düğmede: odak halkası tam renkli ve Windows'un zorunlu renk kipinde de görünür; üzerine gelindiğinde zemin soluklaşmaz, yazı rengine doğru koyulaşır; `destructive` düğmesi dolu renklidir; yükleniyor hali eklenmiştir (§6.3). Bu değişikliklerin nedeni, özgün hallerin kontrast kurallarını (§3.2) sağlamamasıdır.
 - Modül kodu `components/ui/` yerine mümkün olduğunca uygulamanın ortak bileşenlerini (`components/common/`) kullanır; ortak davranış (yükleniyor, hata, yetki) böylece tek yerde kalır.
 
 ### 6.2 Ortak bileşenler
@@ -663,3 +665,4 @@ Oturum bir vardiya boyunca sürer (P-03: 12 saat hareketsizlik). Süresi dolarsa
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | U-01 (çevrimiçi okutma, otomatik tekrar), U-02 (açık ve koyu tema), U-03 (mor marka rengi) kararlaştırıldı; ADR-0033 ve ADR-0034 kabul edildi. |
 | 2026-09-26 | v1.1 | Tasarım değişkenleri koda geçti: durum tonlarının renkleri (mor hiçbir tonda kullanılmaz), durum değişkenlerinin adları, `border` / `input` ayrımı, palet adlandırması (Faz 1.0). |
+| 2026-09-26 | v1.2 | shadcn/ui "vega" biçimi ve düğmenin kontrast için uyarlanması (Faz 1.0). |
