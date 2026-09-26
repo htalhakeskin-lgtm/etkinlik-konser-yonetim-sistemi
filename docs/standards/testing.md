@@ -1,6 +1,6 @@
 # Test Stratejisi
 
-> **Durum:** v1.3 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.4 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 14](#14-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -135,6 +135,8 @@ Yerelde konteynerin her test çalıştırmasında yeniden açılmaması için Te
 | Saat dilimi ve dil | Tarayıcı dili `tr-TR`, tarayıcı saat dilimi bilerek **UTC**. Arayüz zamanları tarayıcının saat diliminden bağımsız olarak Europe/Istanbul göstermelidir; farklı saat dilimi bu hatayı yakalar. |
 | Etiketler | Her test, kapsadığı hikayelerle etiketlenir: `test('…', { tag: ['@US-WHS-003'] }, …)` ([kaynak](https://playwright.dev/docs/test-annotations)). Hikaye numaraları §10'daki araçla denetlenir. |
 | Bekleme | Playwright'ın kendiliğinden bekleyen doğrulamaları kullanılır; sabit süreli bekleme yoktur. |
+| Erişilebilirlik | Her ekran testinde sayfa, `support/accessibility.ts`'teki yardımcıyla WCAG 2.2 AA taramasından geçer (@axe-core/playwright). |
+| Çalıştırma | `pnpm --filter @festos/e2e test` Chromium ve telefon görünümü projelerini çalıştırır; `test:all-browsers` Firefox ve WebKit'i de ekler. `E2E_BASE_URL` verilmezse derlenmiş ön yüz yerelde açılır; CI bu değişkenle yayın kopyası yığını gösterir. Telefon görünümü projesi yalnızca `@mobile` etiketli testleri çalıştırır. |
 
 ## 9. Performans ve erişilebilirlik testleri
 
@@ -245,3 +247,4 @@ Hedef aşılırsa önce yavaş testler incelenir; test silmek son çaredir.
 | 2026-09-25 | v1.1 | CI hattı, uçtan uca test yığını ve demo verisi bağlandı (D.3). |
 | 2026-09-25 | v1.2 | Tasarım sistemi bileşenleri için Storybook örnekleriyle tarayıcı testleri ve erişilebilirlik taraması (D.4). |
 | 2026-09-26 | v1.3 | Ön yüz testlerinin iki Vitest projesi ve çalıştırma komutları (Faz 1.0). |
+| 2026-09-26 | v1.4 | Uçtan uca testlerin erişilebilirlik taraması ve çalıştırma biçimi (Faz 1.0). |
