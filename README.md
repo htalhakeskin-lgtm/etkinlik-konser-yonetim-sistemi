@@ -116,7 +116,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 
 | Belge | Sürüm |
 |---|---|
-| [07 — Teknoloji yığını](docs/07-tech-stack.md) | v1.9 |
+| [07 — Teknoloji yığını](docs/07-tech-stack.md) | v1.10 |
 | [08 — Mimari ve klasör yapısı](docs/08-architecture.md) | v1.10 |
 | [Mimari karar kayıtları (ADR)](docs/adr/README.md) | 34 kayıt |
 
@@ -131,7 +131,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | [Güvenlik](docs/standards/security.md) | v1.3 |
 | [Gözlemlenebilirlik](docs/standards/observability.md) | v1.1 |
 | [Yapılandırma](docs/standards/configuration.md) | v1.2 |
-| [Arayüz](docs/standards/ui.md) | v1.1 |
+| [Arayüz](docs/standards/ui.md) | v1.2 |
 
 **Çalışma süreci ve işletim**
 

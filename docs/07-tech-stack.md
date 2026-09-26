@@ -1,6 +1,6 @@
 # 07 — Teknoloji Yığını
 
-> **Durum:** v1.9 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.10 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 8](#8-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -64,7 +64,7 @@ Yığına yeni bir kütüphane eklemek ya da bir kütüphaneyi değiştirmek iç
 | Yönlendirme | TanStack Router (tip güvenli) | 1.x | MIT | [0008](adr/0008-frontend-architecture.md) |
 | Sunucu verisi | TanStack Query | 5.x | MIT | [0008](adr/0008-frontend-architecture.md) |
 | API istemcisi | Orval: OpenAPI belgesinden tipler ve TanStack Query kancaları üretir | — | MIT | [0008](adr/0008-frontend-architecture.md) |
-| Arayüz bileşenleri | shadcn/ui (Base UI temelli) + Tailwind CSS | Base UI 1.x, Tailwind 4 | MIT | [0009](adr/0009-ui-components.md), [0033](adr/0033-design-system.md) |
+| Arayüz bileşenleri | shadcn/ui (Base UI temelli, "vega" biçimi) + Tailwind CSS; yardımcılar: `cn` (sınıf birleştirme), class-variance-authority, tw-animate-css | Base UI 1.x, Tailwind 4 | MIT | [0009](adr/0009-ui-components.md), [0033](adr/0033-design-system.md) |
 | Tablolar | TanStack Table | 9.x | MIT | [0009](adr/0009-ui-components.md) |
 | Formlar | React Hook Form + Zod (derleyici uyumlu kalıplarla) | — | MIT | [0009](adr/0009-ui-components.md), [0033](adr/0033-design-system.md) |
 | Tarih seçici | react-day-picker (shadcn/ui takvimi) | 9.x | MIT | [0033](adr/0033-design-system.md) |
@@ -207,3 +207,4 @@ Yaygın oldukları halde bilinçli olarak kullanılmayanlar:
 | 2026-09-25 | v1.7 | D.4: Base UI, tarih seçici, bildirimler, hızlı erişim, sanal kaydırma, Inter, Storybook ve size-limit eklendi (ADR-0033, ADR-0034). |
 | 2026-09-26 | v1.8 | Faz 1.0 sürüm araştırması: pnpm 12 ve kurulum yolu, TanStack Table 9, Vitest 4 sabitlemesi, xUnit v3 paket sürümü, `.nvmrc`. |
 | 2026-09-26 | v1.9 | Yazı tipi dosyalarının kaynağı (Fontsource paketi). |
+| 2026-09-26 | v1.10 | shadcn/ui biçimi ve bileşen yardımcıları. |
