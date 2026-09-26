@@ -10,5 +10,14 @@ saveExact: true
 
 # Install scripts of dependencies run only when explicitly allowed here.
 # lefthook: its script only installs the git hooks, which the root "prepare" script already does.
+# unrs-resolver: its native binary arrives as an optional dependency; the script only checks for it and downloads a fallback.
 allowBuilds:
   lefthook: false
+  unrs-resolver: false
+
+# Peer ranges that are known to be too narrow. Remove an entry once the package declares the version itself.
+# eslint-plugin-jsx-a11y 6.10.2 works with ESLint 10; its release declaring it is pending
+# (https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/issues/1075).
+peerDependencyRules:
+  allowedVersions:
+    eslint-plugin-jsx-a11y>eslint: "10"

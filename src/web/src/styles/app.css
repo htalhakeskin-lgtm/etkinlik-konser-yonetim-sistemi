@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+/*
+ * Only semantic colour utilities exist: Tailwind's default palette is removed, so classes such as
+ * bg-red-500 are never generated (docs/standards/ui.md §3.1).
+ */
+@theme inline {
+  --color-*: initial;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted-foreground: var(--muted-foreground);
+}

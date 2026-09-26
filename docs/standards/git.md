@@ -1,6 +1,6 @@
 # Git ve İş Akışı Standardı
 
-> **Durum:** v1.3 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.4 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -276,41 +276,16 @@ Kancalar [Lefthook](https://github.com/evilmartians/lefthook) (MIT) ile yönetil
 
 | Kanca | Ne çalışır | Hedef süre |
 |---|---|---|
-| `pre-commit` | Yalnızca commit'e eklenen dosyalarda, paralel: CSharpier (C#, `.csproj`, `.props`), Prettier, ESLint (düzeltebildiklerini düzeltir ve commit'e ekler); gitleaks ile gizli bilgi taraması | Birkaç saniye |
+| `pre-commit` | Yalnızca commit'e eklenen dosyalarda: CSharpier (C#, `.csproj`, `.props`), ESLint ve ardından Prettier (düzeltebildiklerini düzeltir ve commit'e ekler); gitleaks ile gizli bilgi taraması | Birkaç saniye |
 | `commit-msg` | [commitlint](https://commitlint.js.org/) (MIT): Conventional Commits biçimi ve §4.3'teki kapsam listesi | Anlık |
 | `pre-push` | `main`'e doğrudan push'u reddeder ([R-03](#13-kararlar)). Repo açılınca aynı kuralı GitHub'daki kural seti de zorlar; kanca, hatanın sunucuya gitmeden yerelde görülmesini sağlar. | Anlık |
 
 Derleme ve testler kancalarda çalışmaz; saniyeler yerine dakikalar süren kontroller kanca atlama alışkanlığı yaratır. Bunlar CI'dadır.
 
-Örnek yapılandırma (yollar Faz 1'de kesinleşir):
+Yapılandırma kökteki `lefthook.yml` dosyasındadır. İki ayrıntı:
 
-```yaml
-# lefthook.yml
-pre-commit:
-  parallel: true
-  commands:
-    csharpier:
-      glob: "*.{cs,csproj,props,targets}"
-      run: dotnet csharpier format {staged_files}
-      stage_fixed: true
-    prettier:
-      glob: "*.{ts,tsx,js,mjs,json,css,yml,yaml}"
-      exclude: "docs/**"
-      run: pnpm exec prettier --write {staged_files}
-      stage_fixed: true
-    eslint:
-      root: "src/web/"
-      glob: "*.{ts,tsx}"
-      run: pnpm exec eslint --fix --cache {staged_files}
-      stage_fixed: true
-    gitleaks:
-      run: gitleaks git --staged --redact --no-banner
-
-commit-msg:
-  commands:
-    commitlint:
-      run: pnpm exec commitlint --edit {1}
-```
+- ESLint ile Prettier aynı dosyayı yeniden yazdığı için paralel çalışmaz; önce ESLint, en son Prettier çalışır. Diğer kontroller paraleldir.
+- `pre-push` kontrolü bir Lefthook komutu değil, betiktir (`tools/git/pre-push/protect-main.sh`). Lefthook, yeni dosya getirmeyen push'larda komutları atlar; betikleri atlamaz. Betik, push'un hedef dallarını okur; böylece `git push origin ozellik:main` gibi başka bir daldan yapılan push da yakalanır.
 
 **Neden Lefthook:** Tek bir çalıştırılabilir dosyadır, kontrolleri paralel çalıştırır ve alt klasörlere göre ayrı komut tanımlamayı destekler. .NET ve ön yüzün aynı repoda olduğu bu yapıya Husky'den daha uygundur. Husky yalnızca kabuk betiği çalıştırır; hangi dosyada hangi aracın çalışacağını betiğe elle yazmak gerekir ([kaynak](https://www.andymadge.com/2026/03/10/git-hooks-comparison/), [kaynak](https://www.pkgpulse.com/guides/husky-vs-lefthook-vs-lint-staged-git-hooks-nodejs-2026)).
 
@@ -415,3 +390,4 @@ Repo Faz 0 bitince açılır ([R-01](#13-kararlar)). Açılmadan önce şu kontr
 | 2026-09-25 | v1.1 | CI, yayın ve gizli bilgi yenileme belgelerine bağlandı (D.3). |
 | 2026-09-25 | v1.2 | Kural setinin aşamaları (repo açılınca / CI kurulunca), Actions'ın PR açma izni, CodeQL zamanı ve repo tanıtımı netleşti. |
 | 2026-09-26 | v1.3 | Bağımlılık kurulum betiklerine yalnızca açık izinle izin verilmesi (pnpm `allowBuilds`). |
+| 2026-09-26 | v1.4 | Commit kancalarının kesin hâli: ESLint ve Prettier sırayla çalışır; `main` koruması betikle yapılır (Faz 1.0). |

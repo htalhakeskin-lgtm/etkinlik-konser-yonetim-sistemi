@@ -22,5 +22,6 @@ pnpm-lock.yaml linguist-generated=true
 **/packages.lock.json linguist-generated=true
 src/web/src/api/** linguist-generated=true
 src/web/openapi/** linguist-generated=true
+src/web/src/routeTree.gen.ts linguist-generated=true
 **/Migrations/*.Designer.cs linguist-generated=true
 **/Migrations/*ModelSnapshot.cs linguist-generated=true
