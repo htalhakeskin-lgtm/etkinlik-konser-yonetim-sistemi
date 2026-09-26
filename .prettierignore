@@ -4,6 +4,7 @@
 # Generated code and lock files
 src/web/src/api/
 src/web/openapi/
+src/web/src/routeTree.gen.ts
 pnpm-lock.yaml
 **/packages.lock.json
 # Rewritten by `dotnet tool install` in its own layout.

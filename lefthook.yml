@@ -3,16 +3,27 @@ source_dir: tools/git/
 
 pre-commit:
   parallel: true
-  commands:
-    csharpier:
+  jobs:
+    - name: csharpier
       glob: "*.{cs,csproj,props,targets,slnx}"
       run: dotnet csharpier format {staged_files}
       stage_fixed: true
-    prettier:
-      glob: "*.{ts,tsx,js,mjs,cjs,json,css,yml,yaml}"
-      run: pnpm exec prettier --write --ignore-unknown {staged_files}
-      stage_fixed: true
-    gitleaks:
+    # ESLint and Prettier both rewrite files, so they run one after the other; Prettier runs last.
+    - name: lint-and-format
+      group:
+        piped: true
+        jobs:
+          - name: eslint
+            # Runs inside src/web so the config and tsconfig resolve; file paths are relative to it.
+            root: "src/web/"
+            glob: "*.{ts,tsx,js}"
+            run: pnpm exec eslint --fix --max-warnings 0 --no-warn-ignored {staged_files}
+            stage_fixed: true
+          - name: prettier
+            glob: "*.{ts,tsx,js,mjs,cjs,json,css,yml,yaml}"
+            run: pnpm exec prettier --write --ignore-unknown {staged_files}
+            stage_fixed: true
+    - name: gitleaks
       run: gitleaks git --staged --redact --no-banner
 
 commit-msg:

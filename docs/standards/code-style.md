@@ -1,6 +1,6 @@
 # Kod Stili ve Statik Analiz
 
-> **Durum:** v1.6 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.7 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 10](#10-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -171,7 +171,7 @@ TypeScript 6 katı modu (`strict`) varsayılan olarak açar. Buna ek olarak:
 
 ### 5.2 Biçim
 
-Prettier varsayılan ayarlarıyla kullanılır; yalnızca satır uzunluğu (`printWidth: 100`) değiştirilir. Tailwind sınıfları `prettier-plugin-tailwindcss` ile Tailwind'in önerdiği sıraya dizilir. Tailwind 4'te eklentiye stil dosyasının yolu (`tailwindStylesheet`) verilir.
+Prettier varsayılan ayarlarıyla kullanılır; yalnızca satır uzunluğu (`printWidth: 100`) değiştirilir. Tailwind sınıfları `prettier-plugin-tailwindcss` ile Tailwind'in önerdiği sıraya dizilir. Tailwind 4'te eklentiye stil dosyasının yolu (`tailwindStylesheet`) verilir. Eklenti yalnızca `src/web` dosyalarına uygulanır (kökteki `.prettierrc.json`'da `overrides`).
 
 Prettier'ın dışında tutulanlar (`.prettierignore`): tüm Markdown dosyaları, yani `docs/` ve kökteki belgeler (Prettier Markdown tablolarını hizalar; uzun tablolarda her küçük değişiklik tüm tabloyu değiştirir), üretilen API istemcisi (`src/web/src/api/`), kilit dosyaları, CSharpier'ın biçimlendirdiği C# ve MSBuild dosyaları.
 
@@ -187,8 +187,8 @@ Yapılandırma tek dosyadadır (`eslint.config.js`; ESLint 10'da tek desteklenen
 | `eslint-plugin-react-refresh` | Vite'in anlık yenilemesini bozan dışa aktarımlar (TanStack Router'ın `Route` dışa aktarımı izinli) |
 | `@tanstack/eslint-plugin-query` | TanStack Query'nin yanlış kullanımları (ör. sorgu anahtarında eksik bağımlılık) |
 | `@tanstack/eslint-plugin-router` | TanStack Router yönlendirme tanımlarındaki sıra hataları |
-| `eslint-plugin-jsx-a11y` | Erişilebilirlik hataları (etiketsiz alan, klavyeyle erişilemeyen düğme) |
-| `eslint-plugin-boundaries` | Ön yüz modül sınırları: bir modül başka bir modülün yalnızca `index.ts`'inden içe aktarabilir ([08 §11](../08-architecture.md#11-ön-yüz-yapısı)) |
+| `eslint-plugin-jsx-a11y` | Erişilebilirlik hataları (etiketsiz alan, klavyeyle erişilemeyen düğme). 6.10.2 sürümü ESLint 10'da çalışır ama sürüm aralığında henüz bildirmez; pnpm'in `peerDependencyRules` ayarıyla izin verilir, paket bildirince izin kaldırılır ([kaynak](https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/issues/1075)). |
+| `eslint-plugin-boundaries` | Ön yüz modül sınırları: bir modül başka bir modülün yalnızca `index.ts`'inden içe aktarabilir ([08 §11](../08-architecture.md#11-ön-yüz-yapısı)). `@/` yollarını çözmek için `eslint-import-resolver-typescript` kullanılır. |
 | `eslint-plugin-simple-import-sort` | İçe aktarımların sırası (otomatik düzeltilir) |
 | `@eslint-community/eslint-plugin-eslint-comments` | Kural kapatma yorumlarının gerekçesiz ya da gereksiz olması |
 
@@ -288,3 +288,4 @@ Bu belgedeki bir kural değiştirilecekse önce belge güncellenir, sonra araç 
 | 2026-09-25 | v1.4 | Konteyner imajı ve CI ayrıntısı bağlandı (D.3). |
 | 2026-09-25 | v1.5 | React Hook Form için derleyici uyumlu kalıplar zorunlu (D.4). |
 | 2026-09-26 | v1.6 | Prettier'ın dışında tutulanlar tüm Markdown dosyalarını kapsayacak şekilde netleşti (Faz 1.0). |
+| 2026-09-26 | v1.7 | jsx-a11y'nin ESLint 10 izni, modül sınırları için yol çözücü ve Tailwind eklentisinin kapsamı (Faz 1.0). |

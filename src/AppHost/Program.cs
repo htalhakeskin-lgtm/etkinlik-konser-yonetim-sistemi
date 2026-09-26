@@ -1,4 +1,4 @@
-// Local development: starts PostgreSQL, the API host and (later) the front end with one command
+// Local development: starts PostgreSQL, the API host and the front end with one command
 // and shows their logs, traces and metrics in the Aspire dashboard (ADR-0016).
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 
@@ -11,6 +11,13 @@ IResourceBuilder<PostgresServerResource> postgres = builder
 
 IResourceBuilder<PostgresDatabaseResource> database = postgres.AddDatabase("festos");
 
-builder.AddProject<Projects.FestOS_Host>("host").WithReference(database).WaitFor(database);
+IResourceBuilder<ProjectResource> host = builder
+    .AddProject<Projects.FestOS_Host>("host")
+    .WithReference(database)
+    .WaitFor(database);
+
+// Vite dev server; it proxies /api and /hubs to the Host (src/web/vite.config.ts). Packages are
+// installed once with "pnpm install" at the repository root, so Aspire does not install them.
+builder.AddViteApp("web", "../web").WithPnpm(install: false).WithReference(host).WaitFor(host);
 
 await builder.Build().RunAsync();

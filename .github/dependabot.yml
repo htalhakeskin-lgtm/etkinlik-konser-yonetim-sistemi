@@ -27,6 +27,15 @@ updates:
     groups:
       npm-minor-and-patch:
         update-types: [minor, patch]
+    # Held on the previous major on purpose (docs/07-tech-stack.md §7): TypeScript 7 waits for
+    # typescript-eslint, Vitest 5 for Storybook's Vitest addon; @types/node follows the Node LTS in .nvmrc.
+    ignore:
+      - dependency-name: typescript
+        versions: [">=7"]
+      - dependency-name: vitest
+        versions: [">=5"]
+      - dependency-name: "@types/node"
+        versions: [">=25"]
     commit-message:
       prefix: build
       prefix-development: build

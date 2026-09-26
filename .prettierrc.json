@@ -1,4 +1,13 @@
 {
   "$schema": "https://json.schemastore.org/prettierrc",
-  "printWidth": 100
+  "printWidth": 100,
+  "overrides": [
+    {
+      "files": "src/web/**",
+      "options": {
+        "plugins": ["prettier-plugin-tailwindcss"],
+        "tailwindStylesheet": "./src/web/src/styles/app.css"
+      }
+    }
+  ]
 }
