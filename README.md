@@ -137,7 +137,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 
 | Belge | Sürüm |
 |---|---|
-| [Git ve iş akışı](docs/standards/git.md) | v1.5 |
+| [Git ve iş akışı](docs/standards/git.md) | v1.6 |
 | [Test stratejisi](docs/standards/testing.md) | v1.4 |
 | [Bitti tanımı](docs/standards/definition-of-done.md) | v1.2 |
 | [Sürekli entegrasyon](docs/standards/ci.md) | v1.5 |

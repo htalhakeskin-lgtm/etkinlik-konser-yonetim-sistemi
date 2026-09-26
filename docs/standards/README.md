@@ -11,7 +11,7 @@ Kod yazılırken uyulan kurallar. Her standart, kuralın **ne** olduğunu, **ned
 | [security.md](security.md) | Yetki modeli ve roller, oturum ve şifre, gizli bilgiler, veri koruma anahtarları, tarayıcı güvenlik başlıkları, girdi doğrulama, kişisel veri | v1.3 |
 | [observability.md](observability.md) | Loglar, izler, ölçümler, sağlık kontrolleri, uyarılar | v1.1 |
 | [configuration.md](configuration.md) | Ortamlar, ayar kaynakları, ayar doğrulama, parametre eşlemesi, dosya saklama, dış servis çağrıları | v1.2 |
-| [git.md](git.md) | Dal düzeni, commit mesajları, PR ve birleştirme, görev takibi, sürüm numaraları, commit kancaları, bağımlılık güncellemeleri, gizli bilgi taraması, repo ayarları | v1.5 |
+| [git.md](git.md) | Dal düzeni, commit mesajları, PR ve birleştirme, görev takibi, sürüm numaraları, commit kancaları, bağımlılık güncellemeleri, gizli bilgi taraması, repo ayarları | v1.6 |
 | [testing.md](testing.md) | Test katmanları, değişiklik türüne göre gereken testler, kural izlenebilirliği, test verisi, kararsız testler, kod kapsamı | v1.4 |
 | [ci.md](ci.md) | Sürekli entegrasyon: iş akışları, PR hattı, gece ve haftalık işler, yayın hattı, iş akışı güvenliği, lisans ve açık denetimi | v1.5 |
 | [definition-of-done.md](definition-of-done.md) | PR, hikaye, hata düzeltmesi ve sürüm için bitti tanımı | v1.2 |
