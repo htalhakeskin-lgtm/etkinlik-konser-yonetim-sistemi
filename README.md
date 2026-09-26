@@ -117,7 +117,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | Belge | Sürüm |
 |---|---|
 | [07 — Teknoloji yığını](docs/07-tech-stack.md) | v1.11 |
-| [08 — Mimari ve klasör yapısı](docs/08-architecture.md) | v1.10 |
+| [08 — Mimari ve klasör yapısı](docs/08-architecture.md) | v1.11 |
 | [Mimari karar kayıtları (ADR)](docs/adr/README.md) | 34 kayıt |
 
 **Standartlar** ([dizin](docs/standards/README.md))
@@ -140,7 +140,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | [Git ve iş akışı](docs/standards/git.md) | v1.5 |
 | [Test stratejisi](docs/standards/testing.md) | v1.4 |
 | [Bitti tanımı](docs/standards/definition-of-done.md) | v1.2 |
-| [Sürekli entegrasyon](docs/standards/ci.md) | v1.3 |
+| [Sürekli entegrasyon](docs/standards/ci.md) | v1.4 |
 | [09 — Ortamlar ve yayın](docs/09-environments-and-deployment.md) | v1.2 |
 | [10 — İşletim el kitabı](docs/10-operations.md) | v1.0 |
 | [11 — Ekran şablonları ve envanteri](docs/11-screens.md) | v1.0 |

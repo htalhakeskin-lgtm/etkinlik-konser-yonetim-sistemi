@@ -1,0 +1,38 @@
+# A failed scheduled run opens an issue, or comments on the open one, so it is not missed
+# (docs/standards/ci.md §5, C-08). Needs `issues: write`.
+name: Report a scheduled failure
+description: Opens or updates the "ci:scheduled" issue for a failed scheduled workflow.
+
+inputs:
+  workflow:
+    description: Name of the failed workflow.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Open or update the issue
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        REPO: ${{ github.repository }}
+        WORKFLOW: ${{ inputs.workflow }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      run: |
+        # Labels are created on first use; existing ones are left as they are.
+        gh label create "ci:scheduled" --repo "$REPO" --color "B60205" \
+          --description "Zamanlanmış bir iş akışı başarısız oldu" 2>/dev/null || true
+        gh label create "type:bug" --repo "$REPO" --color "D73A4A" \
+          --description "Beklenmeyen davranış" 2>/dev/null || true
+
+        title="Zamanlanmış çalıştırma başarısız: $WORKFLOW"
+        number=$(gh issue list --repo "$REPO" --state open --label "ci:scheduled" \
+          --search "\"$title\" in:title" --json number --jq '.[0].number // empty')
+        body="Zamanlanmış **$WORKFLOW** iş akışı başarısız oldu: $RUN_URL"
+
+        if [ -n "$number" ]; then
+          gh issue comment "$number" --repo "$REPO" --body "$body"
+        else
+          gh issue create --repo "$REPO" --title "$title" --label "type:bug" --label "ci:scheduled" \
+            --body "$body (docs/standards/ci.md §5)"
+        fi

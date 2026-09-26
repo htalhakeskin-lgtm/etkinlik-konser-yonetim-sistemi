@@ -1,0 +1,68 @@
+{
+  "$comment": "Reviewed packages outside allowed-licenses.json (docs/standards/ci.md §9). 'versions' is '*' or a major version such as '4.x'; a new major needs a new review.",
+  "exceptions": [
+    {
+      "ecosystem": "nuget",
+      "packages": ["Json.More.Net", "JsonPatch.Net", "JsonPointer.Net"],
+      "versions": "*",
+      "license": "OSMFEULA.txt",
+      "reason": "Open Source Maintenance Fee EULA. Pulled in by Aspire.Hosting and used only by the AppHost in local development; never shipped. The fee applies only to revenue above US$10,000 a year; this portfolio project earns none. Approved 2026-09-26; revisit if the project ever earns revenue."
+    },
+    {
+      "ecosystem": "npm",
+      "packages": ["axe-core", "@axe-core/playwright"],
+      "versions": "4.x",
+      "license": "MPL-2.0",
+      "reason": "Accessibility scanning in tests; used unmodified, which MPL-2.0 permits (docs/07-tech-stack.md)."
+    },
+    {
+      "ecosystem": "npm",
+      "packages": ["lightningcss", "lightningcss-*"],
+      "versions": "1.x",
+      "license": "MPL-2.0",
+      "reason": "CSS compiler used by Tailwind CSS at build time; used unmodified."
+    },
+    {
+      "ecosystem": "npm",
+      "packages": ["caniuse-lite"],
+      "versions": "1.x",
+      "license": "CC-BY-4.0",
+      "reason": "Browser support data read at build time; attribution is kept in the package."
+    },
+    {
+      "ecosystem": "npm",
+      "packages": ["argparse"],
+      "versions": "2.x",
+      "license": "Python-2.0",
+      "reason": "Permissive licence; development tooling dependency (YAML parsing)."
+    },
+    {
+      "ecosystem": "npm",
+      "packages": ["glob", "isexe", "lru-cache", "minimatch", "minipass", "path-scurry"],
+      "versions": "*",
+      "license": "BlueOak-1.0.0",
+      "reason": "Permissive licence (Blue Oak Model License); development and build tooling."
+    },
+    {
+      "ecosystem": "npm",
+      "packages": ["@csstools/*"],
+      "versions": "*",
+      "license": "MIT-0",
+      "reason": "MIT without the attribution clause; CSS tooling used in tests."
+    },
+    {
+      "ecosystem": "npm",
+      "packages": ["isbot"],
+      "versions": "5.x",
+      "license": "Unlicense",
+      "reason": "Public-domain dedication; development dependency."
+    },
+    {
+      "ecosystem": "npm",
+      "packages": ["language-subtag-registry", "mdn-data"],
+      "versions": "*",
+      "license": "CC0-1.0",
+      "reason": "Public-domain data used by linting and CSS tooling."
+    }
+  ]
+}

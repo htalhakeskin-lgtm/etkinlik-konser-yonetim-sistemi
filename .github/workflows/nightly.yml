@@ -1,0 +1,82 @@
+# Nightly checks on main (docs/standards/ci.md §5): end-to-end tests in every browser, and the
+# vulnerability and licence audits, since new advisories appear without code changes.
+# Arriving later: performance tests (P-08, P-09, P-15) with the first measurable screens.
+name: Nightly
+
+on:
+  schedule:
+    - cron: "30 0 * * *" # 03:30 Istanbul
+  workflow_dispatch:
+
+permissions: {}
+
+env:
+  DOTNET_NOLOGO: "true"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "true"
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: "true"
+
+jobs:
+  e2e-all-browsers:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-pnpm
+      - run: pnpm --filter @festos/e2e exec playwright install --with-deps chromium firefox webkit
+      - run: pnpm --filter @festos/web build
+      - name: Serve the front end
+        run: |
+          nohup pnpm --filter @festos/web exec vite preview --host 127.0.0.1 --port 4173 --strictPort \
+            > "$RUNNER_TEMP/preview.log" 2>&1 &
+          curl --silent --show-error --fail --retry 30 --retry-connrefused --retry-delay 1 \
+            --output /dev/null http://127.0.0.1:4173/
+      - name: End-to-end tests in Chromium, Firefox, WebKit and on a phone
+        env:
+          E2E_BASE_URL: http://127.0.0.1:4173
+        run: pnpm --filter @festos/e2e test:all-browsers
+      - name: Keep the Playwright report
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-report-nightly
+          path: tests/e2e/playwright-report
+          retention-days: 14
+
+  dependency-audits:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+      - run: dotnet tool restore
+      # Restore runs the NuGet audit; high and critical advisories fail it (ci.md §10).
+      - run: dotnet restore
+      - uses: ./.github/actions/setup-pnpm
+      - run: pnpm audit --audit-level high
+      - run: node tools/licenses/check-licenses.mjs
+
+  report-failure:
+    needs: [e2e-all-browsers, dependency-audits]
+    if: failure()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/report-scheduled-failure
+        with:
+          workflow: Nightly

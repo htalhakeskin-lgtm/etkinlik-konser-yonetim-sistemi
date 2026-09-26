@@ -1,6 +1,6 @@
 # 08 — Mimari ve Klasör Yapısı
 
-> **Durum:** v1.10 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.11 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -55,7 +55,7 @@ etkinlik-konser-yonetim-sistemi/
 ├── tools/
 │   ├── docs/                       belge ve izlenebilirlik kontrol betikleri
 │   ├── git/                        Git kancalarının betikleri
-│   ├── licenses/                   lisans izin ve istisna listeleri, npm lisans denetimi
+│   ├── licenses/                   lisans izin ve istisna listeleri, lisans denetim betiği (.NET ve npm)
 │   └── templates/                  yeni modül iskeleti üreten şablon
 ├── deploy/                         demo sunucusu: Compose tanımı, Caddy ve Alloy ayarları, PostgreSQL imajı, kurulum, yayın ve yedekleme betikleri
 ├── .github/                        CI iş akışları, PR ve issue şablonları, Dependabot ayarı
@@ -483,3 +483,4 @@ Yasak API kullanımı (`DateTime.UtcNow` gibi) mimari testle değil, derleyici a
 | 2026-09-26 | v1.8 | Repo ağacına `.nvmrc`, `commitlint.config.mjs` ve `tools/git/` eklendi (Faz 1.0). |
 | 2026-09-26 | v1.9 | Ön yüz ağacına `test/` ve üretilen rota ağacı eklendi (Faz 1.0). |
 | 2026-09-26 | v1.10 | Ön yüz ağacına tema betiği (`public/theme-init.js`) eklendi (Faz 1.0). |
+| 2026-09-26 | v1.11 | `tools/licenses/` açıklaması: tek lisans denetim betiği (Faz 1.0). |
