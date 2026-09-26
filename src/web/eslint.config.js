@@ -169,7 +169,15 @@ export default defineConfig([
   },
 
   {
+    // Classic browser scripts loaded directly by index.html.
+    files: ["public/**/*.js"],
+    extends: [js.configs.recommended],
+    languageOptions: { globals: globals.browser, sourceType: "script" },
+  },
+
+  {
     files: ["**/*.js"],
+    ignores: ["public/**"],
     extends: [js.configs.recommended, tseslint.configs.disableTypeChecked],
     languageOptions: { globals: globals.node },
   },

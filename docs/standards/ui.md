@@ -1,6 +1,6 @@
 # Arayüz Standardı
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.1 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 19](#19-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -35,10 +35,11 @@ Tasarım kararları kodda tek yerde, CSS değişkenleri olarak tutulur (`src/web
 
 | Katman | Örnek | Kim kullanır |
 |---|---|---|
-| Ham değerler (palet) | `--palette-violet-600: oklch(…)` | Yalnızca anlamsal değişkenler |
+| Ham değerler (palet) | `--palette-violet-540: oklch(0.54 0.28 293)` | Yalnızca anlamsal değişkenler |
 | Anlamsal değişkenler | `--primary`, `--destructive`, `--status-warning` | Bileşenler |
 | Bileşen değişkenleri | `--sidebar-width`, `--scan-target-size` | Yalnızca ilgili bileşen |
 
+- Palet adındaki sayı OKLCH açıklığının 1000 katıdır: `--palette-gray-985` = `oklch(0.985 0 0)`. Ad, rengin ne kadar açık olduğunu doğrudan söyler.
 - Renkler OKLCH ile yazılır. OKLCH'de açıklık değeri algıyla uyumlu olduğu için aynı açıklıktaki renkler gözde de aynı parlaklıkta görünür; kontrast ayarlamak kolaylaşır.
 - **Bileşen kodunda ham renk yazılmaz.** Tailwind'in hazır renk paleti temada kapatılır (`--color-*: initial`); `bg-red-500` gibi sınıflar hiç üretilmez. Yalnızca anlamsal sınıflar vardır (`bg-primary`, `text-muted-foreground`, `bg-status-warning`). Kural böylece araçla kendiliğinden korunur.
 - Değişkenler W3C tasarım değişkenleri biçimine (2025.10, ilk kararlı sürüm) uygun bir JSON dosyasından da okunabilecek şekilde adlandırılır; bir tasarım aracıyla eşitleme gerekirse dönüşüm doğrudan yapılır ([kaynak](https://www.w3.org/community/design-tokens/2025/10/28/design-tokens-specification-reaches-first-stable-version/)). S1'de kaynak CSS dosyasıdır.
@@ -56,10 +57,10 @@ shadcn/ui'ın anlamsal değişkenleri temel alınır: her yüzey bir "üstündek
 | `muted` / `muted-foreground` | Arka plan bölgeleri, yardımcı metin |
 | `accent` | Üzerine gelinen ya da klavyeyle seçilen satır ve menü öğesi |
 | `destructive` | Geri alınamaz işlem düğmesi (iptal, serbest bırakma) |
-| `border`, `input`, `ring` | Çizgiler, alan kenarları, klavye odağı |
-| `status-neutral`, `status-info`, `status-active`, `status-success`, `status-warning`, `status-danger`, `status-muted` | Durum rozetleri ve uyarı kutuları (§3.3). Her birinin yüzey, kenar ve yazı çeşidi vardır. |
+| `border`, `input`, `ring` | `border` ayırıcı çizgidir ve süs sayılır. `input` alan kenarıdır; zeminle en az 3:1 kontrast verir (WCAG 1.4.11). `ring` klavye odağıdır. |
+| `status-neutral`, `status-info`, `status-active`, `status-success`, `status-warning`, `status-danger`, `status-muted` | Durum rozetleri ve uyarı kutuları (§3.3). Her birinin yazı ve simge (`--status-warning`), yüzey (`--status-warning-surface`) ve kenar (`--status-warning-border`) çeşidi vardır. |
 
-**Marka rengi:** Mor, durum tonlarının renklerinden (yeşil, sarı, kırmızı, açık mavi) en uzak tondur; ana düğme bir durum rozetiyle karıştırılmaz. Başlangıç değerleri: açık temada `oklch(0.54 0.28 293)` üzerinde beyaz yazı, koyu temada `oklch(0.70 0.18 294)` üzerinde çok koyu yazı. Kesin değerler kontrast testleriyle (§18) belirlenir.
+**Marka rengi:** Mor, durum tonlarının renklerinden (yeşil, sarı, kırmızı, açık mavi) en uzak tondur; ana düğme bir durum rozetiyle karıştırılmaz. Başlangıç değerleri: açık temada `oklch(0.54 0.28 293)` üzerinde beyaz yazı, koyu temada `oklch(0.70 0.18 294)` üzerinde çok koyu yazı. Değerler `src/web/src/styles/tokens.css`'tedir; her yazı / zemin çifti kontrast testiyle (§18) ölçülür.
 
 **Kontrast kuralları** (WCAG 2.2 AA):
 - Metin ile zemini arasında en az **4,5:1**; 18 pt (24 px) ya da 14 pt kalın ve üstü metinde en az **3:1**.
@@ -71,15 +72,15 @@ shadcn/ui'ın anlamsal değişkenleri temel alınır: her yüzey bir "üstündek
 
 Her durum bir **ton**, bir **simge** ve **adıyla** gösterilir. Renk tek başına anlam taşımaz (renk körlüğü; WCAG 1.4.1). Tonların anlamı tüm uygulamada aynıdır:
 
-| Ton | Anlamı | Simge (lucide) |
-|---|---|---|
-| `neutral` | Başlangıç, henüz bir şey olmadı | `circle-dashed` |
-| `info` | İlerliyor, bekleyen bir karar yok | `circle-dot` |
-| `active` | Şu an fiziksel olarak sürüyor (kurulum, yolda, sahada) | `play` |
-| `success` | İstenen duruma ulaşıldı | `circle-check` |
-| `warning` | Dikkat ya da karar gerekiyor | `triangle-alert` |
-| `danger` | Sorun var, müdahale gerekiyor | `octagon-alert` |
-| `muted` | Bitti ya da geçersiz; artık işlem beklemiyor | `circle-slash` |
+| Ton | Anlamı | Simge (lucide) | Renk |
+|---|---|---|---|
+| `neutral` | Başlangıç, henüz bir şey olmadı | `circle-dashed` | Gri, kenarlı |
+| `info` | İlerliyor, bekleyen bir karar yok | `circle-dot` | Açık mavi |
+| `active` | Şu an fiziksel olarak sürüyor (kurulum, yolda, sahada) | `play` | Turkuaz |
+| `success` | İstenen duruma ulaşıldı | `circle-check` | Yeşil |
+| `warning` | Dikkat ya da karar gerekiyor | `triangle-alert` | Kehribar |
+| `danger` | Sorun var, müdahale gerekiyor | `octagon-alert` | Kırmızı |
+| `muted` | Bitti ya da geçersiz; artık işlem beklemiyor | `circle-slash` | Gri |
 
 Durumların tonları ([01](../01-glossary.md), [04](../04-state-machines.md)):
 
@@ -661,3 +662,4 @@ Oturum bir vardiya boyunca sürer (P-03: 12 saat hareketsizlik). Süresi dolarsa
 |---|---|---|
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | U-01 (çevrimiçi okutma, otomatik tekrar), U-02 (açık ve koyu tema), U-03 (mor marka rengi) kararlaştırıldı; ADR-0033 ve ADR-0034 kabul edildi. |
+| 2026-09-26 | v1.1 | Tasarım değişkenleri koda geçti: durum tonlarının renkleri (mor hiçbir tonda kullanılmaz), durum değişkenlerinin adları, `border` / `input` ayrımı, palet adlandırması (Faz 1.0). |

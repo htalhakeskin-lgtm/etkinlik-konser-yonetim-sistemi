@@ -1,24 +1,169 @@
 /*
- * Design tokens (docs/standards/ui.md §3). Only the values the skeleton uses so far; the full set,
- * the status tones and the theme switch come with the component library.
+ * Design tokens (docs/standards/ui.md §3). Three layers:
+ * - palette: raw values, used only by the semantic tokens. The number in a palette name is the
+ *   OKLCH lightness × 1000, so "gray-985" is oklch(0.985 0 0);
+ * - semantic tokens: what components use (background, primary, status-warning, …);
+ * - component tokens: declared next to the component that needs them.
+ * The theme is switched with the "dark" class on <html> (public/theme-init.js, src/lib/theme.ts).
+ * Every text / surface pair is measured by src/styles/tokens.test.ts against the WCAG ratios.
  */
-:root {
-  --palette-violet-600: oklch(0.54 0.28 293);
-  --palette-violet-400: oklch(0.7 0.18 294);
 
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --primary: var(--palette-violet-600);
-  --primary-foreground: oklch(1 0 0);
-  --muted-foreground: oklch(0.45 0 0);
+:root {
+  color-scheme: light;
+
+  /* Palette: neutrals */
+  --palette-gray-1000: oklch(1 0 0);
+  --palette-gray-985: oklch(0.985 0 0);
+  --palette-gray-960: oklch(0.96 0 0);
+  --palette-gray-955: oklch(0.955 0 0);
+  --palette-gray-940: oklch(0.94 0 0);
+  --palette-gray-890: oklch(0.89 0 0);
+  --palette-gray-700: oklch(0.7 0 0);
+  --palette-gray-640: oklch(0.64 0 0);
+  --palette-gray-550: oklch(0.55 0 0);
+  --palette-gray-500: oklch(0.5 0 0);
+  --palette-gray-310: oklch(0.31 0 0);
+  --palette-gray-300: oklch(0.3 0 0);
+  --palette-gray-280: oklch(0.28 0 0);
+  --palette-gray-250: oklch(0.25 0 0);
+  --palette-gray-230: oklch(0.23 0 0);
+  --palette-gray-190: oklch(0.19 0 0);
+  --palette-gray-180: oklch(0.18 0 0);
+  --palette-gray-160: oklch(0.16 0 0);
+
+  /* Palette: brand violet (U-03) and destructive red */
+  --palette-violet-700: oklch(0.7 0.18 294);
+  --palette-violet-540: oklch(0.54 0.28 293);
+  --palette-violet-160: oklch(0.16 0.02 294);
+  --palette-red-650: oklch(0.65 0.2 25);
+  --palette-red-550: oklch(0.55 0.22 25);
+
+  /* Palette: status hues. Light theme uses 965 / 840 / 460, dark theme 290 / 450 / 830. */
+  --palette-sky-965: oklch(0.965 0.03 235);
+  --palette-sky-840: oklch(0.84 0.08 235);
+  --palette-sky-830: oklch(0.83 0.11 235);
+  --palette-sky-460: oklch(0.46 0.13 235);
+  --palette-sky-450: oklch(0.45 0.08 235);
+  --palette-sky-290: oklch(0.29 0.05 235);
+  --palette-teal-965: oklch(0.965 0.03 190);
+  --palette-teal-840: oklch(0.84 0.08 190);
+  --palette-teal-830: oklch(0.83 0.11 190);
+  --palette-teal-460: oklch(0.46 0.13 190);
+  --palette-teal-450: oklch(0.45 0.08 190);
+  --palette-teal-290: oklch(0.29 0.05 190);
+  --palette-green-965: oklch(0.965 0.03 150);
+  --palette-green-840: oklch(0.84 0.08 150);
+  --palette-green-830: oklch(0.83 0.11 150);
+  --palette-green-460: oklch(0.46 0.13 150);
+  --palette-green-450: oklch(0.45 0.08 150);
+  --palette-green-290: oklch(0.29 0.05 150);
+  --palette-amber-965: oklch(0.965 0.03 70);
+  --palette-amber-840: oklch(0.84 0.08 70);
+  --palette-amber-830: oklch(0.83 0.11 70);
+  --palette-amber-460: oklch(0.46 0.11 70);
+  --palette-amber-450: oklch(0.45 0.08 70);
+  --palette-amber-290: oklch(0.29 0.05 70);
+  --palette-red-965: oklch(0.965 0.03 25);
+  --palette-red-840: oklch(0.84 0.08 25);
+  --palette-red-830: oklch(0.83 0.11 25);
+  --palette-red-460: oklch(0.46 0.13 25);
+  --palette-red-450: oklch(0.45 0.08 25);
+  --palette-red-290: oklch(0.29 0.05 25);
+
+  /* Surfaces and text */
+  --background: var(--palette-gray-985);
+  --foreground: var(--palette-gray-180);
+  --card: var(--palette-gray-1000);
+  --card-foreground: var(--palette-gray-180);
+  --popover: var(--palette-gray-1000);
+  --popover-foreground: var(--palette-gray-180);
+  --primary: var(--palette-violet-540);
+  --primary-foreground: var(--palette-gray-1000);
+  --secondary: var(--palette-gray-955);
+  --secondary-foreground: var(--palette-gray-180);
+  --muted: var(--palette-gray-955);
+  --muted-foreground: var(--palette-gray-500);
+  --accent: var(--palette-gray-940);
+  --accent-foreground: var(--palette-gray-180);
+  --destructive: var(--palette-red-550);
+  --destructive-foreground: var(--palette-gray-1000);
+
+  /* Lines: borders are decorative; field outlines need 3:1 (WCAG 1.4.11). */
+  --border: var(--palette-gray-890);
+  --input: var(--palette-gray-640);
+  --ring: var(--palette-violet-540);
+
+  /* Status tones (ui.md §3.3): text and icon colour, surface, border. */
+  --status-neutral: var(--palette-gray-180);
+  --status-neutral-surface: var(--palette-gray-1000);
+  --status-neutral-border: var(--palette-gray-890);
+  --status-info: var(--palette-sky-460);
+  --status-info-surface: var(--palette-sky-965);
+  --status-info-border: var(--palette-sky-840);
+  --status-active: var(--palette-teal-460);
+  --status-active-surface: var(--palette-teal-965);
+  --status-active-border: var(--palette-teal-840);
+  --status-success: var(--palette-green-460);
+  --status-success-surface: var(--palette-green-965);
+  --status-success-border: var(--palette-green-840);
+  --status-warning: var(--palette-amber-460);
+  --status-warning-surface: var(--palette-amber-965);
+  --status-warning-border: var(--palette-amber-840);
+  --status-danger: var(--palette-red-460);
+  --status-danger-surface: var(--palette-red-965);
+  --status-danger-border: var(--palette-red-840);
+  --status-muted: var(--palette-gray-500);
+  --status-muted-surface: var(--palette-gray-955);
+  --status-muted-border: var(--palette-gray-890);
+
+  /* Shape (ui.md §3.6): one radius; the others are derived from it. */
+  --radius: 0.5rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: oklch(0.17 0 0);
-    --foreground: oklch(0.97 0 0);
-    --primary: var(--palette-violet-400);
-    --primary-foreground: oklch(0.17 0 0);
-    --muted-foreground: oklch(0.72 0 0);
-  }
+/* Dark theme: the background is not pure black; raised surfaces get lighter (ui.md §3.8). */
+.dark {
+  color-scheme: dark;
+
+  --background: var(--palette-gray-190);
+  --foreground: var(--palette-gray-960);
+  --card: var(--palette-gray-230);
+  --card-foreground: var(--palette-gray-960);
+  --popover: var(--palette-gray-250);
+  --popover-foreground: var(--palette-gray-960);
+  --primary: var(--palette-violet-700);
+  --primary-foreground: var(--palette-violet-160);
+  --secondary: var(--palette-gray-280);
+  --secondary-foreground: var(--palette-gray-960);
+  --muted: var(--palette-gray-280);
+  --muted-foreground: var(--palette-gray-700);
+  --accent: var(--palette-gray-310);
+  --accent-foreground: var(--palette-gray-960);
+  --destructive: var(--palette-red-650);
+  --destructive-foreground: var(--palette-gray-160);
+
+  --border: var(--palette-gray-300);
+  --input: var(--palette-gray-550);
+  --ring: var(--palette-violet-700);
+
+  --status-neutral: var(--palette-gray-960);
+  --status-neutral-surface: var(--palette-gray-230);
+  --status-neutral-border: var(--palette-gray-310);
+  --status-info: var(--palette-sky-830);
+  --status-info-surface: var(--palette-sky-290);
+  --status-info-border: var(--palette-sky-450);
+  --status-active: var(--palette-teal-830);
+  --status-active-surface: var(--palette-teal-290);
+  --status-active-border: var(--palette-teal-450);
+  --status-success: var(--palette-green-830);
+  --status-success-surface: var(--palette-green-290);
+  --status-success-border: var(--palette-green-450);
+  --status-warning: var(--palette-amber-830);
+  --status-warning-surface: var(--palette-amber-290);
+  --status-warning-border: var(--palette-amber-450);
+  --status-danger: var(--palette-red-830);
+  --status-danger-surface: var(--palette-red-290);
+  --status-danger-border: var(--palette-red-450);
+  --status-muted: var(--palette-gray-700);
+  --status-muted-surface: var(--palette-gray-280);
+  --status-muted-border: var(--palette-gray-310);
 }

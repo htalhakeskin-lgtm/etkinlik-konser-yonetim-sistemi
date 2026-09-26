@@ -1,6 +1,6 @@
 # Ekran Tasarım Özeti (v0)
 
-> **Durum:** v1.0 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.1 · **Son güncelleme:** 2026-09-26
 
 ## 1. Bu belge ne işe yarar
 
@@ -50,6 +50,9 @@ Status
 - A status is always a badge with a lucide icon AND text, never color alone. Seven tones:
   neutral (circle-dashed), info (circle-dot), active (play), success (circle-check),
   warning (triangle-alert), danger (octagon-alert), muted (circle-slash).
+- Tone colors: info = light sky blue, active = teal, success = green, warning = amber,
+  danger = red, neutral = gray with outline, muted = gray. Never use the brand violet for a
+  status. All badges share one soft style: tinted surface, tinted border, darker tinted text.
 - Event statuses: Talep = neutral; Opsiyonda, Müzakere, Hesaplaşma = info;
   Hazırlık, Kurulum, Canlı, Söküm = active; Onaylı = success; Kapandı, İptal = muted.
 - Conditions that are not statuses (e.g. "Opsiyon süresi yaklaşıyor", "Açık çakışma") are small
@@ -65,6 +68,7 @@ Language and formats
 Accessibility
 - WCAG 2.2 AA: text contrast at least 4.5:1, visible keyboard focus ring, every click target
   at least 24x24px, form fields have visible labels.
+- Input, select and date field outlines have at least 3:1 contrast against their background.
 
 Data
 - Use realistic but fictional sample data: events such as "Yaz Festivali 2027", "Kurumsal
@@ -293,3 +297,4 @@ Kabul edilen tasarımdan çıkan kararlar (renk değerleri, aralıklar, bileşen
 | Tarih | Versiyon | Değişiklik |
 |---|---|---|
 | 2026-09-26 | v1.0 | İlk sürüm: çalışma yöntemi, genel kurallar ve dokuz ekranın istemleri. |
+| 2026-09-26 | v1.1 | Genel kurallara durum tonlarının renkleri ve alan kenarı kontrastı eklendi (ilk tasarım incelemesinden). |
