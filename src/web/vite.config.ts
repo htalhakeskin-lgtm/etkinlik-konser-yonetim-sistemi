@@ -1,9 +1,11 @@
 import { fileURLToPath, URL } from "node:url";
 
 import babel from "@rolldown/plugin-babel";
+import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react, { reactCompilerPreset } from "@vitejs/plugin-react";
+import { playwright } from "@vitest/browser-playwright";
 import type { Plugin } from "vite";
 import { defineConfig } from "vitest/config";
 
@@ -58,11 +60,36 @@ export default defineConfig({
     },
   },
   test: {
-    environment: "jsdom",
-    include: ["src/**/*.test.{ts,tsx}"],
-    setupFiles: ["./src/test/setup.ts"],
-    restoreMocks: true,
-    // Vitest empties CSS imports by default; the token contrast test reads tokens.css as text.
-    css: { include: [/styles\/tokens\.css/] },
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: "unit",
+          environment: "jsdom",
+          include: ["src/**/*.test.{ts,tsx}"],
+          setupFiles: ["./src/test/setup.ts"],
+          restoreMocks: true,
+          // Vitest empties CSS imports by default; the token contrast test reads tokens.css as text.
+          css: { include: [/styles\/tokens\.css/] },
+        },
+      },
+      {
+        // Every Storybook story runs as a test in Chromium, with an accessibility scan
+        // (docs/standards/ui.md §18).
+        extends: true,
+        plugins: [
+          storybookTest({ configDir: fileURLToPath(new URL(".storybook", import.meta.url)) }),
+        ],
+        test: {
+          name: "storybook",
+          browser: {
+            enabled: true,
+            headless: true,
+            provider: playwright(),
+            instances: [{ browser: "chromium" }],
+          },
+        },
+      },
+    ],
   },
 });

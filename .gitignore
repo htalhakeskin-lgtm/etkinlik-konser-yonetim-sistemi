@@ -36,3 +36,5 @@ blob-report/
 .env
 .env.*
 !.env.example
+
+*storybook.log

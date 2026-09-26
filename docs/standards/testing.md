@@ -1,6 +1,6 @@
 # Test Stratejisi
 
-> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.3 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 14](#14-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -119,6 +119,7 @@ Yerelde konteynerin her test çalıştırmasında yeniden açılmaması için Te
 - **Anlık görüntü (snapshot) testi kullanılmaz.** Her görsel değişiklikte kırılır ve neyin doğru olduğunu söylemez.
 - **Ortam:** Modül ekranlarının davranış testleri jsdom'da çalışır. Kamera ve gerçek tarayıcı gerektiren davranışlar uçtan uca testlerdedir.
 - **Tasarım sistemi bileşenleri** (`components/ui/`, `components/common/`) Storybook örnekleriyle sınanır: her örnek Vitest'in tarayıcı kipinde (Chromium) test olarak çalışır ve otomatik erişilebilirlik taramasından geçer ([ui §18](ui.md#18-tasarım-sisteminin-belgelenmesi-ve-testi)).
+- **Çalıştırma:** Ön yüz testleri iki Vitest projesidir: `unit` (jsdom) ve `storybook` (Chromium). `pnpm run test` ikisini birlikte, `pnpm run test:unit` ve `pnpm run test:storybook` ayrı ayrı çalıştırır. Tarayıcı testleri için Chromium bir kez kurulur (`pnpm --filter @festos/web exec playwright install chromium`).
 
 ## 8. Uçtan uca testler
 
@@ -243,3 +244,4 @@ Hedef aşılırsa önce yavaş testler incelenir; test silmek son çaredir.
 | 2026-09-25 | v1.0 | Kesinleşti; ADR-0029 kabul edildi. |
 | 2026-09-25 | v1.1 | CI hattı, uçtan uca test yığını ve demo verisi bağlandı (D.3). |
 | 2026-09-25 | v1.2 | Tasarım sistemi bileşenleri için Storybook örnekleriyle tarayıcı testleri ve erişilebilirlik taraması (D.4). |
+| 2026-09-26 | v1.3 | Ön yüz testlerinin iki Vitest projesi ve çalıştırma komutları (Faz 1.0). |
