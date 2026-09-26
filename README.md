@@ -144,6 +144,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | [09 — Ortamlar ve yayın](docs/09-environments-and-deployment.md) | v1.1 |
 | [10 — İşletim el kitabı](docs/10-operations.md) | v1.0 |
 | [11 — Ekran şablonları ve envanteri](docs/11-screens.md) | v1.0 |
+| [Ekran tasarım özeti (v0)](docs/design/screen-brief.md) | v1.0 |
 | [12 — Uygulama planı (Faz 1: S1)](docs/12-implementation-plan.md) | v1.0 |
 
 ### Teknoloji
