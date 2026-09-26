@@ -1,0 +1,248 @@
+# PR pipeline (docs/standards/ci.md §4). The only required check is `ci-result`; the jobs it
+# collects filter themselves by the areas a change touches (C-01).
+# Arriving later: backend-integration and traceability (Faz 1.1), OpenAPI / Orval diff (1.1),
+# end-to-end tests against the production-like Compose stack (1.9).
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_call:
+
+permissions: {}
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  DOTNET_NOLOGO: "true"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "true"
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: "true"
+
+jobs:
+  changes:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      e2e: ${{ steps.filter.outputs.e2e }}
+      docs: ${{ steps.filter.outputs.docs }}
+      workflows: ${{ steps.filter.outputs.workflows }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        id: filter
+        with:
+          # A change to this workflow runs every job, so the pipeline itself is tested.
+          filters: |
+            backend:
+              - ".github/workflows/ci.yml"
+              - "**/*.cs"
+              - "**/*.csproj"
+              - "**/*.props"
+              - "**/*.targets"
+              - "**/*.slnx"
+              - "**/packages.lock.json"
+              - "**/appsettings*.json"
+              - "global.json"
+              - "BannedSymbols.txt"
+              - ".editorconfig"
+              - ".config/**"
+              - "tests/xunit.runner.json"
+            frontend:
+              - ".github/workflows/ci.yml"
+              - "src/web/**"
+              - "tests/e2e/**"
+              - "package.json"
+              - "pnpm-lock.yaml"
+              - "pnpm-workspace.yaml"
+              - ".prettierrc.json"
+              - ".prettierignore"
+              - ".nvmrc"
+            e2e:
+              - ".github/workflows/ci.yml"
+              - "tests/e2e/**"
+            docs:
+              - ".github/workflows/ci.yml"
+              - "**/*.md"
+              - "tools/docs/**"
+            workflows:
+              - ".github/**"
+
+  docs:
+    needs: changes
+    if: needs.changes.outputs.docs == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check links and anchors
+        run: python3 tools/docs/check_links.py
+      - name: Check that rule references are in sync
+        run: |
+          python3 tools/docs/sync_rule_refs.py
+          git diff --exit-code
+
+  backend:
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          # MinVer computes the version from tags.
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: "**/packages.lock.json"
+      - run: dotnet tool restore
+      # Locked restore (RestoreLockedMode on CI) with the NuGet vulnerability audit (ci.md §10).
+      - run: dotnet restore
+      - name: Build (warnings are errors)
+        run: dotnet build --no-restore --configuration Release
+      - run: dotnet csharpier check .
+      - name: Unit and architecture tests
+        run: dotnet test --no-build --configuration Release
+
+  frontend:
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-pnpm
+      - run: pnpm format:check
+      - run: pnpm --filter @festos/web lint
+      - run: pnpm --filter @festos/web typecheck
+      - run: pnpm --filter @festos/e2e lint
+      - run: pnpm --filter @festos/e2e typecheck
+      # Browsers are installed on every run, not cached (Playwright's advice, ci.md §8).
+      - run: pnpm --filter @festos/web exec playwright install --with-deps chromium
+      - name: Unit tests and design system stories in Chromium
+        run: pnpm --filter @festos/web test
+      - run: pnpm --filter @festos/web build
+
+  e2e:
+    needs: [changes, backend, frontend]
+    if: >-
+      always() && !cancelled()
+      && (needs.changes.outputs.backend == 'true' || needs.changes.outputs.frontend == 'true')
+      && contains(fromJSON('["success", "skipped"]'), needs.backend.result)
+      && contains(fromJSON('["success", "skipped"]'), needs.frontend.result)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-pnpm
+      - run: pnpm --filter @festos/e2e exec playwright install --with-deps chromium
+      # Until the Compose stack exists, Playwright builds and serves the front end itself.
+      - run: pnpm --filter @festos/e2e test
+      - name: Keep the Playwright report
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-report
+          path: tests/e2e/playwright-report
+          retention-days: 7
+
+  security:
+    needs: changes
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      # Scanners run as pinned, checksum-verified command line tools, not as actions (ci.md §7).
+      - name: Install gitleaks
+        run: |
+          curl -sSfL -o "$RUNNER_TEMP/gitleaks.tar.gz" \
+            https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
+          echo "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb  $RUNNER_TEMP/gitleaks.tar.gz" \
+            | sha256sum --check --strict
+          tar -xzf "$RUNNER_TEMP/gitleaks.tar.gz" -C "$RUNNER_TEMP" gitleaks
+      - name: Scan the new commits for secrets
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          if git cat-file -e "$BASE_SHA^{commit}" 2>/dev/null; then
+            range="$BASE_SHA..$HEAD_SHA"
+          else
+            range="$HEAD_SHA"
+          fi
+          "$RUNNER_TEMP/gitleaks" git --log-opts="$range" --redact --no-banner
+      - uses: ./.github/actions/setup-pnpm
+        with:
+          install: "false"
+      - name: npm vulnerability audit (high and critical fail)
+        run: pnpm audit --audit-level high
+      - name: Install actionlint and zizmor
+        if: needs.changes.outputs.workflows == 'true'
+        run: |
+          curl -sSfL -o "$RUNNER_TEMP/actionlint.tar.gz" \
+            https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz
+          echo "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8  $RUNNER_TEMP/actionlint.tar.gz" \
+            | sha256sum --check --strict
+          tar -xzf "$RUNNER_TEMP/actionlint.tar.gz" -C "$RUNNER_TEMP" actionlint
+          curl -sSfL -o "$RUNNER_TEMP/zizmor.tar.gz" \
+            https://github.com/zizmorcore/zizmor/releases/download/v1.30.1/zizmor-x86_64-unknown-linux-gnu.tar.gz
+          echo "e65324f4430c2717591937edcec90ccbefaf14c174f8ec9415e03ca875b46e1a  $RUNNER_TEMP/zizmor.tar.gz" \
+            | sha256sum --check --strict
+          tar -xzf "$RUNNER_TEMP/zizmor.tar.gz" -C "$RUNNER_TEMP" zizmor
+      - name: Lint workflows (actionlint)
+        if: needs.changes.outputs.workflows == 'true'
+        run: '"$RUNNER_TEMP/actionlint" -color'
+      - name: Audit workflow security (zizmor)
+        if: needs.changes.outputs.workflows == 'true'
+        run: '"$RUNNER_TEMP/zizmor" --offline .github'
+
+  ci-result:
+    if: always()
+    needs: [changes, docs, backend, frontend, e2e, security]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      # A skipped job counts as passed; a failed or cancelled one fails the pipeline.
+      - name: Collect job results
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "Job results: $RESULTS"
+          for result in $RESULTS; do
+            case "$result" in
+              success | skipped) ;;
+              *) echo "A job ended with '$result'."; exit 1 ;;
+            esac
+          done

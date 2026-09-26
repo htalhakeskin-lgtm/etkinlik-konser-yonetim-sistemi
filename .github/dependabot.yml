@@ -46,12 +46,15 @@ updates:
     schedule:
       interval: weekly
       day: monday
+    cooldown:
+      default-days: 3
     commit-message:
       prefix: build
       include: scope
 
   - package-ecosystem: github-actions
-    directory: "/"
+    # Workflows and the local composite actions.
+    directories: ["/", "/.github/actions/*"]
     schedule:
       interval: weekly
       day: monday
