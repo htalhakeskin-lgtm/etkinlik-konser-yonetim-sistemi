@@ -1,6 +1,6 @@
 # Git ve İş Akışı Standardı
 
-> **Durum:** v1.5 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.6 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -298,6 +298,7 @@ Güncellemeler [Dependabot](https://docs.github.com/en/code-security/reference/s
 | Konu | Kural |
 |---|---|
 | Kapsam | NuGet (`Directory.Packages.props`), npm (pnpm çalışma alanı), GitHub Actions, .NET SDK (`global.json`), Compose dosyalarındaki konteyner imajları (Caddy, Alloy, PostgreSQL temel imajı). Uygulama imajının temel imajı her derlemede güncel yamasıyla çekilir ([09 §5](../09-environments-and-deployment.md#5-konteyner-imajı)). |
+| Başlıklar | Dependabot'un "Bump …" başlıkları uzunluk ve büyük harf kurallarına göre ayarlanamaz; commitlint bu kalıbı istisna sayar. PR birleştirilirken squash commit'ine kurala uygun bir başlık yazılır: `build(deps): bump prettier and @tanstack/react-router`. |
 | Sıklık | Haftalık, pazartesi. Güvenlik güncellemeleri beklemeden gelir. |
 | Gruplama | Her ekosistemde küçük sürüm ve yama güncellemeleri tek PR'da; büyük sürümler ayrı ayrı |
 | Bekleme süresi | Yeni bir sürüm yayımlandıktan **3 gün** sonra önerilir, büyük sürümler 7 gün sonra (`cooldown`). Güvenlik güncellemeleri beklemez. |
@@ -392,3 +393,4 @@ Repo Faz 0 bitince açılır ([R-01](#13-kararlar)). Açılmadan önce şu kontr
 | 2026-09-26 | v1.3 | Bağımlılık kurulum betiklerine yalnızca açık izinle izin verilmesi (pnpm `allowBuilds`). |
 | 2026-09-26 | v1.4 | Commit kancalarının kesin hâli: ESLint ve Prettier sırayla çalışır; `main` koruması betikle yapılır (Faz 1.0). |
 | 2026-09-26 | v1.5 | PR başlığı denetimi commitlint'le yapılır; ayrı bir eylem kullanılmaz (Faz 1.0). |
+| 2026-09-26 | v1.6 | Dependabot başlıkları için commitlint istisnası ve birleştirmedeki başlık kuralı. |

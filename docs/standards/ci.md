@@ -1,6 +1,6 @@
 # Sürekli Entegrasyon Standardı
 
-> **Durum:** v1.4 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.5 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -99,6 +99,8 @@ flowchart LR
 | `publish` | Uygulama imajı (SDK ile, x64 + ARM64) ve PostgreSQL + WAL-G imajı üretilir, `ghcr.io`'ya gönderilir; her imaj için derleme kaynağı kanıtı ([09 §5](../09-environments-and-deployment.md#5-konteyner-imajı)) | `packages: write`, `id-token: write`, `attestations: write` |
 | `deploy` | `demo` ortamında: SSH ile yayın betiği, ardından genel adresten duman testi: ana sayfa `200` döner ve API yanıtındaki `X-App-Version` yeni sürüme eşittir | `demo` ortamının gizli bilgileri |
 
+- **Kurulum sırası:** Faz 1.0'da yalnızca `release-please` adımı vardır; `verify`, `publish`, `deploy` ve `deploy.yml` demo ortamıyla (1.9) eklenir. Ayarlar `release-please-config.json`'da: `v` önekli etiket, sürüm PR'ının başlığı `chore(release): v<sürüm>` (commitlint'e uyar), 1.0'dan önce geriye uyumsuz değişiklik küçük sürümü artırır ([git §7](git.md#7-sürüm-numaraları-ve-etiketler)).
+- release-please kendi kaydını tutar: `.release-please-manifest.json` ve `version.txt`. Bu dosyaları yalnızca sürüm PR'ı değiştirir; derlemedeki sürüm yine etiketten MinVer ile hesaplanır.
 - `deploy.yml` aynı `deploy` adımını elle girilen bir sürüm için çalıştırır. Sürüm numarası biçim olarak doğrulanır.
 - Yayın işleri aynı anda yalnızca bir tane çalışır (`concurrency: deploy-demo`); çalışan yayın iptal edilmez.
 - **Sürüm PR'ında CI onayı:** Sürüm PR'ını release-please, Actions'ın kendi kimliğiyle (`github-actions[bot]`) açar. GitHub Haziran 2026'dan beri böyle açılan PR'larda iş akışlarını, yazma yetkisi olan bir kullanıcı onaylayınca çalıştırıyor; daha önce hiç çalıştırmıyordu ve sürüm PR'ı CI'dan geçmeden birleştirilebiliyordu ([kaynak](https://github.blog/changelog/2026-06-11-bot-created-pull-requests-can-run-workflows-if-approved/)). Bu yüzden sürüm PR'ında iş akışları PR sayfasından bir kez onaylanır; zorunlu kontroller (§11) ancak böyle geçer. Onayı atlamak için kişisel erişim belirteci ya da GitHub App kullanılmaz: ek bir gizli bilgi ve yenileme yükü getirir, sürüm PR'ını birleştirmek zaten bilinçli bir adımdır.
@@ -198,3 +200,4 @@ Uçtan uca testler yerelde Aspire ile açılan uygulamaya karşı ya da `deploy/
 | 2026-09-26 | v1.2 | Sürüm PR'ında iş akışlarının elle onaylanması (GitHub'ın Haziran 2026 değişikliği). |
 | 2026-09-26 | v1.3 | Faz 1.0'da kurulan hat ve gelecek işlerin sırası; PR başlığı commitlint'le; pnpm npm ile; zizmor istisnaları dosyada. |
 | 2026-09-26 | v1.4 | Lisans denetim betiği ve istisna biçimi; gece ve haftalık işlerin kurulum sırası (Faz 1.0). |
+| 2026-09-26 | v1.5 | Sürüm hattının Faz 1.0'daki kapsamı ve release-please ayarları. |
