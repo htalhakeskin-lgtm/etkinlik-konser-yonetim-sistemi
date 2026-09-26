@@ -162,8 +162,31 @@ jobs:
           persist-credentials: false
       - uses: ./.github/actions/setup-pnpm
       - run: pnpm --filter @festos/e2e exec playwright install --with-deps chromium
-      # Until the Compose stack exists, Playwright builds and serves the front end itself.
-      - run: pnpm --filter @festos/e2e test
+      # Until the Compose stack exists (1.9), the tests run against the built front end, served
+      # the same way the stack will be: started first, then reached through E2E_BASE_URL.
+      - run: pnpm --filter @festos/web build
+      - name: Serve the front end
+        run: |
+          nohup pnpm --filter @festos/web exec vite preview --host 127.0.0.1 --port 4173 --strictPort             > "$RUNNER_TEMP/preview.log" 2>&1 &
+          curl --silent --show-error --fail --retry 30 --retry-connrefused --retry-delay 1             --output /dev/null http://127.0.0.1:4173/
+      - name: End-to-end tests
+        env:
+          E2E_BASE_URL: http://127.0.0.1:4173
+        run: |
+          set -o pipefail
+          pnpm --filter @festos/e2e test 2>&1 | tee "$RUNNER_TEMP/e2e.log"
+      # Logs need a sign-in on GitHub; the job summary does not, so failures stay readable.
+      - name: Summarise a failure
+        if: failure()
+        run: |
+          {
+            echo "### End-to-end failure"
+            echo '```'
+            tail -n 60 "$RUNNER_TEMP/e2e.log" 2>/dev/null || true
+            echo "--- preview server"
+            tail -n 20 "$RUNNER_TEMP/preview.log" 2>/dev/null || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Keep the Playwright report
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
