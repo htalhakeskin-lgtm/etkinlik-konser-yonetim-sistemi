@@ -1,6 +1,6 @@
 # Kod Stili ve Statik Analiz
 
-> **Durum:** v1.8 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.9 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 10](#10-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -191,6 +191,7 @@ Yapılandırma tek dosyadadır (`eslint.config.js`; ESLint 10'da tek desteklenen
 | `eslint-plugin-boundaries` | Ön yüz modül sınırları: bir modül başka bir modülün yalnızca `index.ts`'inden içe aktarabilir ([08 §11](../08-architecture.md#11-ön-yüz-yapısı)). `@/` yollarını çözmek için `eslint-import-resolver-typescript` kullanılır. |
 | `eslint-plugin-simple-import-sort` | İçe aktarımların sırası (otomatik düzeltilir) |
 | `eslint-plugin-storybook` | Storybook örneklerindeki yanlış kullanımlar (örnek dosyası adı, eksik eklenti) |
+| `eslint-plugin-playwright` | Uçtan uca testlerde yanlış kullanımlar ve sabit süreli bekleme (`tests/e2e`'nin kendi yapılandırmasında, typescript-eslint ile birlikte) |
 | `@eslint-community/eslint-plugin-eslint-comments` | Kural kapatma yorumlarının gerekçesiz ya da gereksiz olması |
 
 Biçimle ilgili kural içeren eklenti kullanılmaz. Bu yüzden Prettier ile ESLint çakışmaz ve `eslint-config-prettier` gerekmez.
@@ -291,3 +292,4 @@ Bu belgedeki bir kural değiştirilecekse önce belge güncellenir, sonra araç 
 | 2026-09-26 | v1.6 | Prettier'ın dışında tutulanlar tüm Markdown dosyalarını kapsayacak şekilde netleşti (Faz 1.0). |
 | 2026-09-26 | v1.7 | jsx-a11y'nin ESLint 10 izni, modül sınırları için yol çözücü ve Tailwind eklentisinin kapsamı (Faz 1.0). |
 | 2026-09-26 | v1.8 | Storybook için ESLint eklentisi ve örnek dosyalarındaki varsayılan dışa aktarım istisnası (Faz 1.0). |
+| 2026-09-26 | v1.9 | Uçtan uca testler için ESLint yapılandırması (Faz 1.0). |

@@ -125,7 +125,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | Belge | Sürüm |
 |---|---|
 | [İsimlendirme](docs/standards/naming.md) | v1.5 |
-| [Kod stili ve statik analiz](docs/standards/code-style.md) | v1.8 |
+| [Kod stili ve statik analiz](docs/standards/code-style.md) | v1.9 |
 | [Veritabanı](docs/standards/database.md) | v1.3 |
 | [API](docs/standards/api.md) | v1.3 |
 | [Güvenlik](docs/standards/security.md) | v1.3 |
@@ -138,7 +138,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | Belge | Sürüm |
 |---|---|
 | [Git ve iş akışı](docs/standards/git.md) | v1.4 |
-| [Test stratejisi](docs/standards/testing.md) | v1.3 |
+| [Test stratejisi](docs/standards/testing.md) | v1.4 |
 | [Bitti tanımı](docs/standards/definition-of-done.md) | v1.2 |
 | [Sürekli entegrasyon](docs/standards/ci.md) | v1.2 |
 | [09 — Ortamlar ve yayın](docs/09-environments-and-deployment.md) | v1.2 |

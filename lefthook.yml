@@ -13,10 +13,15 @@ pre-commit:
       group:
         piped: true
         jobs:
-          - name: eslint
+          - name: eslint-web
             # Runs inside src/web so the config and tsconfig resolve; file paths are relative to it.
             root: "src/web/"
             glob: "*.{ts,tsx,js}"
+            run: pnpm exec eslint --fix --max-warnings 0 --no-warn-ignored {staged_files}
+            stage_fixed: true
+          - name: eslint-e2e
+            root: "tests/e2e/"
+            glob: "*.{ts,js}"
             run: pnpm exec eslint --fix --max-warnings 0 --no-warn-ignored {staged_files}
             stage_fixed: true
           - name: prettier
