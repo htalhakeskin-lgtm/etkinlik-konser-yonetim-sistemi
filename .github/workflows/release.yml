@@ -1,0 +1,32 @@
+# Release pipeline (docs/standards/ci.md §6). release-please keeps a release PR up to date from the
+# commits on main (version and CHANGELOG.md); merging that PR creates the tag and the GitHub release.
+# The release PR is opened by github-actions[bot], so its workflows run after a one-time approval
+# on the PR page (ci.md §6).
+# Arriving with the demo environment (1.9): verify (ci.yml on the tagged commit), publish (images
+# to ghcr.io with provenance) and deploy, all gated on release_created.
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions: {}
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+      # release-please labels its PR ("autorelease: pending") and creates the labels on first use.
+      issues: write
+    steps:
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
