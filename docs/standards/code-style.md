@@ -1,6 +1,6 @@
 # Kod Stili ve Statik Analiz
 
-> **Durum:** v1.7 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.8 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 10](#10-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -190,6 +190,7 @@ Yapılandırma tek dosyadadır (`eslint.config.js`; ESLint 10'da tek desteklenen
 | `eslint-plugin-jsx-a11y` | Erişilebilirlik hataları (etiketsiz alan, klavyeyle erişilemeyen düğme). 6.10.2 sürümü ESLint 10'da çalışır ama sürüm aralığında henüz bildirmez; pnpm'in `peerDependencyRules` ayarıyla izin verilir, paket bildirince izin kaldırılır ([kaynak](https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/issues/1075)). |
 | `eslint-plugin-boundaries` | Ön yüz modül sınırları: bir modül başka bir modülün yalnızca `index.ts`'inden içe aktarabilir ([08 §11](../08-architecture.md#11-ön-yüz-yapısı)). `@/` yollarını çözmek için `eslint-import-resolver-typescript` kullanılır. |
 | `eslint-plugin-simple-import-sort` | İçe aktarımların sırası (otomatik düzeltilir) |
+| `eslint-plugin-storybook` | Storybook örneklerindeki yanlış kullanımlar (örnek dosyası adı, eksik eklenti) |
 | `@eslint-community/eslint-plugin-eslint-comments` | Kural kapatma yorumlarının gerekçesiz ya da gereksiz olması |
 
 Biçimle ilgili kural içeren eklenti kullanılmaz. Bu yüzden Prettier ile ESLint çakışmaz ve `eslint-config-prettier` gerekmez.
@@ -200,7 +201,7 @@ Biçimle ilgili kural içeren eklenti kullanılmaz. Bu yüzden Prettier ile ESLi
 |---|---|---|
 | Adlandırma | `@typescript-eslint/naming-convention` | [naming §7](naming.md#7-ön-yüz-adları)'deki büyük / küçük harf ve boolean önekleri |
 | Yalnızca ASCII adlar | `id-match` | Türkçe karakterli değişken adı olmaz |
-| Varsayılan dışa aktarım yasağı | `no-restricted-exports` (yapılandırma dosyaları hariç) | Adlı dışa aktarım yeniden adlandırmada güvenlidir |
+| Varsayılan dışa aktarım yasağı | `no-restricted-exports` (yapılandırma dosyaları ve Storybook örnekleri hariç; örnek biçimi varsayılan dışa aktarım ister) | Adlı dışa aktarım yeniden adlandırmada güvenlidir |
 | Tip tanımı | `consistent-type-definitions: type`, `consistent-type-imports` | Tek biçim |
 | Yerel ayarsız harf dönüşümü ve sıralama yasağı | `no-restricted-syntax`: argümansız `toLocaleLowerCase()`, `toLocaleUpperCase()`, `localeCompare(x)` | Tarayıcının diline göre değişen sonuç; bkz. §5.5 |
 | Sunucuya yalnızca üretilen istemciyle gidilir | `no-restricted-globals: fetch` (istemci sarmalayıcısı hariç) | Tüm istekler aynı hata işleme, kimlik doğrulama ve tip katmanından geçer |
@@ -289,3 +290,4 @@ Bu belgedeki bir kural değiştirilecekse önce belge güncellenir, sonra araç 
 | 2026-09-25 | v1.5 | React Hook Form için derleyici uyumlu kalıplar zorunlu (D.4). |
 | 2026-09-26 | v1.6 | Prettier'ın dışında tutulanlar tüm Markdown dosyalarını kapsayacak şekilde netleşti (Faz 1.0). |
 | 2026-09-26 | v1.7 | jsx-a11y'nin ESLint 10 izni, modül sınırları için yol çözücü ve Tailwind eklentisinin kapsamı (Faz 1.0). |
+| 2026-09-26 | v1.8 | Storybook için ESLint eklentisi ve örnek dosyalarındaki varsayılan dışa aktarım istisnası (Faz 1.0). |

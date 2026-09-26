@@ -1,6 +1,6 @@
 # Arayüz Standardı
 
-> **Durum:** v1.2 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.3 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 19](#19-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -633,6 +633,8 @@ Oturum bir vardiya boyunca sürer (P-03: 12 saat hareketsizlik). Süresi dolarsa
 - **Katalog:** [Storybook](https://storybook.js.org/) (MIT), yalnızca `components/ui/` ve `components/common/` için. Her bileşenin tüm durumları (boyut, ton, yükleniyor, hata, pasif, uzun Türkçe metin) birer örnek (story) olarak yazılır. Tasarım değişkenleri, durum tonları ve simge eşlemesi de katalogda gösterilir.
 - **Test:** Örnekler Vitest'in tarayıcı kipinde (Chromium) test olarak çalışır; her örnek otomatik erişilebilirlik taramasından geçer ([kaynak](https://storybook.js.org/docs/writing-tests/integrations/vitest-addon)). Modül ekranlarının davranış testleri [testing §7](testing.md#7-ön-yüz-testleri)'deki gibi kalır.
 - **Kontrast testi:** Tasarım değişkenlerindeki her yazı / zemin çifti, bir birim testiyle §3.2'deki oranlara göre ölçülür; tema değişikliği kontrastı bozarsa test düşer.
+- **Açma:** `pnpm --filter @festos/web run storybook` (http://localhost:6006). Tema araç çubuğundaki "Tema" menüsünden açık ya da koyu seçilir. Örnekler `components/` altında, bileşenin yanında (`button.stories.tsx`); tasarım değişkenlerinin sayfası `styles/tokens.stories.tsx`'tedir.
+- Erişilebilirlik taramasında bulunan her ihlal testi düşürür (`a11y.test: "error"`); ihlal yalnızca uyarı olarak geçmez.
 - Katalog repoda derlenir; repo açıldıktan sonra GitHub Pages'te yayımlanabilir.
 
 ## 19. Kararlar
@@ -666,3 +668,4 @@ Oturum bir vardiya boyunca sürer (P-03: 12 saat hareketsizlik). Süresi dolarsa
 | 2026-09-25 | v1.0 | U-01 (çevrimiçi okutma, otomatik tekrar), U-02 (açık ve koyu tema), U-03 (mor marka rengi) kararlaştırıldı; ADR-0033 ve ADR-0034 kabul edildi. |
 | 2026-09-26 | v1.1 | Tasarım değişkenleri koda geçti: durum tonlarının renkleri (mor hiçbir tonda kullanılmaz), durum değişkenlerinin adları, `border` / `input` ayrımı, palet adlandırması (Faz 1.0). |
 | 2026-09-26 | v1.2 | shadcn/ui "vega" biçimi ve düğmenin kontrast için uyarlanması (Faz 1.0). |
+| 2026-09-26 | v1.3 | Storybook kataloğunun açılışı, tema seçimi ve erişilebilirlik ihlallerinin testi düşürmesi (Faz 1.0). |

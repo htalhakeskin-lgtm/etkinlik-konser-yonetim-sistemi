@@ -1,6 +1,6 @@
 # 09 — Ortamlar ve Yayın
 
-> **Durum:** v1.1 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.2 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -48,6 +48,7 @@ Sürekli entegrasyon hattı [standards/ci.md](standards/ci.md)'de, adım adım i
 git clone <repo>
 cd etkinlik-konser-yonetim-sistemi
 pnpm install                              # JavaScript bağımlılıkları ve commit kancaları
+pnpm --filter @festos/web exec playwright install chromium   # tarayıcı testleri için (bir kez)
 dotnet tool restore                       # CSharpier, dotnet-ef, lisans aracı
 dotnet run --project src/AppHost          # PostgreSQL, API ve ön yüz birlikte açılır
 ```
@@ -357,3 +358,4 @@ Demo ortamındaki gizli bilgiler ve yerleri ([security §6](standards/security.m
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | E-01 (Oracle Always Free), E-02 (kapalı demo, hesaplar istek üzerine), E-03 (deSEC ücretsiz alt alan adı) kararlaştırıldı; ADR-0030…0032 kabul edildi. |
 | 2026-09-26 | v1.1 | Geliştirme ortamı kurulumu: pnpm npm ile kurulur, Corepack kullanılmaz; Aspire komut satırı aracı isteğe bağlı. |
+| 2026-09-26 | v1.2 | İlk kuruluma tarayıcı testleri için Chromium kurulumu eklendi. |

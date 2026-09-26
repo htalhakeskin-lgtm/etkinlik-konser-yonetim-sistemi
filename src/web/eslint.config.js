@@ -8,6 +8,7 @@ import jsxA11y from "eslint-plugin-jsx-a11y";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
+import storybook from "eslint-plugin-storybook";
 import { defineConfig, globalIgnores } from "eslint/config";
 import globals from "globals";
 import tseslint from "typescript-eslint";
@@ -107,7 +108,12 @@ export default defineConfig([
           prefix: ["is", "has", "can", "should"],
         },
         { selector: "function", format: ["camelCase", "PascalCase"] },
-        { selector: "parameter", format: ["camelCase"], leadingUnderscore: "allow" },
+        // PascalCase for components passed as parameters (e.g. a Storybook decorator's Story).
+        {
+          selector: "parameter",
+          format: ["camelCase", "PascalCase"],
+          leadingUnderscore: "allow",
+        },
         { selector: "typeLike", format: ["PascalCase"] },
         // Object keys often mirror external shapes (HTTP headers, JSON, proxy paths).
         { selector: ["objectLiteralProperty", "typeProperty"], format: null },
@@ -164,8 +170,18 @@ export default defineConfig([
 
   {
     // Tools require a default export from their configuration files.
-    files: ["vite.config.ts", "eslint.config.js"],
+    files: ["vite.config.ts", "eslint.config.js", ".storybook/main.ts", ".storybook/preview.tsx"],
     rules: { "no-restricted-exports": "off" },
+  },
+
+  // Storybook: story rules; the story format requires a default export of the story metadata.
+  ...storybook.configs["flat/recommended"],
+  {
+    files: ["**/*.stories.tsx"],
+    rules: {
+      "no-restricted-exports": "off",
+      "react-refresh/only-export-components": "off",
+    },
   },
 
   {

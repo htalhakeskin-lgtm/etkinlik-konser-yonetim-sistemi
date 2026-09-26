@@ -1,6 +1,6 @@
 # İsimlendirme Standardı
 
-> **Durum:** v1.4 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.5 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 12](#12-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -266,7 +266,7 @@ Adres yapısı, sürümleme, sayfalama ve hata biçimi [api.md](api.md)'dedir. B
 | CSS tasarım değişkeni | kebab-case, anlamı söyleyen ad; ham değerler `palette-` önekli ve OKLCH açıklığıyla numaralı ([ui §3.1](ui.md#31-yapı)) | `--status-warning-surface`, `--palette-violet-540` |
 
 **Kurallar:**
-- **Yalnızca adlı dışa aktarım.** `export default` kullanılmaz. Adlı dışa aktarım yeniden adlandırmada güvenlidir, aramada tek adla bulunur ve otomatik içe aktarmayı tutarlı yapar. İstisna: aracın zorunlu kıldığı yapılandırma dosyaları (`vite.config.ts`, `eslint.config.js`).
+- **Yalnızca adlı dışa aktarım.** `export default` kullanılmaz. Adlı dışa aktarım yeniden adlandırmada güvenlidir, aramada tek adla bulunur ve otomatik içe aktarmayı tutarlı yapar. İstisna: aracın zorunlu kıldığı yapılandırma dosyaları (`vite.config.ts`, `eslint.config.js`, `.storybook/`) ve Storybook örnek dosyaları (`*.stories.tsx`).
 - **Tipler için `type`.** `interface` yalnızca birleştirme (declaration merging) gerektiğinde, örneğin çeviri tiplerinde kullanılır.
 - **TypeScript `enum` yok.** Orval, enum'ları sabit nesne (`as const`) ve birleşim tipi olarak üretir. Elle yazılan kodda da aynı yöntem kullanılır. `erasableSyntaxOnly` derleyici ayarı `enum`'u zaten yasaklar ([code-style §5](code-style.md#5-typescript-ve-react)).
 - **Yönlendirme dosyaları** TanStack Router'ın kurallarına uyar ([kaynak](https://tanstack.com/router/latest/docs/routing/file-naming-conventions)). Adres bölümleri kebab-case'tir. Parametreler `$` ile başlar (`$eventId.tsx`), dizin sayfası `index.tsx`'tir. Yönlendirme klasöründe yönlendirme olmayan dosyalar `-` önekli klasörde durur (`-components/`).
@@ -400,3 +400,4 @@ Araçların kurulumu ve kuralların tam listesi [code-style.md](code-style.md)'d
 | 2026-09-25 | v1.2 | API standardıyla uyum: `/api/v1` kökü, süre alanları, tekrar güvenliği tablosu, SignalR grup adlarından modül çıkarıldı (C.5). |
 | 2026-09-25 | v1.3 | Tasarım sistemi örneği ve CSS değişkeni adları (D.4). |
 | 2026-09-26 | v1.4 | Palet değişkenlerinin numaralandırması (Faz 1.0). |
+| 2026-09-26 | v1.5 | Varsayılan dışa aktarım istisnasına Storybook dosyaları eklendi (Faz 1.0). |

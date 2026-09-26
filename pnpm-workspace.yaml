@@ -10,8 +10,9 @@ saveExact: true
 
 # Install scripts of dependencies run only when explicitly allowed here.
 # lefthook: its script only installs the git hooks, which the root "prepare" script already does.
-# unrs-resolver: its native binary arrives as an optional dependency; the script only checks for it and downloads a fallback.
+# unrs-resolver, esbuild: the native binary arrives as an optional dependency; the script only checks for it and downloads a fallback.
 allowBuilds:
+  esbuild: false
   lefthook: false
   unrs-resolver: false
 
