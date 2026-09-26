@@ -1,6 +1,6 @@
 # 07 — Teknoloji Yığını
 
-> **Durum:** v1.8 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.9 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 8](#8-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -72,7 +72,7 @@ Yığına yeni bir kütüphane eklemek ya da bir kütüphaneyi değiştirmek iç
 | Hızlı erişim penceresi | cmdk (shadcn/ui komut bileşeni) | — | MIT | [0033](adr/0033-design-system.md) |
 | Uzun listelerde sanal kaydırma | TanStack Virtual | — | MIT | [0033](adr/0033-design-system.md) |
 | Simgeler | lucide | — | ISC | [0009](adr/0009-ui-components.md) |
-| Yazı tipi | Inter (değişken, uygulamayla birlikte sunulur; PDF'lerde de) | 4.x | SIL OFL 1.1 | [0033](adr/0033-design-system.md) |
+| Yazı tipi | Inter (değişken, uygulamayla birlikte sunulur; PDF'lerde de); dosyalar `@fontsource-variable/inter` paketinden, yalnızca Latin ve Latin genişletilmiş alt kümeleri | 4.x | SIL OFL 1.1 | [0033](adr/0033-design-system.md) |
 | Tasarım sistemi kataloğu | Storybook (Vitest tarayıcı testleri ve erişilebilirlik eklentisiyle) | 10.x | MIT | [0033](adr/0033-design-system.md) |
 | Paket boyutu denetimi | size-limit | — | MIT | [ui](standards/ui.md) |
 | Çok dillilik altyapısı | react-i18next (S1'de yalnızca Türkçe, K-02) | — | MIT | [0008](adr/0008-frontend-architecture.md) |
@@ -206,3 +206,4 @@ Yaygın oldukları halde bilinçli olarak kullanılmayanlar:
 | 2026-09-25 | v1.6 | D.3: ortamlar ve yayın araçları (§3.7), CI denetim araçları eklendi (ADR-0030…0032). |
 | 2026-09-25 | v1.7 | D.4: Base UI, tarih seçici, bildirimler, hızlı erişim, sanal kaydırma, Inter, Storybook ve size-limit eklendi (ADR-0033, ADR-0034). |
 | 2026-09-26 | v1.8 | Faz 1.0 sürüm araştırması: pnpm 12 ve kurulum yolu, TanStack Table 9, Vitest 4 sabitlemesi, xUnit v3 paket sürümü, `.nvmrc`. |
+| 2026-09-26 | v1.9 | Yazı tipi dosyalarının kaynağı (Fontsource paketi). |

@@ -1,6 +1,6 @@
 # 08 — Mimari ve Klasör Yapısı
 
-> **Durum:** v1.9 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.10 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -410,6 +410,7 @@ src/web/
 │   ├── test/                       Vitest kurulum dosyası
 │   ├── routeTree.gen.ts            yönlendirme eklentisinin ürettiği rota ağacı (elle değiştirilmez)
 │   └── locales/tr/                 modül başına çeviri dosyaları
+├── public/theme-init.js            seçilen temayı sayfa çizilmeden önce uygulayan betik ([ui §3.8](standards/ui.md#38-temalar))
 ├── .storybook/                     tasarım sistemi kataloğunun ayarı ([ui §18](standards/ui.md#18-tasarım-sisteminin-belgelenmesi-ve-testi))
 ├── vite.config.ts                  geliştirmede /api ve /hubs isteklerini Host'a yönlendirir
 └── orval.config.ts
@@ -481,3 +482,4 @@ Yasak API kullanımı (`DateTime.UtcNow` gibi) mimari testle değil, derleyici a
 | 2026-09-25 | v1.7 | Ön yüz ağacına `styles/`, `.storybook/` ve biçim yardımcıları eklendi (D.4). |
 | 2026-09-26 | v1.8 | Repo ağacına `.nvmrc`, `commitlint.config.mjs` ve `tools/git/` eklendi (Faz 1.0). |
 | 2026-09-26 | v1.9 | Ön yüz ağacına `test/` ve üretilen rota ağacı eklendi (Faz 1.0). |
+| 2026-09-26 | v1.10 | Ön yüz ağacına tema betiği (`public/theme-init.js`) eklendi (Faz 1.0). |

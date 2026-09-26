@@ -1,6 +1,6 @@
 # İsimlendirme Standardı
 
-> **Durum:** v1.3 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.4 · **Son güncelleme:** 2026-09-26
 > **Kararlar:** [Bölüm 12](#12-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -263,7 +263,7 @@ Adres yapısı, sürümleme, sayfalama ve hata biçimi [api.md](api.md)'dedir. B
 | Birim testi dosyası | Kaynak dosya + `.test` | `event-list-page.test.tsx` |
 | Uçtan uca test dosyası | Senaryo + `.spec` | `mvp-demo.spec.ts` |
 | Tasarım sistemi örneği | Kaynak dosya + `.stories` | `status-badge.stories.tsx` |
-| CSS tasarım değişkeni | kebab-case, anlamı söyleyen ad; ham değerler `palette-` önekli | `--status-warning`, `--palette-violet-600` |
+| CSS tasarım değişkeni | kebab-case, anlamı söyleyen ad; ham değerler `palette-` önekli ve OKLCH açıklığıyla numaralı ([ui §3.1](ui.md#31-yapı)) | `--status-warning-surface`, `--palette-violet-540` |
 
 **Kurallar:**
 - **Yalnızca adlı dışa aktarım.** `export default` kullanılmaz. Adlı dışa aktarım yeniden adlandırmada güvenlidir, aramada tek adla bulunur ve otomatik içe aktarmayı tutarlı yapar. İstisna: aracın zorunlu kıldığı yapılandırma dosyaları (`vite.config.ts`, `eslint.config.js`).
@@ -399,3 +399,4 @@ Araçların kurulumu ve kuralların tam listesi [code-style.md](code-style.md)'d
 | 2026-09-25 | v1.1 | Veritabanı standardıyla uyum: ortak ve özel amaçlı kolon adları, duvar saati kolonları (C.4). |
 | 2026-09-25 | v1.2 | API standardıyla uyum: `/api/v1` kökü, süre alanları, tekrar güvenliği tablosu, SignalR grup adlarından modül çıkarıldı (C.5). |
 | 2026-09-25 | v1.3 | Tasarım sistemi örneği ve CSS değişkeni adları (D.4). |
+| 2026-09-26 | v1.4 | Palet değişkenlerinin numaralandırması (Faz 1.0). |
