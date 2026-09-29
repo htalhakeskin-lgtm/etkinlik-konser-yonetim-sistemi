@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.1 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.2 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -49,7 +49,7 @@ Tasarım değişkenleri, temalar, düğme ve durum rozeti Faz 1.0'da tamamlandı
 | | `Behaviors/` | `LoggingCommandDecorator` (iz aralığı, süre, sonuç; [observability §4](../standards/observability.md#4-dağıtık-izleme)), `ValidationCommandDecorator`, sorgu karşılıkları (loglama, doğrulama); `UnitOfWorkCommandDecorator` veritabanına bağlı olduğu için Infrastructure'dadır (4. PR) |
 | | `Users/` | `ICurrentUser`, `SystemUser` (sabit kimlik, [database §9](../standards/database.md#9-ortak-kolonlar)) |
 | | `Errors/` | `NotFoundException`, `ConcurrencyConflictException`, `ValidationFailedException` (`ValidationError` listesi; gönderilen değer taşınmaz), `ErrorCodes` (beklenen sonuçların API kodları) |
-| | `Paging/` | `PageRequest`, `PagedResult<T>`, `CursorRequest`, `CursorResult<T>`, `SortSpec` |
+| | `Paging/` | `PageRequest` + `PageRequestValidator`, `PagedResult<T>`, `CursorRequest` + `CursorRequestValidator`, `CursorResult<T>`, `SortSpec` / `SortField` ve `SortableBy(...)` doğrulama kuralı; liste sorgularının doğrulayıcıları bunları `SetValidator` ile kullanır. Kimliğin son sıralama alanı olarak eklenmesi ve imlecin kodlanması sorguyu kuran altyapı kodundadır. |
 | `BuildingBlocks.Infrastructure` | `Modules/` | `IModuleDefinition`, `AddModules(...)` |
 | | `Persistence/` | `ModuleDbContext` (şema, kurallar, kaydetme adımları), `ModuleDbContextOptions`, EF kuralları (§5.3), `UnitOfWorkCommandDecorator` |
 | | `Auditing/` | `AuditEntryWriter`, `[NotAudited]` |
@@ -296,3 +296,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v0.2 | Üç soru yanıtlandı (önerilen seçenekler): BB-08…BB-10. |
 | 2026-09-30 | v1.0 | Onaylandı. Uygulamada netleşenler: klasör adları `Monetary/` (ad alanı `Money` tipiyle çakışmasın) ve `Identifiers/` (Identity modülüyle karışmasın); `RuleKind`; `IStronglyTypedId<TSelf>` yalnızca `From` ister, çünkü arayüzdeki varsayılan statik metot uygulayan tipten çağrılamaz. |
 | 2026-09-30 | v1.1 | 2. PR ikiye bölündü (2a komut / sorgu altyapısı, 2b sayfalama); iz aralığını loglama dekoratörü açar; `IIntegrationEventHandler` 6. PR'a, `UnitOfWorkCommandDecorator` Infrastructure'a taşındı; `ErrorCodes` ve `ValidationError` eklendi. |
+| 2026-09-30 | v1.2 | `Paging/` satırı uygulamaya göre netleşti: doğrulayıcılar, `SortField`, `SortableBy`. |
