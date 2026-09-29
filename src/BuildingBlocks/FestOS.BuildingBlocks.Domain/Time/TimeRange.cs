@@ -45,7 +45,7 @@ public readonly record struct TimeRange
     public bool Contains(TimeRange other) => Start <= other.Start && other.End <= End;
 
     /// <summary>
-    /// Widens the range, e.g. by the preparation and return buffers around an event (BR-MRP-001).
+    /// Widens the range, e.g. by the preparation and return buffers around an event.
     /// </summary>
     public TimeRange Expand(TimeSpan before, TimeSpan after)
     {

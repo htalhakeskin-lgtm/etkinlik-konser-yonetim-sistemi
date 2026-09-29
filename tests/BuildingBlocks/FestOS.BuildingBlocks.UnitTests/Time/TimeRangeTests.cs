@@ -58,10 +58,8 @@ public sealed class TimeRangeTests
     }
 
     [Fact]
-    public void Expand_WithNegativeBuffer_Throws()
-    {
+    public void Expand_WithNegativeBuffer_Throws() =>
         Should.Throw<ArgumentOutOfRangeException>(() => At(0, 60).Expand(TimeSpan.FromMinutes(-1), TimeSpan.Zero));
-    }
 
     [Fact]
     public void Overlaps_ForAnyTwoRanges_IsSymmetric() =>

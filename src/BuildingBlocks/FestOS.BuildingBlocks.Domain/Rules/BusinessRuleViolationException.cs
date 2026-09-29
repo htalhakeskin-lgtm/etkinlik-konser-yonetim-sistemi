@@ -10,7 +10,7 @@ namespace FestOS.BuildingBlocks.Domain.Rules;
 public sealed class BusinessRuleViolationException : Exception
 {
     /// <summary>Creates the exception.</summary>
-    /// <param name="ruleCode">The rule number, e.g. <c>BR-EVT-009</c>, taken from a <c>…RuleCodes</c> constant.</param>
+    /// <param name="ruleCode">The rule number, taken from the module's <c>…RuleCodes</c> constants.</param>
     /// <param name="message">An English explanation for developers; no personal or secret data.</param>
     /// <param name="kind">The kind of the violated rule; decides between 422 and 403.</param>
     /// <param name="parameters">Values the user-facing message needs.</param>
@@ -28,7 +28,7 @@ public sealed class BusinessRuleViolationException : Exception
         Parameters = parameters ?? ReadOnlyDictionary<string, object?>.Empty;
     }
 
-    /// <summary>The rule number, e.g. <c>BR-EVT-009</c>.</summary>
+    /// <summary>The rule number, in the form <c>BR-{module}-{number}</c>.</summary>
     public string RuleCode { get; }
 
     /// <summary>The kind of the violated rule.</summary>

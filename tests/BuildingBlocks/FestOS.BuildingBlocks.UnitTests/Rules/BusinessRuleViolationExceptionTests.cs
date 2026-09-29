@@ -7,9 +7,9 @@ public sealed class BusinessRuleViolationExceptionTests
     [Fact]
     public void Constructor_WithoutKindOrParameters_DefaultsToConstraintWithNoParameters()
     {
-        var exception = new BusinessRuleViolationException("BR-SAMPLE-001", "Sample rule violated.");
+        var exception = new BusinessRuleViolationException("SAMPLE-001", "Sample rule violated.");
 
-        exception.RuleCode.ShouldBe("BR-SAMPLE-001");
+        exception.RuleCode.ShouldBe("SAMPLE-001");
         exception.Message.ShouldBe("Sample rule violated.");
         exception.Kind.ShouldBe(RuleKind.Constraint);
         exception.Parameters.ShouldBeEmpty();
@@ -21,7 +21,7 @@ public sealed class BusinessRuleViolationExceptionTests
         var parameters = new Dictionary<string, object?>(StringComparer.Ordinal) { ["performedBy"] = "Sample User" };
 
         var exception = new BusinessRuleViolationException(
-            "BR-SAMPLE-002",
+            "SAMPLE-002",
             "Only the owner may do this.",
             RuleKind.Authorization,
             parameters

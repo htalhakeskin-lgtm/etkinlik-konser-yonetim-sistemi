@@ -21,7 +21,7 @@ public abstract class AggregateRoot<TId> : Entity<TId>, IAuditable
 
     /// <summary>
     /// Concurrency version. The unit of work increments it whenever the root or any entity inside
-    /// the aggregate changes; a stale version is rejected (BR-SYS-011).
+    /// the aggregate changes; a stale version is rejected (database §11.1).
     /// </summary>
     public int Version { get; private set; }
 
