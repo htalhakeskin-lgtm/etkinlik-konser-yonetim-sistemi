@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.0 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.1 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -45,13 +45,13 @@ Tasarım değişkenleri, temalar, düğme ve durum rozeti Faz 1.0'da tamamlandı
 | | `Time/` | `TimeRange` (yarı açık `[başlangıç, bitiş)`, çakışma ve kapsama), `IstanbulCalendar` (takvim günü dönüşümleri) |
 | | `Monetary/` | `Money`, `Currency`, yuvarlama kuralı (V-08) |
 | | `Identifiers/` | `IStronglyTypedId<TSelf>`: `Value` ve genel dönüştürücülerin kullandığı `static abstract From(Guid)`; yeni kimliği her tip kendi `New()` metoduyla üretir (`Guid.CreateVersion7()`) |
-| `BuildingBlocks.Application` | `Messaging/` | `ICommand<TResult>`, `ICommandHandler<TCommand, TResult>`, `IQuery<TResult>`, `IQueryHandler<TQuery, TResult>`, `IIntegrationEventHandler<TEvent>`, `IDomainEventHandler<TEvent>` |
-| | `Behaviors/` | `LoggingCommandDecorator`, `ValidationCommandDecorator`, `UnitOfWorkCommandDecorator`, sorgu karşılıkları (loglama, doğrulama) |
+| `BuildingBlocks.Application` | `Messaging/` | `ICommand<TResult>`, `ICommandHandler<TCommand, TResult>`, `IQuery<TResult>`, `IQueryHandler<TQuery, TResult>`, `IDomainEventHandler<TEvent>`; `AddHandlersFrom(assembly)` (Scrutor taraması, iç tipler dahil) ve `DecorateHandlers()` (tüm modüller kaydolduktan sonra bir kez). `IIntegrationEventHandler<TEvent>`, `IIntegrationEvent`'le birlikte 6. PR'da gelir. |
+| | `Behaviors/` | `LoggingCommandDecorator` (iz aralığı, süre, sonuç; [observability §4](../standards/observability.md#4-dağıtık-izleme)), `ValidationCommandDecorator`, sorgu karşılıkları (loglama, doğrulama); `UnitOfWorkCommandDecorator` veritabanına bağlı olduğu için Infrastructure'dadır (4. PR) |
 | | `Users/` | `ICurrentUser`, `SystemUser` (sabit kimlik, [database §9](../standards/database.md#9-ortak-kolonlar)) |
-| | `Errors/` | `NotFoundException`, `ConcurrencyConflictException`, `ValidationFailedException` |
+| | `Errors/` | `NotFoundException`, `ConcurrencyConflictException`, `ValidationFailedException` (`ValidationError` listesi; gönderilen değer taşınmaz), `ErrorCodes` (beklenen sonuçların API kodları) |
 | | `Paging/` | `PageRequest`, `PagedResult<T>`, `CursorRequest`, `CursorResult<T>`, `SortSpec` |
 | `BuildingBlocks.Infrastructure` | `Modules/` | `IModuleDefinition`, `AddModules(...)` |
-| | `Persistence/` | `ModuleDbContext` (şema, kurallar, kaydetme adımları), `ModuleDbContextOptions`, EF kuralları (§5.3) |
+| | `Persistence/` | `ModuleDbContext` (şema, kurallar, kaydetme adımları), `ModuleDbContextOptions`, EF kuralları (§5.3), `UnitOfWorkCommandDecorator` |
 | | `Auditing/` | `AuditEntryWriter`, `[NotAudited]` |
 | | `Outbox/` | `OutboxMessage`, `OutboxDispatcher`, `IEventBus` ve süreç içi uygulaması, `InboxIntegrationEventDecorator` |
 | | `Locking/` | `AdvisoryLocks` (işlem düzeyi ve oturum düzeyi) |
@@ -73,7 +73,7 @@ Sıra [08 §6](../08-architecture.md#6-bir-isteğin-yolculuğu)'dakidir; burada 
 | 2 | Uç nokta filtresi `IdempotencyFilter` | `Idempotency-Key` başlığı okunur ve isteğin kapsamına konur (§9.3) |
 | 3 | Uç nokta filtresi `IfMatchFilter` | `If-Match` okunur ve kapsama konur (§9.2) |
 | 4 | Uç nokta | İstek komuta çevrilir; işleyici arayüzü DI'dan alınır (`ICommandHandler<,>`, dekoratörlerle sarılı) |
-| 5 | Loglama dekoratörü | Komut adı, süre, sonuç; iz etkinliği (activity) |
+| 5 | Loglama dekoratörü | İz aralığı (span), log kapsamı (modül, kullanıcı kimliği), süre; beklenen sonuçlar `Information`, diğer hatalar aralıkta `Error` |
 | 6 | Doğrulama dekoratörü | FluentValidation; hata varsa `ValidationFailedException` |
 | 7 | İşlem birimi dekoratörü | Npgsql yeniden deneme stratejisi içinde işlem açar ([database §11.4](../standards/database.md#114-i̇şlem-yalıtımı-ve-yeniden-deneme)); tekrar güvenliği satırını ekler; işleyiciyi çalıştırır; `SaveChanges`; tekrar güvenliği yanıtını yazar; işlemi tamamlar; dağıtıcıya sinyal verir |
 | 8 | İşleyici | İş mantığı alan katmanında |
@@ -240,12 +240,13 @@ CI'a `backend-integration` işi eklenir (Testcontainers, [ci §4](../standards/c
 
 ## 14. PR planı
 
-Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir.
+Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir. 2. PR, 400 satır sınırı için ikiye bölündü.
 
 | # | PR | Kapsam |
 |---|---|---|
 | 1 | Alan temelleri | `Entity`, `AggregateRoot`, kurallar, `TimeRange`, `IstanbulCalendar`, `Money`, `IStronglyTypedId`; birim ve özellik tabanlı testler (CsCheck) |
-| 2 | Komut / sorgu altyapısı | Arayüzler, loglama ve doğrulama dekoratörleri, `ICurrentUser`, sayfalama tipleri; Scrutor kaydı |
+| 2a | Komut / sorgu altyapısı | Arayüzler, loglama ve doğrulama dekoratörleri, hata tipleri, `ICurrentUser`, `SystemUser`; Scrutor kaydı |
+| 2b | Sayfalama ve sıralama | `PageRequest`, `PagedResult<T>`, `CursorRequest`, `CursorResult<T>`, `SortSpec` ve doğrulayıcıları ([api §6](../standards/api.md#6-listeler)) |
 | 3 | Test altyapısı ve veritabanı hazırlığı | `FestOS.Testing` (Testcontainers, Respawn), `bootstrap`, `migrate` komutu, `IModuleDefinition` / `AddModules`, `ModuleDbContext` ve EF kuralları; test modülü; DT-01, DT-05; CI `backend-integration` işi |
 | 4 | İşlem birimi | Dekoratör, kaydetme adımları 1–3 ve 6, sürüm artışı, kısıt eşlemesi; DT-02 (roller) |
 | 5 | İşlem geçmişi | Audit iskeleti, `audit_entries`, yazıcı, `[NotAudited]` |
@@ -294,3 +295,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v0.1 | İlk taslak: kapsam, tipler, komut yolu, veritabanı, işlem geçmişi, olaylar, zamanlanmış işler, HTTP, OpenAPI, SignalR, ön yüz platformu, testler, PR planı, üç soru. |
 | 2026-09-30 | v0.2 | Üç soru yanıtlandı (önerilen seçenekler): BB-08…BB-10. |
 | 2026-09-30 | v1.0 | Onaylandı. Uygulamada netleşenler: klasör adları `Monetary/` (ad alanı `Money` tipiyle çakışmasın) ve `Identifiers/` (Identity modülüyle karışmasın); `RuleKind`; `IStronglyTypedId<TSelf>` yalnızca `From` ister, çünkü arayüzdeki varsayılan statik metot uygulayan tipten çağrılamaz. |
+| 2026-09-30 | v1.1 | 2. PR ikiye bölündü (2a komut / sorgu altyapısı, 2b sayfalama); iz aralığını loglama dekoratörü açar; `IIntegrationEventHandler` 6. PR'a, `UnitOfWorkCommandDecorator` Infrastructure'a taşındı; `ErrorCodes` ve `ValidationError` eklendi. |

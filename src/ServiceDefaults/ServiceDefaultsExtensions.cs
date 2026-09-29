@@ -20,6 +20,9 @@ public static class ServiceDefaultsExtensions
     private const string AlivenessEndpointPath = "/alive";
     private const string LiveTag = "live";
 
+    // Every FestOS ActivitySource and Meter is named FestOS.{Module} (naming §9).
+    private const string FestOSTelemetrySources = "FestOS.*";
+
     /// <summary>Adds telemetry, health checks, service discovery and resilient HTTP clients.</summary>
     public static TBuilder AddServiceDefaults<TBuilder>(this TBuilder builder)
         where TBuilder : IHostApplicationBuilder
@@ -50,11 +53,15 @@ public static class ServiceDefaultsExtensions
         builder
             .Services.AddOpenTelemetry()
             .WithMetrics(metrics =>
-                metrics.AddAspNetCoreInstrumentation().AddHttpClientInstrumentation().AddRuntimeInstrumentation()
+                metrics
+                    .AddMeter(FestOSTelemetrySources)
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddRuntimeInstrumentation()
             )
             .WithTracing(tracing =>
                 tracing
-                    .AddSource(builder.Environment.ApplicationName)
+                    .AddSource(FestOSTelemetrySources)
                     .AddAspNetCoreInstrumentation(options =>
                         // Health probes would otherwise fill the traces with noise.
                         options.Filter = context =>

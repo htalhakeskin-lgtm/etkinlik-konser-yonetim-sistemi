@@ -1,6 +1,6 @@
 # Gözlemlenebilirlik Standardı
 
-> **Durum:** v1.1 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.2 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 9](#9-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -73,7 +73,7 @@ Framework loglarını `Warning`'e çekip uygulama loglarını `Information`'da t
 | Konu | Kural |
 |---|---|
 | Otomatik izler | ASP.NET Core istekleri, dışa giden HTTP çağrıları, PostgreSQL komutları (Npgsql), SignalR bağlantıları |
-| Komut ve sorgu izi | İşlem birimi dekoratörü her komut için bir iz aralığı (span) açar; adı komutun adıdır (`ConfirmEvent`) |
+| Komut ve sorgu izi | En dıştaki loglama dekoratörü her komut ve sorgu için bir iz aralığı (span) açar; böylece doğrulama da aralığın içindedir. Adı soneksiz komut ya da sorgu adıdır (`ConfirmEvent`); kaynak `FestOS.BuildingBlocks`'tur. Öznitelikler: `festos.module` ve beklenen sonuçlarda `festos.error.code` (kural numarası ya da `validation`, `notFound`, `concurrencyConflict`). Beklenen sonuçlar aralığı hatalı işaretlemez ([§3.1](#31-seviyeler)). |
 | Olayların izi | Outbox kaydı, olayı doğuran isteğin iz bağlamını (`traceparent`) saklar. Dinleyicinin iz aralığı bu bağlamla ilişkilendirilir. Böylece bir onayın Planning ve Inventory'deki etkileri aynı iz zincirinde görünür ([ADR-0016](../adr/0016-observability-and-local-dev.md)). |
 | Özel öznitelikler | `festos.` önekli, yalnızca kimlik ve teknik değer ([naming §9](naming.md#9-telemetri-ve-log-adları)) |
 | Örnekleme (sampling) | Tüm izler alınır (üst izin kararına uyan, her zaman açık örnekleme). Bu hacimde örnekleme gerekmez; demo ortamında da tüm izler alınır. Gerçek kullanım hacminde yeniden değerlendirilir. |
@@ -144,3 +144,4 @@ Aspire paneli logları, izleri ve ölçümleri aynı ekranda gösterir. Gelişti
 | 2026-09-25 | v0.1 | İlk taslak |
 | 2026-09-25 | v1.0 | Kesinleşti. |
 | 2026-09-25 | v1.1 | Yayın ortamındaki telemetri hedefi ve uyarıların yeri bağlandı; örnekleme kararı kesinleşti (D.3). |
+| 2026-09-30 | v1.2 | Komut ve sorgu izini işlem birimi dekoratörü yerine loglama dekoratörü açar; sorgular da izlenir (Faz 1.1). |

@@ -34,7 +34,8 @@ public sealed partial class NamingTests
 
             violations.AddRange(
                 type.GetMembers(DeclaredMembers)
-                    .Where(member => !IsCompilerGenerated(member) && !IsSpecialName(member))
+                    // Nested types are checked as types above, where the generic arity is stripped.
+                    .Where(member => member is not Type && !IsCompilerGenerated(member) && !IsSpecialName(member))
                     .Where(member => !AsciiName().IsMatch(member.Name))
                     .Select(member => type.FullName + "." + member.Name)
             );
