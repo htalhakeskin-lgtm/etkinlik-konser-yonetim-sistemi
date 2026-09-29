@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v0.1 (taslak, onay bekliyor) · **Son güncelleme:** 2026-09-30
+> **Durum:** v0.2 (sorular yanıtlandı, onay bekliyor) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -11,7 +11,7 @@ Kuralların kendisi zaten standartlarda ve ADR'lerde karara bağlıdır; bu belg
 - standartlarda açık kalan uygulama ayrıntılarını kararlaştırmak (§16, BB-01…),
 - 1.1'i küçük, sınanabilir PR'lara bölmek (§14).
 
-Proje sahibinin yanıtlaması gereken üç soru §15'tedir.
+Proje sahibine sorulan üç soru ve yanıtları §15'tedir.
 
 **Kaynaklar:** [05 — Modül haritası](../05-module-map.md), [08 — Mimari](../08-architecture.md) §3–§8, [database](../standards/database.md), [api](../standards/api.md), [security](../standards/security.md), [observability](../standards/observability.md), [configuration](../standards/configuration.md), [testing](../standards/testing.md); ADR [0003](../adr/0003-integration-events-and-outbox.md), [0006](../adr/0006-backend-platform.md), [0007](../adr/0007-data-access.md), [0010](../adr/0010-messaging-infrastructure.md), [0011](../adr/0011-authentication.md), [0012](../adr/0012-realtime-signalr.md), [0013](../adr/0013-scheduled-jobs.md), [0020](../adr/0020-entity-identifiers.md)–[0025](../adr/0025-idempotency-keys.md).
 
@@ -262,21 +262,15 @@ Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir
 
 Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, Testcontainers, Respawn, CsCheck, Orval, @microsoft/signalr, MSW) her PR'da güncel kararlı sürümleri araştırılarak sabitlenir.
 
-## 15. Proje sahibine sorular
+## 15. Proje sahibine sorulanlar
 
-**S1 — Platform nasıl sınansın?**
-Outbox, işlem geçmişi ve tekrar güvenliği gibi parçalar ancak bir modülün içinde çalışırken gerçekten sınanabilir.
-- **(Önerilen) Test modülü:** `tests` altında, yalnızca testlerde kullanılan küçük bir modül (kendi şeması ve rolüyle, tek bir basit toplu kökle). Platform, gerçek modüllerden bağımsız ve baştan sona sınanır; yeni modüller için de çalışan bir örnek olur.
-- **İlk gerçek modülle (Identity, 1.2):** 1.1 daha kısa sürer, ama platformun hataları 1.2'de iş kurallarıyla karışık ortaya çıkar.
+Üç soru 2026-09-30'da yanıtlandı; üçünde de önerilen seçenek seçildi ve kararlar tablosuna işlendi (BB-08…BB-10).
 
-**S2 — İşlem geçmişi tablosu ne zaman kurulsun?**
-Yazıcı, Audit modülüne ait `audit.audit_entries` tablosuna yazar.
-- **(Önerilen) 1.1'de:** Audit modülünün yalnızca tabloyu ve rolünü kuran iskeleti 1.1'de yazılır; okuma ve ekran 1.2'de. İşlem geçmişi ilk modülden itibaren yazılır.
-- **1.2'de:** Yazıcı da 1.2'ye kayar; 1.1'de kaydetme adımlarından biri eksik kalır.
-
-**S3 — Geliştirmede her modül kendi veritabanı rolüyle mi bağlansın?**
-- **(Önerilen) Evet, yayındaki gibi:** AppHost rol parolalarını kendisi üretir ve saklar; elle bir şey yapılmaz. Eksik bir yetki geliştirirken hemen görülür.
-- **Hayır, geliştirmede tek yönetici bağlantısı:** Kurulum biraz daha basit olur; ama yetki hataları ancak testte ya da demo ortamında görülür.
+| Soru | Seçenekler | Yanıt |
+|---|---|---|
+| S1 — Platform gerçek modüllerden önce nasıl sınansın? | Test modülüyle / ilk gerçek modülle (1.2) | **Test modülüyle:** `tests` altında, yalnızca testlerde kullanılan küçük bir modül (kendi şeması, rolü ve basit bir toplu kökü). Platform bağımsız sınanır; yeni modüller için çalışan bir örnek olur. |
+| S2 — İşlem geçmişi tablosu ne zaman kurulsun? | 1.1'de / 1.2'de | **1.1'de:** Audit modülünün yalnızca `audit_entries` tablosunu ve rolünü kuran iskeleti; okuma ve ekran 1.2'de. |
+| S3 — Geliştirmede her modül kendi rolüyle mi bağlansın? | Evet, yayındaki gibi / tek yönetici bağlantısı | **Evet:** AppHost rol parolalarını üretir ve saklar; eksik yetki geliştirirken görülür. |
 
 ## 16. Kararlar
 
@@ -289,9 +283,13 @@ Yazıcı, Audit modülüne ait `audit.audit_entries` tablosuna yazar.
 | BB-05 | Hatalı olay | 8 denemede `failed_at`; elle yeniden deneme | Sonsuz deneme yerine görünür durum; 1.2'de yönetim ekranı |
 | BB-06 | Modül içi olay döngüsü | `SaveChanges` içinde en fazla 5 tur | Dinleyicinin yeni olay üretmesine izin verir, sonsuz döngüyü engeller |
 | BB-07 | Rol parolaları | Rol başına ayrı gizli bilgi; geliştirmede AppHost üretir | Gizli bilgi kuralı (security §6); elle kurulum yok |
+| BB-08 | Platform testleri | `tests` altında yalnızca testlerde kullanılan bir test modülüyle | S1; platform hataları iş kurallarından ayrı yakalanır |
+| BB-09 | İşlem geçmişi tablosu | 1.1'de Audit iskeletiyle kurulur; okuma 1.2'de | S2; işlem geçmişi ilk modülden itibaren eksiksiz |
+| BB-10 | Geliştirmede veritabanı rolleri | Yayındaki gibi modül başına rol | S3; yetki hataları geliştirirken görülür |
 
 ## 17. Değişiklik kaydı
 
 | Tarih | Versiyon | Değişiklik |
 |---|---|---|
 | 2026-09-30 | v0.1 | İlk taslak: kapsam, tipler, komut yolu, veritabanı, işlem geçmişi, olaylar, zamanlanmış işler, HTTP, OpenAPI, SignalR, ön yüz platformu, testler, PR planı, üç soru. |
+| 2026-09-30 | v0.2 | Üç soru yanıtlandı (önerilen seçenekler): BB-08…BB-10. |
