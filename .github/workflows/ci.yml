@@ -1,7 +1,7 @@
 # PR pipeline (docs/standards/ci.md §4). The only required check is `ci-result`; the jobs it
 # collects filter themselves by the areas a change touches (C-01).
-# Arriving later: backend-integration and traceability (Faz 1.1), OpenAPI / Orval diff (1.1),
-# end-to-end tests against the production-like Compose stack (1.9).
+# Arriving later: traceability (Faz 1.1), OpenAPI / Orval diff (1.1), end-to-end tests against
+# the production-like Compose stack (1.9).
 name: CI
 
 on:
@@ -119,8 +119,40 @@ jobs:
       - name: Build (warnings are errors)
         run: dotnet build --no-restore --configuration Release
       - run: dotnet csharpier check .
+      # Tests that need Docker (integration and database tests) run in backend-integration.
       - name: Unit and architecture tests
-        run: dotnet test --no-build --configuration Release
+        run: |
+          find tests -name '*Tests.csproj' ! -name '*IntegrationTests.csproj' ! -name '*DatabaseTests.csproj' -print0 |
+            xargs -0 -n1 dotnet test --no-build --configuration Release --project
+
+  backend-integration:
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        # One job per test project; each starts its own PostgreSQL container (testing.md §6).
+        project:
+          - tests/Database/FestOS.DatabaseTests
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          # MinVer computes the version from tags.
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: "**/packages.lock.json"
+      - name: Integration tests (Testcontainers)
+        env:
+          PROJECT: ${{ matrix.project }}
+        run: dotnet test --project "$PROJECT" --configuration Release
 
   frontend:
     needs: changes
@@ -242,7 +274,7 @@ jobs:
 
   ci-result:
     if: always()
-    needs: [changes, docs, backend, frontend, e2e, security]
+    needs: [changes, docs, backend, backend-integration, frontend, e2e, security]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions: {}

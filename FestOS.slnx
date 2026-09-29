@@ -22,4 +22,10 @@
   <Folder Name="/tests/BuildingBlocks/">
     <Project Path="tests/BuildingBlocks/FestOS.BuildingBlocks.UnitTests/FestOS.BuildingBlocks.UnitTests.csproj" />
   </Folder>
+  <Folder Name="/tests/Database/">
+    <Project Path="tests/Database/FestOS.DatabaseTests/FestOS.DatabaseTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Testing/">
+    <Project Path="tests/Testing/FestOS.Testing/FestOS.Testing.csproj" />
+  </Folder>
 </Solution>
