@@ -1,6 +1,6 @@
 # 08 — Mimari ve Klasör Yapısı
 
-> **Durum:** v1.12 · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.13 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -216,8 +216,8 @@ FestOS.Modules.Booking.IntegrationEvents/
 | Proje | İçerik |
 |---|---|
 | `BuildingBlocks.Domain` | Varlık ve toplu kök temel sınıfları (modül içi olay listesi, sürüm numarası), `IDomainEvent`, kural numarasını taşıyan `BusinessRuleViolationException`, `Money`, zaman aralığı (`TimeRange`: çakışma ve kapsama hesapları), Europe/Istanbul takvim günü dönüşümleri, tip güvenli kimlik arayüzü (`IStronglyTypedId<TSelf>`) |
-| `BuildingBlocks.Application` | Komut ve sorgu arayüzleri (`ICommand<TResult>`, `ICommandHandler<,>`, `IQuery<TResult>`, `IQueryHandler<,>`); dekoratörler (loglama, doğrulama, işlem birimi); `IIntegrationEventHandler<T>`; oturumdaki kullanıcı (`ICurrentUser`); `NotFoundException`, `ConcurrencyConflictException`; sayfalama tipleri |
-| `BuildingBlocks.Infrastructure` | Modül veritabanı bağlamı temel sınıfı (şema, sürüm kontrolü, işlem geçmişi ve outbox yazımı); outbox ve inbox tabloları; olay dağıtıcısı ve süreç içi olay yolu; inbox dekoratörü; PostgreSQL advisory lock; zamanlanmış iş temel sınıfı (Cronos + kilit); modül kayıt arayüzü (`IModuleDefinition`); demo verisi yükleyici arayüzü (`IDemoDataSeeder`, [09 §9](09-environments-and-deployment.md#9-demo-verisi-ve-sıfırlama)); HTTP altyapısı (Problem Details hata işleyicisi, JSON ayarları, `If-Match` ve `Idempotency-Key` filtreleri, CSRF, güvenlik başlıkları); OpenAPI dönüştürücüleri; SignalR hub'ı ve değişiklik yayıncısı |
+| `BuildingBlocks.Application` | Komut ve sorgu arayüzleri (`ICommand<TResult>`, `ICommandHandler<,>`, `IQuery<TResult>`, `IQueryHandler<,>`); dekoratörler (loglama, doğrulama); `IIntegrationEventHandler<T>`; oturumdaki kullanıcı (`ICurrentUser`); `NotFoundException`, `ConcurrencyConflictException`; sayfalama tipleri |
+| `BuildingBlocks.Infrastructure` | Modül veritabanı bağlamı temel sınıfı (şema, sürüm kontrolü, işlem geçmişi ve outbox yazımı); işlem birimi dekoratörü; outbox ve inbox tabloları; olay dağıtıcısı ve süreç içi olay yolu; inbox dekoratörü; PostgreSQL advisory lock; zamanlanmış iş temel sınıfı (Cronos + kilit); modül kayıt arayüzü (`IModuleDefinition`); demo verisi yükleyici arayüzü (`IDemoDataSeeder`, [09 §9](09-environments-and-deployment.md#9-demo-verisi-ve-sıfırlama)); HTTP altyapısı (Problem Details hata işleyicisi, JSON ayarları, `If-Match` ve `Idempotency-Key` filtreleri, CSRF, güvenlik başlıkları); OpenAPI dönüştürücüleri; SignalR hub'ı ve değişiklik yayıncısı |
 | `BuildingBlocks.Contracts` | `IIntegrationEvent` ve olay temel tipi (olay kimliği, oluşma zamanı, ilişki kimliği, sıra anahtarı olarak kayıt kimliği) |
 
 BuildingBlocks iş kuralı içermez; hiçbir modüle referans vermez. Tiplerin klasörlere dağılımı [modules/building-blocks.md §3](modules/building-blocks.md#3-projeler-ve-temel-tipler)'tedir.
@@ -487,3 +487,4 @@ Yasak API kullanımı (`DateTime.UtcNow` gibi) mimari testle değil, derleyici a
 | 2026-09-26 | v1.10 | Ön yüz ağacına tema betiği (`public/theme-init.js`) eklendi (Faz 1.0). |
 | 2026-09-26 | v1.11 | `tools/licenses/` açıklaması: tek lisans denetim betiği (Faz 1.0). |
 | 2026-09-30 | v1.12 | §4: HTTP, OpenAPI ve SignalR altyapısı `BuildingBlocks.Infrastructure`'a, `IStronglyTypedId<TSelf>` `BuildingBlocks.Domain`'e eklendi; §5: Host bunları yalnızca bağlar (building-blocks BB-01). |
+| 2026-09-30 | v1.13 | §4: işlem birimi dekoratörü veritabanına bağlı olduğu için `BuildingBlocks.Infrastructure`'da. |

@@ -1,5 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Scrutor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\FestOS.BuildingBlocks.Domain\FestOS.BuildingBlocks.Domain.csproj" />
   </ItemGroup>
 </Project>
