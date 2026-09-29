@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.3 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.4 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -249,7 +249,9 @@ Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir
 | 2b | Sayfalama ve sıralama | `PageRequest`, `PagedResult<T>`, `CursorRequest`, `CursorResult<T>`, `SortSpec` ve doğrulayıcıları ([api §6](../standards/api.md#6-listeler)) |
 | 3a | Veritabanı test altyapısı | `FestOS.Testing` (PostgreSQL konteyneri), `FestOS.DatabaseTests`, DT-05; CI `backend-integration` işi |
 | 3b | Veritabanı hazırlığı | `bootstrap`: roller, eklentiler, rol düzeyi ayarları; testleri |
-| 3c | Modül kaydı ve veritabanı bağlamı | `IModuleDefinition` / `AddModules`, `ModuleDbContext` ve EF kuralları, test modülü, `migrate` komutu, Respawn; DT-01 |
+| 3c | Modül kaydı | `IModuleDefinition`, `AddModules` (kayıt sırası, dekoratörler bir kez), `MapModules` (`/api/v1`, modül etiketi), `ModuleCatalog`; Host'a bağlanması |
+| 3d | Veritabanı bağlamı ve test modülü | `ModuleDbContext` ve EF kuralları (§5.3), test modülü ve migration'ı, Respawn; DT-01 |
+| 3e | `migrate` komutu | Hazırlık + tüm modüllerin migration'ları; AppHost'ta rol parolaları ve modül bağlantı dizeleri |
 | 4 | İşlem birimi | Dekoratör, kaydetme adımları 1–3 ve 6, sürüm artışı, kısıt eşlemesi; DT-02 (roller) |
 | 5 | İşlem geçmişi | Audit iskeleti, `audit_entries`, yazıcı, `[NotAudited]` |
 | 6 | Outbox ve olay yolu | Tablolar, yazma, dağıtıcı, olay yolu, inbox dekoratörü, sıra ve kısmi hata, ölçümler, temizlik; AT-10 |
@@ -300,3 +302,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.1 | 2. PR ikiye bölündü (2a komut / sorgu altyapısı, 2b sayfalama); iz aralığını loglama dekoratörü açar; `IIntegrationEventHandler` 6. PR'a, `UnitOfWorkCommandDecorator` Infrastructure'a taşındı; `ErrorCodes` ve `ValidationError` eklendi. |
 | 2026-09-30 | v1.2 | `Paging/` satırı uygulamaya göre netleşti: doğrulayıcılar, `SortField`, `SortableBy`. |
 | 2026-09-30 | v1.3 | 3. PR üçe bölündü: 3a veritabanı test altyapısı, 3b hazırlık, 3c modül kaydı ve veritabanı bağlamı. |
+| 2026-09-30 | v1.4 | 3c ayrıca bölündü: 3c modül kaydı, 3d veritabanı bağlamı ve test modülü, 3e `migrate` komutu. |

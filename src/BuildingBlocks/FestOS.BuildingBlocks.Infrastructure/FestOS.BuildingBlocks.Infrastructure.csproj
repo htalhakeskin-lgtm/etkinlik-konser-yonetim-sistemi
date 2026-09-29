@@ -1,4 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <!-- HTTP, OpenAPI and SignalR infrastructure lives here; the Host only wires it up (building-blocks BB-01). -->
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Npgsql" />
   </ItemGroup>

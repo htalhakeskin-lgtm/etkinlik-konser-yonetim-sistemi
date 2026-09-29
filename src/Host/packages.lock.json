@@ -44,6 +44,11 @@
         "resolved": "10.10.0",
         "contentHash": "AJ2lFnzzJkN2ZRvfPBKQ5k3EJFkhmsm1tEhWzK58KsxU+WK3GVOh/5WHUhQ56TWjnxGZCGgr0+U1QUuJ4rJVuA=="
       },
+      "Microsoft.Extensions.DependencyModel": {
+        "type": "Transitive",
+        "resolved": "10.0.0",
+        "contentHash": "RFYJR7APio/BiqdQunRq6DB+nDB6nc2qhHr77mlvZ0q0BT8PubMXN7XicmfzCbrDE/dzhBnUKBRXLTcqUiZDGg=="
+      },
       "Microsoft.Extensions.Diagnostics.ExceptionSummarization": {
         "type": "Transitive",
         "resolved": "10.10.0",
@@ -138,6 +143,24 @@
           "Polly.Core": "8.4.2"
         }
       },
+      "festos.buildingblocks.application": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Domain": "[1.0.0, )",
+          "FluentValidation": "[12.1.1, )",
+          "Scrutor": "[7.0.0, )"
+        }
+      },
+      "festos.buildingblocks.domain": {
+        "type": "Project"
+      },
+      "festos.buildingblocks.infrastructure": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Application": "[1.0.0, )",
+          "Npgsql": "[10.0.3, )"
+        }
+      },
       "festos.servicedefaults": {
         "type": "Project",
         "dependencies": {
@@ -149,6 +172,12 @@
           "OpenTelemetry.Instrumentation.Http": "[1.19.0, )",
           "OpenTelemetry.Instrumentation.Runtime": "[1.19.0, )"
         }
+      },
+      "FluentValidation": {
+        "type": "CentralTransitive",
+        "requested": "[12.1.1, )",
+        "resolved": "12.1.1",
+        "contentHash": "EPpkIe1yh1a0OXyC100oOA8WMbZvqUu5plwhvYcb7oSELfyUZzfxV48BLhvs3kKo4NwG7MGLNgy1RJiYtT8Dpw=="
       },
       "Microsoft.Extensions.Http.Resilience": {
         "type": "CentralTransitive",
@@ -168,6 +197,12 @@
         "dependencies": {
           "Microsoft.Extensions.ServiceDiscovery.Abstractions": "10.10.0"
         }
+      },
+      "Npgsql": {
+        "type": "CentralTransitive",
+        "requested": "[10.0.3, )",
+        "resolved": "10.0.3",
+        "contentHash": "7nb5YzXuvWWJxB0J8DiyL3we+X4FOctZrt0fIBnucOIaIevFEEwGQVZKtiu9olXdlNAK1eNgqSral6r/jlhI4w=="
       },
       "OpenTelemetry.Exporter.OpenTelemetryProtocol": {
         "type": "CentralTransitive",
@@ -212,6 +247,15 @@
         "contentHash": "VIH2tQ2h31j4wQyZ9Utk8ZXIyj7Z1j0xIiyPRGjYu1MmZjJtpxRh0Y/NnB6fEBimNg/WrX0jDyfMeEjPQqmaMA==",
         "dependencies": {
           "OpenTelemetry.Api": "[1.19.0, 2.0.0)"
+        }
+      },
+      "Scrutor": {
+        "type": "CentralTransitive",
+        "requested": "[7.0.0, )",
+        "resolved": "7.0.0",
+        "contentHash": "wHWaroody48jnlLoq/REwUltIFLxplXyHTP+sttrc8P7+jkiVqf38afDidJNv4qgD/6zz2NKOYg06xLZ1bG7wQ==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyModel": "10.0.0"
         }
       }
     }
