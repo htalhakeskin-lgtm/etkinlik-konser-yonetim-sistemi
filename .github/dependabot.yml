@@ -34,6 +34,8 @@ updates:
         versions: [">=7"]
       - dependency-name: vitest
         versions: [">=5"]
+      - dependency-name: "@vitest/*"
+        versions: [">=5"]
       - dependency-name: "@types/node"
         versions: [">=25"]
     commit-message:
