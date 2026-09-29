@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v0.2 (sorular yanıtlandı, onay bekliyor) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.0 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -40,11 +40,11 @@ Tasarım değişkenleri, temalar, düğme ve durum rozeti Faz 1.0'da tamamlandı
 | Proje | Klasör | Temel tipler |
 |---|---|---|
 | `BuildingBlocks.Domain` | `Entities/` | `Entity<TId>`, `AggregateRoot<TId>` (modül içi olay listesi, `Version`), `IAuditable` (`Created…`/`Updated…`), `IDeactivatable` |
-| | `Rules/` | `BusinessRuleViolationException(code, params)`; kural numarası ilk parametredir |
+| | `Rules/` | `BusinessRuleViolationException(ruleCode, message, kind, parameters)`; kural numarası ilk parametredir. `RuleKind`: Kısıt ve Geçiş 422, Yetki 403 döner ([api §8.3](../standards/api.md#83-i̇stisnaların-eşlenmesi)); Tetikleyici ve Hesaplama kuralları fırlatılmaz |
 | | `Events/` | `IDomainEvent` |
 | | `Time/` | `TimeRange` (yarı açık `[başlangıç, bitiş)`, çakışma ve kapsama), `IstanbulCalendar` (takvim günü dönüşümleri) |
-| | `Money/` | `Money`, `Currency`, yuvarlama kuralı (V-08) |
-| | `Identity/` | `IStronglyTypedId` işaret arayüzü |
+| | `Monetary/` | `Money`, `Currency`, yuvarlama kuralı (V-08) |
+| | `Identifiers/` | `IStronglyTypedId<TSelf>`: `Value` ve genel dönüştürücülerin kullandığı `static abstract From(Guid)`; yeni kimliği her tip kendi `New()` metoduyla üretir (`Guid.CreateVersion7()`) |
 | `BuildingBlocks.Application` | `Messaging/` | `ICommand<TResult>`, `ICommandHandler<TCommand, TResult>`, `IQuery<TResult>`, `IQueryHandler<TQuery, TResult>`, `IIntegrationEventHandler<TEvent>`, `IDomainEventHandler<TEvent>` |
 | | `Behaviors/` | `LoggingCommandDecorator`, `ValidationCommandDecorator`, `UnitOfWorkCommandDecorator`, sorgu karşılıkları (loglama, doğrulama) |
 | | `Users/` | `ICurrentUser`, `SystemUser` (sabit kimlik, [database §9](../standards/database.md#9-ortak-kolonlar)) |
@@ -117,7 +117,7 @@ Roller ve yetkiler [database §4](../standards/database.md#4-roller-ve-yetkiler)
 |---|---|
 | snake_case adlar | EFCore.NamingConventions, `InvariantCulture` ile ([naming §5](../standards/naming.md#5-veritabanı-adları)) |
 | Varsayılan şema | Modülün şeması; migration geçmiş tablosu da o şemada |
-| Tip güvenli kimlikler | `IStronglyTypedId` uygulayan her tipe tek bir genel değer dönüştürücüsü; anahtarlar `ValueGeneratedNever` |
+| Tip güvenli kimlikler | `IStronglyTypedId<TSelf>` uygulayan her tipe tek bir genel değer dönüştürücüsü; anahtarlar `ValueGeneratedNever` |
 | Silme davranışı | Varsayılan `RESTRICT`; `CASCADE` yalnızca açıkça (V-11) |
 | Enum'lar | camelCase metin + otomatik `CHECK` kısıtı (V-06) |
 | Sürüm | `AggregateRoot.Version` eşzamanlılık belirteci (V-09) |
@@ -244,7 +244,7 @@ Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir
 
 | # | PR | Kapsam |
 |---|---|---|
-| 1 | Alan temelleri | `Entity`, `AggregateRoot`, kurallar, `TimeRange`, `IstanbulCalendar`, `Money`; birim testleri |
+| 1 | Alan temelleri | `Entity`, `AggregateRoot`, kurallar, `TimeRange`, `IstanbulCalendar`, `Money`, `IStronglyTypedId`; birim ve özellik tabanlı testler (CsCheck) |
 | 2 | Komut / sorgu altyapısı | Arayüzler, loglama ve doğrulama dekoratörleri, `ICurrentUser`, sayfalama tipleri; Scrutor kaydı |
 | 3 | Test altyapısı ve veritabanı hazırlığı | `FestOS.Testing` (Testcontainers, Respawn), `bootstrap`, `migrate` komutu, `IModuleDefinition` / `AddModules`, `ModuleDbContext` ve EF kuralları; test modülü; DT-01, DT-05; CI `backend-integration` işi |
 | 4 | İşlem birimi | Dekoratör, kaydetme adımları 1–3 ve 6, sürüm artışı, kısıt eşlemesi; DT-02 (roller) |
@@ -293,3 +293,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 |---|---|---|
 | 2026-09-30 | v0.1 | İlk taslak: kapsam, tipler, komut yolu, veritabanı, işlem geçmişi, olaylar, zamanlanmış işler, HTTP, OpenAPI, SignalR, ön yüz platformu, testler, PR planı, üç soru. |
 | 2026-09-30 | v0.2 | Üç soru yanıtlandı (önerilen seçenekler): BB-08…BB-10. |
+| 2026-09-30 | v1.0 | Onaylandı. Uygulamada netleşenler: klasör adları `Monetary/` (ad alanı `Money` tipiyle çakışmasın) ve `Identifiers/` (Identity modülüyle karışmasın); `RuleKind`; `IStronglyTypedId<TSelf>` yalnızca `From` ister, çünkü arayüzdeki varsayılan statik metot uygulayan tipten çağrılamaz. |

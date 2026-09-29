@@ -19,4 +19,7 @@
   <Folder Name="/tests/ArchitectureTests/">
     <Project Path="tests/ArchitectureTests/FestOS.ArchitectureTests/FestOS.ArchitectureTests.csproj" />
   </Folder>
+  <Folder Name="/tests/BuildingBlocks/">
+    <Project Path="tests/BuildingBlocks/FestOS.BuildingBlocks.UnitTests/FestOS.BuildingBlocks.UnitTests.csproj" />
+  </Folder>
 </Solution>
