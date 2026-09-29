@@ -1,6 +1,6 @@
 # API Standardı
 
-> **Durum:** v1.4 · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.5 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 15](#15-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -139,7 +139,7 @@ Adların yazımı (kebab-case adres, camelCase JSON, işlem adı) [naming §6](n
 ### 6.2 Sıralama
 
 - `?sort=startsAt` artan, `?sort=-startsAt` azalan; birden fazla alan virgülle: `?sort=-startsAt,name`.
-- Her uç nokta sıralanabilir alanları açıkça listeler. Listede olmayan alan `400` verir; kullanıcı girdisi doğrudan SQL'e gitmez.
+- Her uç nokta sıralanabilir alanları açıkça listeler. Listede olmayan, tekrarlanan ya da boş alan `400` verir (doğrulama kodu `unsupportedSort`; `params` izin verilen alanları taşır); kullanıcı girdisi doğrudan SQL'e gitmez.
 - Varsayılan sıralama her liste uç noktasında tanımlıdır ve sonuna her zaman kimlik eklenir. Böylece aynı değerdeki kayıtların sırası sayfadan sayfaya değişmez.
 - Metin alanlarında sıralama Türkçe kuralla yapılır ([database §13](database.md#13-metin-sıralama-ve-arama)).
 
@@ -382,3 +382,4 @@ Oturum [ADR-0011](../adr/0011-authentication.md)'deki gibi sunucu tarafı oturum
 | 2026-09-25 | v1.2 | HTTPS ve HSTS'in yeri bağlandı (D.3). |
 | 2026-09-25 | v1.3 | Hata mesajı örneği Türkçe ek kuralına göre düzeltildi (D.4). |
 | 2026-09-30 | v1.4 | Hata işleyici ve CSRF ara katmanının kodu `BuildingBlocks.Infrastructure`'da; Host yalnızca kaydeder ([building-blocks BB-01](../modules/building-blocks.md#16-kararlar)). |
+| 2026-09-30 | v1.5 | Sıralama hatasının doğrulama kodu `unsupportedSort` (§6.2). |
