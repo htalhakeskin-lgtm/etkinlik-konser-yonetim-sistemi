@@ -243,7 +243,8 @@
       "festos.buildingblocks.infrastructure": {
         "type": "Project",
         "dependencies": {
-          "FestOS.BuildingBlocks.Application": "[1.0.0, )"
+          "FestOS.BuildingBlocks.Application": "[1.0.0, )",
+          "Npgsql": "[10.0.3, )"
         }
       },
       "FluentValidation": {
@@ -259,6 +260,15 @@
         "contentHash": "+24lC4plfbEDNfLAdTV/SWKS7dW+16X4HdydO3R++134kSNTzcbYA4KpR1Hdh6uWisB8Za3AzwyOn+K+NxWIug==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.12"
+        }
+      },
+      "Npgsql": {
+        "type": "CentralTransitive",
+        "requested": "[10.0.3, )",
+        "resolved": "10.0.3",
+        "contentHash": "7nb5YzXuvWWJxB0J8DiyL3we+X4FOctZrt0fIBnucOIaIevFEEwGQVZKtiu9olXdlNAK1eNgqSral6r/jlhI4w==",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.0"
         }
       },
       "Scrutor": {
