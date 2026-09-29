@@ -117,7 +117,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | Belge | Sürüm |
 |---|---|
 | [07 — Teknoloji yığını](docs/07-tech-stack.md) | v1.11 |
-| [08 — Mimari ve klasör yapısı](docs/08-architecture.md) | v1.11 |
+| [08 — Mimari ve klasör yapısı](docs/08-architecture.md) | v1.12 |
 | [Mimari karar kayıtları (ADR)](docs/adr/README.md) | 34 kayıt |
 
 **Standartlar** ([dizin](docs/standards/README.md))
@@ -126,8 +126,8 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 |---|---|
 | [İsimlendirme](docs/standards/naming.md) | v1.5 |
 | [Kod stili ve statik analiz](docs/standards/code-style.md) | v1.9 |
-| [Veritabanı](docs/standards/database.md) | v1.3 |
-| [API](docs/standards/api.md) | v1.3 |
+| [Veritabanı](docs/standards/database.md) | v1.4 |
+| [API](docs/standards/api.md) | v1.4 |
 | [Güvenlik](docs/standards/security.md) | v1.3 |
 | [Gözlemlenebilirlik](docs/standards/observability.md) | v1.1 |
 | [Yapılandırma](docs/standards/configuration.md) | v1.2 |
@@ -146,7 +146,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | [11 — Ekran şablonları ve envanteri](docs/11-screens.md) | v1.0 |
 | [Ekran tasarım özeti (v0)](docs/design/screen-brief.md) | v1.1 |
 | [12 — Uygulama planı (Faz 1: S1)](docs/12-implementation-plan.md) | v1.0 |
-| [Modül tasarımı: Ortak yapı taşları](docs/modules/building-blocks.md) | v0.2 (onay bekliyor) |
+| [Modül tasarımı: Ortak yapı taşları](docs/modules/building-blocks.md) | v1.0 |
 
 ### Teknoloji
 

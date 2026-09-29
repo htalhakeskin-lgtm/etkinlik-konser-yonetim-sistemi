@@ -1,6 +1,6 @@
 # 08 — Mimari ve Klasör Yapısı
 
-> **Durum:** v1.11 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.12 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -215,12 +215,12 @@ FestOS.Modules.Booking.IntegrationEvents/
 
 | Proje | İçerik |
 |---|---|
-| `BuildingBlocks.Domain` | Varlık ve toplu kök temel sınıfları (modül içi olay listesi, sürüm numarası), `IDomainEvent`, kural numarasını taşıyan `BusinessRuleViolationException`, `Money`, zaman aralığı (`TimeRange`: çakışma ve kapsama hesapları), Europe/Istanbul takvim günü dönüşümleri |
+| `BuildingBlocks.Domain` | Varlık ve toplu kök temel sınıfları (modül içi olay listesi, sürüm numarası), `IDomainEvent`, kural numarasını taşıyan `BusinessRuleViolationException`, `Money`, zaman aralığı (`TimeRange`: çakışma ve kapsama hesapları), Europe/Istanbul takvim günü dönüşümleri, tip güvenli kimlik arayüzü (`IStronglyTypedId<TSelf>`) |
 | `BuildingBlocks.Application` | Komut ve sorgu arayüzleri (`ICommand<TResult>`, `ICommandHandler<,>`, `IQuery<TResult>`, `IQueryHandler<,>`); dekoratörler (loglama, doğrulama, işlem birimi); `IIntegrationEventHandler<T>`; oturumdaki kullanıcı (`ICurrentUser`); `NotFoundException`, `ConcurrencyConflictException`; sayfalama tipleri |
-| `BuildingBlocks.Infrastructure` | Modül veritabanı bağlamı temel sınıfı (şema, sürüm kontrolü, işlem geçmişi ve outbox yazımı); outbox ve inbox tabloları; olay dağıtıcısı ve süreç içi olay yolu; inbox dekoratörü; PostgreSQL advisory lock; zamanlanmış iş temel sınıfı (Cronos + kilit); modül kayıt arayüzü (`IModuleDefinition`); demo verisi yükleyici arayüzü (`IDemoDataSeeder`, [09 §9](09-environments-and-deployment.md#9-demo-verisi-ve-sıfırlama)) |
+| `BuildingBlocks.Infrastructure` | Modül veritabanı bağlamı temel sınıfı (şema, sürüm kontrolü, işlem geçmişi ve outbox yazımı); outbox ve inbox tabloları; olay dağıtıcısı ve süreç içi olay yolu; inbox dekoratörü; PostgreSQL advisory lock; zamanlanmış iş temel sınıfı (Cronos + kilit); modül kayıt arayüzü (`IModuleDefinition`); demo verisi yükleyici arayüzü (`IDemoDataSeeder`, [09 §9](09-environments-and-deployment.md#9-demo-verisi-ve-sıfırlama)); HTTP altyapısı (Problem Details hata işleyicisi, JSON ayarları, `If-Match` ve `Idempotency-Key` filtreleri, CSRF, güvenlik başlıkları); OpenAPI dönüştürücüleri; SignalR hub'ı ve değişiklik yayıncısı |
 | `BuildingBlocks.Contracts` | `IIntegrationEvent` ve olay temel tipi (olay kimliği, oluşma zamanı, ilişki kimliği, sıra anahtarı olarak kayıt kimliği) |
 
-BuildingBlocks iş kuralı içermez; hiçbir modüle referans vermez.
+BuildingBlocks iş kuralı içermez; hiçbir modüle referans vermez. Tiplerin klasörlere dağılımı [modules/building-blocks.md §3](modules/building-blocks.md#3-projeler-ve-temel-tipler)'tedir.
 
 ## 5. Ana uygulama (Host) ve modüllerin kaydı
 
@@ -255,16 +255,18 @@ builder.AddModules(
 |---|---|
 | Modüllerin kaydı | Yukarıdaki liste; tüm modüllerin yetkileri birleştirilerek yetki kataloğu oluşturulur ve Identity'ye verilir. Böylece Identity, diğer modüllere referans vermeden rolleri yetkilerle eşleyebilir. |
 | Kimlik doğrulama ve yetki | Çerez ve oturum doğrulaması ([ADR-0011](adr/0011-authentication.md)); her uç nokta bir yetki ister. |
-| Hata biçimi | Tüm hatalar tek bir hata işleyicide Problem Details biçimine çevrilir ([api §8](standards/api.md#8-hata-yanıtları)). |
-| Anlık yayın | SignalR hub'ı (`/hubs/notifications`). Tüm modüllerin entegrasyon olaylarını dinler ve ilgili gruplara değişiklik bildirimi gönderir ([ADR-0012](adr/0012-realtime-signalr.md)). |
+| Hata biçimi | Tüm hatalar tek bir hata işleyicide Problem Details biçimine çevrilir ([api §8](standards/api.md#8-hata-yanıtları)). Host işleyiciyi kaydeder. |
+| Anlık yayın | SignalR hub'ı (`/hubs/notifications`); Host hub'ı adrese bağlar. Tüm modüllerin entegrasyon olaylarını dinler ve ilgili gruplara değişiklik bildirimi gönderir ([ADR-0012](adr/0012-realtime-signalr.md)). |
 | Zamanlanmış işler | Modüllerin kaydettiği işleri çalıştırır ([ADR-0013](adr/0013-scheduled-jobs.md)). |
 | API belgesi | OpenAPI belgesi; geliştirmede Scalar arayüzü. |
 | Ön yüzün sunulması | Yayın ortamında derlenmiş ön yüzü aynı adresten sunar; bilinmeyen adresleri ön yüzün giriş sayfasına yönlendirir. |
 | Kültür ayarı | Sunucu kodu sabit kültürle (invariant) çalışır ([§9](#9-türkçe-karakter-güvenliği)). |
-| Güvenlik başlıkları | Ön yüz ve API yanıtlarına güvenlik başlıklarını ekler ([security §8](standards/security.md#8-tarayıcı-güvenlik-başlıkları), [api §11](standards/api.md#11-güvenlik-kuralları)). |
+| Güvenlik başlıkları | Ön yüz ve API yanıtlarına güvenlik başlıklarını ekleyen ara katmanı kaydeder ([security §8](standards/security.md#8-tarayıcı-güvenlik-başlıkları), [api §11](standards/api.md#11-güvenlik-kuralları)). |
 | Sağlık uçları | `/alive` ve `/health`; demo ve yayında dışarıya açılmayan iç portta ([observability §6](standards/observability.md#6-sağlık-kontrolleri)). |
 | Ters proxy arkasında çalışma | Yalnızca Caddy'nin iç ağ adresinden gelen `X-Forwarded-For` ve `X-Forwarded-Proto` başlıklarına güvenir ([09 §6](09-environments-and-deployment.md#6-ters-proxy-ve-https)). |
 | Komutlar | Aynı çalıştırılabilir dosya `migrate`, `seed-demo`, `reset-demo`, `recalculate-local-times` ve `probe-health` komutlarını da çalıştırır ([09 §5](09-environments-and-deployment.md#5-konteyner-imajı)). |
+
+Hata işleyicinin, JSON ayarlarının, güvenlik başlıklarının, OpenAPI dönüştürücülerinin ve SignalR hub'ının kodu modüllerin ortak altyapısı olduğu için `BuildingBlocks.Infrastructure`'dadır ([§4](#4-ortak-yapı-taşları-buildingblocks)). Host bu parçaları yalnızca kaydeder ve ara katman sırasını kurar ([building-blocks BB-01](modules/building-blocks.md#16-kararlar)).
 
 **Adres düzeni:**
 
@@ -484,3 +486,4 @@ Yasak API kullanımı (`DateTime.UtcNow` gibi) mimari testle değil, derleyici a
 | 2026-09-26 | v1.9 | Ön yüz ağacına `test/` ve üretilen rota ağacı eklendi (Faz 1.0). |
 | 2026-09-26 | v1.10 | Ön yüz ağacına tema betiği (`public/theme-init.js`) eklendi (Faz 1.0). |
 | 2026-09-26 | v1.11 | `tools/licenses/` açıklaması: tek lisans denetim betiği (Faz 1.0). |
+| 2026-09-30 | v1.12 | §4: HTTP, OpenAPI ve SignalR altyapısı `BuildingBlocks.Infrastructure`'a, `IStronglyTypedId<TSelf>` `BuildingBlocks.Domain`'e eklendi; §5: Host bunları yalnızca bağlar (building-blocks BB-01). |

@@ -1,6 +1,6 @@
 # Veritabanı Standardı
 
-> **Durum:** v1.3 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.4 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 18](#18-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -379,6 +379,7 @@ Yapı [ADR-0010](../adr/0010-messaging-infrastructure.md)'daki kararları fiziks
 | `trace_parent` | Olayı doğuran isteğin iz bağlamı (W3C `traceparent`); dinleyicinin izi bununla ilişkilendirilir ([observability §4](observability.md#4-dağıtık-izleme)) |
 | `dispatched_at` | Gönderildiği zaman; gönderilmediyse boş |
 | `attempt_count`, `next_attempt_at`, `last_error` | Yeniden deneme bilgisi |
+| `failed_at` | Deneme sınırı aşılınca dolar; kayıt elle yeniden denenene kadar gönderilmez ([building-blocks BB-05](../modules/building-blocks.md#16-kararlar)) |
 
 **`inbox_messages`:** `(message_id, handler)` birincil anahtar ve `processed_at`. Aynı olayı aynı dinleyici ikinci kez işlemez.
 
@@ -479,3 +480,4 @@ Gerçek PostgreSQL 18 üzerinde (Testcontainers) çalışan testler. Yer: `tests
 | 2026-09-25 | v1.1 | Tekrar güvenliği tablosu eklendi (C.5). |
 | 2026-09-25 | v1.2 | Outbox'a iz bağlamı kolonu eklendi (C.6). |
 | 2026-09-25 | v1.3 | D.3 ile uyum: yayında migration aynı imajdaki `migrate` komutuyla (V-14); izleme rolü `festos_monitor` (V-15); yedekleme ve PITR bağlandı. |
+| 2026-09-30 | v1.4 | Outbox'a `failed_at` kolonu eklendi (building-blocks BB-05). |
