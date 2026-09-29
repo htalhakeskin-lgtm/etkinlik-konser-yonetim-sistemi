@@ -8,5 +8,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\BuildingBlocks\FestOS.BuildingBlocks.Application\FestOS.BuildingBlocks.Application.csproj" />
     <ProjectReference Include="..\..\..\src\BuildingBlocks\FestOS.BuildingBlocks.Domain\FestOS.BuildingBlocks.Domain.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\FestOS.BuildingBlocks.Infrastructure\FestOS.BuildingBlocks.Infrastructure.csproj" />
   </ItemGroup>
 </Project>
