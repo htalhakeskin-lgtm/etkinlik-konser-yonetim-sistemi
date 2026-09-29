@@ -1,6 +1,6 @@
 # Veritabanı Standardı
 
-> **Durum:** v1.4 · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.5 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 18](#18-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -45,10 +45,10 @@ Her modül veritabanına **kendi rolüyle** bağlanır ([V-02](#18-kararlar)). R
 | Rol | Kim kullanır | Yetkiler |
 |---|---|---|
 | `festos_owner` | Hiç kimse doğrudan bağlanmaz (giriş yapamaz) | Tüm şemaların ve nesnelerin sahibi |
-| `festos_migrator` | Migration aracı | `festos_owner`'ın üyesi; şema değiştirir |
+| `festos_migrator` | Migration aracı | `festos_owner`'ın üyesi; oturumu rol düzeyindeki `role = festos_owner` ayarıyla açılır, böylece oluşturduğu nesnelerin sahibi `festos_owner` olur; şema değiştirir |
 | `festos_{modül}` (ör. `festos_booking`) | Modülün veritabanı bağlamı | Kendi şemasında `USAGE`; tablolarında `SELECT`, `INSERT`, `UPDATE`, `DELETE` (aşağıdaki istisnalarla); `audit.audit_entries` tablosunda yalnızca `INSERT` |
 | `festos_audit` | Audit modülü | `audit` şemasında `SELECT` |
-| `festos_readonly` | Elle inceleme, ileride raporlama (S6) | Tüm şemalarda `SELECT` |
+| `festos_readonly` | Elle inceleme, ileride raporlama (S6) | Tüm şemalarda `SELECT` (PostgreSQL'in yerleşik `pg_read_all_data` rolünün üyesi); oturumları salt okunurdur |
 | `festos_monitor` | Telemetri toplayıcısı (Alloy) | PostgreSQL'in yerleşik `pg_monitor` rolünün üyesi: sunucu istatistikleri (bağlantılar, WAL arşivleme, boyut). Hiçbir tabloda yetkisi yoktur ([09 §8.1](../09-environments-and-deployment.md#81-kurulum)). |
 
 **Yetki istisnaları, yani kuralların veritabanında zorlanması:**
@@ -59,7 +59,8 @@ Her modül veritabanına **kendi rolüyle** bağlanır ([V-02](#18-kararlar)). R
 **Diğer kurallar:**
 - Parolalar SCRAM ile doğrulanır. PostgreSQL 18'de MD5 parola doğrulaması kullanımdan kaldırılma sürecindedir.
 - Her rolün `search_path` ayarı kendi şeması ve `public`'tir.
-- Rollerin oluşturulması ve yetkilerin verilmesi migration'larla yapılır ve sürüm kontrolündedir. Parolalar ortam gizlilerinden gelir (C.6).
+- Roller, parolaları, üyelikleri, rol düzeyi ayarları ve veritabanına bağlanma yetkileri **veritabanı hazırlığında** (`bootstrap`, `migrate` komutunun ilk adımı) kurulur; tablo ve şema yetkileri modülün migration'larındadır. İkisi de sürüm kontrolündedir ([building-blocks §5.1](../modules/building-blocks.md#51-roller-ve-şemaların-kurulumu)). Parolalar ortam gizlilerinden gelir (C.6); hazırlık tekrar çalıştırıldığında parolaları yeniden yazar, böylece parola yenileme de aynı adımdır. Parolası verilmeyen `festos_readonly` ve `festos_monitor` giriş yapamaz.
+- Veritabanına yalnızca bu roller bağlanabilir (`PUBLIC`'ten `CONNECT` geri alınır); şema oluşturma yetkisi (`CREATE`) yalnızca `festos_owner`'dadır.
 - Yetkilerin doğruluğunu bir veritabanı testi (DT-02) denetler.
 
 ## 5. Kimlik
@@ -431,7 +432,7 @@ Yayında uygulamanın açılışta migration çalıştırmaması önerilen yoldu
 | `Application Name` | `festos-{modül}` | Veritabanında hangi bağlantının hangi modüle ait olduğu `pg_stat_activity`'de görünür. |
 | Komut zaman aşımı | 30 saniye (Npgsql) | — |
 | Rol düzeyinde `statement_timeout` | Modül rolleri 30 saniye; migration rolü sınırsız | Kontrolden çıkan bir sorgu veritabanını kilitlemez. |
-| Rol düzeyinde `idle_in_transaction_session_timeout` | 60 saniye | İşlemi açık unutulan bağlantı kilitleri tutmaz ([kaynak](https://www.postgresql.org/docs/current/runtime-config-client.html)). |
+| Rol düzeyinde `idle_in_transaction_session_timeout` | 60 saniye (tüm giriş rolleri) | İşlemi açık unutulan bağlantı kilitleri tutmaz ([kaynak](https://www.postgresql.org/docs/current/runtime-config-client.html)). |
 | Rol düzeyinde `lock_timeout` | Modül rolleri 10 saniye; migration rolü 5 saniye | Kilit bekleyen istek sonsuza kadar beklemez; şema değişikliği canlı trafiği bekletmez. |
 | Bağlantı havuzlayıcı (PgBouncer) | S1'de yok | İleride eklenirse işlem modunda çalışabilmesi için istek işlerken yalnızca işlem düzeyinde danışma kilidi kullanılır (§11.3). |
 
@@ -481,3 +482,4 @@ Gerçek PostgreSQL 18 üzerinde (Testcontainers) çalışan testler. Yer: `tests
 | 2026-09-25 | v1.2 | Outbox'a iz bağlamı kolonu eklendi (C.6). |
 | 2026-09-25 | v1.3 | D.3 ile uyum: yayında migration aynı imajdaki `migrate` komutuyla (V-14); izleme rolü `festos_monitor` (V-15); yedekleme ve PITR bağlandı. |
 | 2026-09-30 | v1.4 | Outbox'a `failed_at` kolonu eklendi (building-blocks BB-05). |
+| 2026-09-30 | v1.5 | §4: rolleri ve ayarlarını veritabanı hazırlığı kurar, yetkileri migration'lar verir; migration rolünün `role` ayarı, salt okuma rolünün `pg_read_all_data` üyeliği, veritabanı bağlantı yetkileri (Faz 1.1). |

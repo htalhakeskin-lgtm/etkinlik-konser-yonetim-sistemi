@@ -4,6 +4,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\FestOS.BuildingBlocks.Infrastructure\FestOS.BuildingBlocks.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Testing\FestOS.Testing\FestOS.Testing.csproj" />
   </ItemGroup>
 </Project>
