@@ -1,3 +1,5 @@
+using FestOS.BuildingBlocks.Application.Messaging;
+
 namespace FestOS.BuildingBlocks.Application.Behaviors;
 
 /// <summary>
@@ -17,9 +19,7 @@ internal readonly record struct OperationName(string Name, string? ModuleName)
             Suffixes,
             candidate => name.Length > candidate.Length && name.EndsWith(candidate, StringComparison.Ordinal)
         );
-        string? moduleName = type.Namespace?.Split('.') is ["FestOS", "Modules", var module, ..] ? module : null;
-
-        return new OperationName(suffix is null ? name : name[..^suffix.Length], moduleName);
+        return new OperationName(suffix is null ? name : name[..^suffix.Length], ModuleNames.Of(type));
     }
 
     private static class Cache<TRequest>

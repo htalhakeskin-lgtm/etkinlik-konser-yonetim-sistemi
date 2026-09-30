@@ -34,6 +34,8 @@ public static class ModuleExtensions
             module.RegisterServices(builder);
         }
 
+        // Innermost first: the unit of work, then validation and logging around it (building-blocks §4).
+        builder.Services.TryDecorate(typeof(ICommandHandler<,>), typeof(UnitOfWorkCommandDecorator<,>));
         builder.Services.DecorateHandlers();
         builder.Services.AddSingleton(new ModuleCatalog(modules));
         builder.Services.AddSingleton<DatabaseBootstrapper>();

@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.7 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.8 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -92,6 +92,12 @@ Sıra [08 §6](../08-architecture.md#6-bir-isteğin-yolculuğu)'dakidir; burada 
 - Yeni kökün sürümü 1'dir. Zaman damgaları mikrosaniyeye yuvarlanır; bellekteki değer veritabanındakiyle aynı kalır ([database §7.1](../standards/database.md#71-anlar)).
 - Kısıt eşlemesi modül bağlamının `ConstraintRules` sözlüğündedir (kısıt adı → kural kodu).
 - `SaveChanges` (senkron) desteklenmez; olay dinleyicileri kaydetmez, onları tetikleyen kayıt değişikliklerini de yazar.
+
+**İşlem birimi dekoratörü** (4b):
+- Komutun modülü ad alanından okunur (`FestOS.Modules.{Modül}.…`, `ModuleNames`); modülün bağlamı, `AddModuleDbContext`'in modül adıyla kaydettiği anahtarlı servistir. Modül dışındaki bir komut hata verir.
+- İşleyici ve kayıt tek bir işlemde, yeniden deneme stratejisinin içinde çalışır. Yeniden denemede değişiklik takibi temizlenir ve işleyici baştan çalışır; bu yüzden işleyiciler verisini kendisi yükler ve dışarıya yan etki bırakmaz (dış etkiler outbox'la, §7).
+- İşleyiciler normalde kaydetmez; kaydı dekoratör yapar. İşleyici kaydettikten sonra hata verirse işlem geri alınır.
+- Dekoratörler içten dışa: işlem birimi, doğrulama, loglama. Doğrulama hatası işlem açmadan döner.
 
 **İşleyicinin çağrılma biçimi:** Uç nokta, dekoratörlerle sarılmış işleyici arayüzünü doğrudan alır. Araya bir "mediator" (MediatR benzeri) konmaz: çağrı derleme anında bellidir, yansıma ile tip çözme yoktur ve IDE'de doğrudan işleyiciye gidilir (BB-02). Dekoratörler Scrutor ile kaydedilir ([07](../07-tech-stack.md)).
 
@@ -267,7 +273,7 @@ Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir
 | 3d | Veritabanı bağlamı ve test modülü | `ModuleDbContext` ve EF kuralları (§5.3), test modülü ve migration'ı; DT-01 |
 | 3e | `migrate` komutu | Hazırlık + tüm modüllerin migration'ları; AppHost'ta rol parolaları ve modül bağlantı dizeleri |
 | 4a | Kaydetme adımları | `SaveChangesPipeline`: adımlar 1–3 ve 6, sürüm artışı, kısıt eşlemesi; `FestOS.BuildingBlocks.IntegrationTests`, Respawn |
-| 4b | İşlem birimi dekoratörü | İşlem ve yeniden deneme stratejisi, modülün bağlamının seçimi, örnek komutlar |
+| 4b | İşlem birimi dekoratörü | İşlem ve yeniden deneme stratejisi, modülün bağlamının seçimi (`ModuleNames`), örnek komutlar |
 | 5 | İşlem geçmişi | Audit iskeleti, `audit_entries`, yazıcı, `[NotAudited]` |
 | 6 | Outbox ve olay yolu | Tablolar, yazma, dağıtıcı, olay yolu, inbox dekoratörü, sıra ve kısmi hata, ölçümler, temizlik; AT-10 |
 | 7 | Zamanlanmış işler ve kilitler | `ScheduledJob`, danışma kilitleri; sahte zamanla testler |
@@ -321,3 +327,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.5 | §5.3 uygulamaya göre netleşti; Respawn 4. PR'a kaydı. |
 | 2026-09-30 | v1.6 | §5.2 bağlantı düzeni: tek temel bağlantı dizesi ve rol parolaları; §5.4 `migrate` komutu (3e). |
 | 2026-09-30 | v1.7 | §4 kaydetme adımlarının uygulama ayrıntıları; 4. PR ikiye bölündü (4a kaydetme adımları, 4b dekoratör). |
+| 2026-09-30 | v1.8 | §4 işlem birimi dekoratörünün uygulama ayrıntıları (4b). |
