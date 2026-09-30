@@ -8,6 +8,12 @@
         "resolved": "3.0.273",
         "contentHash": "NcHSvJfs/H8uoWj4SYIte9opatH4EdW2Qnal93npgS3EZyKwSjr3XoPDSPNtR62evxXmZD2d1G+lEGeqNG4GRg=="
       },
+      "Microsoft.AspNetCore.TestHost": {
+        "type": "Direct",
+        "requested": "[10.0.12, )",
+        "resolved": "10.0.12",
+        "contentHash": "bTHgbcjSrLxlqSasYRDU9BcJ3hDGoqIjtDY0soLNrndOWi3kxtOyddwUMaNZgtoI2Uf6y7ZQs2EuVj0c20B7mA=="
+      },
       "Microsoft.CodeAnalysis.BannedApiAnalyzers": {
         "type": "Direct",
         "requested": "[5.6.0, )",

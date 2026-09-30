@@ -16,4 +16,6 @@ internal static class ProblemCodes
     public const string MethodNotAllowed = "methodNotAllowed";
 
     public const string VersionRequired = "versionRequired";
+
+    public const string IdempotencyKeyMissing = "idempotencyKeyMissing";
 }
