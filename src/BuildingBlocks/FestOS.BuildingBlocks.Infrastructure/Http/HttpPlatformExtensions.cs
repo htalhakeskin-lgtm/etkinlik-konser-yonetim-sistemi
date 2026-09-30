@@ -2,8 +2,10 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text.Json;
 using FestOS.BuildingBlocks.Application.Errors;
+using FestOS.BuildingBlocks.Infrastructure.Http.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -17,15 +19,30 @@ public static class HttpPlatformExtensions
 {
     private const string ApiPrefix = "/api";
 
+    /// <summary>The largest JSON request body (api §5.3).</summary>
+    public const long MaxRequestBodyBytes = 1024 * 1024;
+
+    // Browser security headers of the front end's pages (security §8); HSTS is set by Caddy.
+    private const string ContentSecurityPolicy =
+        "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; "
+        + "font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; "
+        + "frame-ancestors 'none'";
+
+    private const string PermissionsPolicy = "camera=(self), microphone=(), geolocation=(), payment=(), usb=()";
+
     /// <summary>The server's version, sent in <c>X-App-Version</c> so an old open tab notices a new release (api §12).</summary>
     public static string AppVersion { get; } = ReadAppVersion();
 
-    /// <summary>Registers the exception handler and the Problem Details writer.</summary>
+    /// <summary>Registers the exception handler, the Problem Details writer, the JSON rules and the body limit.</summary>
     public static IHostApplicationBuilder AddHttpPlatform(this IHostApplicationBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
         builder.Services.AddProblemDetails(options => options.CustomizeProblemDetails = Customize);
         builder.Services.AddExceptionHandler<ProblemDetailsExceptionHandler>();
+        builder.Services.ConfigureHttpJsonOptions(options => ApiJson.Apply(options.SerializerOptions));
+        builder.Services.Configure<KestrelServerOptions>(options =>
+            options.Limits.MaxRequestBodySize = MaxRequestBodyBytes
+        );
         return builder;
     }
 
@@ -36,25 +53,36 @@ public static class HttpPlatformExtensions
     public static WebApplication UseHttpPlatform(this WebApplication app)
     {
         ArgumentNullException.ThrowIfNull(app);
-        app.Use(AddApiHeadersAsync);
+        app.Use(AddResponseHeadersAsync);
         app.UseExceptionHandler();
         app.UseStatusCodePages();
         return app;
     }
 
-    // Every API response: the server's version, never cached, never sniffed (api §11, §12).
-    private static Task AddApiHeadersAsync(HttpContext context, RequestDelegate next)
+    // API responses: the server's version, never cached, never sniffed (api §11, §12). Everything
+    // else is the front end, which gets the browser security headers (security §8).
+    private static Task AddResponseHeadersAsync(HttpContext context, RequestDelegate next)
     {
-        if (context.Request.Path.StartsWithSegments(ApiPrefix, StringComparison.OrdinalIgnoreCase))
+        bool isApi = context.Request.Path.StartsWithSegments(ApiPrefix, StringComparison.OrdinalIgnoreCase);
+        context.Response.OnStarting(() =>
         {
-            context.Response.OnStarting(() =>
+            IHeaderDictionary headers = context.Response.Headers;
+            headers.XContentTypeOptions = "nosniff";
+            if (isApi)
             {
-                context.Response.Headers["X-App-Version"] = AppVersion;
-                context.Response.Headers.CacheControl = "no-store";
-                context.Response.Headers.XContentTypeOptions = "nosniff";
-                return Task.CompletedTask;
-            });
-        }
+                headers["X-App-Version"] = AppVersion;
+                headers.CacheControl = "no-store";
+            }
+            else
+            {
+                headers.ContentSecurityPolicy = ContentSecurityPolicy;
+                headers["Permissions-Policy"] = PermissionsPolicy;
+                headers["Referrer-Policy"] = "no-referrer";
+                headers["Cross-Origin-Opener-Policy"] = "same-origin";
+            }
+
+            return Task.CompletedTask;
+        });
 
         return next(context);
     }

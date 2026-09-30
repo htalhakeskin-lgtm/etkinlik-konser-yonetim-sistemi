@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.16 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.17 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -234,6 +234,12 @@ Kararlar [ADR-0010](../adr/0010-messaging-infrastructure.md)'da, tablolar [datab
 - FluentValidation kodlarının karşılığı ve parametre adları [api §8.2](../standards/api.md#82-doğrulama-hataları)'dedir. Tabloda olmayan yerleşik kurallar `invalid`, projenin kendi kodları (ör. `unsupportedSort`) olduğu gibi döner; gönderilen değer ya da uzunluğu parametrelere girmez.
 - `/api` yanıtlarına `X-App-Version` (MinVer'in derleme sürümü, derleme bilgisi olmadan), `Cache-Control: no-store` ve `X-Content-Type-Options: nosniff` eklenir.
 
+**JSON** (8b): kurallar `ApiJson.Apply`'dadır ve HTTP hattının JSON ayarlarına uygulanır; SignalR mesajları ve OpenAPI belgesi de aynı kuralları kullanır.
+- Aynı alanın iki kez gelmesi, bilinmeyen alan, büyük / küçük harf farklı alan adı, boş olamayan alana `null`, eksik zorunlu alan, metin olarak gelen sayı reddedilir (`400`, `malformedRequest`); `null` değerli alanlar yanıtta yazılır.
+- Değer biçimleri: enum camelCase metin (sayı kabul edilmez), `decimal` metin (`"12.500"`), `TimeSpan` tam dakika, `Currency` ISO kodu (tutar `{ "amount": "1250.00", "currency": "TRY" }`), tip güvenli kimlik UUID metni (tek bir dönüştürücü fabrikasıyla).
+- Gelen her metin kırpılır ve NFC'ye getirilir; `[Sensitive]` (Application) işaretli alanlar olduğu gibi kalır.
+- İstek gövdesi en fazla 1 MB'tır (Kestrel sınırı).
+
 ### 9.2 ETag ve `If-Match`
 
 - Toplu kök döndüren uç noktalar `ETag: "{version}"` başlığını ekler (uç nokta sonucunun bir yardımcısıyla).
@@ -258,7 +264,7 @@ Anahtar denetimi `If-Match`'ten önce yapılır; filtre sırası bunu garanti ed
 ### 9.4 CSRF, başlıklar, sürüm
 
 - **CSRF** ([api §11](../standards/api.md#11-güvenlik-kuralları)): antiforgery belirteci değiştiren isteklerde `X-XSRF-TOKEN` başlığından ara katmanda doğrulanır; `Sec-Fetch-Site: cross-site` bildiren değiştiren istekler reddedilir. Belirteç çerezini veren uç nokta (`GET /api/v1/antiforgery`) 1.1'de, `/api/v1/me` ise 1.2'de yazılır.
-- **Güvenlik başlıkları** ön yüz yanıtlarına [security §8](../standards/security.md#8-tarayıcı-güvenlik-başlıkları)'deki gibi, `/api` yanıtlarına `Cache-Control: no-store` ve `nosniff` eklenir. `style-src 'unsafe-inline'`'ın Base UI ile gerekip gerekmediği 1.1'de denenir.
+- **Güvenlik başlıkları** ön yüz yanıtlarına (`/api` dışındaki her yanıt) [security §8](../standards/security.md#8-tarayıcı-güvenlik-başlıkları)'deki gibi, `/api` yanıtlarına `Cache-Control: no-store` ve `nosniff` eklenir (8a, 8b). Ön yüz geliştirmede Vite'tan sunulduğu için `style-src 'unsafe-inline'`'ın Base UI ile gerekip gerekmediği, Host derlenmiş ön yüzü sunmaya başladığında (uçtan uca testler yayın kopyası yığınla çalışınca) denenir.
 - **`X-App-Version`:** Her API yanıtında, MinVer'in derleme sürümüyle.
 
 ## 10. OpenAPI ve API istemcisi
@@ -382,3 +388,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.14 | §7 sıra ve ölçümlerin uygulama ayrıntıları (6c). |
 | 2026-09-30 | v1.15 | §8 uygulamaya göre yeniden yazıldı: temel sınıf yerine `IScheduledJob` ve tek çalıştırıcı, havuz dışı kilit bağlantısı, ölçüm, outbox / inbox temizliği (7. PR). |
 | 2026-09-30 | v1.16 | §9.1 hata yanıtlarının uygulama ayrıntıları; 8. PR ikiye bölündü (8a hata yanıtları, 8b JSON ve ön yüz başlıkları). |
+| 2026-09-30 | v1.17 | §9.1 JSON ve §9.4 güvenlik başlıklarının uygulama ayrıntıları (8b); `unsafe-inline` denemesi Host'un ön yüzü sunmasına kaydı. |
