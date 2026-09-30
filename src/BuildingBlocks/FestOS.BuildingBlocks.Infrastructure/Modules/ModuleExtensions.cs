@@ -1,3 +1,4 @@
+using FestOS.BuildingBlocks.Application.Concurrency;
 using FestOS.BuildingBlocks.Application.Messaging;
 using FestOS.BuildingBlocks.Infrastructure.Jobs;
 using FestOS.BuildingBlocks.Infrastructure.Messaging;
@@ -41,6 +42,7 @@ public static class ModuleExtensions
         // Innermost first: the unit of work, then validation and logging around it (building-blocks §4).
         builder.Services.TryDecorate(typeof(ICommandHandler<,>), typeof(UnitOfWorkCommandDecorator<,>));
         builder.Services.DecorateHandlers();
+        builder.Services.TryAddScoped<ExpectedVersion>();
 
         // Every integration event listener runs in its module's unit of work with the inbox (AT-10).
         builder.Services.TryDecorate(typeof(IIntegrationEventHandler<>), typeof(InboxIntegrationEventDecorator<>));

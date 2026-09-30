@@ -14,4 +14,6 @@ internal static class ProblemCodes
     public const string Forbidden = "forbidden";
 
     public const string MethodNotAllowed = "methodNotAllowed";
+
+    public const string VersionRequired = "versionRequired";
 }

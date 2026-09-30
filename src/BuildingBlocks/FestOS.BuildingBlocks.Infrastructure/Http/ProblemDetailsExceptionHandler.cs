@@ -34,6 +34,13 @@ internal sealed partial class ProblemDetailsExceptionHandler(
                 exception.Message,
                 errors: ValidationProblemErrors.From(validation.Errors)
             ),
+            RequestHeaderException header => Problem(
+                header.StatusCode,
+                header.Type,
+                header.Title,
+                header.Code,
+                header.Message
+            ),
             BadHttpRequestException badRequest => Problem(
                 badRequest.StatusCode,
                 "malformed-request",

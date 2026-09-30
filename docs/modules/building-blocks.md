@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.17 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.18 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -246,6 +246,11 @@ Kararlar [ADR-0010](../adr/0010-messaging-infrastructure.md)'da, tablolar [datab
 - `IfMatchFilter`, toplu kök değiştiren uç noktalarda başlık yoksa `428` (`versionRequired`) döner; varsa sürümü komutun kapsamına koyar. İşleyici, toplu kökü yükledikten sonra sürümü karşılaştırır; farklıysa `ConcurrencyConflictException` → `412` ([api §9](../standards/api.md#9-eşzamanlı-düzenleme)).
 - Uç nokta metadatası (`RequiresVersion()`) OpenAPI'de zorunlu `If-Match` başlığını da üretir (AT-15).
 
+**Uygulama ayrıntıları** (9a):
+- Sürüm, kapsamlı `ExpectedVersion` servisindedir (Application). İşleyici onu kurucudan alır ve toplu kökü yükler yüklemez `EnsureMatches(kök)` çağırır. İstekten gelmeyen işlerde (zamanlanmış iş, olay dinleyicisi) beklenen sürüm yoktur; karşılaştırma yapılmaz, eşzamanlı kaydı yine veritabanındaki sürüm kontrolü yakalar.
+- `If-Match` yalnızca sürümü taşıyan tek bir güçlü etiket olabilir (`"7"`). `*`, zayıf etiket (`W/"7"`) ve liste kontrolü atlatabileceği için `400` (`malformedRequest`) alır.
+- `ETag` yardımcısı `TypedResults.Ok(dto).WithVersion(kök.Version)` biçimindedir; iç sonucun OpenAPI metadatası korunur.
+
 ### 9.3 Tekrar güvenliği
 
 Akış [api §10](../standards/api.md#10-tekrar-güvenliği)'dadır. Fiziksel uygulama:
@@ -307,7 +312,7 @@ CI'a `backend-integration` işi eklenir (Testcontainers, [ci §4](../standards/c
 
 ## 14. PR planı
 
-Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir. 2. ve 3. PR'lar, 400 satır sınırı için bölündü.
+Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir. 2., 3., 4., 5., 6., 8. ve 9. PR'lar, 400 satır sınırı için bölündü.
 
 | # | PR | Kapsam |
 |---|---|---|
@@ -330,7 +335,8 @@ Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir
 | 7 | Zamanlanmış işler ve kilitler | `IScheduledJob` ve çalıştırıcı, danışma kilitleri, outbox / inbox temizliği; sahte zamanla testler |
 | 8a | Hata yanıtları ve API başlıkları | `IExceptionHandler`, doğrulama eşlemesi, gövdesiz hatalar, `X-App-Version`, `/api` başlıkları |
 | 8b | JSON ve ön yüz başlıkları | JSON ayarları, metin kırpma, ön yüz güvenlik başlıkları |
-| 9 | ETag ve tekrar güvenliği | `IfMatchFilter`, `IdempotencyFilter`, `idempotency_keys`; eşzamanlılık testleri |
+| 9a | ETag ve `If-Match` | `ExpectedVersion`, `IfMatchFilter`, `RequiresVersion()`, `WithVersion()`; sürüm testleri |
+| 9b | Tekrar güvenliği | `IdempotencyFilter`, `idempotency_keys`, temizlik işi; eşzamanlılık testleri |
 | 10 | CSRF | Antiforgery ara katmanı, `Sec-Fetch-Site`, belirteç uç noktası |
 | 11 | OpenAPI ve Orval | Dönüştürücüler, dosyaya üretim, Orval, sözleşme testi, CI güncellik denetimleri; AT-14, AT-15 |
 | 12 | Anlık bildirimler | Hub, grup yetkileri, `ResourceChangedPublisher` |
@@ -389,3 +395,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.15 | §8 uygulamaya göre yeniden yazıldı: temel sınıf yerine `IScheduledJob` ve tek çalıştırıcı, havuz dışı kilit bağlantısı, ölçüm, outbox / inbox temizliği (7. PR). |
 | 2026-09-30 | v1.16 | §9.1 hata yanıtlarının uygulama ayrıntıları; 8. PR ikiye bölündü (8a hata yanıtları, 8b JSON ve ön yüz başlıkları). |
 | 2026-09-30 | v1.17 | §9.1 JSON ve §9.4 güvenlik başlıklarının uygulama ayrıntıları (8b); `unsafe-inline` denemesi Host'un ön yüzü sunmasına kaydı. |
+| 2026-09-30 | v1.18 | §9.2 `If-Match` uygulama ayrıntıları; 9. PR ikiye bölündü (9a ETag ve `If-Match`, 9b tekrar güvenliği). |

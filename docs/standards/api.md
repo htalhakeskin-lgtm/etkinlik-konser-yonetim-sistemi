@@ -1,6 +1,6 @@
 # API Standardı
 
-> **Durum:** v1.6 · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.7 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 15](#15-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -241,6 +241,7 @@ Hata eşlemesi tek bir hata işleyicidedir: kodu `BuildingBlocks.Infrastructure`
 | `BusinessRuleViolationException` (yetki türündeki kural) | 403 | Kural numarası |
 | `NotFoundException` | 404 | `notFound` |
 | Sürüm çakışması | 412 | `concurrencyConflict` |
+| `If-Match` eksik ([§9](#9-eşzamanlı-düzenleme)) | 428 | `versionRequired` |
 | Beklenmeyen her şey | 500 | `internalError`; `detail` genel bir metindir, yığın izi (stack trace) asla dönmez |
 
 ## 9. Eşzamanlı düzenleme
@@ -257,6 +258,7 @@ BR-SYS-011 (sessiz ezme yok) HTTP üzerinde standart koşullu isteklerle uygulan
 
 - Sürüm, [database §11.1](database.md#111-sürüm-numarasıyla-iyimser-kilit)'deki toplu kök sürümüdür. ETag güçlü bir doğrulayıcıdır ve yalnızca bu sayıdan oluşur.
 - Oluşturma isteklerinde `If-Match` yoktur.
+- `If-Match` tek bir sürüm taşır. `*` ("hangi sürüm olursa"), zayıf etiket (`W/"7"`) ve birden çok etiket kabul edilmez (`400`, `malformedRequest`), çünkü hepsi sürüm kontrolünü atlatmanın yoludur.
 - **Neden başlık, gövde alanı değil:** `If-Match` ve `412` HTTP'nin kendi mekanizmasıdır; durum geçişi gibi gövdesi boş isteklerde de aynı biçimde çalışır ve aradaki katmanlar bu başlıkları tanır ([kaynak](https://sookocheff.com/post/api/optimistic-locking-in-a-rest-api/)). Sürümün gövdede de dönmesi, ön yüzün yanıt başlığını okumadan sürümü bilmesi içindir.
 - Sürüm gerektiren uç noktalar OpenAPI'de `If-Match` başlığını zorunlu parametre olarak gösterir. Üretilen istemci bu yüzden sürümü unutmaya izin vermez.
 
@@ -398,3 +400,4 @@ Oturum [ADR-0011](../adr/0011-authentication.md)'deki gibi sunucu tarafı oturum
 | 2026-09-30 | v1.4 | Hata işleyici ve CSRF ara katmanının kodu `BuildingBlocks.Infrastructure`'da; Host yalnızca kaydeder ([building-blocks BB-01](../modules/building-blocks.md#16-kararlar)). |
 | 2026-09-30 | v1.5 | Sıralama hatasının doğrulama kodu `unsupportedSort` (§6.2). |
 | 2026-09-30 | v1.6 | §8.2 doğrulama kodlarının tablosu (Faz 1.1). |
+| 2026-09-30 | v1.7 | §8.3'e `428 versionRequired`; §9'da kabul edilen `If-Match` biçimi (Faz 1.1). |
