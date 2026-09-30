@@ -1,12 +1,14 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Text.Json;
+using FestOS.BuildingBlocks.Application.Concurrency;
 using FestOS.BuildingBlocks.Application.Errors;
 using FestOS.BuildingBlocks.Infrastructure.Http.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace FestOS.BuildingBlocks.Infrastructure.Http;
@@ -33,7 +35,10 @@ public static class HttpPlatformExtensions
     /// <summary>The server's version, sent in <c>X-App-Version</c> so an old open tab notices a new release (api §12).</summary>
     public static string AppVersion { get; } = ReadAppVersion();
 
-    /// <summary>Registers the exception handler, the Problem Details writer, the JSON rules and the body limit.</summary>
+    /// <summary>
+    /// Registers the exception handler, the Problem Details writer, the JSON rules, the body limit and the
+    /// request's expected version.
+    /// </summary>
     public static IHostApplicationBuilder AddHttpPlatform(this IHostApplicationBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
@@ -43,6 +48,7 @@ public static class HttpPlatformExtensions
         builder.Services.Configure<KestrelServerOptions>(options =>
             options.Limits.MaxRequestBodySize = MaxRequestBodyBytes
         );
+        builder.Services.TryAddScoped<ExpectedVersion>();
         return builder;
     }
 

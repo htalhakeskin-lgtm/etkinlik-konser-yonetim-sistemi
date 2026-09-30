@@ -1,3 +1,5 @@
+using FestOS.BuildingBlocks.Application.Concurrency;
+using FestOS.BuildingBlocks.Application.Errors;
 using FestOS.BuildingBlocks.Application.Messaging;
 using FestOS.Modules.Sample.Application;
 using FestOS.Modules.Sample.Domain;
@@ -59,10 +61,45 @@ public sealed class UnitOfWorkTests(SampleModuleFixture fixture) : IAsyncLifetim
         stored.Version.ShouldBe(2);
     }
 
-    private async Task<TResult> SendAsync<TCommand, TResult>(TCommand command)
+    [Fact]
+    [Trait("Rule", "BR-SYS-011")]
+    public async Task HandleAsync_BasedOnTheCurrentVersion_SavesTheChange()
+    {
+        SampleItemId id = await SendAsync<CreateSampleItemCommand, SampleItemId>(new("Stage", 10m));
+
+        await SendAsync<UseSampleItemCommand, bool>(new(id), expectedVersion: 1);
+
+        SampleItem stored = await LoadAsync(id);
+        stored.Status.ShouldBe(SampleItemStatus.InUse);
+        stored.Version.ShouldBe(2);
+    }
+
+    [Fact]
+    [Trait("Rule", "BR-SYS-011")]
+    public async Task HandleAsync_BasedOnAnOldVersion_RejectsTheChangeAndSavesNothing()
+    {
+        SampleItemId id = await SendAsync<CreateSampleItemCommand, SampleItemId>(new("Stage", 10m));
+        await SendAsync<AddSamplePartCommand, SampleItemPartId>(new(id, "Leg"));
+
+        await Should.ThrowAsync<ConcurrencyConflictException>(() =>
+            SendAsync<UseSampleItemCommand, bool>(new(id), expectedVersion: 1)
+        );
+
+        SampleItem stored = await LoadAsync(id);
+        stored.Status.ShouldBe(SampleItemStatus.Draft);
+        stored.Version.ShouldBe(2);
+    }
+
+    private async Task<TResult> SendAsync<TCommand, TResult>(TCommand command, int? expectedVersion = null)
         where TCommand : ICommand<TResult>
     {
         await using AsyncServiceScope scope = fixture.Services.CreateAsyncScope();
+        if (expectedVersion is { } version)
+        {
+            // What the If-Match filter does for an HTTP request.
+            scope.ServiceProvider.GetRequiredService<ExpectedVersion>().Set(version);
+        }
+
         return await scope
             .ServiceProvider.GetRequiredService<ICommandHandler<TCommand, TResult>>()
             .HandleAsync(command, Cancellation);
