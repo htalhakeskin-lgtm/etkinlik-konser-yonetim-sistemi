@@ -83,6 +83,40 @@ namespace FestOS.Modules.Sample.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("FestOS.BuildingBlocks.Infrastructure.Idempotency.IdempotencyKey", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<Guid>("Key")
+                        .HasColumnType("uuid")
+                        .HasColumnName("key");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Fingerprint")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character(64)")
+                        .HasColumnName("fingerprint")
+                        .IsFixedLength();
+
+                    b.Property<string>("Result")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("result");
+
+                    b.HasKey("UserId", "Key")
+                        .HasName("pk_idempotency_keys");
+
+                    b.HasIndex("CreatedAt")
+                        .HasDatabaseName("ix_idempotency_keys_created_at");
+
+                    b.ToTable("idempotency_keys", "sample");
+                });
+
             modelBuilder.Entity("FestOS.BuildingBlocks.Infrastructure.Messaging.InboxMessage", b =>
                 {
                     b.Property<Guid>("MessageId")

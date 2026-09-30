@@ -1,6 +1,6 @@
 # API Standardı
 
-> **Durum:** v1.7 · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.8 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 15](#15-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -242,6 +242,8 @@ Hata eşlemesi tek bir hata işleyicidedir: kodu `BuildingBlocks.Infrastructure`
 | `NotFoundException` | 404 | `notFound` |
 | Sürüm çakışması | 412 | `concurrencyConflict` |
 | `If-Match` eksik ([§9](#9-eşzamanlı-düzenleme)) | 428 | `versionRequired` |
+| Tekrar güvenliği anahtarı başka bir istek için kullanılmış ([§10](#10-tekrar-güvenliği)) | 422 | `idempotencyKeyReused` |
+| Aynı anahtarla ilk istek hâlâ işleniyor | 409 | `idempotencyKeyInProgress` |
 | Beklenmeyen her şey | 500 | `internalError`; `detail` genel bir metindir, yığın izi (stack trace) asla dönmez |
 
 ## 9. Eşzamanlı düzenleme
@@ -271,13 +273,13 @@ Depo çalışanı zayıf bağlantıda okuttuğunda istek sunucuya ulaşıp işle
 | Kapsam | **Tüm değiştiren istekler** (`POST`, `PUT`, `DELETE`) `Idempotency-Key` başlığı taşır. |
 | Anahtarı kim üretir | Ön yüzün istek sarmalayıcısı, her kullanıcı işlemi için otomatik (`crypto.randomUUID()`). Aynı işlemin yeniden denemeleri aynı anahtarı kullanır. Geliştirici elle bir şey yapmaz. |
 | Anahtar yoksa | `400`, `code: idempotencyKeyMissing` |
-| Aynı anahtar, aynı içerik, işlem tamamlanmış | İlk yanıt aynen döner; `Idempotency-Replayed: true` başlığıyla |
+| Aynı anahtar, aynı içerik, işlem tamamlanmış | İşlem ikinci kez yapılmaz; ilk isteğin sonucuyla aynı yanıt döner, `Idempotency-Replayed: true` başlığıyla |
 | Aynı anahtar, farklı içerik | `422`, `code: idempotencyKeyReused` |
 | Aynı anahtarla ilk istek hâlâ işleniyor | İkinci istek ilkinin bitmesini bekler ve onun yanıtını alır. Bekleme kilit zaman aşımını geçerse `409`, `code: idempotencyKeyInProgress` |
 | Saklama süresi | 24 saat. Kapsam kullanıcı + anahtardır. |
 
 **Nasıl çalışır:**
-- Anahtar, modülün şemasındaki `idempotency_keys` tablosuna, komutun **kendi işlem biriminin ilk adımı** olarak yazılır. Yanıt da aynı satıra, aynı işlemde kaydedilir. Böylece işlem ya sonucuyla birlikte kalıcı olur ya da hiç olmaz.
+- Anahtar, modülün şemasındaki `idempotency_keys` tablosuna, komutun **kendi işlem biriminin ilk adımı** olarak yazılır. Komutun sonucu da aynı satıra, aynı işlemde kaydedilir; tekrarında yanıt bu sonuçtan kurulur. Böylece işlem ya sonucuyla birlikte kalıcı olur ya da hiç olmaz.
 - Aynı anahtarla eşzamanlı gelen ikinci istek, benzersizlik kısıtında ilkinin bitmesini bekler. İlki tamamlanınca saklanan yanıtı döndürür; ilki başarısız olduysa kendisi çalışır.
 - İş kuralı hatasıyla biten istek geri alındığı için anahtar saklanmaz; yeniden deneme yeniden çalışır.
 - Karşılaştırma için isteğin parmak izi (yöntem, adres ve gövdenin özeti) saklanır.
@@ -401,3 +403,4 @@ Oturum [ADR-0011](../adr/0011-authentication.md)'deki gibi sunucu tarafı oturum
 | 2026-09-30 | v1.5 | Sıralama hatasının doğrulama kodu `unsupportedSort` (§6.2). |
 | 2026-09-30 | v1.6 | §8.2 doğrulama kodlarının tablosu (Faz 1.1). |
 | 2026-09-30 | v1.7 | §8.3'e `428 versionRequired`; §9'da kabul edilen `If-Match` biçimi (Faz 1.1). |
+| 2026-09-30 | v1.8 | §8.3'e tekrar güvenliği kodları; §10'da saklanan şey komutun sonucudur (Faz 1.1). |

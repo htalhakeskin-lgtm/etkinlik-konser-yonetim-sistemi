@@ -48,6 +48,8 @@ public sealed class HttpPlatformTests : IAsyncLifetime
         );
         _app.MapGet("/api/v1/missing", string () => throw new NotFoundException("Sample", Guid.Empty));
         _app.MapGet("/api/v1/stale", string () => throw new ConcurrencyConflictException("Sample changed."));
+        _app.MapGet("/api/v1/reused-key", string () => throw new IdempotencyKeyReusedException("Other request."));
+        _app.MapGet("/api/v1/key-in-progress", string () => throw new IdempotencyKeyInProgressException("Running."));
         _app.MapGet(
             "/api/v1/invalid",
             string () =>
@@ -98,6 +100,8 @@ public sealed class HttpPlatformTests : IAsyncLifetime
     [InlineData("/api/v1/authorization-rule", HttpStatusCode.Forbidden, "SAMPLE-002")]
     [InlineData("/api/v1/missing", HttpStatusCode.NotFound, "notFound")]
     [InlineData("/api/v1/stale", HttpStatusCode.PreconditionFailed, "concurrencyConflict")]
+    [InlineData("/api/v1/reused-key", HttpStatusCode.UnprocessableEntity, "idempotencyKeyReused")]
+    [InlineData("/api/v1/key-in-progress", HttpStatusCode.Conflict, "idempotencyKeyInProgress")]
     [InlineData("/api/v1/unknown-address", HttpStatusCode.NotFound, "notFound")]
     public async Task ExpectedOutcomes_BecomeTheirStatusAndCode(string path, HttpStatusCode status, string code)
     {

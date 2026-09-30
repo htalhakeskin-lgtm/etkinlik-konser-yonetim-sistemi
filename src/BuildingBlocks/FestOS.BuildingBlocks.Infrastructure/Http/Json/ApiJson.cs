@@ -11,6 +11,9 @@ namespace FestOS.BuildingBlocks.Infrastructure.Http.Json;
 /// </summary>
 public static class ApiJson
 {
+    /// <summary>The rules on .NET's web defaults, for JSON written outside the HTTP pipeline, e.g. stored command results.</summary>
+    public static JsonSerializerOptions Options { get; } = CreateOptions();
+
     /// <summary>Applies the rules to the options of the HTTP pipeline.</summary>
     public static void Apply(JsonSerializerOptions options)
     {
@@ -35,6 +38,14 @@ public static class ApiJson
         options.TypeInfoResolver = (options.TypeInfoResolver ?? new DefaultJsonTypeInfoResolver()).WithAddedModifier(
             NormalizeIncomingText
         );
+    }
+
+    private static JsonSerializerOptions CreateOptions()
+    {
+        var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+        Apply(options);
+        options.MakeReadOnly(populateMissingResolver: true);
+        return options;
     }
 
     // Every text property is trimmed and normalized on the way in, except [Sensitive] ones.
