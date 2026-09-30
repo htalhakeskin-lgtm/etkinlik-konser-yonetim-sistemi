@@ -30,6 +30,9 @@ builder.AddModules(Modules());
 WebApplication app = builder.Build();
 app.UseHttpPlatform();
 
+// Authentication (1.2) goes before this line: the antiforgery token is bound to the signed-in user.
+app.UseCsrfProtection();
+
 // Development prepares the database on startup; other environments run "migrate" as a separate
 // release step (docs/standards/database.md §16.2).
 if (
@@ -41,6 +44,7 @@ if (
 }
 
 app.MapDefaultEndpoints();
+app.MapAntiforgeryToken();
 app.MapModules();
 
 if (app.Environment.IsDevelopment())

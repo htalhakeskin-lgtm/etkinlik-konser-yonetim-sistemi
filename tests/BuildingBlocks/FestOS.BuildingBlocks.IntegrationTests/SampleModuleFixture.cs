@@ -77,7 +77,7 @@ public sealed class SampleModuleFixture : IAsyncLifetime
     }
 
     /// <summary>
-    /// Starts a web application with the HTTP platform and the modules' endpoints on the same database,
+    /// Starts a web application wired like the Host, with the modules' endpoints on the same database,
     /// served in memory, e.g. to test request headers end to end; the caller disposes it.
     /// </summary>
     public async Task<WebApplication> StartWebApplicationAsync()
@@ -93,10 +93,22 @@ public sealed class SampleModuleFixture : IAsyncLifetime
 
         WebApplication app = builder.Build();
         app.UseHttpPlatform();
+        app.UseCsrfProtection();
+        app.MapAntiforgeryToken();
         app.MapModules();
         await app.StartAsync(TestContext.Current.CancellationToken);
         return app;
     }
+
+    /// <summary>
+    /// A client for the web application that sends requests like the front end: over HTTPS, with the
+    /// cookies, the antiforgery token and an idempotency key (testing §6).
+    /// </summary>
+    public static HttpClient CreateClient(WebApplication app) =>
+        new(new BrowserLikeHandler { InnerHandler = app.GetTestServer().CreateHandler() })
+        {
+            BaseAddress = new Uri("https://localhost/"),
+        };
 
     /// <summary>Empties the sample module's tables and the change history, and restores the default user and probe.</summary>
     public async Task ResetAsync()

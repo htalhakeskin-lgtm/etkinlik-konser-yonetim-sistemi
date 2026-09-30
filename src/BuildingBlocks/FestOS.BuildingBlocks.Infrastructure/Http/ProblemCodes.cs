@@ -18,4 +18,6 @@ internal static class ProblemCodes
     public const string VersionRequired = "versionRequired";
 
     public const string IdempotencyKeyMissing = "idempotencyKeyMissing";
+
+    public const string CsrfRejected = "csrfRejected";
 }
