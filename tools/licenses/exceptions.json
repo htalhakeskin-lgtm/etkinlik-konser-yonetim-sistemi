@@ -63,6 +63,13 @@
       "versions": "*",
       "license": "CC0-1.0",
       "reason": "Public-domain data used by linting and CSS tooling."
+    },
+    {
+      "ecosystem": "npm",
+      "packages": ["fetch-cookie"],
+      "versions": "2.x",
+      "license": "Unlicense",
+      "reason": "A public domain dedication (OSI-approved), as free as CC0. Pulled in by @microsoft/signalr, which loads it only when the client runs in Node; the browser build does not use it."
     }
   ]
 }

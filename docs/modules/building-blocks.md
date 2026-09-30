@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.25 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.26 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -344,6 +344,12 @@ Anahtar denetimi `If-Match`'ten önce yapılır; filtre sırası bunu garanti ed
 - `ApiError` (`lib/api-error.ts`) Problem Details'ten `status`, `code`, `params`, `errors` ve `traceId`'yi okur. Yanıt alınamayan istekte `status` 0, `code` `network`'tür.
 - `errorMessage` kodun `errors:` çevirisini, `fieldErrors` doğrulama hatalarının `validation:` çevirisini ve form yolunu verir (`lib/api-error-messages.ts`). Çevirisi olmayan kod genel metne düşer. `errors` ve `validation` ad alanları eklendi.
 
+**Uygulama ayrıntıları** (13b):
+- `VersionBanner` kabuğun en üstündedir. Sunucu daha yeni bir sürüm bildirince kapatılamayan `info` şeridi görünür; "Yenile" düğmesi sayfayı ancak kullanıcı isteyince yeniler.
+- `RealtimeClient` (`lib/realtime.ts`, `@microsoft/signalr`) sayfanın tek bağlantısıdır ve kendiliğinden yeniden bağlanır. Ekranlar gruplara `useRealtimeGroup(grup)` ile katılır. Aynı grubu açan ekranlar sayılır; grup, onu gösteren son ekran kapanınca bırakılır. Sunucu yeniden bağlanan bağlantının gruplarını unuttuğu için istemci gruplara yeniden katılır ve etkin tüm sorguları yeniden okur (ui §11.4).
+- `resourceChanged` gelince adresi `/api/v1/{kaynak}` ile başlayan sorgular geçersiz kılınır; Orval'ın sorgu anahtarı isteğin adresiyle başlar. Sayfa kaydın bildirilen sürümünü zaten gösteriyorsa hiçbir şey yeniden okunmaz.
+- Bağlantı durumu `useConnectionState()` ile okunur (`ConnectionIndicator`, 14. PR). İstemciyi oturum açmış kabuk sağlar ve bağlantıyı başlatır (1.2); o zamana kadar sayfa bağlantı açmaz.
+
 ## 13. Testler
 
 | Katman | Ne | Nerede |
@@ -455,3 +461,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.23 | §10 Orval istemcisi, sözleşme testi ve AT-14 / AT-15'in uygulama ayrıntıları (11b). |
 | 2026-09-30 | v1.24 | §11 anlık bildirimlerin uygulama ayrıntıları (12. PR); ölçüm adı observability'deki gibi `festos.realtime.connections`. |
 | 2026-09-30 | v1.25 | §12 istek sarmalayıcısı ve hataların uygulama ayrıntıları (13a); 13. PR ikiye bölündü. |
+| 2026-09-30 | v1.26 | §12 sürüm şeridi ve anlık bildirim istemcisinin uygulama ayrıntıları (13b). |
