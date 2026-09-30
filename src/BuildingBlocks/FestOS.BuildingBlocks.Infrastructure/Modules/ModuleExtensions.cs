@@ -1,4 +1,5 @@
 using FestOS.BuildingBlocks.Application.Messaging;
+using FestOS.BuildingBlocks.Infrastructure.Jobs;
 using FestOS.BuildingBlocks.Infrastructure.Messaging;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Builder;
@@ -54,6 +55,20 @@ public static class ModuleExtensions
             .ValidateOnStart();
         builder.Services.TryAddSingleton<IValidateOptions<MessagingOptions>, MessagingOptionsValidator>();
         builder.Services.AddHostedService<OutboxDispatcher>();
+
+        // Scheduled jobs (ADR-0013); every module's outbox and inbox are cleaned up nightly.
+        builder.Services.TryAddSingleton(TimeProvider.System);
+        builder.Services.TryAddSingleton<ScheduledJobRunner>();
+        builder.Services.AddHostedService(services => services.GetRequiredService<ScheduledJobRunner>());
+        foreach (IModuleDefinition module in modules)
+        {
+            string moduleName = module.Name;
+            builder.Services.AddSingleton<IScheduledJob>(services => new MessagingCleanupJob(
+                moduleName,
+                services.GetRequiredService<IOptions<MessagingOptions>>(),
+                services.GetRequiredService<TimeProvider>()
+            ));
+        }
         builder.Services.AddSingleton(new ModuleCatalog(modules));
         builder.Services.AddSingleton<DatabaseBootstrapper>();
         builder.Services.AddSingleton<DatabaseMigrator>();
