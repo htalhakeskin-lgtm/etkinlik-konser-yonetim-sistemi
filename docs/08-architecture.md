@@ -1,6 +1,6 @@
 # 08 — Mimari ve Klasör Yapısı
 
-> **Durum:** v1.16 · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.17 · **Son güncelleme:** 2026-10-01
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -381,7 +381,7 @@ sequenceDiagram
 | `global.json` | .NET 10 SDK sürümü; yalnızca yama güncellemelerine izin verilir |
 | `Directory.Build.props` | Hedef çatı `net10.0`; null güvenliği açık; uyarılar sürekli entegrasyonda ve Release'te hata sayılır; .NET analizörleri güncel önerilen seviyede; kültür kuralları hata seviyesinde (tam liste [code-style §4](standards/code-style.md#4-c)) |
 | `Directory.Packages.props` | Tüm paket sürümleri tek yerde (merkezi paket yönetimi) |
-| `BannedSymbols.txt` | Yasak API'ler (BannedApiAnalyzers): `DateTime.Now`, `DateTime.UtcNow`, `DateTimeOffset.Now`, `DateTimeOffset.UtcNow` (yerine `TimeProvider`, [ADR-0017](adr/0017-time-and-money-types.md)); `Thread.Sleep`; `Console.WriteLine` |
+| `BannedSymbols.txt` | Yasak API'ler (BannedApiAnalyzers): `DateTime.Now`, `DateTime.UtcNow`, `DateTimeOffset.Now`, `DateTimeOffset.UtcNow` (yerine `TimeProvider`, [ADR-0017](adr/0017-time-and-money-types.md)); `Thread.Sleep`; `Console.WriteLine`; EF'in ham SQL yöntemleri. Domain ve Application projelerinde ayrıca `BannedSymbols.DomainApplication.txt`: `ExecuteUpdate`, `ExecuteDelete` (tam liste [code-style §4.10](standards/code-style.md#410-yasak-apiler)) |
 | OpenAPI belgesi | Host derlenirken OpenAPI belgesi dosyaya üretilir (`src/web/openapi/festos.json`). Ön yüzün API istemcisi bu dosyadan üretilir; ön yüzü derlemek için API'nin çalışıyor olması gerekmez. Sürekli entegrasyonda üretilen istemcinin güncel olduğu kontrol edilir. |
 
 ## 11. Ön yüz yapısı
@@ -491,3 +491,4 @@ Yasak API kullanımı (`DateTime.UtcNow` gibi) mimari testle değil, derleyici a
 | 2026-09-30 | v1.14 | AT-08: işlem geçmişi tablosu her bağlamda migration dışı olarak eşlenir. |
 | 2026-09-30 | v1.15 | §4: olay temel tipinin alanları (`MessageId`; ilişki kimliği yerine iz bağlamı). |
 | 2026-09-30 | v1.16 | §12.2: AT-14 ve AT-15 repodaki OpenAPI belgelerini inceler; işlem `POST`'unda `If-Match`'i uç nokta testleri denetler (Faz 1.1). |
+| 2026-10-01 | v1.17 | §10: EF ham SQL yasakları ve Domain / Application'a özgü yasak dosyası (Faz 1.1). |
