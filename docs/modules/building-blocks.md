@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.27 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.28 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -355,6 +355,8 @@ Anahtar denetimi `If-Match`'ten önce yapılır; filtre sırası bunu garanti ed
 - `ErrorState`: `errorMessage` metni, "Yeniden dene" ve "Ayrıntılar" altında kopyalanabilen iz numarası (ui §10.3). `role="alert"` taşır.
 - `SkeletonBlock`: gelecek içeriğin boyutunu baştan kaplar, ama 300 ms'den önce görünmez (ui §10.1). Yardımcı teknolojilerden gizlidir; yüklenen bölüm kendisini `aria-busy` ile işaretler. Hareket azaltma tercihine uyar.
 - `PageHeader`: sayfanın tek `h1`'i, sayfa yolu (`nav`, sayfa kendi bağlantılarını verir) ve ana işlemler.
+- `ConnectionIndicator` (14b): SignalR durumu ile tarayıcının çevrimdışı durumunu birleştirir. Bağlantı yoksa hemen `danger`, yeniden bağlanma 2 saniyeyi aşarsa `warning` şeridi gösterir; bir kopmadan sonra bağlantı gelince 4 saniye "Bağlantı yeniden kuruldu." yazar (ui §9.5, §11.4). Oturum açmış kabuk yerleştirir (1.2).
+- `ConfirmDialog` (14b): shadcn'in Base UI tabanlı `alert-dialog`'u üzerindedir. Odak "Vazgeç"te başlar; ana düğme işlemin adıdır ve `destructive` renktedir; kural isterse neden alanı zorunludur (ui §9.4).
 
 ## 13. Testler
 
@@ -470,3 +472,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.25 | §12 istek sarmalayıcısı ve hataların uygulama ayrıntıları (13a); 13. PR ikiye bölündü. |
 | 2026-09-30 | v1.26 | §12 sürüm şeridi ve anlık bildirim istemcisinin uygulama ayrıntıları (13b). |
 | 2026-09-30 | v1.27 | §12 ilk ortak bileşenlerin uygulama ayrıntıları (14a); 14. PR ikiye bölündü. |
+| 2026-10-01 | v1.28 | §12 bağlantı göstergesi ve onay diyaloğunun uygulama ayrıntıları (14b). |
