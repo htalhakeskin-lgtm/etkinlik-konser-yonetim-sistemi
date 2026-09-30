@@ -2,6 +2,7 @@ using System.Reflection;
 using FestOS.BuildingBlocks.Application.Messaging;
 using FestOS.BuildingBlocks.Contracts;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
+using FestOS.BuildingBlocks.Infrastructure.Realtime;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FestOS.BuildingBlocks.Infrastructure.Messaging;
@@ -10,7 +11,8 @@ namespace FestOS.BuildingBlocks.Infrastructure.Messaging;
 /// Delivers events inside the process. Each listener gets its own scope, since listeners of different
 /// modules run in parallel in their own transactions, acting as the system user (database §9).
 /// </summary>
-internal sealed class InProcessEventBus(IServiceScopeFactory scopes) : IEventBus
+internal sealed class InProcessEventBus(IServiceScopeFactory scopes, ResourceChangedPublisher? resourceChanges = null)
+    : IEventBus
 {
     private static readonly MethodInfo DeliverMethod = typeof(InProcessEventBus).GetMethod(
         nameof(DeliverAsync),
@@ -20,6 +22,12 @@ internal sealed class InProcessEventBus(IServiceScopeFactory scopes) : IEventBus
     public async Task PublishAsync(IIntegrationEvent integrationEvent, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(integrationEvent);
+        // Open screens hear of the change first; it is committed already (building-blocks §11).
+        if (resourceChanges is not null)
+        {
+            await resourceChanges.PublishAsync(integrationEvent, cancellationToken);
+        }
+
         Type eventType = integrationEvent.GetType();
         Type handlerType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
 

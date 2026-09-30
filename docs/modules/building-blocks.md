@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.23 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.24 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -59,7 +59,7 @@ Tasarım değişkenleri, temalar, düğme ve durum rozeti Faz 1.0'da tamamlandı
 | | `Jobs/` | `IScheduledJob`, `JobSchedule` (aralıklı ve cron; Cronos), `ScheduledJobRunner` |
 | | `Http/` | Problem Details eşleyicisi, JSON ayarları, `IfMatchFilter`, `IdempotencyFilter`, CSRF ara katmanı, güvenlik başlıkları, `X-App-Version` |
 | | `OpenApi/` | Şema ve işlem dönüştürücüleri |
-| | `Realtime/` | `NotificationsHub`, `ResourceChangedPublisher` |
+| | `Realtime/` | `NotificationsHub`, `IRealtimeGroupPolicy`, `ResourceChange` eşlemeleri, `ResourceChangedPublisher` |
 | `BuildingBlocks.Contracts` | — | `IIntegrationEvent`, `IntegrationEvent` temel kaydı: mesaj kimliği (`MessageId`), oluşma zamanı, sıra anahtarı. Olayın kendi kimliği `EventId` değil `MessageId`'dir, çünkü etkinlikle ilgili olaylar etkinliğin `EventId`'sini taşır. İlişki kurmak için ayrı bir kimlik yerine outbox'taki iz bağlamı (`trace_parent`) kullanılır. |
 
 HTTP, OpenAPI ve SignalR kodu 08'deki tabloda Host'a yazılmıştı; hepsi modüllerin ortak kullandığı altyapı olduğu için `BuildingBlocks.Infrastructure`'a alınır, Host yalnızca bağlar (BB-01).
@@ -316,7 +316,15 @@ Anahtar denetimi `If-Match`'ten önce yapılır; filtre sırası bunu garanti ed
 
 - `NotificationsHub` (`/hubs/notifications`), çerezle kimlik doğrular. İstemci `JoinGroup(name)` ile gruba katılır; her grup türü için bir yetki denetimi modül tarafından kaydedilir (ör. `warehouses:{id}` → kullanıcının o depoya erişimi). Denetimi olmayan grup reddedilir.
 - `ResourceChangedPublisher` olay yolunun bir dinleyicisidir; modüllerin kaydettiği eşlemelerle (olay → kaynak adı, kimlik, sürüm, gruplar) `resourceChanged` mesajını gönderir ([api §13](../standards/api.md#13-anlık-bildirimler)).
-- Bağlantı sayısı `festos.signalr.connections` ölçümüyle yayınlanır.
+- Bağlantı sayısı `festos.realtime.connections` ölçümüyle yayınlanır ([observability §5](../standards/observability.md#5-ölçümler)).
+
+**Uygulama ayrıntıları** (12):
+- `AddRealtime()` SignalR'ı API'nin JSON kurallarıyla kaydeder, `MapRealtime()` hub'ı bağlar; Host yalnızca çağırır.
+- Modül bir grup türü için `IRealtimeGroupPolicy` yazar ve `AddRealtimeGroup<T>()` ile kaydeder. Grup adı `{tür}` ya da `{tür}:{kimlik}` biçimindedir ([naming §8.3](../standards/naming.md#83-anlık-bildirim-signalr)); başka biçim, politikası olmayan tür ve politikanın reddettiği grup `HubException` alır.
+- Modül olayını `AddResourceChange<TOlay>(olay => new ResourceChange(kaynak, kimlik, sürüm, gruplar))` ile eşler.
+- `ResourceChangedPublisher`'ı olay yolu, modül dinleyicilerinden önce çağırır. Modül dinleyicisi olarak kaydedilmez, çünkü her dinleyici kendi modülünün inbox işleminde çalışır; bildirimin ise veritabanı işi yoktur. Değişiklik bu noktada zaten kaydedilmiştir. Gönderilemeyen bildirim loglanır ve teslimi durdurmaz; istemci yeniden bağlanınca her şeyi yeniden okur.
+- `version`, olay taşıyorsa gönderilir; yoksa `null`'dır ve istemci her durumda yeniden okur. Modül içi olaylar sürüm artışından önce işlendiği için, onların dinleyicisinde üretilen olay kaydın yeni sürümünü ancak `Version + 1` olarak bilebilir.
+- Hub, oturum 1.2'de geldiğinde kimlik doğrulaması ister (`MapRealtime().RequireAuthorization()`); grup politikaları kullanıcıyı `Context.User`'dan alır.
 
 ## 12. Ön yüz platformu
 
@@ -436,3 +444,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.21 | §9.4 CSRF uygulama ayrıntıları (10. PR); BB-11 geliştirmede çerezler. |
 | 2026-09-30 | v1.22 | §10 OpenAPI belgesinin uygulama ayrıntıları (11a); 11. PR ikiye bölündü. |
 | 2026-09-30 | v1.23 | §10 Orval istemcisi, sözleşme testi ve AT-14 / AT-15'in uygulama ayrıntıları (11b). |
+| 2026-09-30 | v1.24 | §11 anlık bildirimlerin uygulama ayrıntıları (12. PR); ölçüm adı observability'deki gibi `festos.realtime.connections`. |

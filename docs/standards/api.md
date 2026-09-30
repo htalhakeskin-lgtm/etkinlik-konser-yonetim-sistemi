@@ -1,6 +1,6 @@
 # API Standardı
 
-> **Durum:** v1.11 · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.12 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 15](#15-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -326,7 +326,7 @@ Oturum [ADR-0011](../adr/0011-authentication.md)'deki gibi sunucu tarafı oturum
 ```
 
 - Mesaj **veri taşımaz**, yalnızca neyin değiştiğini söyler. İstemci ilgili sorguları geçersiz kılar ve API'den yeniden okur. Böylece yetki kontrolü her zaman API'de yapılır; bildirim, kullanıcının görmemesi gereken veriyi sızdıramaz.
-- `version` alanı, istemcinin elindeki kayıt zaten o sürümdeyse (ör. değişikliği kendisi yaptıysa) gereksiz yeniden okumayı atlamasını sağlar.
+- `version` alanı, istemcinin elindeki kayıt zaten o sürümdeyse (ör. değişikliği kendisi yaptıysa) gereksiz yeniden okumayı atlamasını sağlar. Olay sürümü taşımıyorsa alan `null`'dır; istemci o zaman her durumda yeniden okur.
 - Bağlantı koparsa ekran uyarı gösterir; bağlantı geri gelince etkin tüm sorgular yeniden okunur (BR-SYS-012).
 
 ## 14. OpenAPI, istemci üretimi ve uç nokta yazımı
@@ -410,3 +410,4 @@ Oturum [ADR-0011](../adr/0011-authentication.md)'deki gibi sunucu tarafı oturum
 | 2026-09-30 | v1.9 | §8.3'e `idempotencyKeyMissing`; §10'da anahtarın biçimi (Faz 1.1). |
 | 2026-09-30 | v1.10 | §8.3'e `csrfRejected`; §11'de belirteç çerezleri ve uç noktası (Faz 1.1). |
 | 2026-09-30 | v1.11 | §14.1: hata yanıtlarının `default` yanıt olarak yazılışı, açıklamaların kaynağı (Faz 1.1). |
+| 2026-09-30 | v1.12 | §13: `version` alanı `null` olabilir (Faz 1.1). |

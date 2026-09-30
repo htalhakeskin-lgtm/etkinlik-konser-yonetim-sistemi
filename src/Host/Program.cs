@@ -3,6 +3,7 @@ using FestOS.BuildingBlocks.Infrastructure.Http;
 using FestOS.BuildingBlocks.Infrastructure.Modules;
 using FestOS.BuildingBlocks.Infrastructure.OpenApi;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
+using FestOS.BuildingBlocks.Infrastructure.Realtime;
 using FestOS.Modules.Audit.Infrastructure;
 using FestOS.ServiceDefaults;
 
@@ -26,6 +27,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 builder.AddHttpPlatform();
 builder.AddApiDocument();
+builder.AddRealtime();
 builder.AddModules(Modules());
 
 WebApplication app = builder.Build();
@@ -46,6 +48,7 @@ if (
 
 app.MapDefaultEndpoints();
 app.MapAntiforgeryToken();
+app.MapRealtime();
 app.MapModules();
 
 if (app.Environment.IsDevelopment())
