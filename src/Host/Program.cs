@@ -1,6 +1,7 @@
 using System.Globalization;
 using FestOS.BuildingBlocks.Infrastructure.Modules;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
+using FestOS.Modules.Audit.Infrastructure;
 using FestOS.ServiceDefaults;
 
 // Server code runs with the invariant culture; text for people is formatted with tr-TR explicitly
@@ -47,4 +48,4 @@ if (app.Environment.IsDevelopment())
 await app.RunAsync();
 
 // The only list of modules; a new module is added here (08 §5).
-static IModuleDefinition[] Modules() => [];
+static IModuleDefinition[] Modules() => [new AuditModuleDefinition()];

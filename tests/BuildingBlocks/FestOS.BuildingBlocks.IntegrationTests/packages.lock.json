@@ -359,6 +359,12 @@
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )"
         }
       },
+      "festos.modules.audit.infrastructure": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Infrastructure": "[1.0.0, )"
+        }
+      },
       "festos.modules.sample": {
         "type": "Project",
         "dependencies": {

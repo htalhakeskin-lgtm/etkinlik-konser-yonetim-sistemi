@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.8 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.9 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -52,7 +52,7 @@ Tasarım değişkenleri, temalar, düğme ve durum rozeti Faz 1.0'da tamamlandı
 | | `Paging/` | `PageRequest` + `PageRequestValidator`, `PagedResult<T>`, `CursorRequest` + `CursorRequestValidator`, `CursorResult<T>`, `SortSpec` / `SortField` ve `SortableBy(...)` doğrulama kuralı; liste sorgularının doğrulayıcıları bunları `SetValidator` ile kullanır. Kimliğin son sıralama alanı olarak eklenmesi ve imlecin kodlanması sorguyu kuran altyapı kodundadır. |
 | `BuildingBlocks.Infrastructure` | `Modules/` | `IModuleDefinition`, `AddModules(...)` |
 | | `Persistence/` | `ModuleDbContext` (şema, kurallar, kaydetme adımları), `AddModuleDbContext` / `UseModuleDatabase`, `DatabaseConnections`, `DatabaseBootstrapper`, `DatabaseMigrator`, EF kuralları (§5.3), `UnitOfWorkCommandDecorator` |
-| | `Auditing/` | `AuditEntryWriter`, `[NotAudited]` |
+| | `Auditing/` | `AuditEntry`, `AuditAction`, `AuditEntryWriter` (5b); `[NotAudited]` alan tiplerinde kullanıldığı için `BuildingBlocks.Domain`'dedir (5b) |
 | | `Outbox/` | `OutboxMessage`, `OutboxDispatcher`, `IEventBus` ve süreç içi uygulaması, `InboxIntegrationEventDecorator` |
 | | `Locking/` | `AdvisoryLocks` (işlem düzeyi ve oturum düzeyi) |
 | | `Jobs/` | `ScheduledJob` (aralıklı ve cron; Cronos) |
@@ -156,6 +156,11 @@ Roller ve yetkiler [database §4](../standards/database.md#4-roller-ve-yetkiler)
 - `AuditEntryWriter`, `SaveChanges`'in 4. adımında EF değişiklik izleyicisinden kayıtları üretir: `created`, `updated` (yalnızca değişen alanlar, eski ve yeni değer), `deleted`. Durum alanı değişen kayıtlar `statusChanged` olarak yazılır.
 - Kayıtlar modülün kendi bağlantısıyla, aynı işlemde eklenir; modül rolünün bu tabloda yalnızca `INSERT` yetkisi vardır (V-02).
 - `[NotAudited]` işaretli alanlar yazılmaz. `trace_id` o anki iz kimliğidir.
+
+**Uygulama ayrıntıları** (5a):
+- `AuditEntry` her modülün bağlamında aynı tabloya eşlenir, böylece kayıtlar değişiklikle aynı `SaveChanges`'te, aynı işlemde eklenir. Eşleme Audit dışındaki bağlamlarda migration dışıdır (`ExcludeFromMigrations`); tabloyu, indeksini ve yetkilerini yalnızca Audit modülünün migration'ı kurar.
+- Modül listesi değişkendir, bu yüzden yetki bir grup rolüne verilir: hazırlık adımı giriş yapamayan `festos_audit_writer` rolünü kurar ve her modül rolünü üye yapar; Audit migration'ı bu gruba yalnızca `INSERT`, `festos_audit`'e yalnızca `SELECT` verir. Güncelleme ve silme yetkisi kimsede yoktur.
+- `action` bir enum'dur (`AuditAction`); ortak kuralla camelCase metin ve `CHECK` kısıtıyla saklanır.
 
 ## 7. Olaylar: outbox, dağıtıcı, olay yolu, inbox
 
@@ -274,7 +279,8 @@ Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir
 | 3e | `migrate` komutu | Hazırlık + tüm modüllerin migration'ları; AppHost'ta rol parolaları ve modül bağlantı dizeleri |
 | 4a | Kaydetme adımları | `SaveChangesPipeline`: adımlar 1–3 ve 6, sürüm artışı, kısıt eşlemesi; `FestOS.BuildingBlocks.IntegrationTests`, Respawn |
 | 4b | İşlem birimi dekoratörü | İşlem ve yeniden deneme stratejisi, modülün bağlamının seçimi (`ModuleNames`), örnek komutlar |
-| 5 | İşlem geçmişi | Audit iskeleti, `audit_entries`, yazıcı, `[NotAudited]` |
+| 5a | İşlem geçmişi tablosu | Audit iskeleti, `audit_entries`, her bağlamda migration dışı eşleme, `festos_audit_writer`; yetki testleri |
+| 5b | İşlem geçmişi yazıcısı | `AuditEntryWriter` (kaydetme adımı 4), `[NotAudited]` |
 | 6 | Outbox ve olay yolu | Tablolar, yazma, dağıtıcı, olay yolu, inbox dekoratörü, sıra ve kısmi hata, ölçümler, temizlik; AT-10 |
 | 7 | Zamanlanmış işler ve kilitler | `ScheduledJob`, danışma kilitleri; sahte zamanla testler |
 | 8 | Hata yanıtları ve JSON | `IExceptionHandler`, doğrulama eşlemesi, JSON ayarları, metin kırpma, `X-App-Version`, güvenlik başlıkları |
@@ -328,3 +334,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.6 | §5.2 bağlantı düzeni: tek temel bağlantı dizesi ve rol parolaları; §5.4 `migrate` komutu (3e). |
 | 2026-09-30 | v1.7 | §4 kaydetme adımlarının uygulama ayrıntıları; 4. PR ikiye bölündü (4a kaydetme adımları, 4b dekoratör). |
 | 2026-09-30 | v1.8 | §4 işlem birimi dekoratörünün uygulama ayrıntıları (4b). |
+| 2026-09-30 | v1.9 | §6 işlem geçmişi tablosunun uygulama ayrıntıları; 5. PR ikiye bölündü (5a tablo, 5b yazıcı). |

@@ -17,6 +17,12 @@ public static partial class DatabaseRoles
     /// <summary>Reads server statistics for the telemetry collector; no table access.</summary>
     public const string Monitor = "festos_monitor";
 
+    /// <summary>
+    /// A group every module role belongs to; it may only insert into the change history (V-02). The
+    /// Audit migration grants to the group, so it need not know the modules.
+    /// </summary>
+    public const string AuditWriter = "festos_audit_writer";
+
     /// <summary>The role a module connects with, e.g. <c>festos_booking</c> for the <c>booking</c> schema.</summary>
     public static string ForModule(string schema)
     {

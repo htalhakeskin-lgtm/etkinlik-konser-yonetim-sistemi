@@ -1,6 +1,7 @@
 using FestOS.BuildingBlocks.Application.Users;
 using FestOS.BuildingBlocks.Infrastructure.Modules;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
+using FestOS.Modules.Audit.Infrastructure;
 using FestOS.Modules.Sample.Infrastructure;
 using FestOS.Testing;
 using Microsoft.Extensions.Configuration;
@@ -39,23 +40,27 @@ public sealed class SampleModuleFixture : IAsyncLifetime
             {
                 [$"ConnectionStrings:{DatabaseConnections.ConnectionStringName}"] = _database.AdminConnectionString,
                 [$"Database:Passwords:{DatabaseRoles.Migrator}"] = Guid.CreateVersion7().ToString("N"),
+                ["Database:Passwords:festos_audit"] = Guid.CreateVersion7().ToString("N"),
                 ["Database:Passwords:festos_sample"] = Guid.CreateVersion7().ToString("N"),
             }
         );
         builder.Services.AddLogging();
         builder.Services.AddSingleton<TimeProvider>(Time);
         builder.Services.AddSingleton<ICurrentUser>(CurrentUser);
-        builder.AddModules(new SampleModuleDefinition());
+        builder.AddModules(new AuditModuleDefinition(), new SampleModuleDefinition());
         _host = builder.Build();
 
         await _host.Services.GetRequiredService<DatabaseMigrator>().RunAsync(TestContext.Current.CancellationToken);
     }
 
-    /// <summary>Empties the sample module's tables and restores the default user.</summary>
+    /// <summary>Empties the sample module's tables and the change history, and restores the default user.</summary>
     public async Task ResetAsync()
     {
         CurrentUser.UserId = FakeCurrentUser.DefaultUserId;
-        await _database.ResetAsync([SampleModuleDefinition.SchemaName], TestContext.Current.CancellationToken);
+        await _database.ResetAsync(
+            [AuditModuleDefinition.SchemaName, SampleModuleDefinition.SchemaName],
+            TestContext.Current.CancellationToken
+        );
     }
 
     /// <inheritdoc />

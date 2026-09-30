@@ -1,6 +1,6 @@
 # Veritabanı Standardı
 
-> **Durum:** v1.6 · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.7 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 18](#18-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -48,6 +48,7 @@ Her modül veritabanına **kendi rolüyle** bağlanır ([V-02](#18-kararlar)). R
 | `festos_migrator` | Migration aracı | `festos_owner`'ın üyesi; oturumu rol düzeyindeki `role = festos_owner` ayarıyla açılır, böylece oluşturduğu nesnelerin sahibi `festos_owner` olur; şema değiştirir |
 | `festos_{modül}` (ör. `festos_booking`) | Modülün veritabanı bağlamı | Kendi şemasında `USAGE`; tablolarında `SELECT`, `INSERT`, `UPDATE`, `DELETE` (aşağıdaki istisnalarla); `audit.audit_entries` tablosunda yalnızca `INSERT` |
 | `festos_audit` | Audit modülü | `audit` şemasında `SELECT` |
+| `festos_audit_writer` | Hiç kimse doğrudan bağlanmaz (giriş yapamaz) | Tüm modül rollerinin üye olduğu grup; `audit.audit_entries` tablosunda yalnızca `INSERT`. Audit migration'ı yetkiyi modülleri tek tek bilmeden bu gruba verir. |
 | `festos_readonly` | Elle inceleme, ileride raporlama (S6) | Tüm şemalarda `SELECT` (PostgreSQL'in yerleşik `pg_read_all_data` rolünün üyesi); oturumları salt okunurdur |
 | `festos_monitor` | Telemetri toplayıcısı (Alloy) | PostgreSQL'in yerleşik `pg_monitor` rolünün üyesi: sunucu istatistikleri (bağlantılar, WAL arşivleme, boyut). Hiçbir tabloda yetkisi yoktur ([09 §8.1](../09-environments-and-deployment.md#81-kurulum)). |
 
@@ -484,3 +485,4 @@ Gerçek PostgreSQL 18 üzerinde (Testcontainers) çalışan testler. Yer: `tests
 | 2026-09-30 | v1.4 | Outbox'a `failed_at` kolonu eklendi (building-blocks BB-05). |
 | 2026-09-30 | v1.5 | §4: rolleri ve ayarlarını veritabanı hazırlığı kurar, yetkileri migration'lar verir; migration rolünün `role` ayarı, salt okuma rolünün `pg_read_all_data` üyeliği, veritabanı bağlantı yetkileri (Faz 1.1). |
 | 2026-09-30 | v1.6 | Enum kolonunun uzunluğu ve kısıt adı (§6.2, Faz 1.1). |
+| 2026-09-30 | v1.7 | §4: `festos_audit_writer` grup rolü (Faz 1.1). |

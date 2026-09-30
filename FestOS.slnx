@@ -12,6 +12,10 @@
   <Folder Name="/src/Host/">
     <Project Path="src/Host/FestOS.Host.csproj" />
   </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Audit/">
+    <Project Path="src/Modules/Audit/FestOS.Modules.Audit.Infrastructure/FestOS.Modules.Audit.Infrastructure.csproj" />
+  </Folder>
   <Folder Name="/src/ServiceDefaults/">
     <Project Path="src/ServiceDefaults/FestOS.ServiceDefaults.csproj" />
   </Folder>

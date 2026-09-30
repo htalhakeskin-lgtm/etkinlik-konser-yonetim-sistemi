@@ -32,6 +32,7 @@ public sealed class DatabaseBootstrapTests(PostgresDatabase database)
         var canLogIn = roles.ToDictionary(role => role.Role, role => role.CanLogIn, StringComparer.Ordinal);
 
         canLogIn[DatabaseRoles.Owner].ShouldBeFalse();
+        canLogIn[DatabaseRoles.AuditWriter].ShouldBeFalse();
         canLogIn[DatabaseRoles.Migrator].ShouldBeTrue();
         canLogIn[DatabaseRoles.ReadOnly].ShouldBeTrue();
         canLogIn[DatabaseRoles.Monitor].ShouldBeFalse();
@@ -46,6 +47,8 @@ public sealed class DatabaseBootstrapTests(PostgresDatabase database)
     [InlineData(DatabaseRoles.Monitor, "pg_monitor", true)]
     [InlineData("festos_booking", DatabaseRoles.Owner, false)]
     [InlineData("festos_booking", "pg_read_all_data", false)]
+    [InlineData("festos_booking", DatabaseRoles.AuditWriter, true)]
+    [InlineData(DatabaseRoles.Migrator, DatabaseRoles.AuditWriter, false)]
     public async Task Bootstrap_ForEveryRole_GrantsOnlyItsMemberships(string role, string group, bool isMember)
     {
         await BootstrapAsync();
