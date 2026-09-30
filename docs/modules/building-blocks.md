@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.13 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.14 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -202,6 +202,11 @@ Kararlar [ADR-0010](../adr/0010-messaging-infrastructure.md)'da, tablolar [datab
 - Bir turdaki hata `Warning` olarak loglanır ve döngü sürer. Temel bağlantı dizesi yoksa (Host'u veritabanısız açarken) dağıtıcı bir kez bilgi verip çalışmaz. `migrate` komutunun host'u başlatılmadığı için dağıtıcı orada çalışmaz.
 - Her teslim `Deliver {Olay}` adlı bir iz aralığıdır ve olayı doğuran isteğin izine bağlanır (`trace_parent`).
 
+**Sıra ve ölçümler** (6c):
+- Bir kayıt, aynı `ordering_key`'e ait daha eski ve teslim edilmemiş (bekleyen ya da hatalı) bir kayıt varsa alınmaz. Böylece bir grupta her anahtardan en fazla bir kayıt bulunur ve her anahtarın olayları sırayla, bir öncekinin tesliminden sonra gider; diğer anahtarlar etkilenmez (BB-04). Kontrol `(ordering_key, sequence) WHERE dispatched_at IS NULL` indeksini kullanır.
+- Ölçümler `FestOS.BuildingBlocks` ölçüm kaynağındadır; etiketleri `festos.module` ve `festos.event.type`'tır. Bekleyen olay sayısı dağıtıcının her turundan sonra güncellenir.
+- Oluşmadan teslime geçen süre P-08'i (`Messaging:EventLatencyTarget`, varsayılan 300 ms) aşarsa `Warning` loglanır. P-15 üst sınırı gecikme ölçümü üzerindeki bir uyarıyla izlenir ([observability §7](../standards/observability.md#7-uyarılar)).
+
 ## 8. Zamanlanmış işler ve kilitler
 
 - `ScheduledJob` temel sınıfı ([ADR-0013](../adr/0013-scheduled-jobs.md)): aralıklı işler `PeriodicTimer`, saatli işler Cronos; saatler Europe/Istanbul; zaman `TimeProvider`'dan.
@@ -362,3 +367,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.11 | §3 ve §7 outbox'a yazmanın uygulama ayrıntıları (`MessageId`, `IOutbox`); ölçüm adları gözlemlenebilirlik standardına uyduruldu; 6. PR üçe bölündü, temizlik 7. PR'a kaydı. |
 | 2026-09-30 | v1.12 | §7 teslimin uygulama ayrıntıları (6b-1); 6. PR'ın kalanı yeniden bölündü (6b-1 teslim, 6b-2 dağıtıcı, 6c sıra ve ölçümler). |
 | 2026-09-30 | v1.13 | §7 dağıtıcının uygulama ayrıntıları (6b-2). |
+| 2026-09-30 | v1.14 | §7 sıra ve ölçümlerin uygulama ayrıntıları (6c). |

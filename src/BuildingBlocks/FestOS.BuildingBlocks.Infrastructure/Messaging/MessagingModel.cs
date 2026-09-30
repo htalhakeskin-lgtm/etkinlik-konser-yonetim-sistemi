@@ -22,6 +22,9 @@ internal static class MessagingModel
 
             // The dispatcher reads only what is still waiting, in order.
             message.HasIndex(outbox => outbox.Sequence).HasFilter("dispatched_at IS NULL AND failed_at IS NULL");
+
+            // The ordering check looks for an older undelivered message with the same key.
+            message.HasIndex(outbox => new { outbox.OrderingKey, outbox.Sequence }).HasFilter("dispatched_at IS NULL");
         });
 
         modelBuilder.Entity<InboxMessage>(message =>

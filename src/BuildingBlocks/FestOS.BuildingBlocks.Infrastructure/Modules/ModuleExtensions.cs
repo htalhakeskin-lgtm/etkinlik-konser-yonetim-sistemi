@@ -46,6 +46,8 @@ public static class ModuleExtensions
         builder.Services.TryAddSingleton<IEventBus, InProcessEventBus>();
         builder.Services.TryAddSingleton<OutboxProcessor>();
         builder.Services.TryAddSingleton<OutboxSignals>();
+        builder.Services.AddMetrics();
+        builder.Services.TryAddSingleton<MessagingMetrics>();
         builder
             .Services.AddOptions<MessagingOptions>()
             .Bind(builder.Configuration.GetSection(MessagingOptions.SectionName))

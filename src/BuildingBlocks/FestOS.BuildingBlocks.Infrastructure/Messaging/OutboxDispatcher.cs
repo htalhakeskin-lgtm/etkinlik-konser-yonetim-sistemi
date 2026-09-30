@@ -44,6 +44,8 @@ internal sealed partial class OutboxDispatcher(
             {
                 // A full batch means more may be waiting.
                 while (await processor.ProcessBatchAsync(module.Name, stoppingToken) == OutboxProcessor.BatchSize) { }
+
+                await processor.CountPendingAsync(module.Name, stoppingToken);
             }
             catch (Exception exception) when (exception is not OperationCanceledException)
             {

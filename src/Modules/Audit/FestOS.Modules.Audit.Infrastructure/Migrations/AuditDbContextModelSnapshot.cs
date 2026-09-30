@@ -167,6 +167,10 @@ namespace FestOS.Modules.Audit.Infrastructure.Migrations
                         .HasDatabaseName("ix_outbox_messages_sequence")
                         .HasFilter("dispatched_at IS NULL AND failed_at IS NULL");
 
+                    b.HasIndex("OrderingKey", "Sequence")
+                        .HasDatabaseName("ix_outbox_messages_ordering_key_sequence")
+                        .HasFilter("dispatched_at IS NULL");
+
                     b.ToTable("outbox_messages", "audit");
                 });
 #pragma warning restore 612, 618
