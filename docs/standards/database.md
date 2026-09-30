@@ -1,6 +1,6 @@
 # Veritabanı Standardı
 
-> **Durum:** v1.7 · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.8 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 18](#18-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -372,7 +372,7 @@ Yapı [ADR-0010](../adr/0010-messaging-infrastructure.md)'daki kararları fiziks
 
 | Kolon | İçerik |
 |---|---|
-| `id` | Olay kimliği (UUIDv7); dinleyicinin inbox'ında da bu kimlik tutulur |
+| `id` | Olayın mesaj kimliği (`MessageId`, UUIDv7); dinleyicinin inbox'ında da bu kimlik tutulur |
 | `sequence` | `bigint` kimlik kolonu; gönderim sırası |
 | `type` | Olay tipinin adı |
 | `ordering_key` | Sıra garantisi verilen kaydın kimliği (ör. etkinlik) |
@@ -486,3 +486,4 @@ Gerçek PostgreSQL 18 üzerinde (Testcontainers) çalışan testler. Yer: `tests
 | 2026-09-30 | v1.5 | §4: rolleri ve ayarlarını veritabanı hazırlığı kurar, yetkileri migration'lar verir; migration rolünün `role` ayarı, salt okuma rolünün `pg_read_all_data` üyeliği, veritabanı bağlantı yetkileri (Faz 1.1). |
 | 2026-09-30 | v1.6 | Enum kolonunun uzunluğu ve kısıt adı (§6.2, Faz 1.1). |
 | 2026-09-30 | v1.7 | §4: `festos_audit_writer` grup rolü (Faz 1.1). |
+| 2026-09-30 | v1.8 | §15: outbox kimliği olayın `MessageId`'sidir (Faz 1.1). |

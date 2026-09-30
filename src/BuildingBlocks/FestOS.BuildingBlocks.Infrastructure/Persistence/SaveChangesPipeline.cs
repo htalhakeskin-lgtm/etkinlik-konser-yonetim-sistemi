@@ -4,6 +4,7 @@ using FestOS.BuildingBlocks.Application.Users;
 using FestOS.BuildingBlocks.Domain.Entities;
 using FestOS.BuildingBlocks.Domain.Events;
 using FestOS.BuildingBlocks.Infrastructure.Auditing;
+using FestOS.BuildingBlocks.Infrastructure.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -19,7 +20,8 @@ namespace FestOS.BuildingBlocks.Infrastructure.Persistence;
 internal sealed class SaveChangesPipeline(
     IServiceProvider services,
     ICurrentUser currentUser,
-    TimeProvider timeProvider
+    TimeProvider timeProvider,
+    Outbox outbox
 )
 {
     /// <summary>Handlers may raise new events; more rounds than this means a loop (building-blocks BB-06).</summary>
@@ -40,6 +42,7 @@ internal sealed class SaveChangesPipeline(
 
         StampChangedAggregates(context, now);
         AuditEntryWriter.AddEntries(context, context.Schema, now, currentUser.UserId);
+        outbox.MoveTo(context);
     }
 
     // Step 1: handlers run in the same transaction and may change more of the module's data.

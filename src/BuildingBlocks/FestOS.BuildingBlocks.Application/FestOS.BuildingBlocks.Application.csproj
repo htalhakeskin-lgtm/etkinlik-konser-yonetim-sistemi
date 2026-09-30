@@ -6,6 +6,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FestOS.BuildingBlocks.Contracts\FestOS.BuildingBlocks.Contracts.csproj" />
     <ProjectReference Include="..\FestOS.BuildingBlocks.Domain\FestOS.BuildingBlocks.Domain.csproj" />
   </ItemGroup>
 </Project>

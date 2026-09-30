@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.10 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.11 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -53,13 +53,13 @@ Tasarım değişkenleri, temalar, düğme ve durum rozeti Faz 1.0'da tamamlandı
 | `BuildingBlocks.Infrastructure` | `Modules/` | `IModuleDefinition`, `AddModules(...)` |
 | | `Persistence/` | `ModuleDbContext` (şema, kurallar, kaydetme adımları), `AddModuleDbContext` / `UseModuleDatabase`, `DatabaseConnections`, `DatabaseBootstrapper`, `DatabaseMigrator`, EF kuralları (§5.3), `UnitOfWorkCommandDecorator` |
 | | `Auditing/` | `AuditEntry`, `AuditAction`, `AuditEntryWriter` (5b); `[NotAudited]` alan tiplerinde kullanıldığı için `BuildingBlocks.Domain`'dedir (5b) |
-| | `Outbox/` | `OutboxMessage`, `OutboxDispatcher`, `IEventBus` ve süreç içi uygulaması, `InboxIntegrationEventDecorator` |
+| | `Messaging/` | `OutboxMessage`, `InboxMessage`, `Outbox` (`IOutbox`'un uygulaması; 6a); `OutboxDispatcher`, `IEventBus` ve süreç içi uygulaması, `InboxIntegrationEventDecorator` (6b) |
 | | `Locking/` | `AdvisoryLocks` (işlem düzeyi ve oturum düzeyi) |
 | | `Jobs/` | `ScheduledJob` (aralıklı ve cron; Cronos) |
 | | `Http/` | Problem Details eşleyicisi, JSON ayarları, `IfMatchFilter`, `IdempotencyFilter`, CSRF ara katmanı, güvenlik başlıkları, `X-App-Version` |
 | | `OpenApi/` | Şema ve işlem dönüştürücüleri |
 | | `Realtime/` | `NotificationsHub`, `ResourceChangedPublisher` |
-| `BuildingBlocks.Contracts` | — | `IIntegrationEvent`, `IntegrationEvent` temel kaydı (olay kimliği, oluşma zamanı, ilişki kimliği, sıra anahtarı) |
+| `BuildingBlocks.Contracts` | — | `IIntegrationEvent`, `IntegrationEvent` temel kaydı: mesaj kimliği (`MessageId`), oluşma zamanı, sıra anahtarı. Olayın kendi kimliği `EventId` değil `MessageId`'dir, çünkü etkinlikle ilgili olaylar etkinliğin `EventId`'sini taşır. İlişki kurmak için ayrı bir kimlik yerine outbox'taki iz bağlamı (`trace_parent`) kullanılır. |
 
 HTTP, OpenAPI ve SignalR kodu 08'deki tabloda Host'a yazılmıştı; hepsi modüllerin ortak kullandığı altyapı olduğu için `BuildingBlocks.Infrastructure`'a alınır, Host yalnızca bağlar (BB-01).
 
@@ -175,7 +175,7 @@ Kararlar [ADR-0010](../adr/0010-messaging-infrastructure.md)'da, tablolar [datab
 
 | Konu | Karar |
 |---|---|
-| Yazma | Entegrasyon olayları, modül içi olay dinleyicilerinde üretilir ve `SaveChanges`'in 5. adımında `outbox_messages`'a yazılır. `ordering_key` olayın `OrderingKey` alanıdır. |
+| Yazma | Entegrasyon olayları, modül içi olay dinleyicilerinde `IOutbox.Add` ile eklenir ve `SaveChanges`'in 5. adımında kaydeden modülün `outbox_messages`'ına yazılır. `ordering_key` olayın `OrderingKey` alanıdır; `type` olay tipinin sürümsüz adıdır (`{tam ad}, {derleme}`); `payload` web varsayılanlarıyla (camelCase) JSON'dur. İşlem biriminin yeniden denemesi, önceki denemenin eklediklerini atar. |
 | Uyanma | İşlem tamamlanınca işlem birimi dağıtıcıya süreç içi sinyal verir; yedek olarak 5 saniyede bir tarar (`Messaging:PollInterval`). |
 | Dağıtıcı | Her modül için bir dağıtıcı döngüsü (arka plan hizmeti). Gönderilmemiş kayıtları `sequence` sırasıyla, `FOR UPDATE SKIP LOCKED` ile küçük gruplar halinde alır. |
 | Teslim | Olay yolu, olayı abone olan tüm dinleyicilere paralel iletir. Her dinleyici **kendi modülünün** işlem biriminde ve inbox dekoratörüyle çalışır. |
@@ -184,8 +184,8 @@ Kararlar [ADR-0010](../adr/0010-messaging-infrastructure.md)'da, tablolar [datab
 | Sıra | Aynı `ordering_key`'e ait daha eski bir kayıt bekliyor ya da hatalıysa, sonraki kayıtları gönderilmez; farklı anahtarların kayıtları etkilenmez. |
 | Hatalı olay | 8 denemeden sonra `failed_at` doldurulur ve kayıt otomatik denenmez. Sistem yöneticisi arayüzünden (1.2) yeniden denenebilir. Hatalı olay sayısı ölçüm olarak yayınlanır. |
 | İz | `trace_parent` kaydedilir; dinleyicinin izi olayı doğuran isteğe bağlanır ([observability §4](../standards/observability.md#4-dağıtık-izleme)). |
-| Ölçümler | `festos.events.latency` (oluşma → işlenme), `festos.events.failed`, `festos.events.pending` |
-| Temizlik | Gönderilmiş outbox ve inbox kayıtları 30 günden eski olanlar, gecelik bir işle küçük gruplar halinde silinir. Hatalı olaylar silinmez. |
+| Ölçümler | [observability §5](../standards/observability.md#5-ölçümler)'teki adlarla: `festos.messaging.event.latency` (oluşma → işlenme), `festos.messaging.dead_letters`, `festos.messaging.outbox.pending` |
+| Temizlik | Gönderilmiş outbox ve inbox kayıtları 30 günden eski olanlar, gecelik bir işle küçük gruplar halinde silinir. Hatalı olaylar silinmez. İş, zamanlanmış işler altyapısıyla (7. PR) gelir. |
 
 `outbox_messages`'a [database §15](../standards/database.md#15-outbox-ve-inbox-tabloları)'teki kolonlara ek olarak `failed_at` eklenir (belgeye işlenecek).
 
@@ -288,7 +288,9 @@ Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir
 | 4b | İşlem birimi dekoratörü | İşlem ve yeniden deneme stratejisi, modülün bağlamının seçimi (`ModuleNames`), örnek komutlar |
 | 5a | İşlem geçmişi tablosu | Audit iskeleti, `audit_entries`, her bağlamda migration dışı eşleme, `festos_audit_writer`; yetki testleri |
 | 5b | İşlem geçmişi yazıcısı | `AuditEntryWriter` (kaydetme adımı 4), `[NotAudited]` |
-| 6 | Outbox ve olay yolu | Tablolar, yazma, dağıtıcı, olay yolu, inbox dekoratörü, sıra ve kısmi hata, ölçümler, temizlik; AT-10 |
+| 6a | Outbox'a yazma | Entegrasyon olayı tipleri, `IOutbox`, outbox ve inbox tabloları, kaydetme adımı 5 |
+| 6b | Dağıtıcı ve olay yolu | Dağıtıcı, olay yolu, inbox dekoratörü, işlem sonrası sinyal; AT-10 |
+| 6c | Sıra ve hata | Sıra anahtarı, kısmi hata ve artan aralıklı deneme, hatalı olaylar, ölçümler |
 | 7 | Zamanlanmış işler ve kilitler | `ScheduledJob`, danışma kilitleri; sahte zamanla testler |
 | 8 | Hata yanıtları ve JSON | `IExceptionHandler`, doğrulama eşlemesi, JSON ayarları, metin kırpma, `X-App-Version`, güvenlik başlıkları |
 | 9 | ETag ve tekrar güvenliği | `IfMatchFilter`, `IdempotencyFilter`, `idempotency_keys`; eşzamanlılık testleri |
@@ -343,3 +345,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.8 | §4 işlem birimi dekoratörünün uygulama ayrıntıları (4b). |
 | 2026-09-30 | v1.9 | §6 işlem geçmişi tablosunun uygulama ayrıntıları; 5. PR ikiye bölündü (5a tablo, 5b yazıcı). |
 | 2026-09-30 | v1.10 | §6 yazıcının uygulama ayrıntıları (5b). |
+| 2026-09-30 | v1.11 | §3 ve §7 outbox'a yazmanın uygulama ayrıntıları (`MessageId`, `IOutbox`); ölçüm adları gözlemlenebilirlik standardına uyduruldu; 6. PR üçe bölündü, temizlik 7. PR'a kaydı. |

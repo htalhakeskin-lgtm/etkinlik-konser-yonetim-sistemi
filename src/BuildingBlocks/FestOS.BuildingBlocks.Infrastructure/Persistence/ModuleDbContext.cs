@@ -3,6 +3,7 @@ using FestOS.BuildingBlocks.Application.Errors;
 using FestOS.BuildingBlocks.Domain.Events;
 using FestOS.BuildingBlocks.Domain.Rules;
 using FestOS.BuildingBlocks.Infrastructure.Auditing;
+using FestOS.BuildingBlocks.Infrastructure.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Npgsql;
@@ -107,6 +108,7 @@ public abstract class ModuleDbContext : DbContext
 
         modelBuilder.HasDefaultSchema(Schema);
         modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
+        MessagingModel.Configure(modelBuilder);
         AuditEntryModel.Configure(
             modelBuilder,
             ownsTable: string.Equals(Schema, AuditEntry.SchemaName, StringComparison.Ordinal)

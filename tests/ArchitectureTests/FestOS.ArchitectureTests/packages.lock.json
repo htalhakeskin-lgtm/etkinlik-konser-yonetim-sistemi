@@ -290,6 +290,7 @@
       "festos.buildingblocks.application": {
         "type": "Project",
         "dependencies": {
+          "FestOS.BuildingBlocks.Contracts": "[1.0.0, )",
           "FestOS.BuildingBlocks.Domain": "[1.0.0, )",
           "FluentValidation": "[12.1.1, )",
           "Microsoft.Extensions.Logging.Abstractions": "[10.0.12, )",

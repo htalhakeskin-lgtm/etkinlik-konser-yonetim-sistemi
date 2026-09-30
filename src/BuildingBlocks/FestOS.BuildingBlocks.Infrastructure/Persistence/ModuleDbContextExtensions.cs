@@ -1,4 +1,6 @@
 using System.Globalization;
+using FestOS.BuildingBlocks.Application.Messaging;
+using FestOS.BuildingBlocks.Infrastructure.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,6 +47,8 @@ public static class ModuleDbContextExtensions
             (services, _) => services.GetRequiredService<TContext>()
         );
         builder.Services.TryAddScoped<SaveChangesPipeline>();
+        builder.Services.TryAddScoped<Outbox>();
+        builder.Services.TryAddScoped<IOutbox>(services => services.GetRequiredService<Outbox>());
         builder.Services.TryAddSingleton(TimeProvider.System);
         builder.Services.AddSingleton(
             new ModuleDatabase(
