@@ -19,6 +19,10 @@ public sealed class SampleItem : AggregateRoot<SampleItemId>
     /// <summary>An amount with more precision than kuruş.</summary>
     public decimal UnitPrice { get; private set; }
 
+    /// <summary>A value kept out of the change history.</summary>
+    [NotAudited]
+    public string? InternalCode { get; private set; }
+
     /// <summary>The parts; deleted with the item.</summary>
     public IReadOnlyList<SampleItemPart> Parts => _parts;
 
@@ -32,6 +36,13 @@ public sealed class SampleItem : AggregateRoot<SampleItemId>
         var part = new SampleItemPart(SampleItemPartId.New(), label, replacesPartId);
         _parts.Add(part);
         return part;
+    }
+
+    /// <summary>Renames the item and replaces its internal code.</summary>
+    public void Rename(string name, string? internalCode = null)
+    {
+        Name = name;
+        InternalCode = internalCode;
     }
 
     /// <summary>Puts the item in use.</summary>
