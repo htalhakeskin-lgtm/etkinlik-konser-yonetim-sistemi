@@ -19,5 +19,13 @@
     "traceId": "İz numarası:",
     "copy": "Kopyala",
     "copied": "Kopyalandı"
+  },
+  "confirmDialog": {
+    "cancel": "Vazgeç"
+  },
+  "connection": {
+    "reconnecting": "Bağlantı yeniden kuruluyor…",
+    "offline": "Bağlantı yok. Ekrandaki bilgiler güncel olmayabilir.",
+    "restored": "Bağlantı yeniden kuruldu."
   }
 }
