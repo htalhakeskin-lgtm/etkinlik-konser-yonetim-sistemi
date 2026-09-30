@@ -1,0 +1,415 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "FestOS API",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost/"
+    }
+  ],
+  "paths": {
+    "/api/v1/things/{thingId}": {
+      "get": {
+        "tags": [
+          "Sample"
+        ],
+        "summary": "Gets a thing.",
+        "operationId": "GetThing",
+        "parameters": [
+          {
+            "name": "thingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThingResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Sample"
+        ],
+        "summary": "Renames a thing.",
+        "operationId": "RenameThing",
+        "parameters": [
+          {
+            "name": "thingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "description": "The version the change is based on, as a strong entity tag, e.g. \"7\" (api §9).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "A new UUID for each user action, and the same one when the action is retried (api §10).",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RenameThingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/things": {
+      "post": {
+        "tags": [
+          "Sample"
+        ],
+        "summary": "Creates a thing.",
+        "operationId": "CreateThing",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "A new UUID for each user action, and the same one when the action is retried (api §10).",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateThingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThingCreated"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiProblem": {
+        "required": [
+          "type",
+          "title",
+          "status",
+          "detail",
+          "instance",
+          "code",
+          "traceId"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "instance": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "traceId": {
+            "type": "string"
+          },
+          "params": {
+            "type": "object"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "required": [
+                "pointer",
+                "code",
+                "params"
+              ],
+              "type": "object",
+              "properties": {
+                "pointer": {
+                  "type": "string"
+                },
+                "code": {
+                  "type": "string"
+                },
+                "params": {
+                  "type": "object"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateThingRequest": {
+        "required": [
+          "name",
+          "price",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "string",
+            "format": "decimal"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ThingStatus"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Currency": {
+        "pattern": "^[A-Z]{3}$",
+        "type": "string"
+      },
+      "Money": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "string",
+            "format": "decimal"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RenameThingRequest": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ThingCreated": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/ThingId"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ThingId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "ThingPart": {
+        "required": [
+          "label"
+        ],
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ThingResponse": {
+        "required": [
+          "id",
+          "name",
+          "note",
+          "price",
+          "discount",
+          "status",
+          "previousStatus",
+          "buffer",
+          "fee",
+          "tags",
+          "part",
+          "version"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/ThingId"
+          },
+          "name": {
+            "type": "string"
+          },
+          "note": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "price": {
+            "type": "string",
+            "format": "decimal"
+          },
+          "discount": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "decimal"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ThingStatus"
+          },
+          "previousStatus": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ThingStatus"
+              }
+            ]
+          },
+          "buffer": {
+            "type": "integer",
+            "description": "Whole minutes.",
+            "format": "int32"
+          },
+          "fee": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "tags": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "part": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ThingPart"
+              }
+            ]
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ThingStatus": {
+        "enum": [
+          "draft",
+          "inUse"
+        ],
+        "type": "string"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Sample"
+    }
+  ]
+}

@@ -176,6 +176,15 @@ jobs:
         with:
           persist-credentials: false
       - uses: ./.github/actions/setup-pnpm
+      # The API client is generated from the committed OpenAPI documents; it is committed too (api §14.2).
+      - name: API client is up to date
+        run: |
+          pnpm --filter @festos/web generate:api
+          if [ -n "$(git status --porcelain -- src/web/src/api src/web/src/test/contract)" ]; then
+            git status --short -- src/web/src/api src/web/src/test/contract
+            echo "::error::The generated API client is out of date; run 'pnpm --filter @festos/web generate:api' and commit it."
+            exit 1
+          fi
       - run: pnpm format:check
       - run: pnpm --filter @festos/web lint
       - run: pnpm --filter @festos/web typecheck

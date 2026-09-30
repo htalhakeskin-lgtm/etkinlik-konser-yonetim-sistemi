@@ -3,6 +3,7 @@
 
 # Generated code and lock files
 src/web/src/api/
+src/web/src/test/contract/
 src/web/openapi/
 src/web/src/routeTree.gen.ts
 pnpm-lock.yaml

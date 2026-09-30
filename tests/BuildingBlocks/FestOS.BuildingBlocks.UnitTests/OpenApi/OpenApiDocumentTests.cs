@@ -16,6 +16,7 @@ namespace FestOS.BuildingBlocks.UnitTests.OpenApi;
 public sealed class OpenApiDocumentTests : IAsyncLifetime
 {
     private WebApplication? _app;
+    private string _json = string.Empty;
     private JsonElement _document;
 
     public enum ThingStatus
@@ -49,8 +50,10 @@ public sealed class OpenApiDocumentTests : IAsyncLifetime
 
         await _app.StartAsync(Cancellation);
         using HttpClient client = _app.GetTestClient();
-        string json = await client.GetStringAsync(new Uri("/openapi/v1.json", UriKind.Relative), Cancellation);
-        _document = JsonDocument.Parse(json).RootElement.Clone();
+        _json = (
+            await client.GetStringAsync(new Uri("/openapi/v1.json", UriKind.Relative), Cancellation)
+        ).ReplaceLineEndings("\n");
+        _document = JsonDocument.Parse(_json).RootElement.Clone();
     }
 
     public async ValueTask DisposeAsync()
@@ -191,6 +194,32 @@ public sealed class OpenApiDocumentTests : IAsyncLifetime
     [Fact]
     public void AntiforgeryTokenEndpoint_IsLeftToTheRequestWrapper() =>
         _document.GetProperty("paths").TryGetProperty("/api/v1/antiforgery", out _).ShouldBeFalse();
+
+    // The front end generates a client from this document and type-checks it, so a format its generator
+    // cannot handle fails the build (api §14.1). The test rewrites a stale copy; commit the new one.
+    [Fact]
+    public async Task ContractDocument_IsTheCommittedCopyTheFrontEndChecks()
+    {
+        string path = Path.Combine(RepositoryRoot(), "src", "web", "openapi", "contract.json");
+        string? committed = File.Exists(path) ? await File.ReadAllTextAsync(path, Cancellation) : null;
+
+        if (!string.Equals(committed, _json, StringComparison.Ordinal))
+        {
+            await File.WriteAllTextAsync(path, _json, Cancellation);
+            Assert.Fail($"{path} was out of date and has been rewritten; commit it.");
+        }
+    }
+
+    private static string RepositoryRoot()
+    {
+        DirectoryInfo? directory = new(AppContext.BaseDirectory);
+        while (directory is not null && !File.Exists(Path.Combine(directory.FullName, "FestOS.slnx")))
+        {
+            directory = directory.Parent;
+        }
+
+        return directory?.FullName ?? throw new InvalidOperationException("The repository root was not found.");
+    }
 
     private JsonElement Schema(string name) =>
         _document.GetProperty("components").GetProperty("schemas").GetProperty(name);

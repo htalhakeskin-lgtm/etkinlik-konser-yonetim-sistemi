@@ -20,6 +20,7 @@ export default defineConfig([
     "coverage",
     "storybook-static",
     "src/api",
+    "src/test/contract",
     "src/components/ui",
     "src/routeTree.gen.ts",
   ]),
@@ -170,8 +171,20 @@ export default defineConfig([
 
   {
     // Tools require a default export from their configuration files.
-    files: ["vite.config.ts", "eslint.config.js", ".storybook/main.ts", ".storybook/preview.tsx"],
+    files: [
+      "vite.config.ts",
+      "orval.config.ts",
+      "eslint.config.js",
+      ".storybook/main.ts",
+      ".storybook/preview.tsx",
+    ],
     rules: { "no-restricted-exports": "off" },
+  },
+
+  {
+    // The request wrapper is the one place that calls fetch; everything else uses the generated client.
+    files: ["src/lib/api-client.ts"],
+    rules: { "no-restricted-globals": "off" },
   },
 
   // Storybook: story rules; the story format requires a default export of the story metadata.

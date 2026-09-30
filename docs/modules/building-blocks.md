@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.22 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.23 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -305,6 +305,13 @@ Anahtar denetimi `If-Match`'ten önce yapılır; filtre sırası bunu garanti ed
 - Açıklamalar XML yorumlarından alınmaz. .NET'in üreteci yorum satırlarını makinenin satır sonuyla birleştirdiği için belge Windows'ta ve CI'da farklı çıkıyordu; yorumlar ayrıca iç belgelere atıf yapar. İşlem açıklaması `WithSummary` ile yazılır (AT-14).
 - `GET /api/v1/antiforgery` belgede yoktur; onu istek sarmalayıcısı kendisi çağırır.
 
+**İstemci ve sözleşme testi** (11b):
+- Orval (`src/web/orval.config.ts`, `pnpm --filter @festos/web generate:api`) `festos.json`'dan `src/web/src/api/`'ye üretir: `endpoints/` altında TanStack Query kancaları (fetch), `model/` altında tipler, `zod/` altında Zod şemaları; modül etiketine göre klasörler.
+- İstek sarmalayıcısı `src/web/src/lib/api-client.ts`'dir ve `fetch`'in tek istisnasıdır. Gövdeyi döndürür, hatada fırlatır; bu yüzden kancalar yanıt gövdesinin tipini taşır. Antiforgery, tekrar güvenliği anahtarı, sürüm denetimi ve tipli hata 13. PR'da eklenir.
+- Sözleşme belgesi `src/web/openapi/contract.json`'dur: `OpenApiDocumentTests`'in örnek uç noktalarının belgesi. Test belge değişince dosyayı yeniden yazar ve başarısız olur; yeni hali commit'lenir. Orval ondan `src/web/src/test/contract/`'a istemci üretir ve `pnpm typecheck` bu kodu da denetler.
+- `frontend` işi istemciyi yeniden üretir; üretilen kod repodakinden farklıysa hata verir. ESLint ve Prettier üretilen koda bakmaz.
+- AT-14 ve AT-15 repodaki iki belgeyi inceler. Host belgesinin etiketleri `src/Modules/` altındaki modül adlarıdır. AT-15, `PUT`, `PATCH` ve `DELETE`'te `If-Match`'i arar; işlem `POST`'unu oluşturmadan belge ayıramadığı için onu uç nokta testleri (`428`, `412`) denetler.
+
 ## 11. Anlık bildirimler
 
 - `NotificationsHub` (`/hubs/notifications`), çerezle kimlik doğrular. İstemci `JoinGroup(name)` ile gruba katılır; her grup türü için bir yetki denetimi modül tarafından kaydedilir (ör. `warehouses:{id}` → kullanıcının o depoya erişimi). Denetimi olmayan grup reddedilir.
@@ -428,3 +435,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.20 | §9.3 filtre ve temizlik işinin uygulama ayrıntıları (9b-2). |
 | 2026-09-30 | v1.21 | §9.4 CSRF uygulama ayrıntıları (10. PR); BB-11 geliştirmede çerezler. |
 | 2026-09-30 | v1.22 | §10 OpenAPI belgesinin uygulama ayrıntıları (11a); 11. PR ikiye bölündü. |
+| 2026-09-30 | v1.23 | §10 Orval istemcisi, sözleşme testi ve AT-14 / AT-15'in uygulama ayrıntıları (11b). |
