@@ -1,6 +1,6 @@
 # Sürekli Entegrasyon Standardı
 
-> **Durum:** v1.7 · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.8 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -67,7 +67,7 @@ flowchart LR
 | `traceability` | Sunucu, test ya da belge değiştiyse | Kural ve geçiş izlenebilirliği ([testing §10](testing.md#10-kural-ve-geçiş-izlenebilirliği)). |
 | `ci-result` | Her zaman, en son | Diğer işlerin sonucunu toplar. Atlanan iş başarılı sayılır; başarısız ya da iptal edilen iş varsa bu iş de başarısız olur. |
 
-**Kurulum sırası:** Hat Faz 1.0'da `changes`, `docs`, `backend`, `frontend`, `e2e`, `security` ve `ci-result` işleriyle kuruldu. `backend-integration` Faz 1.1'de eklendi: `backend` işi adı `IntegrationTests` ya da `DatabaseTests` ile bitmeyen test projelerini çalıştırır, bu ikisi Docker gerektirdiği için `backend-integration`'ın matrisindedir; yeni böyle bir test projesi matrise eklenir. OpenAPI belgesinin güncelliği `backend` işine Faz 1.1'de eklendi (11a). Tabloda olup henüz bulunmayanlar, sınayacakları kod geldiğinde eklenir: `traceability` ile Orval fark denetimi Faz 1.1'de; kod kapsamı özeti entegrasyon testleriyle; paket boyutu denetimi (size-limit) ilk ekranlarla; `e2e`'nin yayın kopyası yığınla çalışması `deploy/` hazır olunca (1.9). O zamana kadar `e2e`, Playwright'ın derleyip açtığı ön yüze karşı çalışır. Zorunlu kontrol tek olduğu için (C-01) bu eklemeler kural setini değiştirmez.
+**Kurulum sırası:** Hat Faz 1.0'da `changes`, `docs`, `backend`, `frontend`, `e2e`, `security` ve `ci-result` işleriyle kuruldu. `backend-integration` Faz 1.1'de eklendi: `backend` işi adı `IntegrationTests` ya da `DatabaseTests` ile bitmeyen test projelerini çalıştırır, bu ikisi Docker gerektirdiği için `backend-integration`'ın matrisindedir; yeni böyle bir test projesi matrise eklenir. OpenAPI belgesinin güncelliği `backend` işine, Orval istemcisinin güncelliği `frontend` işine Faz 1.1'de eklendi (11a, 11b). Tabloda olup henüz bulunmayanlar, sınayacakları kod geldiğinde eklenir: `traceability` Faz 1.1'de; kod kapsamı özeti entegrasyon testleriyle; paket boyutu denetimi (size-limit) ilk ekranlarla; `e2e`'nin yayın kopyası yığınla çalışması `deploy/` hazır olunca (1.9). O zamana kadar `e2e`, Playwright'ın derleyip açtığı ön yüze karşı çalışır. Zorunlu kontrol tek olduğu için (C-01) bu eklemeler kural setini değiştirmez.
 
 **Neden tek toplayıcı iş:** Alan filtresi iş akışının tetikleyicisine yazılırsa (`paths`), iş akışı hiç çalışmadığında zorunlu kontrol "bekliyor" durumunda kalır ve PR birleştirilemez. Filtre iş düzeyinde uygulanır ve zorunlu kontrol olarak yalnızca her zaman çalışan `ci-result` tanımlanır. Böylece yeni bir iş eklemek kural setini değiştirmeyi gerektirmez.
 
@@ -203,3 +203,4 @@ Uçtan uca testler yerelde Aspire ile açılan uygulamaya karşı ya da `deploy/
 | 2026-09-26 | v1.5 | Sürüm hattının Faz 1.0'daki kapsamı ve release-please ayarları. |
 | 2026-09-30 | v1.6 | `backend-integration` işi eklendi; birim ve Docker gerektiren testlerin ayrımı (Faz 1.1). |
 | 2026-09-30 | v1.7 | §4: `backend` işinde OpenAPI belgesinin güncellik denetimi (Faz 1.1). |
+| 2026-09-30 | v1.8 | §4: `frontend` işinde Orval istemcisinin güncellik denetimi (Faz 1.1). |

@@ -117,7 +117,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | Belge | Sürüm |
 |---|---|
 | [07 — Teknoloji yığını](docs/07-tech-stack.md) | v1.11 |
-| [08 — Mimari ve klasör yapısı](docs/08-architecture.md) | v1.15 |
+| [08 — Mimari ve klasör yapısı](docs/08-architecture.md) | v1.16 |
 | [Mimari karar kayıtları (ADR)](docs/adr/README.md) | 34 kayıt |
 
 **Standartlar** ([dizin](docs/standards/README.md))
@@ -140,13 +140,13 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | [Git ve iş akışı](docs/standards/git.md) | v1.6 |
 | [Test stratejisi](docs/standards/testing.md) | v1.5 |
 | [Bitti tanımı](docs/standards/definition-of-done.md) | v1.2 |
-| [Sürekli entegrasyon](docs/standards/ci.md) | v1.7 |
+| [Sürekli entegrasyon](docs/standards/ci.md) | v1.8 |
 | [09 — Ortamlar ve yayın](docs/09-environments-and-deployment.md) | v1.3 |
 | [10 — İşletim el kitabı](docs/10-operations.md) | v1.0 |
 | [11 — Ekran şablonları ve envanteri](docs/11-screens.md) | v1.0 |
 | [Ekran tasarım özeti (v0)](docs/design/screen-brief.md) | v1.1 |
 | [12 — Uygulama planı (Faz 1: S1)](docs/12-implementation-plan.md) | v1.0 |
-| [Modül tasarımı: Ortak yapı taşları](docs/modules/building-blocks.md) | v1.22 |
+| [Modül tasarımı: Ortak yapı taşları](docs/modules/building-blocks.md) | v1.23 |
 
 ### Teknoloji
 

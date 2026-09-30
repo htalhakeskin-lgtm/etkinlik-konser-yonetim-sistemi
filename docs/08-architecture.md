@@ -1,6 +1,6 @@
 # 08 — Mimari ve Klasör Yapısı
 
-> **Durum:** v1.15 · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.16 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -458,8 +458,8 @@ Her derlemede çalışır; biri başarısız olursa derleme başarısız olur.
 | AT-11 | Uygulama katmanındaki tipler `internal`'dır; modül dışına yalnızca Contracts ve IntegrationEvents tipleri açılır. | Tip erişim belirleyicileri |
 | AT-12 | Tüm tip ve üye adları yalnızca ASCII harf, rakam ve alt çizgiden oluşur. | Tip ve üye adları |
 | AT-13 | Veritabanı adları: şema, tablo, kolon, indeks ve kısıt adları küçük harf snake_case ve ASCII; en fazla 63 bayt; PostgreSQL ayrılmış kelimesi değil; tablo adları çoğul; indeks ve kısıt önekleri `pk_`, `fk_`, `ix_`, `ux_`, `ck_`, `ex_` ([naming §5](standards/naming.md#5-veritabanı-adları)). | EF Core modelinin çalışma zamanında incelenmesi |
-| AT-14 | Her uç noktanın tüm API'de benzersiz bir işlem adı (operationId), modül adıyla aynı bir OpenAPI etiketi ve bir açıklaması (summary) vardır; adres kalıbı + yöntem tekildir ve her kalıbın ilk bölümü tek bir modüle aittir ([naming §6](standards/naming.md#6-api-adları)). | Uç noktaların çalışma zamanında listelenmesi |
-| AT-15 | Toplu kök değiştiren her uç nokta OpenAPI'de zorunlu `If-Match`, değiştiren her uç nokta zorunlu `Idempotency-Key` başlığı bildirir ([api §9–10](standards/api.md#9-eşzamanlı-düzenleme)). | OpenAPI belgesinin incelenmesi |
+| AT-14 | Her uç noktanın tüm API'de benzersiz bir işlem adı (operationId), modül adıyla aynı bir OpenAPI etiketi ve bir açıklaması (summary) vardır; adres kalıbı + yöntem tekildir ve her kalıbın ilk bölümü tek bir modüle aittir ([naming §6](standards/naming.md#6-api-adları)). | Repodaki OpenAPI belgelerinin incelenmesi |
+| AT-15 | Toplu kök değiştiren her uç nokta OpenAPI'de zorunlu `If-Match`, değiştiren her uç nokta zorunlu `Idempotency-Key` başlığı bildirir ([api §9–10](standards/api.md#9-eşzamanlı-düzenleme)). Belge işlem `POST`'unu oluşturmadan ayıramadığı için onda `If-Match`'i uç nokta testleri denetler. | Repodaki OpenAPI belgelerinin incelenmesi |
 
 Yasak API kullanımı (`DateTime.UtcNow` gibi) mimari testle değil, derleyici analizörüyle (`BannedSymbols.txt`) engellenir.
 
@@ -490,3 +490,4 @@ Yasak API kullanımı (`DateTime.UtcNow` gibi) mimari testle değil, derleyici a
 | 2026-09-30 | v1.13 | §4: işlem birimi dekoratörü veritabanına bağlı olduğu için `BuildingBlocks.Infrastructure`'da. |
 | 2026-09-30 | v1.14 | AT-08: işlem geçmişi tablosu her bağlamda migration dışı olarak eşlenir. |
 | 2026-09-30 | v1.15 | §4: olay temel tipinin alanları (`MessageId`; ilişki kimliği yerine iz bağlamı). |
+| 2026-09-30 | v1.16 | §12.2: AT-14 ve AT-15 repodaki OpenAPI belgelerini inceler; işlem `POST`'unda `If-Match`'i uç nokta testleri denetler (Faz 1.1). |

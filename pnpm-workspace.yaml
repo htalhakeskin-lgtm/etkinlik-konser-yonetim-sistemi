@@ -22,3 +22,8 @@ allowBuilds:
 peerDependencyRules:
   allowedVersions:
     eslint-plugin-jsx-a11y>eslint: "10"
+
+# Transitive versions forced past a known vulnerability; remove an entry once its parent depends on a fixed release.
+# @scalar/json-magic (Orval's $ref resolver) pins undici 7.29.0; 7.29.1 fixes the advisories pnpm audit reports.
+overrides:
+  "@scalar/json-magic>undici": 7.29.1
