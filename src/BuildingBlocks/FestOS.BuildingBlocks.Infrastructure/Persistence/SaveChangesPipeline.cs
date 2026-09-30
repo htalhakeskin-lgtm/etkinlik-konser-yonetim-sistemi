@@ -1,6 +1,5 @@
 using System.Reflection;
 using FestOS.BuildingBlocks.Application.Messaging;
-using FestOS.BuildingBlocks.Application.Users;
 using FestOS.BuildingBlocks.Domain.Entities;
 using FestOS.BuildingBlocks.Domain.Events;
 using FestOS.BuildingBlocks.Infrastructure.Auditing;
@@ -19,7 +18,7 @@ namespace FestOS.BuildingBlocks.Infrastructure.Persistence;
 /// </summary>
 internal sealed class SaveChangesPipeline(
     IServiceProvider services,
-    ICurrentUser currentUser,
+    ActingUser actingUser,
     TimeProvider timeProvider,
     Outbox outbox
 )
@@ -41,7 +40,7 @@ internal sealed class SaveChangesPipeline(
         now = now.AddTicks(-(now.Ticks % 10));
 
         StampChangedAggregates(context, now);
-        AuditEntryWriter.AddEntries(context, context.Schema, now, currentUser.UserId);
+        AuditEntryWriter.AddEntries(context, context.Schema, now, actingUser.UserId);
         outbox.MoveTo(context);
     }
 
@@ -115,7 +114,7 @@ internal sealed class SaveChangesPipeline(
             {
                 version.CurrentValue = 1;
                 root.Property(nameof(IAuditable.CreatedAt)).CurrentValue = now;
-                root.Property(nameof(IAuditable.CreatedBy)).CurrentValue = currentUser.UserId;
+                root.Property(nameof(IAuditable.CreatedBy)).CurrentValue = actingUser.UserId;
             }
             else
             {
@@ -123,7 +122,7 @@ internal sealed class SaveChangesPipeline(
             }
 
             root.Property(nameof(IAuditable.UpdatedAt)).CurrentValue = now;
-            root.Property(nameof(IAuditable.UpdatedBy)).CurrentValue = currentUser.UserId;
+            root.Property(nameof(IAuditable.UpdatedBy)).CurrentValue = actingUser.UserId;
         }
     }
 

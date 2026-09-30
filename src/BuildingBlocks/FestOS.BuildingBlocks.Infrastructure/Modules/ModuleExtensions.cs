@@ -1,9 +1,11 @@
 using FestOS.BuildingBlocks.Application.Messaging;
+using FestOS.BuildingBlocks.Infrastructure.Messaging;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace FestOS.BuildingBlocks.Infrastructure.Modules;
@@ -37,6 +39,11 @@ public static class ModuleExtensions
         // Innermost first: the unit of work, then validation and logging around it (building-blocks §4).
         builder.Services.TryDecorate(typeof(ICommandHandler<,>), typeof(UnitOfWorkCommandDecorator<,>));
         builder.Services.DecorateHandlers();
+
+        // Every integration event listener runs in its module's unit of work with the inbox (AT-10).
+        builder.Services.TryDecorate(typeof(IIntegrationEventHandler<>), typeof(InboxIntegrationEventDecorator<>));
+        builder.Services.TryAddSingleton<IEventBus, InProcessEventBus>();
+        builder.Services.TryAddSingleton<OutboxProcessor>();
         builder.Services.AddSingleton(new ModuleCatalog(modules));
         builder.Services.AddSingleton<DatabaseBootstrapper>();
         builder.Services.AddSingleton<DatabaseMigrator>();

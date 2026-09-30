@@ -47,6 +47,7 @@ public static class ModuleDbContextExtensions
             (services, _) => services.GetRequiredService<TContext>()
         );
         builder.Services.TryAddScoped<SaveChangesPipeline>();
+        builder.Services.TryAddScoped<ActingUser>();
         builder.Services.TryAddScoped<Outbox>();
         builder.Services.TryAddScoped<IOutbox>(services => services.GetRequiredService<Outbox>());
         builder.Services.TryAddSingleton(TimeProvider.System);

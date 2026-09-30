@@ -1,4 +1,5 @@
 using FestOS.BuildingBlocks.Application.Messaging;
+using FestOS.BuildingBlocks.Contracts;
 using FluentValidation;
 
 // A stand-in for a module's Application layer; the namespace follows FestOS.Modules.{Module}.….
@@ -30,6 +31,14 @@ internal sealed class GetSampleHandler(SampleHandlerProbe probe) : IQueryHandler
 internal sealed class GetSampleValidator : AbstractValidator<GetSampleQuery>
 {
     public GetSampleValidator() => RuleFor(query => query.SampleId).NotEmpty();
+}
+
+internal sealed record SamplePlacedIntegrationEvent : IntegrationEvent;
+
+internal sealed class NoteOnSamplePlacedHandler : IIntegrationEventHandler<SamplePlacedIntegrationEvent>
+{
+    public Task HandleAsync(SamplePlacedIntegrationEvent integrationEvent, CancellationToken cancellationToken) =>
+        Task.CompletedTask;
 }
 
 /// <summary>Counts handler calls and lets a test make the handlers fail.</summary>

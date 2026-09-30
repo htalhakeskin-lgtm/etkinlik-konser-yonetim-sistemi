@@ -72,6 +72,26 @@ public sealed class ModuleExtensionsTests
     }
 
     [Fact]
+    [Trait("ArchitectureRule", "AT-10")]
+    public void AddModules_ForIntegrationEventListeners_WrapsEachInTheInboxDecorator()
+    {
+        HostApplicationBuilder builder = Host.CreateEmptyApplicationBuilder(new HostApplicationBuilderSettings());
+
+        builder.AddModules(new SampleModuleDefinition("Sample", "sample"));
+
+        List<ServiceDescriptor> registrations =
+        [
+            .. builder.Services.Where(descriptor =>
+                descriptor.ServiceType == typeof(IIntegrationEventHandler<SamplePlacedIntegrationEvent>)
+            ),
+        ];
+
+        // The unkeyed registration is the inbox decorator; the listener itself is kept as a keyed one.
+        registrations.Count(descriptor => !descriptor.IsKeyedService).ShouldBe(1);
+        registrations.Count(descriptor => descriptor.IsKeyedService).ShouldBe(1);
+    }
+
+    [Fact]
     public async Task MapModules_ForAModule_MapsItsEndpointsUnderTheApiPrefixWithItsTag()
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();

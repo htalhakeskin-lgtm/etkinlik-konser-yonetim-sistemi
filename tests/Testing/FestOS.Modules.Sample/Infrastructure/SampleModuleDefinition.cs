@@ -1,7 +1,9 @@
 using FestOS.BuildingBlocks.Application.Messaging;
 using FestOS.BuildingBlocks.Infrastructure.Modules;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
+using FestOS.Modules.Sample.Application;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace FestOS.Modules.Sample.Infrastructure;
@@ -29,6 +31,7 @@ public sealed class SampleModuleDefinition : IModuleDefinition
     {
         builder.AddModuleDbContext<SampleDbContext>(ModuleName, SchemaName);
         builder.Services.AddHandlersFrom(typeof(SampleModuleDefinition).Assembly);
+        builder.Services.TryAddSingleton<SampleListenerProbe>();
     }
 
     /// <inheritdoc />
