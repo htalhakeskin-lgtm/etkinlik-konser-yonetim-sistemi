@@ -1,6 +1,6 @@
 # 09 — Ortamlar ve Yayın
 
-> **Durum:** v1.2 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.3 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -284,7 +284,7 @@ Demo ortamındaki gizli bilgiler ve yerleri ([security §6](standards/security.m
 | Gizli bilgi | Nerede | Kullanan |
 |---|---|---|
 | Modül rollerinin, `festos_audit`'in ve `festos_migrator`'ın parolaları | Sunucuda `/opt/festos/secrets/`, konteynere `/run/secrets/` olarak bağlanır | Uygulama, `migrate` komutu |
-| `festos_owner` ve PostgreSQL yönetici parolası | Aynı yer | Veritabanı kurulumu, `reset-demo` |
+| PostgreSQL yönetici parolası (`festos_owner` giriş yapamaz, parolası yoktur) | Aynı yer | `migrate` komutunun hazırlık adımı, veritabanı kurulumu, `reset-demo` |
 | Veri koruma sertifikası ve parolası ([security §7](standards/security.md#7-veri-koruma-anahtarları)) | Aynı yer | Uygulama |
 | WAL-G nesne deposu anahtarları ve libsodium şifreleme anahtarı | Aynı yer | PostgreSQL konteyneri |
 | Grafana Cloud erişim belirteci ve `festos_monitor` parolası | Aynı yer | Yalnızca Alloy |
@@ -359,3 +359,4 @@ Demo ortamındaki gizli bilgiler ve yerleri ([security §6](standards/security.m
 | 2026-09-25 | v1.0 | E-01 (Oracle Always Free), E-02 (kapalı demo, hesaplar istek üzerine), E-03 (deSEC ücretsiz alt alan adı) kararlaştırıldı; ADR-0030…0032 kabul edildi. |
 | 2026-09-26 | v1.1 | Geliştirme ortamı kurulumu: pnpm npm ile kurulur, Corepack kullanılmaz; Aspire komut satırı aracı isteğe bağlı. |
 | 2026-09-26 | v1.2 | İlk kuruluma tarayıcı testleri için Chromium kurulumu eklendi. |
+| 2026-09-30 | v1.3 | Gizli bilgiler: yönetici parolasını `migrate`'in hazırlık adımı da kullanır; `festos_owner`'ın parolası yoktur (Faz 1.1). |

@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.5 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.6 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -51,7 +51,7 @@ Tasarım değişkenleri, temalar, düğme ve durum rozeti Faz 1.0'da tamamlandı
 | | `Errors/` | `NotFoundException`, `ConcurrencyConflictException`, `ValidationFailedException` (`ValidationError` listesi; gönderilen değer taşınmaz), `ErrorCodes` (beklenen sonuçların API kodları) |
 | | `Paging/` | `PageRequest` + `PageRequestValidator`, `PagedResult<T>`, `CursorRequest` + `CursorRequestValidator`, `CursorResult<T>`, `SortSpec` / `SortField` ve `SortableBy(...)` doğrulama kuralı; liste sorgularının doğrulayıcıları bunları `SetValidator` ile kullanır. Kimliğin son sıralama alanı olarak eklenmesi ve imlecin kodlanması sorguyu kuran altyapı kodundadır. |
 | `BuildingBlocks.Infrastructure` | `Modules/` | `IModuleDefinition`, `AddModules(...)` |
-| | `Persistence/` | `ModuleDbContext` (şema, kurallar, kaydetme adımları), `ModuleDbContextOptions`, EF kuralları (§5.3), `UnitOfWorkCommandDecorator` |
+| | `Persistence/` | `ModuleDbContext` (şema, kurallar, kaydetme adımları), `AddModuleDbContext` / `UseModuleDatabase`, `DatabaseConnections`, `DatabaseBootstrapper`, `DatabaseMigrator`, EF kuralları (§5.3), `UnitOfWorkCommandDecorator` |
 | | `Auditing/` | `AuditEntryWriter`, `[NotAudited]` |
 | | `Outbox/` | `OutboxMessage`, `OutboxDispatcher`, `IEventBus` ve süreç içi uygulaması, `InboxIntegrationEventDecorator` |
 | | `Locking/` | `AdvisoryLocks` (işlem düzeyi ve oturum düzeyi) |
@@ -105,8 +105,9 @@ Roller ve yetkiler [database §4](../standards/database.md#4-roller-ve-yetkiler)
 
 ### 5.2 Bağlantılar
 
-- Her modül kendi rolünün bağlantı dizesiyle bağlanır: `ConnectionStrings:{modül}`. `Application Name=festos-{modül}`.
-- `ModuleDbContextOptions`: şema adı, bağlantı dizesi, havuz boyutu (`Modules:{Modül}:Database:MaxPoolSize`).
+- Tek bir temel bağlantı dizesi vardır: `ConnectionStrings:festos` (sunucu, port, veritabanı). İçinde kimlik bilgisi varsa bu yöneticinindir ve yalnızca hazırlık adımında kullanılır; geliştirmede Aspire verir. Demoda temel dize kimlik bilgisi taşımaz, yönetici `Database:AdminUsername` / `Database:AdminPassword` gizli bilgileriyle verilir.
+- Her rolün parolası `Database:Passwords:{rol}` gizli bilgisidir (demoda `/run/secrets/Database__Passwords__festos_booking` gibi dosyalar). Her modül, temel dizeye kendi rolünün kullanıcı adı ve parolası yazılarak bağlanır (`DatabaseConnections.ForRole`); `Application Name=festos-{şema}`; havuz boyutu `Modules:{Modül}:Database:MaxPoolSize`. On modül için on ayrı bağlantı dizesi tutulmaz.
+- Uygulama süreci yalnızca modül rollerinin parolalarını alır; yönetici ve migration rolünün parolalarını yalnızca `migrate` komutu alır (yayındaki en az yetki). Geliştirmede Host ikisini de yapar.
 - Npgsql yeniden deneme stratejisi açıktır; işlem birimi onu bütün bir blok olarak çalıştırır ([database §11.4](../standards/database.md#114-i̇şlem-yalıtımı-ve-yeniden-deneme)).
 
 ### 5.3 Ortak EF kuralları
@@ -132,7 +133,8 @@ Roller ve yetkiler [database §4](../standards/database.md#4-roller-ve-yetkiler)
 ### 5.4 Migration'ların çalışması
 
 - **Geliştirmede:** Host açılırken önce hazırlık, sonra tüm modüllerin migration'ları uygulanır ([database §16.2](../standards/database.md#162-uygulama)).
-- **Demo ve yayında:** Aynı çalıştırılabilir dosyanın `migrate` komutu; Host'un açılışı migration çalıştırmaz.
+- **Demo ve yayında:** Aynı çalıştırılabilir dosyanın `migrate` komutu (`FestOS.Host migrate`); Host'un açılışı migration çalıştırmaz. Komut Host'la aynı modül listesini kullanır; hata olursa sıfır olmayan kodla çıkar ve yayın durur.
+- Geliştirmede açılıştaki adım, temel bağlantı dizesi tanımlı değilse atlanır (Host'u Aspire olmadan açmak için).
 - `migrate` komutu 1.1'de yazılır (hazırlık + migration'lar); diğer komutlar (`seed-demo`, `reset-demo` …) ihtiyaç duyuldukları adımda eklenir.
 
 ## 6. İşlem geçmişi yazıcısı
@@ -309,3 +311,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.3 | 3. PR üçe bölündü: 3a veritabanı test altyapısı, 3b hazırlık, 3c modül kaydı ve veritabanı bağlamı. |
 | 2026-09-30 | v1.4 | 3c ayrıca bölündü: 3c modül kaydı, 3d veritabanı bağlamı ve test modülü, 3e `migrate` komutu. |
 | 2026-09-30 | v1.5 | §5.3 uygulamaya göre netleşti; Respawn 4. PR'a kaydı. |
+| 2026-09-30 | v1.6 | §5.2 bağlantı düzeni: tek temel bağlantı dizesi ve rol parolaları; §5.4 `migrate` komutu (3e). |

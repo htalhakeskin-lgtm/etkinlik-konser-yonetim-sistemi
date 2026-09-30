@@ -36,6 +36,8 @@ public static class ModuleExtensions
 
         builder.Services.DecorateHandlers();
         builder.Services.AddSingleton(new ModuleCatalog(modules));
+        builder.Services.AddSingleton<DatabaseBootstrapper>();
+        builder.Services.AddSingleton<DatabaseMigrator>();
         return builder;
     }
 

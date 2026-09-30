@@ -14,8 +14,9 @@ public static class ModuleDbContextExtensions
     public const string MigrationsHistoryTable = "__ef_migrations_history";
 
     /// <summary>
-    /// Registers the context with the module role's connection string <c>ConnectionStrings:{moduleName}</c>
-    /// and the pool size <c>Modules:{moduleName}:Database:MaxPoolSize</c>.
+    /// Registers the context with the module role's connection (<see cref="DatabaseConnections.ForRole"/>)
+    /// and the pool size <c>Modules:{moduleName}:Database:MaxPoolSize</c>, and lets the migrate command
+    /// apply the module's migrations.
     /// </summary>
     public static IHostApplicationBuilder AddModuleDbContext<TContext>(
         this IHostApplicationBuilder builder,
@@ -30,12 +31,19 @@ public static class ModuleDbContextExtensions
             (services, options) =>
             {
                 IConfiguration configuration = services.GetRequiredService<IConfiguration>();
-                string connectionString =
-                    configuration.GetConnectionString(moduleName)
-                    ?? throw new InvalidOperationException($"The connection string '{moduleName}' is not configured.");
-                int? maxPoolSize = configuration.GetValue<int?>($"Modules:{moduleName}:Database:MaxPoolSize");
-                options.UseModuleDatabase(connectionString, schema, maxPoolSize);
+                options.UseModuleDatabase(
+                    DatabaseConnections.ForRole(configuration, DatabaseRoles.ForModule(schema)),
+                    schema,
+                    configuration.GetValue<int?>($"Modules:{moduleName}:Database:MaxPoolSize")
+                );
             }
+        );
+        builder.Services.AddSingleton(
+            new ModuleDatabase(
+                schema,
+                (connectionString, cancellationToken) =>
+                    MigrateAsync<TContext>(connectionString, schema, cancellationToken)
+            )
         );
 
         return builder;
@@ -71,5 +79,20 @@ public static class ModuleDbContextExtensions
                 npgsql => npgsql.MigrationsHistoryTable(MigrationsHistoryTable, schema).EnableRetryOnFailure()
             )
             .UseSnakeCaseNamingConvention(CultureInfo.InvariantCulture);
+    }
+
+    private static async Task MigrateAsync<TContext>(
+        string connectionString,
+        string schema,
+        CancellationToken cancellationToken
+    )
+        where TContext : ModuleDbContext
+    {
+        var options = new DbContextOptionsBuilder<TContext>();
+        options.UseModuleDatabase(connectionString, schema);
+
+        // Module contexts take their options as the only constructor parameter.
+        await using var context = (TContext)Activator.CreateInstance(typeof(TContext), options.Options)!;
+        await context.Database.MigrateAsync(cancellationToken);
     }
 }
