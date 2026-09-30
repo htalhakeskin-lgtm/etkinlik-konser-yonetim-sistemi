@@ -1,6 +1,7 @@
 using FestOS.BuildingBlocks.Application.Messaging;
 using FestOS.BuildingBlocks.Infrastructure.Modules;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
+using FestOS.Modules.Sample.Api;
 using FestOS.Modules.Sample.Application;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -35,5 +36,5 @@ public sealed class SampleModuleDefinition : IModuleDefinition
     }
 
     /// <inheritdoc />
-    public void MapEndpoints(IEndpointRouteBuilder endpoints) { }
+    public void MapEndpoints(IEndpointRouteBuilder endpoints) => SampleEndpoints.Map(endpoints);
 }

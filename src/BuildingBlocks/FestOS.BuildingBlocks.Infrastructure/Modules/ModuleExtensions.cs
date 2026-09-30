@@ -1,5 +1,7 @@
 using FestOS.BuildingBlocks.Application.Concurrency;
 using FestOS.BuildingBlocks.Application.Messaging;
+using FestOS.BuildingBlocks.Infrastructure.Http;
+using FestOS.BuildingBlocks.Infrastructure.Idempotency;
 using FestOS.BuildingBlocks.Infrastructure.Jobs;
 using FestOS.BuildingBlocks.Infrastructure.Messaging;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
@@ -58,7 +60,7 @@ public static class ModuleExtensions
         builder.Services.TryAddSingleton<IValidateOptions<MessagingOptions>, MessagingOptionsValidator>();
         builder.Services.AddHostedService<OutboxDispatcher>();
 
-        // Scheduled jobs (ADR-0013); every module's outbox and inbox are cleaned up nightly.
+        // Scheduled jobs (ADR-0013); every module's outbox, inbox and idempotency keys are cleaned up nightly.
         builder.Services.TryAddSingleton(TimeProvider.System);
         builder.Services.TryAddSingleton<ScheduledJobRunner>();
         builder.Services.AddHostedService(services => services.GetRequiredService<ScheduledJobRunner>());
@@ -70,6 +72,10 @@ public static class ModuleExtensions
                 services.GetRequiredService<IOptions<MessagingOptions>>(),
                 services.GetRequiredService<TimeProvider>()
             ));
+            builder.Services.AddSingleton<IScheduledJob>(services => new IdempotencyCleanupJob(
+                moduleName,
+                services.GetRequiredService<TimeProvider>()
+            ));
         }
         builder.Services.AddSingleton(new ModuleCatalog(modules));
         builder.Services.AddSingleton<DatabaseBootstrapper>();
@@ -77,11 +83,14 @@ public static class ModuleExtensions
         return builder;
     }
 
-    /// <summary>Maps every module's endpoints on its own group under <see cref="ApiPrefix"/>, tagged with its name.</summary>
+    /// <summary>
+    /// Maps every module's endpoints on its own group under <see cref="ApiPrefix"/>, tagged with its name.
+    /// Every request that changes data needs an idempotency key (api §10).
+    /// </summary>
     public static IEndpointRouteBuilder MapModules(this IEndpointRouteBuilder endpoints)
     {
         ArgumentNullException.ThrowIfNull(endpoints);
-        RouteGroupBuilder api = endpoints.MapGroup(ApiPrefix);
+        RouteGroupBuilder api = endpoints.MapGroup(ApiPrefix).RequiresIdempotencyKey();
 
         foreach (IModuleDefinition module in endpoints.ServiceProvider.GetRequiredService<ModuleCatalog>().Modules)
         {

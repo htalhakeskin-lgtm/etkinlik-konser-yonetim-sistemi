@@ -4,6 +4,7 @@ using System.Text.Json;
 using FestOS.BuildingBlocks.Application.Concurrency;
 using FestOS.BuildingBlocks.Application.Errors;
 using FestOS.BuildingBlocks.Infrastructure.Http.Json;
+using FestOS.BuildingBlocks.Infrastructure.Idempotency;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -36,8 +37,8 @@ public static class HttpPlatformExtensions
     public static string AppVersion { get; } = ReadAppVersion();
 
     /// <summary>
-    /// Registers the exception handler, the Problem Details writer, the JSON rules, the body limit and the
-    /// request's expected version.
+    /// Registers the exception handler, the Problem Details writer, the JSON rules, the body limit, the
+    /// request's expected version and its idempotency key.
     /// </summary>
     public static IHostApplicationBuilder AddHttpPlatform(this IHostApplicationBuilder builder)
     {
@@ -49,6 +50,7 @@ public static class HttpPlatformExtensions
             options.Limits.MaxRequestBodySize = MaxRequestBodyBytes
         );
         builder.Services.TryAddScoped<ExpectedVersion>();
+        builder.Services.TryAddScoped<IdempotencyRequest>();
         return builder;
     }
 
@@ -60,6 +62,7 @@ public static class HttpPlatformExtensions
     {
         ArgumentNullException.ThrowIfNull(app);
         app.Use(AddResponseHeadersAsync);
+        app.Use(BufferRequestBodyAsync);
         app.UseExceptionHandler();
         app.UseStatusCodePages();
         return app;
@@ -89,6 +92,21 @@ public static class HttpPlatformExtensions
 
             return Task.CompletedTask;
         });
+
+        return next(context);
+    }
+
+    // The idempotency filter reads the body of a changing API request again for its fingerprint (api §10);
+    // the body is at most 1 MB.
+    private static Task BufferRequestBodyAsync(HttpContext context, RequestDelegate next)
+    {
+        if (
+            IdempotencyFilter.ChangesData(context.Request.Method)
+            && context.Request.Path.StartsWithSegments(ApiPrefix, StringComparison.OrdinalIgnoreCase)
+        )
+        {
+            context.Request.EnableBuffering();
+        }
 
         return next(context);
     }

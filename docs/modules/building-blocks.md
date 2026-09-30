@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.19 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.20 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -54,7 +54,7 @@ Tasarım değişkenleri, temalar, düğme ve durum rozeti Faz 1.0'da tamamlandı
 | | `Persistence/` | `ModuleDbContext` (şema, kurallar, kaydetme adımları), `AddModuleDbContext` / `UseModuleDatabase`, `DatabaseConnections`, `DatabaseBootstrapper`, `DatabaseMigrator`, EF kuralları (§5.3), `UnitOfWorkCommandDecorator` |
 | | `Auditing/` | `AuditEntry`, `AuditAction`, `AuditEntryWriter` (5b); `[NotAudited]` alan tiplerinde kullanıldığı için `BuildingBlocks.Domain`'dedir (5b) |
 | | `Messaging/` | `OutboxMessage`, `InboxMessage`, `Outbox` (`IOutbox`'un uygulaması; 6a); `OutboxDispatcher`, `IEventBus` ve süreç içi uygulaması, `InboxIntegrationEventDecorator` (6b) |
-| | `Idempotency/` | `IdempotencyKey` (`idempotency_keys` tablosu), `IdempotencyRequest` (isteğin anahtarı ve parmak izi, kapsamlı), anahtarın kaydı ve saklanan sonuç (9b-1) |
+| | `Idempotency/` | `IdempotencyKey` (`idempotency_keys` tablosu), `IdempotencyRequest` (isteğin anahtarı ve parmak izi, kapsamlı), anahtarın kaydı ve saklanan sonuç (9b-1), `IdempotencyCleanupJob` (9b-2) |
 | | `Locking/` | `AdvisoryLocks` (işlem düzeyi ve oturum düzeyi) |
 | | `Jobs/` | `IScheduledJob`, `JobSchedule` (aralıklı ve cron; Cronos), `ScheduledJobRunner` |
 | | `Http/` | Problem Details eşleyicisi, JSON ayarları, `IfMatchFilter`, `IdempotencyFilter`, CSRF ara katmanı, güvenlik başlıkları, `X-App-Version` |
@@ -273,6 +273,12 @@ Anahtar denetimi `If-Match`'ten önce yapılır; filtre sırası bunu garanti ed
 - Anahtar `INSERT … ON CONFLICT DO NOTHING` ile eklenir. Aynı anahtarla süren bir işlem varsa ekleme onu bekler; modül rolünün kilit bekleme süresi (10 saniye, [database §17](../standards/database.md#17-bağlantı-ve-işletim-ayarları)) aşılırsa `409` döner.
 - Kullanıcı, kaydetme adımlarıyla aynı kaynaktan (`ICurrentUser`) gelir. İş kuralı hatası, sürüm çakışması ya da başka bir hata işlemi geri aldığı için anahtar da geri alınır.
 
+**Filtre ve temizlik** (9b-2):
+- `MapModules`, `RequiresIdempotencyKey()` ile filtreyi tüm modül uçlarının grubuna ekler. Grup filtresi uç noktanın kendi filtrelerinden önce çalıştığı için anahtar denetimi `If-Match`'ten öncedir. Filtre yalnızca `POST`, `PUT`, `PATCH` ve `DELETE`'te anahtar ister.
+- Anahtar tek bir UUID'dir (ön yüz `crypto.randomUUID()` üretir); başka her biçim `400` (`malformedRequest`) alır.
+- Parmak izi, yöntem, adres (sorgu dahil) ve gövdenin SHA-256 özetinden oluşan metnin SHA-256'sıdır. Gövde bağlama sırasında okunduğu için `UseHttpPlatform`, değiştiren API isteklerinin gövdesini tamponlar (en fazla 1 MB).
+- Temizlik işi her modülde gecelik çalışır (İstanbul saatiyle 04:30) ve 24 saatten eski anahtarları 1000'lik gruplar halinde siler.
+
 ### 9.4 CSRF, başlıklar, sürüm
 
 - **CSRF** ([api §11](../standards/api.md#11-güvenlik-kuralları)): antiforgery belirteci değiştiren isteklerde `X-XSRF-TOKEN` başlığından ara katmanda doğrulanır; `Sec-Fetch-Site: cross-site` bildiren değiştiren istekler reddedilir. Belirteç çerezini veren uç nokta (`GET /api/v1/antiforgery`) 1.1'de, `/api/v1/me` ise 1.2'de yazılır.
@@ -405,3 +411,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.17 | §9.1 JSON ve §9.4 güvenlik başlıklarının uygulama ayrıntıları (8b); `unsafe-inline` denemesi Host'un ön yüzü sunmasına kaydı. |
 | 2026-09-30 | v1.18 | §9.2 `If-Match` uygulama ayrıntıları; 9. PR ikiye bölündü (9a ETag ve `If-Match`, 9b tekrar güvenliği). |
 | 2026-09-30 | v1.19 | §9.3 uygulama ayrıntıları: saklanan, komutun sonucu; tekrarında uç nokta yanıtı yeniden kurar (9b-1). 9b ikiye bölündü. |
+| 2026-09-30 | v1.20 | §9.3 filtre ve temizlik işinin uygulama ayrıntıları (9b-2). |

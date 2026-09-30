@@ -127,7 +127,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | [İsimlendirme](docs/standards/naming.md) | v1.6 |
 | [Kod stili ve statik analiz](docs/standards/code-style.md) | v1.9 |
 | [Veritabanı](docs/standards/database.md) | v1.9 |
-| [API](docs/standards/api.md) | v1.8 |
+| [API](docs/standards/api.md) | v1.9 |
 | [Güvenlik](docs/standards/security.md) | v1.3 |
 | [Gözlemlenebilirlik](docs/standards/observability.md) | v1.2 |
 | [Yapılandırma](docs/standards/configuration.md) | v1.3 |
@@ -146,7 +146,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | [11 — Ekran şablonları ve envanteri](docs/11-screens.md) | v1.0 |
 | [Ekran tasarım özeti (v0)](docs/design/screen-brief.md) | v1.1 |
 | [12 — Uygulama planı (Faz 1: S1)](docs/12-implementation-plan.md) | v1.0 |
-| [Modül tasarımı: Ortak yapı taşları](docs/modules/building-blocks.md) | v1.19 |
+| [Modül tasarımı: Ortak yapı taşları](docs/modules/building-blocks.md) | v1.20 |
 
 ### Teknoloji
 

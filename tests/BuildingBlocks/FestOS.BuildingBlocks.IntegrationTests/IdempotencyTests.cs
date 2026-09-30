@@ -1,6 +1,7 @@
 using FestOS.BuildingBlocks.Application.Errors;
 using FestOS.BuildingBlocks.Application.Messaging;
 using FestOS.BuildingBlocks.Infrastructure.Idempotency;
+using FestOS.BuildingBlocks.Infrastructure.Jobs;
 using FestOS.Modules.Sample.Application;
 using FestOS.Modules.Sample.Domain;
 using FestOS.Modules.Sample.Infrastructure;
@@ -164,6 +165,37 @@ public sealed class IdempotencyTests(SampleModuleFixture fixture) : IAsyncLifeti
             SendAsync<CreateSampleItemCommand, SampleItemId>(new("Stage", 10m), key, services: impatient.Services)
         );
     }
+
+    [Fact]
+    public async Task CleanupJob_DeletesTheKeysOlderThan24Hours()
+    {
+        DateTimeOffset now = fixture.Time.GetUtcNow();
+        await using (AsyncServiceScope seed = fixture.Services.CreateAsyncScope())
+        {
+            SampleDbContext context = seed.ServiceProvider.GetRequiredService<SampleDbContext>();
+            context.AddRange(StoredKey(now.AddHours(-25)), StoredKey(now.AddHours(-23)));
+            await context.SaveChangesAsync(Cancellation);
+        }
+
+        IScheduledJob cleanup = fixture
+            .Services.GetServices<IScheduledJob>()
+            .Single(job => job is { Name: "idempotency-cleanup", ModuleName: SampleModuleDefinition.ModuleName });
+        (
+            await fixture.Services.GetRequiredService<ScheduledJobRunner>().RunOnceAsync(cleanup, Cancellation)
+        ).ShouldBeTrue();
+
+        (await LoadKeysAsync()).ShouldHaveSingleItem().CreatedAt.ShouldBe(now.AddHours(-23));
+    }
+
+    private IdempotencyKey StoredKey(DateTimeOffset createdAt) =>
+        new()
+        {
+            UserId = fixture.CurrentUser.UserId,
+            Key = Guid.CreateVersion7(),
+            Fingerprint = Fingerprint,
+            Result = "true",
+            CreatedAt = createdAt,
+        };
 
     private async Task<(TResult Result, bool Replayed)> SendAsync<TCommand, TResult>(
         TCommand command,

@@ -1,13 +1,17 @@
 using FestOS.BuildingBlocks.Application.Users;
+using FestOS.BuildingBlocks.Infrastructure.Http;
 using FestOS.BuildingBlocks.Infrastructure.Modules;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
 using FestOS.Modules.Audit.Infrastructure;
 using FestOS.Modules.Sample.Application;
 using FestOS.Modules.Sample.Infrastructure;
 using FestOS.Testing;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Time.Testing;
 
 namespace FestOS.BuildingBlocks.IntegrationTests;
@@ -70,6 +74,28 @@ public sealed class SampleModuleFixture : IAsyncLifetime
         builder.AddModules(new AuditModuleDefinition(), new SampleModuleDefinition());
         configure?.Invoke(builder.Services);
         return builder.Build();
+    }
+
+    /// <summary>
+    /// Starts a web application with the HTTP platform and the modules' endpoints on the same database,
+    /// served in memory, e.g. to test request headers end to end; the caller disposes it.
+    /// </summary>
+    public async Task<WebApplication> StartWebApplicationAsync()
+    {
+        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
+        builder.WebHost.UseTestServer();
+        builder.Logging.ClearProviders();
+        builder.Configuration.AddInMemoryCollection(_settings);
+        builder.Services.AddSingleton<TimeProvider>(Time);
+        builder.Services.AddSingleton<ICurrentUser>(CurrentUser);
+        builder.AddHttpPlatform();
+        builder.AddModules(new AuditModuleDefinition(), new SampleModuleDefinition());
+
+        WebApplication app = builder.Build();
+        app.UseHttpPlatform();
+        app.MapModules();
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        return app;
     }
 
     /// <summary>Empties the sample module's tables and the change history, and restores the default user and probe.</summary>
