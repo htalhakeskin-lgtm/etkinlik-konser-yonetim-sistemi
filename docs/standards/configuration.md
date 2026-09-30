@@ -1,6 +1,6 @@
 # Yapılandırma ve Altyapı Hizmetleri Standardı
 
-> **Durum:** v1.2 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.3 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 10](#10-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -44,7 +44,7 @@ Sonra gelen kaynak öncekini ezer:
 
 ## 4. Tip güvenli ayarlar ve doğrulama
 
-- Her modülün ayarları kendi sınıfındadır (`BookingOptions`) ve `Modules:{Modül}` bölümünden okunur. Ortak altyapı ayarları (`Messaging`, `Hosting`) kendi bölümlerindedir.
+- Her modülün ayarları kendi sınıfındadır (`BookingOptions`) ve `Modules:{Modül}` bölümünden okunur. Ortak altyapı ayarları (`Messaging`, `Hosting`, `Database`) kendi bölümlerindedir. Veritabanı bağlantısı `ConnectionStrings:festos` ve `Database:Passwords:{rol}` ile verilir ([building-blocks §5.2](../modules/building-blocks.md#52-bağlantılar)).
 - Her ayar sınıfı doğrulama kuralları taşır (zorunlu, aralık). Doğrulama kodu derleme zamanında üretilir (`[OptionsValidator]`); çalışırken yansıma kullanılmaz ([kaynak](https://learn.microsoft.com/en-us/dotnet/core/extensions/options-validation-generator)).
 - **Açılışta doğrulama:** Tüm ayar sınıfları `ValidateOnStart()` ile kaydedilir. Eksik ya da hatalı bir ayar, uygulamanın ilk isteği almadan, açılışta hata vermesine yol açar ([kaynak](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-10.0)). Hatalı yapılandırmayla yayına çıkan uygulama, ilk kullanıcı o özelliğe ulaşana kadar sessiz kalmaz.
 - Ayar sınıfları kodda `IOptions<T>` ile alınır. Ayar değişikliği yeniden başlatma gerektirdiği için `IOptionsMonitor` kullanılmaz.
@@ -135,3 +135,4 @@ S1'de dış servis yoktur. Sonraki sürümlerde (e-posta S6, güzergah hesabı S
 | 2026-09-25 | v1.0 | P-04 = 15, P-16 = 24 saat. |
 | 2026-09-25 | v1.1 | Özellik bayrağı yerine bitmemiş işlerin nasıl ele alınacağı bağlandı (D.1). |
 | 2026-09-25 | v1.2 | Ortamlar belgesine bağlantı (D.3). |
+| 2026-09-30 | v1.3 | `Database` bölümü ve veritabanı bağlantı ayarları (Faz 1.1). |

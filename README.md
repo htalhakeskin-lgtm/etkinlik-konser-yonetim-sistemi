@@ -130,7 +130,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | [API](docs/standards/api.md) | v1.5 |
 | [Güvenlik](docs/standards/security.md) | v1.3 |
 | [Gözlemlenebilirlik](docs/standards/observability.md) | v1.2 |
-| [Yapılandırma](docs/standards/configuration.md) | v1.2 |
+| [Yapılandırma](docs/standards/configuration.md) | v1.3 |
 | [Arayüz](docs/standards/ui.md) | v1.3 |
 
 **Çalışma süreci ve işletim**
@@ -141,12 +141,12 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | [Test stratejisi](docs/standards/testing.md) | v1.4 |
 | [Bitti tanımı](docs/standards/definition-of-done.md) | v1.2 |
 | [Sürekli entegrasyon](docs/standards/ci.md) | v1.6 |
-| [09 — Ortamlar ve yayın](docs/09-environments-and-deployment.md) | v1.2 |
+| [09 — Ortamlar ve yayın](docs/09-environments-and-deployment.md) | v1.3 |
 | [10 — İşletim el kitabı](docs/10-operations.md) | v1.0 |
 | [11 — Ekran şablonları ve envanteri](docs/11-screens.md) | v1.0 |
 | [Ekran tasarım özeti (v0)](docs/design/screen-brief.md) | v1.1 |
 | [12 — Uygulama planı (Faz 1: S1)](docs/12-implementation-plan.md) | v1.0 |
-| [Modül tasarımı: Ortak yapı taşları](docs/modules/building-blocks.md) | v1.5 |
+| [Modül tasarımı: Ortak yapı taşları](docs/modules/building-blocks.md) | v1.6 |
 
 ### Teknoloji
 

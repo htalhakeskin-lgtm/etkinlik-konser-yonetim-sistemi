@@ -11,10 +11,27 @@ IResourceBuilder<PostgresServerResource> postgres = builder
 
 IResourceBuilder<PostgresDatabaseResource> database = postgres.AddDatabase("festos");
 
+// The connection string carries the administrator's credentials; the Host uses them only to prepare
+// the database, then every module connects with its own role (building-blocks §5).
 IResourceBuilder<ProjectResource> host = builder
     .AddProject<Projects.FestOS_Host>("host")
     .WithReference(database)
     .WaitFor(database);
+
+// One generated password per database role, kept in this project's user secrets (building-blocks
+// BB-07). A module's role is added here together with the module; the Host fails at startup when a
+// registered module has no password.
+string[] databaseRoles = ["festos_migrator"];
+foreach (string role in databaseRoles)
+{
+    IResourceBuilder<ParameterResource> password = builder.AddParameter(
+        $"{role.Replace('_', '-')}-password",
+        new GenerateParameterDefault { MinLength = 32, Special = false },
+        secret: true,
+        persist: true
+    );
+    host.WithEnvironment($"Database__Passwords__{role}", password);
+}
 
 // Vite dev server; it proxies /api and /hubs to the Host (src/web/vite.config.ts). Packages are
 // installed once with "pnpm install" at the repository root, so Aspire does not install them.
