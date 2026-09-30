@@ -14,4 +14,11 @@ public sealed class MessagingOptions
     /// </summary>
     [Range(typeof(TimeSpan), "00:00:01", "00:10:00")]
     public TimeSpan PollInterval { get; set; } = TimeSpan.FromSeconds(5);
+
+    /// <summary>
+    /// P-08: the latency target from an event's occurrence to its delivery; a slower delivery is logged
+    /// as a warning (observability §5). The upper limit, P-15, is watched by an alert on the latency metric.
+    /// </summary>
+    [Range(typeof(TimeSpan), "00:00:00.010", "00:01:00")]
+    public TimeSpan EventLatencyTarget { get; set; } = TimeSpan.FromMilliseconds(300);
 }

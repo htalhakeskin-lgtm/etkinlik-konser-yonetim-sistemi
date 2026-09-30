@@ -5,6 +5,7 @@ using FestOS.BuildingBlocks.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace FestOS.BuildingBlocks.Infrastructure.Messaging;
 
@@ -16,6 +17,8 @@ namespace FestOS.BuildingBlocks.Infrastructure.Messaging;
 public sealed partial class OutboxProcessor(
     IServiceScopeFactory scopes,
     IEventBus bus,
+    MessagingMetrics metrics,
+    IOptions<MessagingOptions> options,
     TimeProvider timeProvider,
     ILogger<OutboxProcessor> logger
 )
@@ -52,17 +55,24 @@ public sealed partial class OutboxProcessor(
             {
                 DateTimeOffset now = timeProvider.GetUtcNow();
 
-                // Unqualified: the module role's search_path starts with the module's schema.
+                // Unqualified: the module role's search_path starts with the module's schema. A message
+                // waits while an older one with the same ordering key is undelivered, even a failed one,
+                // so a batch holds at most one message per key and each key's events stay in order.
                 List<OutboxMessage> messages = await context
                     .Set<OutboxMessage>()
                     .FromSql(
                         $"""
-                        SELECT * FROM outbox_messages
-                        WHERE dispatched_at IS NULL AND failed_at IS NULL
-                          AND (next_attempt_at IS NULL OR next_attempt_at <= {now})
-                        ORDER BY sequence
+                        SELECT message.* FROM outbox_messages message
+                        WHERE message.dispatched_at IS NULL AND message.failed_at IS NULL
+                          AND (message.next_attempt_at IS NULL OR message.next_attempt_at <= {now})
+                          AND NOT EXISTS (
+                              SELECT 1 FROM outbox_messages older
+                              WHERE older.ordering_key = message.ordering_key
+                                AND older.sequence < message.sequence
+                                AND older.dispatched_at IS NULL)
+                        ORDER BY message.sequence
                         LIMIT {BatchSize}
-                        FOR UPDATE SKIP LOCKED
+                        FOR UPDATE OF message SKIP LOCKED
                         """
                     )
                     .ToListAsync(retryCancellationToken);
@@ -90,6 +100,13 @@ public sealed partial class OutboxProcessor(
                 JsonSerializer.Deserialize(message.Payload, type, Outbox.JsonOptions)!;
             await bus.PublishAsync(integrationEvent, cancellationToken);
             message.DispatchedAt = timeProvider.GetUtcNow();
+
+            TimeSpan latency = message.DispatchedAt.Value - message.OccurredAt;
+            metrics.RecordDelivered(moduleName, eventName, latency);
+            if (latency > options.Value.EventLatencyTarget)
+            {
+                LogSlowDelivery(logger, message.Id, moduleName, latency.TotalMilliseconds);
+            }
         }
         catch (Exception exception) when (exception is not OperationCanceledException)
         {
@@ -102,6 +119,7 @@ public sealed partial class OutboxProcessor(
             if (message.AttemptCount >= MaxAttempts)
             {
                 message.FailedAt = now;
+                metrics.RecordFailed(moduleName, eventName);
                 LogFailed(logger, exception, message.Id, moduleName, message.AttemptCount);
             }
             else
@@ -110,6 +128,19 @@ public sealed partial class OutboxProcessor(
                 LogRetrying(logger, exception, message.Id, moduleName, message.AttemptCount);
             }
         }
+    }
+
+    /// <summary>How many of the module's messages still wait for delivery, failed ones excluded.</summary>
+    public async Task<int> CountPendingAsync(string moduleName, CancellationToken cancellationToken)
+    {
+        await using AsyncServiceScope scope = scopes.CreateAsyncScope();
+        scope.ServiceProvider.GetRequiredService<ActingUser>().ActAsSystem();
+        int pending = await scope
+            .ServiceProvider.GetRequiredKeyedService<ModuleDbContext>(moduleName)
+            .Set<OutboxMessage>()
+            .CountAsync(message => message.DispatchedAt == null && message.FailedAt == null, cancellationToken);
+        metrics.SetPending(moduleName, pending);
+        return pending;
     }
 
     private static string Describe(Exception exception)
@@ -132,6 +163,17 @@ public sealed partial class OutboxProcessor(
         Guid messageId,
         string moduleName,
         int attemptCount
+    );
+
+    [LoggerMessage(
+        Level = LogLevel.Warning,
+        Message = "Event {MessageId} of module {ModuleName} reached its listeners after {LatencyMilliseconds} ms, over the target"
+    )]
+    private static partial void LogSlowDelivery(
+        ILogger logger,
+        Guid messageId,
+        string moduleName,
+        double latencyMilliseconds
     );
 
     [LoggerMessage(
