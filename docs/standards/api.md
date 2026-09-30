@@ -1,6 +1,6 @@
 # API Standardı
 
-> **Durum:** v1.9 · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.10 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 15](#15-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -238,6 +238,7 @@ Hata eşlemesi tek bir hata işleyicidedir: kodu `BuildingBlocks.Infrastructure`
 | `BusinessRuleViolationException` | 422 | Kural numarası |
 | Veritabanı kısıt ihlali (kural koduna eşlenmiş) | 422 | Eşlenen kural numarası ([database §12.1](database.md#121-kısıtlar)) |
 | Yetki eksikliği | 403 | `forbidden` |
+| İstek sahteciliği denetimi ([§11](#11-güvenlik-kuralları)) | 403 | `csrfRejected` |
 | `BusinessRuleViolationException` (yetki türündeki kural) | 403 | Kural numarası |
 | `NotFoundException` | 404 | `notFound` |
 | Sürüm çakışması | 412 | `concurrencyConflict` |
@@ -295,7 +296,7 @@ Oturum [ADR-0011](../adr/0011-authentication.md)'deki gibi sunucu tarafı oturum
 | Konu | Kural |
 |---|---|
 | Oturum çerezi | `HttpOnly`, `Secure`, `SameSite=Strict` |
-| İstek sahteciliği (CSRF) | Üç katman ([kaynak](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html)): (1) `SameSite=Strict` çerez; (2) değiştiren isteklerde antiforgery belirteci `X-XSRF-TOKEN` başlığında, `BuildingBlocks.Infrastructure`'daki ve Host'un kaydettiği ara katmanda doğrulanır; (3) tarayıcının `Sec-Fetch-Site: cross-site` bildirdiği değiştiren istekler reddedilir. Belirteç, giriş ve `/api/v1/me` yanıtlarında JavaScript'in okuyabildiği bir çerezle verilir; istek sarmalayıcısı onu başlığa kopyalar. ASP.NET Core, JSON gövdeli Minimal API uç noktalarında belirteci kendiliğinden doğrulamaz; bu yüzden doğrulama açıkça ara katmanda yapılır ([kaynak](https://learn.microsoft.com/en-us/aspnet/core/security/anti-request-forgery?view=aspnetcore-10.0)). |
+| İstek sahteciliği (CSRF) | Üç katman ([kaynak](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html)): (1) `SameSite=Strict` çerez; (2) değiştiren isteklerde antiforgery belirteci `X-XSRF-TOKEN` başlığında, `BuildingBlocks.Infrastructure`'daki ve Host'un kaydettiği ara katmanda doğrulanır; (3) tarayıcının `Sec-Fetch-Site: cross-site` bildirdiği değiştiren istekler reddedilir. Belirteç, giriş, `/api/v1/me` ve anonim `GET /api/v1/antiforgery` yanıtlarında JavaScript'in okuyabildiği `__Host-festos_xsrf` çereziyle verilir; istek sarmalayıcısı onu başlığa kopyalar. Eşi olan çerez belirteci `HttpOnly`'dir (`__Host-festos_antiforgery`). Reddedilen istek `403`, `code: csrfRejected` alır; ön yüz yeni belirteç alıp bir kez yeniden dener. ASP.NET Core, JSON gövdeli Minimal API uç noktalarında belirteci kendiliğinden doğrulamaz; bu yüzden doğrulama açıkça ara katmanda yapılır ([kaynak](https://learn.microsoft.com/en-us/aspnet/core/security/anti-request-forgery?view=aspnetcore-10.0)). |
 | CORS | Kapalı. Ön yüz ve API aynı adrestedir; başka kaynaktan çağrıya izin verilmez. |
 | Kimliği doğrulanmamış istek | `401` ve Problem Details döner; giriş sayfasına yönlendirme (302) yapılmaz. |
 | Anonim uç noktalar | Yalnızca giriş, antiforgery belirteci alma ve sağlık kontrolleri (AT-09) |
@@ -406,3 +407,4 @@ Oturum [ADR-0011](../adr/0011-authentication.md)'deki gibi sunucu tarafı oturum
 | 2026-09-30 | v1.7 | §8.3'e `428 versionRequired`; §9'da kabul edilen `If-Match` biçimi (Faz 1.1). |
 | 2026-09-30 | v1.8 | §8.3'e tekrar güvenliği kodları; §10'da saklanan şey komutun sonucudur (Faz 1.1). |
 | 2026-09-30 | v1.9 | §8.3'e `idempotencyKeyMissing`; §10'da anahtarın biçimi (Faz 1.1). |
+| 2026-09-30 | v1.10 | §8.3'e `csrfRejected`; §11'de belirteç çerezleri ve uç noktası (Faz 1.1). |

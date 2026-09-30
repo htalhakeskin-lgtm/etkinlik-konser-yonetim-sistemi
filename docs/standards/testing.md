@@ -1,6 +1,6 @@
 # Test Stratejisi
 
-> **Durum:** v1.4 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.5 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 14](#14-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -103,7 +103,7 @@ S1'de aday değişmezler:
 | Veritabanı | Test projesi başına bir PostgreSQL 18 konteyneri (xUnit v3 derleme düzeyi paylaşımı, `AssemblyFixture`; [kaynak](https://dotnet.testcontainers.org/test_frameworks/xunit_net/)). Migration'lar bir kez uygulanır. Testler arasında Respawn verileri temizler. |
 | Veritabanı rolleri | Uygulama testte de modülün kendi veritabanı rolüyle bağlanır ([database §4](database.md#4-roller-ve-yetkiler)). Eksik bir yetki testte ortaya çıkar, yayında değil. |
 | Kimlik doğrulama | Test yardımcısı, istenen rollerde bir kullanıcı için gerçek oturum kaydı ve çerez üretir. Yetki kontrolü atlanmaz; giriş uç noktasının kendisi ayrıca test edilir. |
-| İstek başlıkları | Test HTTP istemcisi, ön yüzdeki istek sarmalayıcısı gibi CSRF başlığını ve `Idempotency-Key`'i otomatik ekler. Bu başlıkların eksik olduğu durumlar ayrı testlerle sınanır. |
+| İstek başlıkları | Test HTTP istemcisi (`FestOS.Testing`'deki `BrowserLikeHandler`), ön yüzdeki istek sarmalayıcısı gibi çerezleri saklar, CSRF başlığını ve `Idempotency-Key`'i otomatik ekler; istekler HTTPS üzerinden gider. Test kendi başlığını koyduysa ona dokunmaz; bu başlıkların eksik ya da yanlış olduğu durumlar böyle ayrı testlerle sınanır. |
 | Olaylar | Outbox dağıtıcısı test uygulamasında da çalışır. Test yardımcısı, bekleyen tüm olaylar işlenene kadar bekler (üst süre sınırıyla); sabit süreli bekleme (`Task.Delay`) kullanılmaz. |
 | Zaman | Uygulamaya `FakeTimeProvider` verilir; son tarihler ve otomatik geçişler saat ilerletilerek sınanır. |
 | Anlık bildirimler | Test, SignalR istemcisiyle test sunucusuna bağlanır ve mesajın geldiğini doğrular. |
@@ -248,3 +248,4 @@ Hedef aşılırsa önce yavaş testler incelenir; test silmek son çaredir.
 | 2026-09-25 | v1.2 | Tasarım sistemi bileşenleri için Storybook örnekleriyle tarayıcı testleri ve erişilebilirlik taraması (D.4). |
 | 2026-09-26 | v1.3 | Ön yüz testlerinin iki Vitest projesi ve çalıştırma komutları (Faz 1.0). |
 | 2026-09-26 | v1.4 | Uçtan uca testlerin erişilebilirlik taraması ve çalıştırma biçimi (Faz 1.0). |
+| 2026-09-30 | v1.5 | §6: test HTTP istemcisinin adı ve davranışı (Faz 1.1). |

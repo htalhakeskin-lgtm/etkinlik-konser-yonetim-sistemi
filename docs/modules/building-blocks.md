@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.20 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.21 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -282,6 +282,11 @@ Anahtar denetimi `If-Match`'ten önce yapılır; filtre sırası bunu garanti ed
 ### 9.4 CSRF, başlıklar, sürüm
 
 - **CSRF** ([api §11](../standards/api.md#11-güvenlik-kuralları)): antiforgery belirteci değiştiren isteklerde `X-XSRF-TOKEN` başlığından ara katmanda doğrulanır; `Sec-Fetch-Site: cross-site` bildiren değiştiren istekler reddedilir. Belirteç çerezini veren uç nokta (`GET /api/v1/antiforgery`) 1.1'de, `/api/v1/me` ise 1.2'de yazılır.
+  - `UseCsrfProtection()` (10) değiştiren her `/api` isteğini denetler: önce `Sec-Fetch-Site`, sonra belirteç. Reddedilen istek `403` (`csrfRejected`) alır. Belirteç oturumdaki kullanıcıya bağlı olduğu için Host bu ara katmanı kimlik doğrulamanın arkasına koyar.
+  - `MapAntiforgeryToken()` anonim `GET /api/v1/antiforgery` uç noktasını ekler (`204`). Belirteci veren `IssueAntiforgeryToken()` yardımcısını 1.2'de giriş ve `/api/v1/me` da çağırır; girişten önce verilen belirteç kullanıcıyla eşleşmez.
+  - Çerezler: `__Host-festos_antiforgery` (çerez belirteci, `HttpOnly`) ve `__Host-festos_xsrf` (istek belirteci; ön yüz okur ve başlığa kopyalar). İkisi de `Secure`, `SameSite=Strict`, `Path=/`. Geliştirmede önek ve `Secure` yoktur (BB-11).
+  - Veri koruma uygulama adı `FestOS`'tur ([security §7](../standards/security.md#7-veri-koruma-anahtarları)); anahtarların veritabanında saklanması Identity modülüyle (1.2) gelir.
+  - Test istemcisi (`FestOS.Testing`'deki `BrowserLikeHandler`) ön yüz gibi davranır: çerezleri saklar, belirteci alır, değiştiren isteklere belirteci ve yeni bir `Idempotency-Key` ekler ([testing §6](../standards/testing.md#6-entegrasyon-testleri)).
 - **Güvenlik başlıkları** ön yüz yanıtlarına (`/api` dışındaki her yanıt) [security §8](../standards/security.md#8-tarayıcı-güvenlik-başlıkları)'deki gibi, `/api` yanıtlarına `Cache-Control: no-store` ve `nosniff` eklenir (8a, 8b). Ön yüz geliştirmede Vite'tan sunulduğu için `style-src 'unsafe-inline'`'ın Base UI ile gerekip gerekmediği, Host derlenmiş ön yüzü sunmaya başladığında (uçtan uca testler yayın kopyası yığınla çalışınca) denenir.
 - **`X-App-Version`:** Her API yanıtında, MinVer'in derleme sürümüyle.
 
@@ -384,6 +389,7 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | BB-08 | Platform testleri | `tests` altında yalnızca testlerde kullanılan bir test modülüyle | S1; platform hataları iş kurallarından ayrı yakalanır |
 | BB-09 | İşlem geçmişi tablosu | 1.1'de Audit iskeletiyle kurulur; okuma 1.2'de | S2; işlem geçmişi ilk modülden itibaren eksiksiz |
 | BB-10 | Geliştirmede veritabanı rolleri | Yayındaki gibi modül başına rol | S3; yetki hataları geliştirirken görülür |
+| BB-11 | Geliştirmede çerezler | Geliştirme ortamı düz HTTP'dir (Host `http://localhost:5080`, Vite vekil sunucusu); çerezler orada `__Host-` öneki ve `Secure` olmadan verilir. Diğer ortamlar Caddy arkasında HTTPS'tir ve öneki kullanır. | `__Host-` önekli ve `Secure` çerez düz HTTP'de kurulamaz; ASP.NET antiforgery de `Secure` zorunluyken HTTP isteğini reddeder. Uçtan uca testler yayındaki HTTPS'le çalıştığı için önekli çerezler yine sınanır ([ci §4](../standards/ci.md#4-pr-hattı)). |
 
 ## 17. Değişiklik kaydı
 
@@ -412,3 +418,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.18 | §9.2 `If-Match` uygulama ayrıntıları; 9. PR ikiye bölündü (9a ETag ve `If-Match`, 9b tekrar güvenliği). |
 | 2026-09-30 | v1.19 | §9.3 uygulama ayrıntıları: saklanan, komutun sonucu; tekrarında uç nokta yanıtı yeniden kurar (9b-1). 9b ikiye bölündü. |
 | 2026-09-30 | v1.20 | §9.3 filtre ve temizlik işinin uygulama ayrıntıları (9b-2). |
+| 2026-09-30 | v1.21 | §9.4 CSRF uygulama ayrıntıları (10. PR); BB-11 geliştirmede çerezler. |

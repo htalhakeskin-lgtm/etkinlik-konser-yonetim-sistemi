@@ -6,6 +6,7 @@ using FestOS.BuildingBlocks.Application.Errors;
 using FestOS.BuildingBlocks.Infrastructure.Http.Json;
 using FestOS.BuildingBlocks.Infrastructure.Idempotency;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,7 +39,7 @@ public static class HttpPlatformExtensions
 
     /// <summary>
     /// Registers the exception handler, the Problem Details writer, the JSON rules, the body limit, the
-    /// request's expected version and its idempotency key.
+    /// request's expected version and idempotency key, and the antiforgery tokens.
     /// </summary>
     public static IHostApplicationBuilder AddHttpPlatform(this IHostApplicationBuilder builder)
     {
@@ -51,6 +52,12 @@ public static class HttpPlatformExtensions
         );
         builder.Services.TryAddScoped<ExpectedVersion>();
         builder.Services.TryAddScoped<IdempotencyRequest>();
+
+        // A fixed name, so a release in another folder still reads the keys of the last one (security §7).
+        builder.Services.AddDataProtection().SetApplicationName("FestOS");
+        builder.Services.AddAntiforgery(options =>
+            CsrfProtection.Configure(options, plainHttp: builder.Environment.IsDevelopment())
+        );
         return builder;
     }
 

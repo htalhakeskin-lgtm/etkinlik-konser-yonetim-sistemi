@@ -3,7 +3,6 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using FestOS.Modules.Sample.Infrastructure;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,7 +22,7 @@ public sealed class IdempotencyHttpTests(SampleModuleFixture fixture) : IAsyncLi
     {
         await fixture.ResetAsync();
         _app = await fixture.StartWebApplicationAsync();
-        _client = _app.GetTestClient();
+        _client = SampleModuleFixture.CreateClient(_app);
     }
 
     public async ValueTask DisposeAsync()
