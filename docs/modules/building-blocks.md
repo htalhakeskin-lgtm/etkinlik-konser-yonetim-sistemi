@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.15 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.16 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -227,6 +227,13 @@ Kararlar [ADR-0010](../adr/0010-messaging-infrastructure.md)'da, tablolar [datab
 - JSON ayarları [api §5.1](../standards/api.md#51-serileştirici-ayarları)'dedir: bilinmeyen ve tekrarlanan alan reddi, boş olabilirlik, `decimal` metin, süre tamsayı dakika, `null`'ların yazılması.
 - Gelen metinlerin kırpılması ve NFC biçimi bir JSON dönüştürücüsüyle yapılır; `[Sensitive]` alanlar dışarıda kalır.
 
+**Uygulama ayrıntıları** (8a):
+- Host `builder.AddHttpPlatform()` ve ilk ara katman olarak `app.UseHttpPlatform()` çağırır (BB-01). Hata işleyici (`ProblemDetailsExceptionHandler`) yanıtı ASP.NET'in `IProblemDetailsService`'iyle yazar; yalnızca beklenmeyen hataları (`500`) `Error` olarak loglar, beklenen sonuçları dekoratörler loglar.
+- Gövdesiz hatalar (bilinmeyen adres `404`, izin verilmeyen yöntem `405` gibi) de `code` alanlı Problem Details döner; ASP.NET'in RFC bağlantılı `type`'ı projenin URN'sine çevrilir. `traceId` her zaman 32 karakterlik OpenTelemetry iz kimliğidir.
+- JSON okuma hatası (`BadHttpRequestException`) `malformedRequest` olur; `500`'ün `detail`'i her zaman genel bir metindir.
+- FluentValidation kodlarının karşılığı ve parametre adları [api §8.2](../standards/api.md#82-doğrulama-hataları)'dedir. Tabloda olmayan yerleşik kurallar `invalid`, projenin kendi kodları (ör. `unsupportedSort`) olduğu gibi döner; gönderilen değer ya da uzunluğu parametrelere girmez.
+- `/api` yanıtlarına `X-App-Version` (MinVer'in derleme sürümü, derleme bilgisi olmadan), `Cache-Control: no-store` ve `X-Content-Type-Options: nosniff` eklenir.
+
 ### 9.2 ETag ve `If-Match`
 
 - Toplu kök döndüren uç noktalar `ETag: "{version}"` başlığını ekler (uç nokta sonucunun bir yardımcısıyla).
@@ -315,7 +322,8 @@ Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir
 | 6b-2 | Dağıtıcı | Arka plan dağıtıcısı, işlem sonrası sinyal, yedek tarama (`Messaging:PollInterval`), iz bağlamı |
 | 6c | Sıra ve ölçümler | Sıra anahtarı, ölçümler |
 | 7 | Zamanlanmış işler ve kilitler | `IScheduledJob` ve çalıştırıcı, danışma kilitleri, outbox / inbox temizliği; sahte zamanla testler |
-| 8 | Hata yanıtları ve JSON | `IExceptionHandler`, doğrulama eşlemesi, JSON ayarları, metin kırpma, `X-App-Version`, güvenlik başlıkları |
+| 8a | Hata yanıtları ve API başlıkları | `IExceptionHandler`, doğrulama eşlemesi, gövdesiz hatalar, `X-App-Version`, `/api` başlıkları |
+| 8b | JSON ve ön yüz başlıkları | JSON ayarları, metin kırpma, ön yüz güvenlik başlıkları |
 | 9 | ETag ve tekrar güvenliği | `IfMatchFilter`, `IdempotencyFilter`, `idempotency_keys`; eşzamanlılık testleri |
 | 10 | CSRF | Antiforgery ara katmanı, `Sec-Fetch-Site`, belirteç uç noktası |
 | 11 | OpenAPI ve Orval | Dönüştürücüler, dosyaya üretim, Orval, sözleşme testi, CI güncellik denetimleri; AT-14, AT-15 |
@@ -373,3 +381,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.13 | §7 dağıtıcının uygulama ayrıntıları (6b-2). |
 | 2026-09-30 | v1.14 | §7 sıra ve ölçümlerin uygulama ayrıntıları (6c). |
 | 2026-09-30 | v1.15 | §8 uygulamaya göre yeniden yazıldı: temel sınıf yerine `IScheduledJob` ve tek çalıştırıcı, havuz dışı kilit bağlantısı, ölçüm, outbox / inbox temizliği (7. PR). |
+| 2026-09-30 | v1.16 | §9.1 hata yanıtlarının uygulama ayrıntıları; 8. PR ikiye bölündü (8a hata yanıtları, 8b JSON ve ön yüz başlıkları). |

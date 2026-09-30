@@ -1,6 +1,6 @@
 # API Standardı
 
-> **Durum:** v1.5 · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.6 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 15](#15-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -210,7 +210,21 @@ Tüm hatalar RFC 9457 "Problem Details" biçimindedir (`Content-Type: applicatio
 }
 ```
 
-- Doğrulama kodları FluentValidation kurallarından eşlenir ve `validation:{kod}` çeviri anahtarına karşılık gelir.
+- Doğrulama kodları FluentValidation kurallarından eşlenir ve `validation:{kod}` çeviri anahtarına karşılık gelir:
+
+  | Kod | FluentValidation kuralı | `params` |
+  |---|---|---|
+  | `required` | `NotEmpty`, `NotNull` | — |
+  | `maxLength` / `minLength` | `MaximumLength` / `MinimumLength` | `max` / `min` |
+  | `length` | `Length` | `min`, `max` |
+  | `range` | `InclusiveBetween`, `ExclusiveBetween` | `min`, `max` |
+  | `min` / `max` | `GreaterThanOrEqualTo` / `LessThanOrEqualTo` | `min` / `max` |
+  | `greaterThan` / `lessThan` | `GreaterThan` / `LessThan` | `value` |
+  | `email`, `pattern`, `invalidValue` | `EmailAddress`, `Matches`, `IsInEnum` | — |
+  | `invalid` | Tabloda olmayan diğer yerleşik kurallar | — |
+  | Projenin kendi kodu (ör. `unsupportedSort`, §6.2) | `WithErrorCode(...)` | kuralın verdiği değerler, camelCase |
+
+  Gönderilen değer ve uzunluğu `params`'a girmez.
 - Toplu girişte (ör. yapıştırılan seri numarası listesi, US-EQP-003) işaretçi satırı da gösterir (`/units/3/serialNumber`); ön yüz hatalı satırları işaretler.
 
 ### 8.3 İstisnaların eşlenmesi
@@ -383,3 +397,4 @@ Oturum [ADR-0011](../adr/0011-authentication.md)'deki gibi sunucu tarafı oturum
 | 2026-09-25 | v1.3 | Hata mesajı örneği Türkçe ek kuralına göre düzeltildi (D.4). |
 | 2026-09-30 | v1.4 | Hata işleyici ve CSRF ara katmanının kodu `BuildingBlocks.Infrastructure`'da; Host yalnızca kaydeder ([building-blocks BB-01](../modules/building-blocks.md#16-kararlar)). |
 | 2026-09-30 | v1.5 | Sıralama hatasının doğrulama kodu `unsupportedSort` (§6.2). |
+| 2026-09-30 | v1.6 | §8.2 doğrulama kodlarının tablosu (Faz 1.1). |
