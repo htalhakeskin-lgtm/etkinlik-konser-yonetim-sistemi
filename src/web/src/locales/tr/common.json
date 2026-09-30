@@ -4,5 +4,9 @@
   },
   "home": {
     "placeholder": "Uygulamanın iskeleti hazır. Ekranlar sonraki adımlarda eklenecek."
+  },
+  "versionBanner": {
+    "message": "Yeni sürüm hazır. İşinizi bitirince sayfayı yenileyin.",
+    "reload": "Yenile"
   }
 }
