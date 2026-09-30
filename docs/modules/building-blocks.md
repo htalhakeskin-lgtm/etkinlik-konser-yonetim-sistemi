@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.24 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.25 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -336,6 +336,14 @@ Anahtar denetimi `If-Match`'ten önce yapılır; filtre sırası bunu garanti ed
 | SignalR istemcisi (`lib/realtime.ts`) | Tek bağlantı, otomatik yeniden bağlanma, grup katılımı, `resourceChanged` → TanStack Query geçersiz kılma, bağlantı durumu (`ConnectionIndicator` için) |
 | Ortak bileşenlerin ilk seti | `EmptyState`, `ErrorState` (iz kimliğiyle), `SkeletonBlock`, `PageHeader`, `ConnectionIndicator`, `VersionBanner`, `ConfirmDialog`; her biri Storybook örneği ve erişilebilirlik testiyle ([ui §6.2](../standards/ui.md#62-ortak-bileşenler)) |
 
+**Uygulama ayrıntıları** (13a):
+- İstek sarmalayıcısı değiştiren isteğe `X-XSRF-TOKEN` ve `Idempotency-Key` ekler. Belirteç `__Host-festos_xsrf` çerezinden (geliştirmede `festos_xsrf`, BB-11) okunur; çerez yoksa önce `GET /api/v1/antiforgery` çağrılır. Sunucu `403 csrfRejected` dönerse yeni belirteç alınır ve istek aynı anahtarla bir kez daha gönderilir.
+- Anahtar her çağrıda `crypto.randomUUID()` ile üretilir. Kullanıcının "Yeniden dene" düğmesi gibi kendi yeniden denemesini yapan çağıran, aynı anahtarı başlıkta geçirir.
+- Yanıt alamayan değiştiren istek 1 ve 3 saniye sonra aynı anahtarla yeniden gönderilir; sorgular TanStack Query'nin kendi yeniden denemesine bırakılır. İptal edilen istek yeniden denenmez.
+- `X-App-Version`, derlemenin `VITE_APP_VERSION` değeriyle karşılaştırılır (`lib/app-version.ts`). Değeri yayın derlemesi verir; geliştirme derlemesinde değer yoktur ve karşılaştırma yapılmaz.
+- `ApiError` (`lib/api-error.ts`) Problem Details'ten `status`, `code`, `params`, `errors` ve `traceId`'yi okur. Yanıt alınamayan istekte `status` 0, `code` `network`'tür.
+- `errorMessage` kodun `errors:` çevirisini, `fieldErrors` doğrulama hatalarının `validation:` çevirisini ve form yolunu verir (`lib/api-error-messages.ts`). Çevirisi olmayan kod genel metne düşer. `errors` ve `validation` ad alanları eklendi.
+
 ## 13. Testler
 
 | Katman | Ne | Nerede |
@@ -352,7 +360,7 @@ CI'a `backend-integration` işi eklenir (Testcontainers, [ci §4](../standards/c
 
 ## 14. PR planı
 
-Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir. 2., 3., 4., 5., 6., 8., 9. ve 11. PR'lar, 400 satır sınırı için bölündü.
+Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir. 2., 3., 4., 5., 6., 8., 9., 11. ve 13. PR'lar, 400 satır sınırı için bölündü.
 
 | # | PR | Kapsam |
 |---|---|---|
@@ -382,7 +390,8 @@ Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir
 | 11a | OpenAPI belgesi | Dönüştürücüler, dosyaya üretim, `backend` işinde güncellik denetimi |
 | 11b | Orval ve sözleşme testi | Orval, sözleşme testi, `frontend` işinde güncellik denetimi; AT-14, AT-15 |
 | 12 | Anlık bildirimler | Hub, grup yetkileri, `ResourceChangedPublisher` |
-| 13 | Ön yüz platformu | İstek sarmalayıcısı, `ApiError`, sürüm şeridi, SignalR istemcisi |
+| 13a | İstek sarmalayıcısı ve hatalar | İstek sarmalayıcısı, `ApiError`, hata ve doğrulama çevirileri, form yardımcısı |
+| 13b | Sürüm şeridi ve anlık bildirim istemcisi | `VersionBanner`, SignalR istemcisi, sorgu geçersiz kılma |
 | 14 | Ortak bileşenler | `EmptyState`, `ErrorState`, `SkeletonBlock`, `PageHeader`, `ConnectionIndicator`, `ConfirmDialog` |
 | 15 | İzlenebilirlik | `check_traceability.py`, CI `traceability` işi, DT-03, DT-04 |
 
@@ -445,3 +454,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.22 | §10 OpenAPI belgesinin uygulama ayrıntıları (11a); 11. PR ikiye bölündü. |
 | 2026-09-30 | v1.23 | §10 Orval istemcisi, sözleşme testi ve AT-14 / AT-15'in uygulama ayrıntıları (11b). |
 | 2026-09-30 | v1.24 | §11 anlık bildirimlerin uygulama ayrıntıları (12. PR); ölçüm adı observability'deki gibi `festos.realtime.connections`. |
+| 2026-09-30 | v1.25 | §12 istek sarmalayıcısı ve hataların uygulama ayrıntıları (13a); 13. PR ikiye bölündü. |
