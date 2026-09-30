@@ -59,7 +59,7 @@ describe("errorMessage", () => {
 
   it("falls back to the unexpected error text for an unknown code or error", () => {
     const unexpected = "Beklenmeyen bir hata oluştu. Sorun sürerse iz numarasıyla bildirin.";
-    expect(errorMessage(new ApiError({ status: 422, code: "BR-UNKNOWN-001" }))).toBe(unexpected);
+    expect(errorMessage(new ApiError({ status: 422, code: "SAMPLE-UNKNOWN" }))).toBe(unexpected);
     expect(errorMessage(new Error("boom"))).toBe(unexpected);
   });
 });

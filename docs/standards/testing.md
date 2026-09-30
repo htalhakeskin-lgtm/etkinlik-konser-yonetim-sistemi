@@ -1,6 +1,6 @@
 # Test Stratejisi
 
-> **Durum:** v1.5 · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.6 · **Son güncelleme:** 2026-10-01
 > **Kararlar:** [Bölüm 14](#14-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -178,6 +178,13 @@ Yerelde konteynerin her test çalıştırmasında yeniden açılmaması için Te
 
 Bu denetimle "BR-MRP-002'yi hangi testler doğruluyor?" sorusunun cevabı her zaman vardır ve bir kural testsiz uygulanamaz.
 
+**Denetimin uygulanışı** (`tools/docs/check_traceability.py`, CI'daki `traceability` işi):
+- Tanımlar belgelerden okunur: kurallar 03'ün başlıklarından, geçişler 04'ün tablolarından, hikayeler 02'nin başlıklarından. Üretilen ve kopyalanan kod (`src/web/src/api/`, sözleşme istemcisi, `bin`, `obj`) taranmaz.
+- .NET testlerinde etiket xUnit trait'idir (`[Trait("Rule", …)]`, `[Trait("Transition", …)]`); ön yüz ve uçtan uca testlerde numara testin adında geçer.
+- TR-04'te "API'nin döndürebildiği kural", `src/` altındaki `…RuleCodes` dosyalarında geçen Kısıt, Geçiş ve Yetki türündeki kurallardır.
+- TR-05 ve TR-06'da S1, önceliği "Must" olan hikayelerdir. Raporun ayrıntısı `--report` ile yazdırılır.
+- Testlerde örnek kural kodu gerekiyorsa belgelerde olmayan `BR-` numarası uydurulmaz; `SAMPLE-001` gibi kodlar kullanılır.
+
 ## 11. Test verisi, zaman ve kültür
 
 | Konu | Kural |
@@ -249,3 +256,4 @@ Hedef aşılırsa önce yavaş testler incelenir; test silmek son çaredir.
 | 2026-09-26 | v1.3 | Ön yüz testlerinin iki Vitest projesi ve çalıştırma komutları (Faz 1.0). |
 | 2026-09-26 | v1.4 | Uçtan uca testlerin erişilebilirlik taraması ve çalıştırma biçimi (Faz 1.0). |
 | 2026-09-30 | v1.5 | §6: test HTTP istemcisinin adı ve davranışı (Faz 1.1). |
+| 2026-10-01 | v1.6 | §10: izlenebilirlik denetiminin uygulanışı (Faz 1.1). |
