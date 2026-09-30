@@ -47,9 +47,9 @@ public sealed class SampleModuleFixture : IAsyncLifetime
 
     /// <summary>
     /// Builds another host on the same database with its own clock, e.g. to start it and watch the
-    /// dispatcher work; the caller starts, stops and disposes it.
+    /// dispatcher or a job work; the caller starts, stops and disposes it.
     /// </summary>
-    public IHost CreateHost(TimeProvider time)
+    public IHost CreateHost(TimeProvider time, Action<IServiceCollection>? configure = null)
     {
         HostApplicationBuilder builder = Host.CreateEmptyApplicationBuilder(new HostApplicationBuilderSettings());
         builder.Configuration.AddInMemoryCollection(_settings);
@@ -57,6 +57,7 @@ public sealed class SampleModuleFixture : IAsyncLifetime
         builder.Services.AddSingleton(time);
         builder.Services.AddSingleton<ICurrentUser>(CurrentUser);
         builder.AddModules(new AuditModuleDefinition(), new SampleModuleDefinition());
+        configure?.Invoke(builder.Services);
         return builder.Build();
     }
 

@@ -21,4 +21,12 @@ public sealed class MessagingOptions
     /// </summary>
     [Range(typeof(TimeSpan), "00:00:00.010", "00:01:00")]
     public TimeSpan EventLatencyTarget { get; set; } = TimeSpan.FromMilliseconds(300);
+
+    /// <summary>When delivered outbox messages and inbox records are cleaned up: a cron expression in Istanbul time.</summary>
+    [Required]
+    public string CleanupSchedule { get; set; } = "0 4 * * *";
+
+    /// <summary>How long delivered outbox messages and inbox records are kept (database §15).</summary>
+    [Range(typeof(TimeSpan), "1.00:00:00", "365.00:00:00")]
+    public TimeSpan RetentionPeriod { get; set; } = TimeSpan.FromDays(30);
 }

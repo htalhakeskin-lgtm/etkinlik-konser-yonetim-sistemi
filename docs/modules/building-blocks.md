@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.14 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.15 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -55,7 +55,7 @@ Tasarım değişkenleri, temalar, düğme ve durum rozeti Faz 1.0'da tamamlandı
 | | `Auditing/` | `AuditEntry`, `AuditAction`, `AuditEntryWriter` (5b); `[NotAudited]` alan tiplerinde kullanıldığı için `BuildingBlocks.Domain`'dedir (5b) |
 | | `Messaging/` | `OutboxMessage`, `InboxMessage`, `Outbox` (`IOutbox`'un uygulaması; 6a); `OutboxDispatcher`, `IEventBus` ve süreç içi uygulaması, `InboxIntegrationEventDecorator` (6b) |
 | | `Locking/` | `AdvisoryLocks` (işlem düzeyi ve oturum düzeyi) |
-| | `Jobs/` | `ScheduledJob` (aralıklı ve cron; Cronos) |
+| | `Jobs/` | `IScheduledJob`, `JobSchedule` (aralıklı ve cron; Cronos), `ScheduledJobRunner` |
 | | `Http/` | Problem Details eşleyicisi, JSON ayarları, `IfMatchFilter`, `IdempotencyFilter`, CSRF ara katmanı, güvenlik başlıkları, `X-App-Version` |
 | | `OpenApi/` | Şema ve işlem dönüştürücüleri |
 | | `Realtime/` | `NotificationsHub`, `ResourceChangedPublisher` |
@@ -209,10 +209,14 @@ Kararlar [ADR-0010](../adr/0010-messaging-infrastructure.md)'da, tablolar [datab
 
 ## 8. Zamanlanmış işler ve kilitler
 
-- `ScheduledJob` temel sınıfı ([ADR-0013](../adr/0013-scheduled-jobs.md)): aralıklı işler `PeriodicTimer`, saatli işler Cronos; saatler Europe/Istanbul; zaman `TimeProvider`'dan.
-- Her tur, ayrı bir bağlantıda oturum düzeyi danışma kilidiyle başlar (`{modül}:job:{iş adı}`); kilidi alamayan örnek turu atlar; kilit `finally` içinde bırakılır ([database §11.3](../standards/database.md#113-müsaitlik-kilidi)).
-- İşin kendisi Application'daki bir komuttur; iş sınıfı yalnızca tetikler ([08 §3.4](../08-architecture.md#34-proje-içi-klasörler)).
-- İşlem düzeyi kilit yardımcısı: `AdvisoryLocks.AcquireTransactionLocksAsync(keys)` anahtarları sıralayarak alır (kilitlenmeye karşı).
+- Her iş `IScheduledJob`'ı uygular (ad, modül, zamanlama, çalıştırma) ve modülün `RegisterServices`'inde `AddScheduledJob<T>()` ile kaydedilir. Tek bir arka plan hizmeti (`ScheduledJobRunner`) tüm işleri çalıştırır; böylece iş sınıfları DI kurucusu tekrarı taşımaz ([ADR-0013](../adr/0013-scheduled-jobs.md)).
+- Zamanlama `JobSchedule`'dur: `Every(aralık)` (ilk tur açılıştan bir aralık sonra) ya da `Cron("0 3 * * *")` (Cronos, Europe/Istanbul saatiyle). Bekleme `TimeProvider` ile yapılır; testlerde saat ilerletilerek sınanır.
+- Her tur, modülün rolüyle açılan **ayrı ve havuz dışı** bir bağlantıda oturum düzeyi danışma kilidiyle başlar (`{şema}:job:{iş adı}`); kilidi alamayan örnek turu atlar; kilit `finally` içinde bırakılır, bağlantı kapanınca da düşer ([database §11.3](../standards/database.md#113-müsaitlik-kilidi)).
+- İş kendi kapsamında, sistem kullanıcısı olarak çalışır. Başlangıç ve bitiş süresiyle `Information`, hata `Error` loglanır; süre `festos.jobs.run.duration` ölçümüne `festos.job.name` ve sonuç etiketiyle yazılır ([observability §5](../standards/observability.md#5-ölçümler)). Hatalı tur zamanlamayı durdurmaz.
+- Modül işleri yalnızca Application'daki bir komutu tetikler; işin kendisi komuttadır ([08 §3.4](../08-architecture.md#34-proje-içi-klasörler)).
+- İşlem düzeyi kilit yardımcısı: `AdvisoryLocks.AcquireTransactionLocksAsync(database, keys)` anahtarları sıralayarak alır (kilitlenmeye karşı) ve yalnızca işlem biriminin işlemi içinde çalışır.
+- **Outbox ve inbox temizliği:** her modül için bir `messaging-cleanup` işi, gönderilmiş outbox ve inbox kayıtlarından `Messaging:RetentionPeriod`'dan (30 gün) eski olanları 1000'lik gruplar halinde siler; hatalı olaylar silinmez. Saat `Messaging:CleanupSchedule`'dur (her gün 04:00, İstanbul).
+- Temel bağlantı dizesi yoksa çalıştırıcı bir kez bilgi verip çalışmaz; `migrate` komutunun host'u başlatılmadığı için işler orada çalışmaz.
 
 ## 9. HTTP katmanı
 
@@ -310,7 +314,7 @@ Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir
 | 6b-1 | Teslim | Entegrasyon olayı dinleyicileri, inbox dekoratörü, olay yolu, `OutboxProcessor` (kısmi hata, artan aralıklı deneme, hatalı olaylar); AT-10 |
 | 6b-2 | Dağıtıcı | Arka plan dağıtıcısı, işlem sonrası sinyal, yedek tarama (`Messaging:PollInterval`), iz bağlamı |
 | 6c | Sıra ve ölçümler | Sıra anahtarı, ölçümler |
-| 7 | Zamanlanmış işler ve kilitler | `ScheduledJob`, danışma kilitleri; sahte zamanla testler |
+| 7 | Zamanlanmış işler ve kilitler | `IScheduledJob` ve çalıştırıcı, danışma kilitleri, outbox / inbox temizliği; sahte zamanla testler |
 | 8 | Hata yanıtları ve JSON | `IExceptionHandler`, doğrulama eşlemesi, JSON ayarları, metin kırpma, `X-App-Version`, güvenlik başlıkları |
 | 9 | ETag ve tekrar güvenliği | `IfMatchFilter`, `IdempotencyFilter`, `idempotency_keys`; eşzamanlılık testleri |
 | 10 | CSRF | Antiforgery ara katmanı, `Sec-Fetch-Site`, belirteç uç noktası |
@@ -368,3 +372,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.12 | §7 teslimin uygulama ayrıntıları (6b-1); 6. PR'ın kalanı yeniden bölündü (6b-1 teslim, 6b-2 dağıtıcı, 6c sıra ve ölçümler). |
 | 2026-09-30 | v1.13 | §7 dağıtıcının uygulama ayrıntıları (6b-2). |
 | 2026-09-30 | v1.14 | §7 sıra ve ölçümlerin uygulama ayrıntıları (6c). |
+| 2026-09-30 | v1.15 | §8 uygulamaya göre yeniden yazıldı: temel sınıf yerine `IScheduledJob` ve tek çalıştırıcı, havuz dışı kilit bağlantısı, ölçüm, outbox / inbox temizliği (7. PR). |
