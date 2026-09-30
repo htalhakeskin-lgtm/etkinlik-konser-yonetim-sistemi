@@ -117,7 +117,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | Belge | Sürüm |
 |---|---|
 | [07 — Teknoloji yığını](docs/07-tech-stack.md) | v1.11 |
-| [08 — Mimari ve klasör yapısı](docs/08-architecture.md) | v1.16 |
+| [08 — Mimari ve klasör yapısı](docs/08-architecture.md) | v1.17 |
 | [Mimari karar kayıtları (ADR)](docs/adr/README.md) | 34 kayıt |
 
 **Standartlar** ([dizin](docs/standards/README.md))

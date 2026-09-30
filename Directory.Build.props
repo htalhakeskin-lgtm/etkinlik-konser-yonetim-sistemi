@@ -55,5 +55,10 @@
     <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="all" />
     <PackageReference Include="MinVer" PrivateAssets="all" />
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)BannedSymbols.txt" />
+    <!-- Domain and Application code changes records only through tracked entities (code-style §4.10). -->
+    <AdditionalFiles
+      Include="$(MSBuildThisFileDirectory)BannedSymbols.DomainApplication.txt"
+      Condition="$(MSBuildProjectName.EndsWith('.Domain')) Or $(MSBuildProjectName.EndsWith('.Application'))"
+    />
   </ItemGroup>
 </Project>
