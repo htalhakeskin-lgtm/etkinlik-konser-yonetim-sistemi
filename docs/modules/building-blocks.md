@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.4 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.5 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -123,6 +123,11 @@ Roller ve yetkiler [database §4](../standards/database.md#4-roller-ve-yetkiler)
 | Sürüm | `AggregateRoot.Version` eşzamanlılık belirteci (V-09) |
 | `decimal` | Varsayılan `numeric(19,4)`; farklısı açıkça |
 | Metin uzunlukları | Belirtilmeyen metin kolonu derlemede hata (bir model testiyle denetlenir; [database §6.1](../standards/database.md#61-metin-uzunlukları)) |
+
+- Kurallar `ModuleDbContext`'te uygulanır: `ConfigureConventions` (tip güvenli kimlik dönüştürücüleri, `decimal`, modül içi olayların eşlenmemesi) ve modülün tablo eşlemelerinden sonra `OnModelCreating` (anahtarlar, sürüm, silme davranışı, enum'lar). Tip güvenli kimlikler, bağlamın derlemesinde ve başvurduğu FestOS modül derlemelerinde (modülün Domain projesi) aranır.
+- `UseModuleDatabase(...)` bağlantı ayarlarını tek yerde toplar; `AddModuleDbContext<T>` çalışma zamanında, `migrate` komutu ve tasarım zamanı fabrikaları da bunu kullanır.
+- Tasarım zamanı fabrikalarının bağlantı dizesi çözümlenemeyen bir sunucuyu gösterir (`design-time.invalid`). Böylece yanlışlıkla çalıştırılan bir `dotnet ef` veritabanı komutu yerelde çalışan başka bir veritabanına ulaşamaz.
+- Model kuralları `FestOS.DatabaseTests`'teki model testleriyle (AT-13'ün ad ve uzunluk kısmı, DT-01) tüm modüllerde denetlenir; yeni modül `ModuleContexts` listesine eklenir.
 
 ### 5.4 Migration'ların çalışması
 
@@ -250,7 +255,7 @@ Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir
 | 3a | Veritabanı test altyapısı | `FestOS.Testing` (PostgreSQL konteyneri), `FestOS.DatabaseTests`, DT-05; CI `backend-integration` işi |
 | 3b | Veritabanı hazırlığı | `bootstrap`: roller, eklentiler, rol düzeyi ayarları; testleri |
 | 3c | Modül kaydı | `IModuleDefinition`, `AddModules` (kayıt sırası, dekoratörler bir kez), `MapModules` (`/api/v1`, modül etiketi), `ModuleCatalog`; Host'a bağlanması |
-| 3d | Veritabanı bağlamı ve test modülü | `ModuleDbContext` ve EF kuralları (§5.3), test modülü ve migration'ı, Respawn; DT-01 |
+| 3d | Veritabanı bağlamı ve test modülü | `ModuleDbContext` ve EF kuralları (§5.3), test modülü ve migration'ı; DT-01 (Respawn, veri yazan ilk entegrasyon testleriyle 4. PR'da) |
 | 3e | `migrate` komutu | Hazırlık + tüm modüllerin migration'ları; AppHost'ta rol parolaları ve modül bağlantı dizeleri |
 | 4 | İşlem birimi | Dekoratör, kaydetme adımları 1–3 ve 6, sürüm artışı, kısıt eşlemesi; DT-02 (roller) |
 | 5 | İşlem geçmişi | Audit iskeleti, `audit_entries`, yazıcı, `[NotAudited]` |
@@ -303,3 +308,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.2 | `Paging/` satırı uygulamaya göre netleşti: doğrulayıcılar, `SortField`, `SortableBy`. |
 | 2026-09-30 | v1.3 | 3. PR üçe bölündü: 3a veritabanı test altyapısı, 3b hazırlık, 3c modül kaydı ve veritabanı bağlamı. |
 | 2026-09-30 | v1.4 | 3c ayrıca bölündü: 3c modül kaydı, 3d veritabanı bağlamı ve test modülü, 3e `migrate` komutu. |
+| 2026-09-30 | v1.5 | §5.3 uygulamaya göre netleşti; Respawn 4. PR'a kaydı. |

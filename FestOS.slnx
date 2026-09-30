@@ -26,6 +26,7 @@
     <Project Path="tests/Database/FestOS.DatabaseTests/FestOS.DatabaseTests.csproj" />
   </Folder>
   <Folder Name="/tests/Testing/">
+    <Project Path="tests/Testing/FestOS.Modules.Sample/FestOS.Modules.Sample.csproj" />
     <Project Path="tests/Testing/FestOS.Testing/FestOS.Testing.csproj" />
   </Folder>
 </Solution>
