@@ -65,10 +65,10 @@ public sealed class ModuleExtensionsTests
             ),
         ];
 
-        // Scrutor keeps each wrapped layer as a keyed registration: the handler and the validation
-        // decorator. Wrapping twice would leave four.
+        // Scrutor keeps each wrapped layer as a keyed registration: the handler, the unit of work and
+        // the validation decorator. Wrapping twice would leave six.
         registrations.Count(descriptor => !descriptor.IsKeyedService).ShouldBe(1);
-        registrations.Count(descriptor => descriptor.IsKeyedService).ShouldBe(2);
+        registrations.Count(descriptor => descriptor.IsKeyedService).ShouldBe(3);
     }
 
     [Fact]

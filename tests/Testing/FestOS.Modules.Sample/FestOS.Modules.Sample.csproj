@@ -4,6 +4,11 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" />
   </ItemGroup>
 
+  <!-- Commands and handlers are internal, as in real modules (AT-11); the platform tests send them. -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="FestOS.BuildingBlocks.IntegrationTests" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\BuildingBlocks\FestOS.BuildingBlocks.Infrastructure\FestOS.BuildingBlocks.Infrastructure.csproj" />
   </ItemGroup>

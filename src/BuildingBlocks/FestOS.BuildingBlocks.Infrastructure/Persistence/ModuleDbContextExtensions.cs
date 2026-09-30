@@ -39,6 +39,11 @@ public static class ModuleDbContextExtensions
                 );
             }
         );
+        // The unit of work finds the context of a command's module by the module name.
+        builder.Services.AddKeyedScoped<ModuleDbContext>(
+            moduleName,
+            (services, _) => services.GetRequiredService<TContext>()
+        );
         builder.Services.TryAddScoped<SaveChangesPipeline>();
         builder.Services.TryAddSingleton(TimeProvider.System);
         builder.Services.AddSingleton(
