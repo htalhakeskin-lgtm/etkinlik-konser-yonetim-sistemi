@@ -72,6 +72,20 @@ internal sealed partial class ProblemDetailsExceptionHandler(
                 ErrorCodes.ConcurrencyConflict,
                 exception.Message
             ),
+            IdempotencyKeyReusedException => Problem(
+                StatusCodes.Status422UnprocessableEntity,
+                "idempotency-key-reused",
+                "Idempotency key reused",
+                ErrorCodes.IdempotencyKeyReused,
+                exception.Message
+            ),
+            IdempotencyKeyInProgressException => Problem(
+                StatusCodes.Status409Conflict,
+                "idempotency-key-in-progress",
+                "Idempotency key in progress",
+                ErrorCodes.IdempotencyKeyInProgress,
+                exception.Message
+            ),
             // Nothing about the failure leaves the server; the trace id links the user to the log.
             _ => Problem(
                 StatusCodes.Status500InternalServerError,

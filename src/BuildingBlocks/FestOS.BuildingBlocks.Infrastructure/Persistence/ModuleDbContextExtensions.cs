@@ -1,5 +1,6 @@
 using System.Globalization;
 using FestOS.BuildingBlocks.Application.Messaging;
+using FestOS.BuildingBlocks.Infrastructure.Idempotency;
 using FestOS.BuildingBlocks.Infrastructure.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -48,6 +49,7 @@ public static class ModuleDbContextExtensions
         );
         builder.Services.TryAddScoped<SaveChangesPipeline>();
         builder.Services.TryAddScoped<ActingUser>();
+        builder.Services.TryAddScoped<IdempotencyRequest>();
         builder.Services.TryAddScoped<Outbox>();
         builder.Services.TryAddScoped<IOutbox>(services => services.GetRequiredService<Outbox>());
         builder.Services.TryAddSingleton(TimeProvider.System);

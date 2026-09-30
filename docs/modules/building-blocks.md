@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.18 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.19 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -54,6 +54,7 @@ Tasarım değişkenleri, temalar, düğme ve durum rozeti Faz 1.0'da tamamlandı
 | | `Persistence/` | `ModuleDbContext` (şema, kurallar, kaydetme adımları), `AddModuleDbContext` / `UseModuleDatabase`, `DatabaseConnections`, `DatabaseBootstrapper`, `DatabaseMigrator`, EF kuralları (§5.3), `UnitOfWorkCommandDecorator` |
 | | `Auditing/` | `AuditEntry`, `AuditAction`, `AuditEntryWriter` (5b); `[NotAudited]` alan tiplerinde kullanıldığı için `BuildingBlocks.Domain`'dedir (5b) |
 | | `Messaging/` | `OutboxMessage`, `InboxMessage`, `Outbox` (`IOutbox`'un uygulaması; 6a); `OutboxDispatcher`, `IEventBus` ve süreç içi uygulaması, `InboxIntegrationEventDecorator` (6b) |
+| | `Idempotency/` | `IdempotencyKey` (`idempotency_keys` tablosu), `IdempotencyRequest` (isteğin anahtarı ve parmak izi, kapsamlı), anahtarın kaydı ve saklanan sonuç (9b-1) |
 | | `Locking/` | `AdvisoryLocks` (işlem düzeyi ve oturum düzeyi) |
 | | `Jobs/` | `IScheduledJob`, `JobSchedule` (aralıklı ve cron; Cronos), `ScheduledJobRunner` |
 | | `Http/` | Problem Details eşleyicisi, JSON ayarları, `IfMatchFilter`, `IdempotencyFilter`, CSRF ara katmanı, güvenlik başlıkları, `X-App-Version` |
@@ -75,7 +76,7 @@ Sıra [08 §6](../08-architecture.md#6-bir-isteğin-yolculuğu)'dakidir; burada 
 | 4 | Uç nokta | İstek komuta çevrilir; işleyici arayüzü DI'dan alınır (`ICommandHandler<,>`, dekoratörlerle sarılı) |
 | 5 | Loglama dekoratörü | İz aralığı (span), log kapsamı (modül, kullanıcı kimliği), süre; beklenen sonuçlar `Information`, diğer hatalar aralıkta `Error` |
 | 6 | Doğrulama dekoratörü | FluentValidation; hata varsa `ValidationFailedException` |
-| 7 | İşlem birimi dekoratörü | Npgsql yeniden deneme stratejisi içinde işlem açar ([database §11.4](../standards/database.md#114-i̇şlem-yalıtımı-ve-yeniden-deneme)); tekrar güvenliği satırını ekler; işleyiciyi çalıştırır; `SaveChanges`; tekrar güvenliği yanıtını yazar; işlemi tamamlar; dağıtıcıya sinyal verir |
+| 7 | İşlem birimi dekoratörü | Npgsql yeniden deneme stratejisi içinde işlem açar ([database §11.4](../standards/database.md#114-i̇şlem-yalıtımı-ve-yeniden-deneme)); tekrar güvenliği satırını ekler; işleyiciyi çalıştırır; sonucunu tekrar güvenliği satırına yazar; `SaveChanges`; işlemi tamamlar; dağıtıcıya sinyal verir |
 | 8 | İşleyici | İş mantığı alan katmanında |
 
 **`SaveChanges` adımları** (`ModuleDbContext`, tek işlem içinde):
@@ -260,11 +261,17 @@ Akış [api §10](../standards/api.md#10-tekrar-güvenliği)'dadır. Fiziksel uy
 | Başlık yoksa `400` (`idempotencyKeyMissing`); anahtarı ve istek parmak izini (yöntem, adres, gövdenin SHA-256 özeti) kapsama koyar | `IdempotencyFilter` |
 | Anahtar satırını modülün `idempotency_keys` tablosuna **işlemin ilk adımı** olarak ekler | İşlem birimi dekoratörü |
 | Aynı anahtar başka bir işlemde işleniyorsa PostgreSQL'in benzersizlik kontrolü o işlemin bitmesini bekler; `lock_timeout` aşılırsa `409` (`idempotencyKeyInProgress`) | Veritabanı |
-| Anahtar zaten tamamlanmışsa: parmak izi aynıysa saklanan yanıt `Idempotency-Replayed: true` ile döner, farklıysa `422` (`idempotencyKeyReused`) | Filtre, dekoratörün fırlattığı özel istisnayla |
-| İşleyici bitince yanıt (durum kodu + JSON gövde) aynı satıra, aynı işlemde yazılır | İşlem birimi dekoratörü |
+| Anahtar zaten tamamlanmışsa: parmak izi aynıysa işleyici çalışmaz, saklanan sonuç döner ve uç nokta yanıtı ondan kurar; filtre `Idempotency-Replayed: true` ekler. Parmak izi farklıysa `422` (`idempotencyKeyReused`) | İşlem birimi dekoratörü, filtre |
+| İşleyici bitince komutun sonucu (JSON) aynı satıra, aynı işlemde yazılır | İşlem birimi dekoratörü |
 | 24 saatten eski satırlar gecelik temizlik işiyle silinir | Zamanlanmış iş |
 
 Anahtar denetimi `If-Match`'ten önce yapılır; filtre sırası bunu garanti eder.
+
+**Uygulama ayrıntıları** (9b-1):
+- Saklanan, HTTP yanıtı değil **komutun sonucudur**. İşlem, uç nokta yanıtı kurmadan önce tamamlanır; bu yüzden durum kodu, `Location` ve `ETag` gibi başlıklar aynı işlemde bilinemez. Tekrar isteğinde işleyici çalışmaz, uç nokta saklanan sonuçtan aynı yanıtı yeniden kurar. Komut sonuçları bu yüzden JSON'a yazılıp geri okunabilen tiplerdir (kimlik, kayıt, DTO).
+- Anahtarı isteğin **ilk komutu** kullanır; aynı istekteki sonraki komutlar anahtarsız çalışır.
+- Anahtar `INSERT … ON CONFLICT DO NOTHING` ile eklenir. Aynı anahtarla süren bir işlem varsa ekleme onu bekler; modül rolünün kilit bekleme süresi (10 saniye, [database §17](../standards/database.md#17-bağlantı-ve-işletim-ayarları)) aşılırsa `409` döner.
+- Kullanıcı, kaydetme adımlarıyla aynı kaynaktan (`ICurrentUser`) gelir. İş kuralı hatası, sürüm çakışması ya da başka bir hata işlemi geri aldığı için anahtar da geri alınır.
 
 ### 9.4 CSRF, başlıklar, sürüm
 
@@ -336,7 +343,8 @@ Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir
 | 8a | Hata yanıtları ve API başlıkları | `IExceptionHandler`, doğrulama eşlemesi, gövdesiz hatalar, `X-App-Version`, `/api` başlıkları |
 | 8b | JSON ve ön yüz başlıkları | JSON ayarları, metin kırpma, ön yüz güvenlik başlıkları |
 | 9a | ETag ve `If-Match` | `ExpectedVersion`, `IfMatchFilter`, `RequiresVersion()`, `WithVersion()`; sürüm testleri |
-| 9b | Tekrar güvenliği | `IdempotencyFilter`, `idempotency_keys`, temizlik işi; eşzamanlılık testleri |
+| 9b-1 | Tekrar güvenliği anahtarları | `idempotency_keys`, işlem birimindeki kayıt ve saklanan sonuç, hata kodları; eşzamanlılık testleri |
+| 9b-2 | Tekrar güvenliği filtresi | `IdempotencyFilter` (anahtar, parmak izi, `Idempotency-Replayed`), temizlik işi; HTTP testleri |
 | 10 | CSRF | Antiforgery ara katmanı, `Sec-Fetch-Site`, belirteç uç noktası |
 | 11 | OpenAPI ve Orval | Dönüştürücüler, dosyaya üretim, Orval, sözleşme testi, CI güncellik denetimleri; AT-14, AT-15 |
 | 12 | Anlık bildirimler | Hub, grup yetkileri, `ResourceChangedPublisher` |
@@ -396,3 +404,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.16 | §9.1 hata yanıtlarının uygulama ayrıntıları; 8. PR ikiye bölündü (8a hata yanıtları, 8b JSON ve ön yüz başlıkları). |
 | 2026-09-30 | v1.17 | §9.1 JSON ve §9.4 güvenlik başlıklarının uygulama ayrıntıları (8b); `unsafe-inline` denemesi Host'un ön yüzü sunmasına kaydı. |
 | 2026-09-30 | v1.18 | §9.2 `If-Match` uygulama ayrıntıları; 9. PR ikiye bölündü (9a ETag ve `If-Match`, 9b tekrar güvenliği). |
+| 2026-09-30 | v1.19 | §9.3 uygulama ayrıntıları: saklanan, komutun sonucu; tekrarında uç nokta yanıtı yeniden kurar (9b-1). 9b ikiye bölündü. |

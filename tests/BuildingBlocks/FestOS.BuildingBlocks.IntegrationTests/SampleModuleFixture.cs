@@ -29,6 +29,9 @@ public sealed class SampleModuleFixture : IAsyncLifetime
     /// <summary>The user the host acts for.</summary>
     public FakeCurrentUser CurrentUser { get; } = new();
 
+    /// <summary>The base connection string, with the administrator's credentials.</summary>
+    public string ConnectionString => _database.AdminConnectionString;
+
     /// <summary>The application services.</summary>
     public IServiceProvider Services => _host!.Services;
 
@@ -47,12 +50,20 @@ public sealed class SampleModuleFixture : IAsyncLifetime
 
     /// <summary>
     /// Builds another host on the same database with its own clock, e.g. to start it and watch the
-    /// dispatcher or a job work; the caller starts, stops and disposes it.
+    /// dispatcher or a job work; the caller starts, stops and disposes it. <paramref name="settings"/>
+    /// override the shared configuration.
     /// </summary>
-    public IHost CreateHost(TimeProvider time, Action<IServiceCollection>? configure = null)
+    public IHost CreateHost(
+        TimeProvider time,
+        Action<IServiceCollection>? configure = null,
+        IReadOnlyDictionary<string, string?>? settings = null
+    )
     {
         HostApplicationBuilder builder = Host.CreateEmptyApplicationBuilder(new HostApplicationBuilderSettings());
         builder.Configuration.AddInMemoryCollection(_settings);
+        builder.Configuration.AddInMemoryCollection(
+            settings ?? new Dictionary<string, string?>(StringComparer.Ordinal)
+        );
         builder.Services.AddLogging();
         builder.Services.AddSingleton(time);
         builder.Services.AddSingleton<ICurrentUser>(CurrentUser);

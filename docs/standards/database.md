@@ -1,6 +1,6 @@
 # Veritabanı Standardı
 
-> **Durum:** v1.8 · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.9 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 18](#18-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -391,7 +391,7 @@ Yapı [ADR-0010](../adr/0010-messaging-infrastructure.md)'daki kararları fiziks
 - Gönderilmemiş kayıtlar için `sequence` üzerinde koşullu indeks bulunur (`WHERE dispatched_at IS NULL`).
 - **Saklama süresi:** Gönderilmiş outbox kayıtları ve inbox kayıtları 30 gün sonra, küçük gruplar halinde silinir. Temizlenmeyen outbox tablosu zamanla veritabanının en yavaş tablosuna dönüşür ([kaynak](https://dev.to/nainikmehta/transactional-outbox-pattern-prevent-lost-events-in-eda-2e95)). Hatalı olaylar çözülene kadar silinmez.
 
-**`idempotency_keys`:** Tekrar güvenliği anahtarları ([api §10](api.md#10-tekrar-güvenliği)). Birincil anahtar `(user_id, key)`; isteğin parmak izi, saklanan yanıtın durum kodu ve gövdesi (`jsonb`) ile oluşturma zamanı tutulur. Kayıt, komutun işlem biriminin ilk adımında eklenir; 24 saat sonra silinir.
+**`idempotency_keys`:** Tekrar güvenliği anahtarları ([api §10](api.md#10-tekrar-güvenliği)). Birincil anahtar `(user_id, key)`; isteğin parmak izi (SHA-256), komutun sonucu (`jsonb`) ve oluşturma zamanı tutulur. Kayıt, komutun işlem biriminin ilk adımında eklenir; 24 saat sonra silinir.
 
 ## 16. Migration'lar
 
@@ -487,3 +487,4 @@ Gerçek PostgreSQL 18 üzerinde (Testcontainers) çalışan testler. Yer: `tests
 | 2026-09-30 | v1.6 | Enum kolonunun uzunluğu ve kısıt adı (§6.2, Faz 1.1). |
 | 2026-09-30 | v1.7 | §4: `festos_audit_writer` grup rolü (Faz 1.1). |
 | 2026-09-30 | v1.8 | §15: outbox kimliği olayın `MessageId`'sidir (Faz 1.1). |
+| 2026-09-30 | v1.9 | §15: `idempotency_keys` yanıtı değil komutun sonucunu saklar ([building-blocks §9.3](../modules/building-blocks.md#93-tekrar-güvenliği)). |

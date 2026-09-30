@@ -12,6 +12,8 @@ public sealed class ErrorCodesTests
         ErrorCodes.Of(new ValidationFailedException([])).ShouldBe("validation");
         ErrorCodes.Of(new NotFoundException("Sample", Guid.CreateVersion7())).ShouldBe("notFound");
         ErrorCodes.Of(new ConcurrencyConflictException("Sample changed.")).ShouldBe("concurrencyConflict");
+        ErrorCodes.Of(new IdempotencyKeyReusedException("Other request.")).ShouldBe("idempotencyKeyReused");
+        ErrorCodes.Of(new IdempotencyKeyInProgressException("Still running.")).ShouldBe("idempotencyKeyInProgress");
     }
 
     [Fact]
