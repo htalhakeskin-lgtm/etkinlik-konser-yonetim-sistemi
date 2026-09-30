@@ -8,5 +8,16 @@
   "versionBanner": {
     "message": "Yeni sürüm hazır. İşinizi bitirince sayfayı yenileyin.",
     "reload": "Yenile"
+  },
+  "pageHeader": {
+    "breadcrumb": "Sayfa yolu"
+  },
+  "errorState": {
+    "title": "Bu bölüm yüklenemedi.",
+    "retry": "Yeniden dene",
+    "details": "Ayrıntılar",
+    "traceId": "İz numarası:",
+    "copy": "Kopyala",
+    "copied": "Kopyalandı"
   }
 }
