@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.28 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.29 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -374,7 +374,7 @@ CI'a `backend-integration` işi eklenir (Testcontainers, [ci §4](../standards/c
 
 ## 14. PR planı
 
-Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir. 2., 3., 4., 5., 6., 8., 9., 11., 13. ve 14. PR'lar, 400 satır sınırı için bölündü.
+Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir. 2., 3., 4., 5., 6., 8., 9., 11., 13., 14. ve 15. PR'lar, 400 satır sınırı için bölündü.
 
 | # | PR | Kapsam |
 |---|---|---|
@@ -408,7 +408,8 @@ Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir
 | 13b | Sürüm şeridi ve anlık bildirim istemcisi | `VersionBanner`, SignalR istemcisi, sorgu geçersiz kılma |
 | 14a | Durum bileşenleri | `EmptyState`, `ErrorState`, `SkeletonBlock`, `PageHeader` |
 | 14b | Bağlantı ve onay | `ConnectionIndicator`, `ConfirmDialog` |
-| 15 | İzlenebilirlik | `check_traceability.py`, CI `traceability` işi, DT-03, DT-04 |
+| 15a | İzlenebilirlik denetimi | `check_traceability.py`, CI `traceability` işi |
+| 15b | Veritabanı denetimleri | DT-03, DT-04 |
 
 Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, Testcontainers, Respawn, CsCheck, Orval, @microsoft/signalr, MSW) her PR'da güncel kararlı sürümleri araştırılarak sabitlenir.
 
@@ -473,3 +474,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.26 | §12 sürüm şeridi ve anlık bildirim istemcisinin uygulama ayrıntıları (13b). |
 | 2026-09-30 | v1.27 | §12 ilk ortak bileşenlerin uygulama ayrıntıları (14a); 14. PR ikiye bölündü. |
 | 2026-10-01 | v1.28 | §12 bağlantı göstergesi ve onay diyaloğunun uygulama ayrıntıları (14b). |
+| 2026-10-01 | v1.29 | 15. PR ikiye bölündü (15a izlenebilirlik, 15b DT-03 / DT-04). |

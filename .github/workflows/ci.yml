@@ -95,6 +95,20 @@ jobs:
           python3 tools/docs/sync_rule_refs.py
           git diff --exit-code
 
+  traceability:
+    needs: changes
+    if: needs.changes.outputs.backend == 'true' || needs.changes.outputs.frontend == 'true' || needs.changes.outputs.docs == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # Rule, transition and story numbers in code and tests (testing §10).
+      - run: python3 tools/docs/check_traceability.py --report
+
   backend:
     needs: changes
     if: needs.changes.outputs.backend == 'true'
@@ -293,7 +307,7 @@ jobs:
 
   ci-result:
     if: always()
-    needs: [changes, docs, backend, backend-integration, frontend, e2e, security]
+    needs: [changes, docs, traceability, backend, backend-integration, frontend, e2e, security]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions: {}

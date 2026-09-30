@@ -153,7 +153,7 @@ describe("apiClient", () => {
 
   it("throws the problem's code, values, field errors and trace id", async () => {
     respondWith(() =>
-      problem(422, "BR-SMP-001", {
+      problem(422, "SAMPLE-001", {
         detail: "Sample rule violated.",
         params: { limit: 3 },
         errors: [{ pointer: "/name", code: "required", params: {} }],
@@ -165,7 +165,7 @@ describe("apiClient", () => {
     expect(error).toBeInstanceOf(ApiError);
     expect(error).toMatchObject({
       status: 422,
-      code: "BR-SMP-001",
+      code: "SAMPLE-001",
       params: { limit: 3 },
       errors: [{ pointer: "/name", code: "required", params: {} }],
       traceId: "trace-1",
