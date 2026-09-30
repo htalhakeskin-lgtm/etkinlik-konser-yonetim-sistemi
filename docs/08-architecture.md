@@ -1,6 +1,6 @@
 # 08 — Mimari ve Klasör Yapısı
 
-> **Durum:** v1.13 · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.14 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 13](#13-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -452,7 +452,7 @@ Her derlemede çalışır; biri başarısız olursa derleme başarısız olur.
 | AT-05 | Bir modülün başka modüllerin Contracts'ına bağımlılığı [§3.3](#33-modüller-arası-referanslar)'teki tablodan ibarettir; tablo katman kuralına uyar. | Tip bağımlılıkları + tablonun katman sırasıyla karşılaştırılması |
 | AT-06 | Olay adları: modül içi olaylar `…DomainEvent`, entegrasyon olayları `…IntegrationEvent` ile biter; entegrasyon olayları değiştirilemez (`record`, yalnızca `init`). | Tip adları ve üyeleri |
 | AT-07 | Komutlar `…Command`, sorgular `…Query`, işleyiciler `…Handler` ile biter; işleyiciler `internal sealed`'dır. | Tip adları ve erişim belirleyicileri |
-| AT-08 | Her modülün veritabanı bağlamı yalnızca kendi modülünün varlıklarını (ve ortak outbox / inbox tablolarını) eşler ve varsayılan şeması modülün şemasıdır. | EF Core modelinin çalışma zamanında incelenmesi |
+| AT-08 | Her modülün veritabanı bağlamı yalnızca kendi modülünün varlıklarını (ve ortak outbox / inbox tablolarını; işlem geçmişi tablosunu migration dışı olarak) eşler ve varsayılan şeması modülün şemasıdır. | EF Core modelinin çalışma zamanında incelenmesi |
 | AT-09 | Her uç nokta bir yetki ister ya da açıkça anonim olarak işaretlenmiştir (yalnızca giriş ve sağlık uçları). | Uç noktaların çalışma zamanında listelenmesi |
 | AT-10 | Her entegrasyon olayı dinleyicisi inbox dekoratörüyle kaydedilmiştir. | DI kayıtlarının incelenmesi |
 | AT-11 | Uygulama katmanındaki tipler `internal`'dır; modül dışına yalnızca Contracts ve IntegrationEvents tipleri açılır. | Tip erişim belirleyicileri |
@@ -488,3 +488,4 @@ Yasak API kullanımı (`DateTime.UtcNow` gibi) mimari testle değil, derleyici a
 | 2026-09-26 | v1.11 | `tools/licenses/` açıklaması: tek lisans denetim betiği (Faz 1.0). |
 | 2026-09-30 | v1.12 | §4: HTTP, OpenAPI ve SignalR altyapısı `BuildingBlocks.Infrastructure`'a, `IStronglyTypedId<TSelf>` `BuildingBlocks.Domain`'e eklendi; §5: Host bunları yalnızca bağlar (building-blocks BB-01). |
 | 2026-09-30 | v1.13 | §4: işlem birimi dekoratörü veritabanına bağlı olduğu için `BuildingBlocks.Infrastructure`'da. |
+| 2026-09-30 | v1.14 | AT-08: işlem geçmişi tablosu her bağlamda migration dışı olarak eşlenir. |

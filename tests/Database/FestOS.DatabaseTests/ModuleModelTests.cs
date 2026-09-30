@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.RegularExpressions;
+using FestOS.BuildingBlocks.Infrastructure.Auditing;
 using FestOS.Modules.Sample.Domain;
 using FestOS.Modules.Sample.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -54,7 +55,9 @@ public sealed partial class ModuleModelTests
                 .SelectMany(model => model.GetEntityTypes())
                 .SelectMany(entityType => entityType.GetProperties())
                 .Where(property => property.ClrType == typeof(string))
-                .Where(property => property.GetMaxLength() is null && property.GetColumnType() is not "text")
+                .Where(property =>
+                    property.GetMaxLength() is null && property.GetColumnType() is not ("text" or "jsonb")
+                )
                 .Select(property => $"{property.DeclaringType.DisplayName()}.{property.Name}"),
         ];
 
@@ -92,6 +95,19 @@ public sealed partial class ModuleModelTests
                 },
                 ignoreOrder: true
             );
+    }
+
+    [Fact]
+    public void AuditEntries_InEveryModule_AreMappedButOnlyTheAuditModuleCreatesTheTable()
+    {
+        foreach (IModel model in Models())
+        {
+            IEntityType auditEntry = model.FindEntityType(typeof(AuditEntry)).ShouldNotBeNull();
+            bool ownsTable = string.Equals(model.GetDefaultSchema(), AuditEntry.SchemaName, StringComparison.Ordinal);
+
+            auditEntry.GetSchema().ShouldBe(AuditEntry.SchemaName);
+            auditEntry.IsTableExcludedFromMigrations().ShouldBe(!ownsTable);
+        }
     }
 
     private static bool IsValidName(string name) => SnakeCase().IsMatch(name) && Encoding.UTF8.GetByteCount(name) <= 63;

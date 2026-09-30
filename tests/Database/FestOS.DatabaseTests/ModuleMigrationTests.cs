@@ -13,6 +13,7 @@ public sealed class ModuleMigrationTests(PostgresDatabase database)
     private readonly Dictionary<string, string> _passwords = new(StringComparer.Ordinal)
     {
         [DatabaseRoles.Migrator] = Guid.CreateVersion7().ToString("N"),
+        ["festos_audit"] = Guid.CreateVersion7().ToString("N"),
         ["festos_sample"] = Guid.CreateVersion7().ToString("N"),
     };
 

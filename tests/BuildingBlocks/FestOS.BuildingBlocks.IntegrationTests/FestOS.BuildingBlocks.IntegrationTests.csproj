@@ -4,6 +4,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Modules\Audit\FestOS.Modules.Audit.Infrastructure\FestOS.Modules.Audit.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Testing\FestOS.Modules.Sample\FestOS.Modules.Sample.csproj" />
     <ProjectReference Include="..\..\Testing\FestOS.Testing\FestOS.Testing.csproj" />
   </ItemGroup>

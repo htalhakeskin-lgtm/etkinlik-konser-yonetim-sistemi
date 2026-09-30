@@ -21,7 +21,7 @@ IResourceBuilder<ProjectResource> host = builder
 // One generated password per database role, kept in this project's user secrets (building-blocks
 // BB-07). A module's role is added here together with the module; the Host fails at startup when a
 // registered module has no password.
-string[] databaseRoles = ["festos_migrator"];
+string[] databaseRoles = ["festos_migrator", "festos_audit"];
 foreach (string role in databaseRoles)
 {
     IResourceBuilder<ParameterResource> password = builder.AddParameter(

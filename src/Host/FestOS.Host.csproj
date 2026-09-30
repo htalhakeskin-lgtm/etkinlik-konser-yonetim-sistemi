@@ -5,6 +5,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BuildingBlocks\FestOS.BuildingBlocks.Infrastructure\FestOS.BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Audit\FestOS.Modules.Audit.Infrastructure\FestOS.Modules.Audit.Infrastructure.csproj" />
     <ProjectReference Include="..\ServiceDefaults\FestOS.ServiceDefaults.csproj" />
   </ItemGroup>
 </Project>

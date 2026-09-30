@@ -1,6 +1,7 @@
 using FestOS.BuildingBlocks.Application.Users;
 using FestOS.BuildingBlocks.Infrastructure.Modules;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
+using FestOS.Modules.Audit.Infrastructure;
 using FestOS.Modules.Sample.Domain;
 using FestOS.Modules.Sample.Infrastructure;
 using FestOS.Testing;
@@ -61,12 +62,13 @@ public sealed class DatabaseMigratorTests(PostgresDatabase database)
             {
                 [$"ConnectionStrings:{DatabaseConnections.ConnectionStringName}"] = database.AdminConnectionString,
                 [$"Database:Passwords:{DatabaseRoles.Migrator}"] = Guid.CreateVersion7().ToString("N"),
+                ["Database:Passwords:festos_audit"] = Guid.CreateVersion7().ToString("N"),
                 ["Database:Passwords:festos_sample"] = Guid.CreateVersion7().ToString("N"),
             }
         );
         builder.Services.AddLogging();
         builder.Services.AddSingleton<ICurrentUser>(new FakeCurrentUser());
-        builder.AddModules(new SampleModuleDefinition());
+        builder.AddModules(new AuditModuleDefinition(), new SampleModuleDefinition());
         return builder.Build();
     }
 }

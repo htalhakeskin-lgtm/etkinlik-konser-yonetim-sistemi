@@ -61,6 +61,7 @@ public sealed partial class DatabaseBootstrapper(ILogger<DatabaseBootstrapper> l
         await sql.ExecuteAsync("SELECT pg_advisory_xact_lock(hashtext('festos.bootstrap'))");
 
         await EnsureRoleAsync(sql, DatabaseRoles.Owner, password: null);
+        await EnsureRoleAsync(sql, DatabaseRoles.AuditWriter, password: null);
         await EnsureLoginRoleAsync(sql, DatabaseRoles.Migrator, RequiredPassword(options, DatabaseRoles.Migrator));
         await EnsureLoginRoleAsync(
             sql,
@@ -99,6 +100,7 @@ public sealed partial class DatabaseBootstrapper(ILogger<DatabaseBootstrapper> l
             await EnsureLoginRoleAsync(sql, role, RequiredPassword(options, role));
             await ApplySettingsAsync(sql, role, ModuleSettings);
             await sql.ExecuteFormattedAsync("ALTER ROLE %I SET search_path TO %I, public", role, schema);
+            await sql.ExecuteFormattedAsync("GRANT %I TO %I", DatabaseRoles.AuditWriter, role);
             await sql.ExecuteFormattedAsync("GRANT CONNECT ON DATABASE %I TO %I", await sql.DatabaseNameAsync(), role);
         }
 
