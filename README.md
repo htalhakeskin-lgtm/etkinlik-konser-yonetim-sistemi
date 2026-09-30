@@ -126,7 +126,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 |---|---|
 | [İsimlendirme](docs/standards/naming.md) | v1.7 |
 | [Kod stili ve statik analiz](docs/standards/code-style.md) | v1.9 |
-| [Veritabanı](docs/standards/database.md) | v1.9 |
+| [Veritabanı](docs/standards/database.md) | v1.10 |
 | [API](docs/standards/api.md) | v1.12 |
 | [Güvenlik](docs/standards/security.md) | v1.3 |
 | [Gözlemlenebilirlik](docs/standards/observability.md) | v1.2 |

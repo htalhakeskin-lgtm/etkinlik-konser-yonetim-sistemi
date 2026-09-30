@@ -1,6 +1,6 @@
 # Veritabanı Standardı
 
-> **Durum:** v1.9 · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.10 · **Son güncelleme:** 2026-10-01
 > **Kararlar:** [Bölüm 18](#18-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -453,6 +453,8 @@ Gerçek PostgreSQL 18 üzerinde (Testcontainers) çalışan testler. Yer: `tests
 | DT-04 | Her kontrol, benzersizlik ve dışlama kısıtı bir kural koduna eşlenmiştir. |
 | DT-05 | Veritabanı varsayılan sıralama kuralı `C.UTF-8`'dir; `public` şemasında uygulama nesnesi yoktur. |
 
+DT-03 ve DT-04, `FestOS.DatabaseTests`'teki `SchemaRuleTests`'tir; tüm modüllerin migration'ları uygulanmış veritabanının kataloğunu okur. DT-03'te bir kolon, ilk anahtarı olduğu bir indeks varsa indeksli sayılır. DT-04'te benzersiz indeksler de benzersizlik kısıtı sayılır; enum kısıtları (`ck_…_enum`) kural değil, saklanan değerin korumasıdır ve denetlenmez. İki denetimin istisnaları testte gerekçesiyle listelenir.
+
 ## 18. Kararlar
 
 | No | Konu | Karar | Gerekçe |
@@ -488,3 +490,4 @@ Gerçek PostgreSQL 18 üzerinde (Testcontainers) çalışan testler. Yer: `tests
 | 2026-09-30 | v1.7 | §4: `festos_audit_writer` grup rolü (Faz 1.1). |
 | 2026-09-30 | v1.8 | §15: outbox kimliği olayın `MessageId`'sidir (Faz 1.1). |
 | 2026-09-30 | v1.9 | §15: `idempotency_keys` yanıtı değil komutun sonucunu saklar ([building-blocks §9.3](../modules/building-blocks.md#93-tekrar-güvenliği)). |
+| 2026-10-01 | v1.10 | §17.1: DT-03 ve DT-04'ün uygulanışı (Faz 1.1). |
