@@ -1,4 +1,5 @@
 using System.Globalization;
+using FestOS.BuildingBlocks.Infrastructure.Http;
 using FestOS.BuildingBlocks.Infrastructure.Modules;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
 using FestOS.Modules.Audit.Infrastructure;
@@ -22,10 +23,12 @@ if (args is ["migrate", .. var migrateArgs])
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
+builder.AddHttpPlatform();
 builder.Services.AddOpenApi();
 builder.AddModules(Modules());
 
 WebApplication app = builder.Build();
+app.UseHttpPlatform();
 
 // Development prepares the database on startup; other environments run "migrate" as a separate
 // release step (docs/standards/database.md §16.2).

@@ -44,9 +44,12 @@ public sealed partial class NamingTests
         violations.ShouldBeEmpty();
     }
 
+    // Types nested in compiler-generated ones, e.g. the array helpers under <PrivateImplementationDetails>,
+    // count as generated too.
     private static bool IsCompilerGenerated(MemberInfo member) =>
         member.IsDefined(typeof(CompilerGeneratedAttribute), inherit: false)
-        || member.Name.Contains('<', StringComparison.Ordinal);
+        || member.Name.Contains('<', StringComparison.Ordinal)
+        || (member.DeclaringType is { } declaringType && IsCompilerGenerated(declaringType));
 
     private static bool IsSpecialName(MemberInfo member) =>
         member switch
