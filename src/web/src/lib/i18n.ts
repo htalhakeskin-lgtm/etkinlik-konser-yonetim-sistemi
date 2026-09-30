@@ -2,11 +2,13 @@ import { createInstance } from "i18next";
 import { initReactI18next } from "react-i18next";
 
 import common from "@/locales/tr/common.json";
+import errors from "@/locales/tr/errors.json";
+import validation from "@/locales/tr/validation.json";
 
 export const defaultNS = "common";
 
 export const resources = {
-  tr: { common },
+  tr: { common, errors, validation },
 } as const;
 
 // S1 ships Turkish only; the setup keeps adding languages possible (docs/standards/naming.md §7.1).
@@ -14,7 +16,7 @@ export const i18n = createInstance({
   lng: "tr",
   fallbackLng: "tr",
   defaultNS,
-  ns: [defaultNS],
+  ns: [defaultNS, "errors", "validation"],
   resources,
   // Resources are bundled, so initialization completes synchronously.
   initAsync: false,

@@ -1,0 +1,16 @@
+{
+  "validation": "Bazı alanlar hatalı. İşaretli alanları düzeltip yeniden gönderin.",
+  "malformedRequest": "İstek okunamadı. Sayfayı yenileyip yeniden deneyin.",
+  "unauthorized": "Oturumunuz sona erdi. Yeniden giriş yapın.",
+  "forbidden": "Bu işlem için yetkiniz yok.",
+  "notFound": "Kayıt bulunamadı.",
+  "methodNotAllowed": "Bu işlem desteklenmiyor.",
+  "concurrencyConflict": "Bu kayıt siz düzenlerken başka biri tarafından değiştirildi.",
+  "versionRequired": "İstek, kaydın hangi sürümüne dayandığını bildirmedi. Sayfayı yenileyip yeniden deneyin.",
+  "idempotencyKeyMissing": "İstek eksik bilgiyle gönderildi. Sayfayı yenileyip yeniden deneyin.",
+  "idempotencyKeyReused": "Bu işlem farklı bilgilerle zaten gönderilmiş. Sayfayı yenileyip yeniden deneyin.",
+  "idempotencyKeyInProgress": "Aynı işlem hâlâ sürüyor. Biraz bekleyip yeniden deneyin.",
+  "csrfRejected": "Güvenlik doğrulaması başarısız oldu. Sayfayı yenileyip yeniden deneyin.",
+  "internalError": "Beklenmeyen bir hata oluştu. Sorun sürerse iz numarasıyla bildirin.",
+  "network": "Sunucuya ulaşılamadı. Bağlantınızı kontrol edip yeniden deneyin."
+}
