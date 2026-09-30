@@ -2,6 +2,7 @@ using FestOS.BuildingBlocks.Application.Users;
 using FestOS.BuildingBlocks.Infrastructure.Http;
 using FestOS.BuildingBlocks.Infrastructure.Modules;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
+using FestOS.BuildingBlocks.Infrastructure.Realtime;
 using FestOS.Modules.Audit.Infrastructure;
 using FestOS.Modules.Sample.Application;
 using FestOS.Modules.Sample.Infrastructure;
@@ -89,12 +90,14 @@ public sealed class SampleModuleFixture : IAsyncLifetime
         builder.Services.AddSingleton<TimeProvider>(Time);
         builder.Services.AddSingleton<ICurrentUser>(CurrentUser);
         builder.AddHttpPlatform();
+        builder.AddRealtime();
         builder.AddModules(new AuditModuleDefinition(), new SampleModuleDefinition());
 
         WebApplication app = builder.Build();
         app.UseHttpPlatform();
         app.UseCsrfProtection();
         app.MapAntiforgeryToken();
+        app.MapRealtime();
         app.MapModules();
         await app.StartAsync(TestContext.Current.CancellationToken);
         return app;

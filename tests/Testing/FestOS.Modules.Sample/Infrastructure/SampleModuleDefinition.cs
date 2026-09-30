@@ -1,8 +1,10 @@
 using FestOS.BuildingBlocks.Application.Messaging;
 using FestOS.BuildingBlocks.Infrastructure.Modules;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
+using FestOS.BuildingBlocks.Infrastructure.Realtime;
 using FestOS.Modules.Sample.Api;
 using FestOS.Modules.Sample.Application;
+using FestOS.Modules.Sample.IntegrationEvents;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
@@ -33,6 +35,13 @@ public sealed class SampleModuleDefinition : IModuleDefinition
         builder.AddModuleDbContext<SampleDbContext>(ModuleName, SchemaName);
         builder.Services.AddHandlersFrom(typeof(SampleModuleDefinition).Assembly);
         builder.Services.TryAddSingleton<SampleListenerProbe>();
+        builder.Services.AddRealtimeGroup<SampleItemGroupPolicy>();
+        builder.Services.AddResourceChange<SampleItemUsedIntegrationEvent>(used => new ResourceChange(
+            "sample-items",
+            used.SampleItemId,
+            Version: null,
+            ["sample-items", $"sample-items:{used.SampleItemId}"]
+        ));
     }
 
     /// <inheritdoc />
