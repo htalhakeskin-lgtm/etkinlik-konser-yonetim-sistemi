@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.26 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.27 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -350,6 +350,12 @@ Anahtar denetimi `If-Match`'ten önce yapılır; filtre sırası bunu garanti ed
 - `resourceChanged` gelince adresi `/api/v1/{kaynak}` ile başlayan sorgular geçersiz kılınır; Orval'ın sorgu anahtarı isteğin adresiyle başlar. Sayfa kaydın bildirilen sürümünü zaten gösteriyorsa hiçbir şey yeniden okunmaz.
 - Bağlantı durumu `useConnectionState()` ile okunur (`ConnectionIndicator`, 14. PR). İstemciyi oturum açmış kabuk sağlar ve bağlantıyı başlatır (1.2); o zamana kadar sayfa bağlantı açmaz.
 
+**Ortak bileşenler** (14a, `components/common/`):
+- `EmptyState`: simge, başlık, açıklama ve bir sonraki adım (ui §10.2).
+- `ErrorState`: `errorMessage` metni, "Yeniden dene" ve "Ayrıntılar" altında kopyalanabilen iz numarası (ui §10.3). `role="alert"` taşır.
+- `SkeletonBlock`: gelecek içeriğin boyutunu baştan kaplar, ama 300 ms'den önce görünmez (ui §10.1). Yardımcı teknolojilerden gizlidir; yüklenen bölüm kendisini `aria-busy` ile işaretler. Hareket azaltma tercihine uyar.
+- `PageHeader`: sayfanın tek `h1`'i, sayfa yolu (`nav`, sayfa kendi bağlantılarını verir) ve ana işlemler.
+
 ## 13. Testler
 
 | Katman | Ne | Nerede |
@@ -366,7 +372,7 @@ CI'a `backend-integration` işi eklenir (Testcontainers, [ci §4](../standards/c
 
 ## 14. PR planı
 
-Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir. 2., 3., 4., 5., 6., 8., 9., 11. ve 13. PR'lar, 400 satır sınırı için bölündü.
+Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir. 2., 3., 4., 5., 6., 8., 9., 11., 13. ve 14. PR'lar, 400 satır sınırı için bölündü.
 
 | # | PR | Kapsam |
 |---|---|---|
@@ -398,7 +404,8 @@ Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir
 | 12 | Anlık bildirimler | Hub, grup yetkileri, `ResourceChangedPublisher` |
 | 13a | İstek sarmalayıcısı ve hatalar | İstek sarmalayıcısı, `ApiError`, hata ve doğrulama çevirileri, form yardımcısı |
 | 13b | Sürüm şeridi ve anlık bildirim istemcisi | `VersionBanner`, SignalR istemcisi, sorgu geçersiz kılma |
-| 14 | Ortak bileşenler | `EmptyState`, `ErrorState`, `SkeletonBlock`, `PageHeader`, `ConnectionIndicator`, `ConfirmDialog` |
+| 14a | Durum bileşenleri | `EmptyState`, `ErrorState`, `SkeletonBlock`, `PageHeader` |
+| 14b | Bağlantı ve onay | `ConnectionIndicator`, `ConfirmDialog` |
 | 15 | İzlenebilirlik | `check_traceability.py`, CI `traceability` işi, DT-03, DT-04 |
 
 Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, Testcontainers, Respawn, CsCheck, Orval, @microsoft/signalr, MSW) her PR'da güncel kararlı sürümleri araştırılarak sabitlenir.
@@ -462,3 +469,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.24 | §11 anlık bildirimlerin uygulama ayrıntıları (12. PR); ölçüm adı observability'deki gibi `festos.realtime.connections`. |
 | 2026-09-30 | v1.25 | §12 istek sarmalayıcısı ve hataların uygulama ayrıntıları (13a); 13. PR ikiye bölündü. |
 | 2026-09-30 | v1.26 | §12 sürüm şeridi ve anlık bildirim istemcisinin uygulama ayrıntıları (13b). |
+| 2026-09-30 | v1.27 | §12 ilk ortak bileşenlerin uygulama ayrıntıları (14a); 14. PR ikiye bölündü. |
