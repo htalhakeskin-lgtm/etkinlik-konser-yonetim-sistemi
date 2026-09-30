@@ -2,6 +2,7 @@ using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Npgsql;
 
@@ -38,6 +39,8 @@ public static class ModuleDbContextExtensions
                 );
             }
         );
+        builder.Services.TryAddScoped<SaveChangesPipeline>();
+        builder.Services.TryAddSingleton(TimeProvider.System);
         builder.Services.AddSingleton(
             new ModuleDatabase(
                 schema,

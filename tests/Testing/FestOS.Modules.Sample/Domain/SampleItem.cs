@@ -35,5 +35,12 @@ public sealed class SampleItem : AggregateRoot<SampleItemId>
     }
 
     /// <summary>Puts the item in use.</summary>
-    public void Use() => Status = SampleItemStatus.InUse;
+    public void Use()
+    {
+        Status = SampleItemStatus.InUse;
+        Raise(new SampleItemUsedDomainEvent(Id));
+    }
+
+    /// <summary>Raises an event whose handler calls this again.</summary>
+    public void Echo() => Raise(new SampleItemEchoedDomainEvent(Id));
 }

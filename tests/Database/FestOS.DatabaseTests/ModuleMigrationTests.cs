@@ -1,5 +1,4 @@
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
-using FestOS.Modules.Sample.Domain;
 using FestOS.Modules.Sample.Infrastructure;
 using FestOS.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -59,20 +58,20 @@ public sealed class ModuleMigrationTests(PostgresDatabase database)
             await migrator.Database.MigrateAsync(TestContext.Current.CancellationToken);
         }
 
-        var item = SampleItem.Create("Stage", 12.3456m);
-        item.AddPart("Leg");
-        await using (SampleDbContext module = CreateSampleContext("festos_sample"))
-        {
-            module.SampleItems.Add(item);
-            await module.SaveChangesAsync(TestContext.Current.CancellationToken);
-        }
+        await using var connection = new NpgsqlConnection(ConnectionString("festos_sample"));
+        await connection.OpenAsync(TestContext.Current.CancellationToken);
+        await using var command = new NpgsqlCommand(
+            """
+            INSERT INTO sample_items (id, name, status, unit_price, version, created_at, created_by, updated_at, updated_by)
+            VALUES (uuidv7(), 'Probe', 'draft', 1, 1, now(), uuidv7(), now(), uuidv7());
+            UPDATE sample_items SET name = 'Probed' WHERE name = 'Probe';
+            DELETE FROM sample_items WHERE name = 'Probed';
+            """,
+            connection
+        );
 
-        await using SampleDbContext reader = CreateSampleContext("festos_sample");
-        SampleItem stored = await reader
-            .SampleItems.Include(sample => sample.Parts)
-            .SingleAsync(sample => sample.Id == item.Id, TestContext.Current.CancellationToken);
-        stored.UnitPrice.ShouldBe(12.3456m);
-        stored.Parts.ShouldHaveSingleItem().Label.ShouldBe("Leg");
+        // Runs under the module role, whose search_path starts with its schema.
+        await command.ExecuteNonQueryAsync(TestContext.Current.CancellationToken);
     }
 
     private Task BootstrapAsync() =>

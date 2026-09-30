@@ -10,7 +10,7 @@ namespace FestOS.BuildingBlocks.Domain.Entities;
 /// <see cref="Version"/> and the audit fields are written by the unit of work, never by domain code
 /// (database §9, §11.1).
 /// </remarks>
-public abstract class AggregateRoot<TId> : Entity<TId>, IAuditable
+public abstract class AggregateRoot<TId> : Entity<TId>, IAggregateRoot
     where TId : struct
 {
     private readonly List<IDomainEvent> _domainEvents = [];

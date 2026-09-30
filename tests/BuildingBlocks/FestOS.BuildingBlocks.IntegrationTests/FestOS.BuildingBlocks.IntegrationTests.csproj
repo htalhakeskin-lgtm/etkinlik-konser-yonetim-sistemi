@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Testing\FestOS.Modules.Sample\FestOS.Modules.Sample.csproj" />
+    <ProjectReference Include="..\..\Testing\FestOS.Testing\FestOS.Testing.csproj" />
+  </ItemGroup>
+</Project>

@@ -14,13 +14,15 @@ public sealed class BusinessRuleViolationException : Exception
     /// <param name="message">An English explanation for developers; no personal or secret data.</param>
     /// <param name="kind">The kind of the violated rule; decides between 422 and 403.</param>
     /// <param name="parameters">Values the user-facing message needs.</param>
+    /// <param name="innerException">The error that revealed the violation, e.g. a database constraint error.</param>
     public BusinessRuleViolationException(
         string ruleCode,
         string message,
         RuleKind kind = RuleKind.Constraint,
-        IReadOnlyDictionary<string, object?>? parameters = null
+        IReadOnlyDictionary<string, object?>? parameters = null,
+        Exception? innerException = null
     )
-        : base(message)
+        : base(message, innerException)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(ruleCode);
         RuleCode = ruleCode;

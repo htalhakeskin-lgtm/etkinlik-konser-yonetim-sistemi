@@ -10,4 +10,11 @@ public sealed class SampleDbContext(DbContextOptions<SampleDbContext> options)
 {
     /// <summary>The items.</summary>
     public DbSet<SampleItem> SampleItems => Set<SampleItem>();
+
+    /// <inheritdoc />
+    protected override IReadOnlyDictionary<string, string> ConstraintRules { get; } =
+        new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["ux_sample_items_name"] = SampleRuleCodes.NameIsUnique,
+        };
 }
