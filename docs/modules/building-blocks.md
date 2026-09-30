@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.21 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.22 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -298,6 +298,13 @@ Anahtar denetimi `If-Match`'ten önce yapılır; filtre sırası bunu garanti ed
 - **Sözleşme testi:** Yalnızca testte açılan örnek uç noktalar (boş olabilen dizi, boş olabilen nesne, enum, ondalık, tip güvenli kimlik) üzerinden istemci üretilir ve tip denetiminden geçer ([api §14.1](../standards/api.md#141-openapi-belgesi)).
 - **CI:** `backend` işinde üretilen belgenin repodakiyle aynı olduğu, `frontend` işinde Orval çıktısının güncel olduğu denetlenir.
 
+**Uygulama ayrıntıları** (11a):
+- `AddApiDocument()` (Infrastructure) belgeyi HTTP hattının JSON kurallarıyla kaydeder; Host yalnızca çağırır. Derlemede belgeyi Host'un `Microsoft.Extensions.ApiDescription.Server` paketi yazar.
+- `ApiSchemaTransformer`, özel JSON dönüştürücülerinin arkasını .NET göremediği için biçimleri kendisi yazar: metin (`string`, boş olabilirlik C# notundan), `decimal` (`string` / `decimal`), tip güvenli kimlik (`string` / `uuid`), süre (tam dakika, `integer`), para birimi (`^[A-Z]{3}$`), enum (`string`).
+- `ApiOperationTransformer` sürüm isteyen uç noktalara zorunlu `If-Match`, `RequiresIdempotencyKey()` grubundaki değiştiren uç noktalara zorunlu `Idempotency-Key` başlığı ekler. Her işlemin `default` yanıtı `application/problem+json` ve `ApiProblem` şemasıdır; üretilen istemci hata tipini buradan bilir.
+- Açıklamalar XML yorumlarından alınmaz. .NET'in üreteci yorum satırlarını makinenin satır sonuyla birleştirdiği için belge Windows'ta ve CI'da farklı çıkıyordu; yorumlar ayrıca iç belgelere atıf yapar. İşlem açıklaması `WithSummary` ile yazılır (AT-14).
+- `GET /api/v1/antiforgery` belgede yoktur; onu istek sarmalayıcısı kendisi çağırır.
+
 ## 11. Anlık bildirimler
 
 - `NotificationsHub` (`/hubs/notifications`), çerezle kimlik doğrular. İstemci `JoinGroup(name)` ile gruba katılır; her grup türü için bir yetki denetimi modül tarafından kaydedilir (ör. `warehouses:{id}` → kullanıcının o depoya erişimi). Denetimi olmayan grup reddedilir.
@@ -330,7 +337,7 @@ CI'a `backend-integration` işi eklenir (Testcontainers, [ci §4](../standards/c
 
 ## 14. PR planı
 
-Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir. 2., 3., 4., 5., 6., 8. ve 9. PR'lar, 400 satır sınırı için bölündü.
+Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir. 2., 3., 4., 5., 6., 8., 9. ve 11. PR'lar, 400 satır sınırı için bölündü.
 
 | # | PR | Kapsam |
 |---|---|---|
@@ -357,7 +364,8 @@ Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir
 | 9b-1 | Tekrar güvenliği anahtarları | `idempotency_keys`, işlem birimindeki kayıt ve saklanan sonuç, hata kodları; eşzamanlılık testleri |
 | 9b-2 | Tekrar güvenliği filtresi | `IdempotencyFilter` (anahtar, parmak izi, `Idempotency-Replayed`), temizlik işi; HTTP testleri |
 | 10 | CSRF | Antiforgery ara katmanı, `Sec-Fetch-Site`, belirteç uç noktası |
-| 11 | OpenAPI ve Orval | Dönüştürücüler, dosyaya üretim, Orval, sözleşme testi, CI güncellik denetimleri; AT-14, AT-15 |
+| 11a | OpenAPI belgesi | Dönüştürücüler, dosyaya üretim, `backend` işinde güncellik denetimi |
+| 11b | Orval ve sözleşme testi | Orval, sözleşme testi, `frontend` işinde güncellik denetimi; AT-14, AT-15 |
 | 12 | Anlık bildirimler | Hub, grup yetkileri, `ResourceChangedPublisher` |
 | 13 | Ön yüz platformu | İstek sarmalayıcısı, `ApiError`, sürüm şeridi, SignalR istemcisi |
 | 14 | Ortak bileşenler | `EmptyState`, `ErrorState`, `SkeletonBlock`, `PageHeader`, `ConnectionIndicator`, `ConfirmDialog` |
@@ -419,3 +427,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.19 | §9.3 uygulama ayrıntıları: saklanan, komutun sonucu; tekrarında uç nokta yanıtı yeniden kurar (9b-1). 9b ikiye bölündü. |
 | 2026-09-30 | v1.20 | §9.3 filtre ve temizlik işinin uygulama ayrıntıları (9b-2). |
 | 2026-09-30 | v1.21 | §9.4 CSRF uygulama ayrıntıları (10. PR); BB-11 geliştirmede çerezler. |
+| 2026-09-30 | v1.22 | §10 OpenAPI belgesinin uygulama ayrıntıları (11a); 11. PR ikiye bölündü. |

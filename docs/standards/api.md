@@ -1,6 +1,6 @@
 # API Standardı
 
-> **Durum:** v1.10 · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.11 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 15](#15-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -340,7 +340,8 @@ Oturum [ADR-0011](../adr/0011-authentication.md)'deki gibi sunucu tarafı oturum
   - `decimal` değerler `string` / `decimal`,
   - `required` ve boş olabilirlik C# tipinden birebir,
   - sürüm gerektiren uç noktalarda zorunlu `If-Match`, değiştiren tüm uç noktalarda zorunlu `Idempotency-Key` başlığı,
-  - tüm hata yanıtları Problem Details şemasıyla.
+  - tüm hata yanıtları Problem Details şemasıyla: her işlemin `default` yanıtı `application/problem+json` ve `ApiProblem` şemasıdır (`code`, `traceId`; gerektiğinde `params`, `errors`).
+- İşlem açıklaması `WithSummary` ile yazılır. XML yorumları belgeye alınmaz: satır sonları işletim sistemine göre değişip belgenin güncellik denetimini bozar.
 - **Sözleşme testi:** .NET'in 3.1 çıktısındaki boş olabilen dizi gibi bazı biçimler istemci üreteçlerinde sorun çıkarabiliyor ([kaynak](https://github.com/cyclosproject/ng-openapi-gen/issues/410)). Bu yüzden sürekli entegrasyonda örnek bir uç nokta kümesinden (boş olabilen dizi, boş olabilen nesne, enum, ondalık, tip güvenli kimlik) istemci üretilir ve tip denetiminden geçirilir. Üreteç 3.1'de sorun çıkarırsa belge tek satırlık bir ayarla 3.0'a çevrilir.
 
 ### 14.2 Ön yüz istemcisi
@@ -408,3 +409,4 @@ Oturum [ADR-0011](../adr/0011-authentication.md)'deki gibi sunucu tarafı oturum
 | 2026-09-30 | v1.8 | §8.3'e tekrar güvenliği kodları; §10'da saklanan şey komutun sonucudur (Faz 1.1). |
 | 2026-09-30 | v1.9 | §8.3'e `idempotencyKeyMissing`; §10'da anahtarın biçimi (Faz 1.1). |
 | 2026-09-30 | v1.10 | §8.3'e `csrfRejected`; §11'de belirteç çerezleri ve uç noktası (Faz 1.1). |
+| 2026-09-30 | v1.11 | §14.1: hata yanıtlarının `default` yanıt olarak yazılışı, açıklamaların kaynağı (Faz 1.1). |

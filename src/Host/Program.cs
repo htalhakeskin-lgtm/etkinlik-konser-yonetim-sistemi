@@ -1,6 +1,7 @@
 using System.Globalization;
 using FestOS.BuildingBlocks.Infrastructure.Http;
 using FestOS.BuildingBlocks.Infrastructure.Modules;
+using FestOS.BuildingBlocks.Infrastructure.OpenApi;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
 using FestOS.Modules.Audit.Infrastructure;
 using FestOS.ServiceDefaults;
@@ -24,7 +25,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.AddHttpPlatform();
-builder.Services.AddOpenApi();
+builder.AddApiDocument();
 builder.AddModules(Modules());
 
 WebApplication app = builder.Build();

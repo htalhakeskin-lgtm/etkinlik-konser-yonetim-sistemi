@@ -16,6 +16,8 @@ public static class IdempotencyEndpointExtensions
         where TBuilder : IEndpointConventionBuilder
     {
         ArgumentNullException.ThrowIfNull(builder);
-        return builder.AddEndpointFilter<TBuilder, IdempotencyFilter>();
+        return builder
+            .WithMetadata(RequiresIdempotencyKeyMetadata.Instance)
+            .AddEndpointFilter<TBuilder, IdempotencyFilter>();
     }
 }
