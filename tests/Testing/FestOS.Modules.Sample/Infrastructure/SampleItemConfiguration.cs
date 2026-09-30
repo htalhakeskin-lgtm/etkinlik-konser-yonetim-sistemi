@@ -10,6 +10,7 @@ internal sealed class SampleItemConfiguration : IEntityTypeConfiguration<SampleI
     {
         builder.ToTable("sample_items");
         builder.Property(item => item.Name).HasMaxLength(200);
+        builder.Property(item => item.InternalCode).HasMaxLength(32);
         builder.HasIndex(item => item.Name).IsUnique().HasDatabaseName("ux_sample_items_name");
 
         // Parts belong to the aggregate, so this cascade is explicit (V-11).

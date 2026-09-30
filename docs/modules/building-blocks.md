@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.9 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.10 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -161,6 +161,13 @@ Roller ve yetkiler [database §4](../standards/database.md#4-roller-ve-yetkiler)
 - `AuditEntry` her modülün bağlamında aynı tabloya eşlenir, böylece kayıtlar değişiklikle aynı `SaveChanges`'te, aynı işlemde eklenir. Eşleme Audit dışındaki bağlamlarda migration dışıdır (`ExcludeFromMigrations`); tabloyu, indeksini ve yetkilerini yalnızca Audit modülünün migration'ı kurar.
 - Modül listesi değişkendir, bu yüzden yetki bir grup rolüne verilir: hazırlık adımı giriş yapamayan `festos_audit_writer` rolünü kurar ve her modül rolünü üye yapar; Audit migration'ı bu gruba yalnızca `INSERT`, `festos_audit`'e yalnızca `SELECT` verir. Güncelleme ve silme yetkisi kimsede yoktur.
 - `action` bir enum'dur (`AuditAction`); ortak kuralla camelCase metin ve `CHECK` kısıtıyla saklanır.
+
+**Yazıcı** (5b):
+- `changes`: yeni kayıtta her alanın yeni değeri, silinen kayıtta eski değeri, değişiklikte yalnızca gerçekten değişen alanların eski ve yeni değeri. Alan adları camelCase'dir; değerler veritabanındaki biçimleriyledir (kimlik UUID, enum camelCase metin).
+- `Status` alanı değişen kayıt `statusChanged` olarak yazılır.
+- Sürüm ve oluşturan / güncelleyen alanları yazılmaz; bunlar geçmiş satırının kendi zamanı ve kullanıcısıdır. Yalnızca bir alt varlığı değiştiği için sürümü artan kökün satırı yazılmaz; alt varlığın satırı yazılır.
+- `[NotAudited]` alanda ya da varlıkta kullanılabilir; alan tiplerinde kullanıldığı için `BuildingBlocks.Domain`'dedir.
+- `occurred_at` ve `actor_id` o kaydın damgalarıyla aynıdır; `module` modülün şemasıdır.
 
 ## 7. Olaylar: outbox, dağıtıcı, olay yolu, inbox
 
@@ -335,3 +342,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.7 | §4 kaydetme adımlarının uygulama ayrıntıları; 4. PR ikiye bölündü (4a kaydetme adımları, 4b dekoratör). |
 | 2026-09-30 | v1.8 | §4 işlem birimi dekoratörünün uygulama ayrıntıları (4b). |
 | 2026-09-30 | v1.9 | §6 işlem geçmişi tablosunun uygulama ayrıntıları; 5. PR ikiye bölündü (5a tablo, 5b yazıcı). |
+| 2026-09-30 | v1.10 | §6 yazıcının uygulama ayrıntıları (5b). |

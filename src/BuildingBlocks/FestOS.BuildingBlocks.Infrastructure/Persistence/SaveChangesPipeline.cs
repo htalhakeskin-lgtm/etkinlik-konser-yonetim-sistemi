@@ -3,6 +3,7 @@ using FestOS.BuildingBlocks.Application.Messaging;
 using FestOS.BuildingBlocks.Application.Users;
 using FestOS.BuildingBlocks.Domain.Entities;
 using FestOS.BuildingBlocks.Domain.Events;
+using FestOS.BuildingBlocks.Infrastructure.Auditing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -12,7 +13,8 @@ namespace FestOS.BuildingBlocks.Infrastructure.Persistence;
 
 /// <summary>
 /// The steps <see cref="ModuleDbContext"/> runs before writing (building-blocks §4): domain events,
-/// aggregate versions and audit fields. Scoped, so handlers share the request's context.
+/// aggregate versions and audit fields, and the change history. Scoped, so handlers share the
+/// request's context.
 /// </summary>
 internal sealed class SaveChangesPipeline(
     IServiceProvider services,
@@ -31,7 +33,13 @@ internal sealed class SaveChangesPipeline(
     public async Task BeforeSaveAsync(ModuleDbContext context, CancellationToken cancellationToken)
     {
         await DispatchDomainEventsAsync(context, cancellationToken);
-        StampChangedAggregates(context);
+
+        // PostgreSQL keeps microseconds; the stored value then equals the one in memory (database §7.1).
+        DateTimeOffset now = timeProvider.GetUtcNow();
+        now = now.AddTicks(-(now.Ticks % 10));
+
+        StampChangedAggregates(context, now);
+        AuditEntryWriter.AddEntries(context, context.Schema, now, currentUser.UserId);
     }
 
     // Step 1: handlers run in the same transaction and may change more of the module's data.
@@ -80,7 +88,7 @@ internal sealed class SaveChangesPipeline(
 
     // Steps 2 and 3: every aggregate that changed, itself or through a child entity, gets a new
     // version and its audit fields (database §9, §11.1).
-    private void StampChangedAggregates(ModuleDbContext context)
+    private void StampChangedAggregates(ModuleDbContext context, DateTimeOffset now)
     {
         List<EntityEntry> entries = [.. context.ChangeTracker.Entries()];
         HashSet<object> changedRoots = new(ReferenceEqualityComparer.Instance);
@@ -96,10 +104,6 @@ internal sealed class SaveChangesPipeline(
                 changedRoots.Add(root.Entity);
             }
         }
-
-        // PostgreSQL keeps microseconds; the stored value then equals the one in memory (database §7.1).
-        DateTimeOffset now = timeProvider.GetUtcNow();
-        now = now.AddTicks(-(now.Ticks % 10));
 
         foreach (EntityEntry root in changedRoots.Select(context.Entry))
         {
