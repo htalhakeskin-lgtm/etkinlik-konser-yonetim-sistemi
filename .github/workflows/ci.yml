@@ -118,6 +118,15 @@ jobs:
       - run: dotnet restore
       - name: Build (warnings are errors)
         run: dotnet build --no-restore --configuration Release
+      # The build writes the OpenAPI document; a change to the API commits it too (api §14.1).
+      - name: OpenAPI document is up to date
+        run: |
+          if [ -n "$(git status --porcelain -- src/web/openapi)" ]; then
+            git status --short -- src/web/openapi
+            git --no-pager diff -- src/web/openapi
+            echo "::error::src/web/openapi/festos.json is out of date; build the Host and commit it."
+            exit 1
+          fi
       - run: dotnet csharpier check .
       # Tests that need Docker (integration and database tests) run in backend-integration.
       - name: Unit and architecture tests

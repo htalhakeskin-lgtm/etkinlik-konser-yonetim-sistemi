@@ -7,9 +7,24 @@
   <ItemGroup>
     <PackageReference Include="Cronos" />
     <PackageReference Include="EFCore.NamingConventions" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Npgsql" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
   </ItemGroup>
+
+  <!--
+    The OpenAPI document takes no descriptions from XML comments: the generator joins their lines with the
+    machine's line ending, so the committed document would differ between Windows and CI, and the comments
+    cite internal documents. Operations are described with WithSummary (AT-14).
+  -->
+  <Target Name="RemoveOpenApiXmlCommentGenerator" BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <Analyzer
+        Remove="@(Analyzer)"
+        Condition="'%(Filename)' == 'Microsoft.AspNetCore.OpenApi.SourceGenerators'"
+      />
+    </ItemGroup>
+  </Target>
 
   <ItemGroup>
     <ProjectReference Include="..\FestOS.BuildingBlocks.Application\FestOS.BuildingBlocks.Application.csproj" />

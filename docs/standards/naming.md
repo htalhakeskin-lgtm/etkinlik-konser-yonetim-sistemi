@@ -1,6 +1,6 @@
 # İsimlendirme Standardı
 
-> **Durum:** v1.6 · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.7 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 12](#12-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -242,7 +242,7 @@ Adres yapısı, sürümleme, sayfalama ve hata biçimi [api.md](api.md)'dedir. B
 
 **İşlem adı neden önemli:** Ön yüzün API istemcisi (Orval) OpenAPI belgesinden üretilir ve kanca adlarını işlem adından türetir: `ConfirmEvent` → `useConfirmEvent`. İşlem adı verilmezse Orval adres ve metottan uzun, kararsız adlar üretir; bir adres değişince ön yüzdeki tüm kullanımlar da değişir. Bu yüzden her uç nokta `WithName("ConfirmEvent")` ile adlandırılır ([kaynak](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/include-metadata?view=aspnetcore-10.0)). Etiketin modül adı olması, Orval'ın üretilen kodu modül modül klasörlemesini sağlar. Mimari test (AT-14) her uç noktanın benzersiz bir işlem adı, modül etiketi ve açıklaması (summary) olduğunu doğrular.
 
-**Enum değerleri neden camelCase metin:** Sayı olarak gönderilen enum'lar okunmaz ve sıraları değişince sessizce anlam değiştirir. camelCase metin, JSON alan adlarıyla aynı biçimdedir ve doğrudan çeviri anahtarına dönüşür (`holdPlaced` → `booking:eventStatus.holdPlaced`). .NET'in OpenAPI üretimi, metin enum'larda şemaya `type: string` bilgisini her durumda eklemeyebilir ([kaynak](https://github.com/dotnet/aspnetcore/issues/62022)). Bu, C.5'te bir şema dönüştürücüsüyle garanti altına alınacak.
+**Enum değerleri neden camelCase metin:** Sayı olarak gönderilen enum'lar okunmaz ve sıraları değişince sessizce anlam değiştirir. camelCase metin, JSON alan adlarıyla aynı biçimdedir ve doğrudan çeviri anahtarına dönüşür (`holdPlaced` → `booking:eventStatus.holdPlaced`). .NET'in OpenAPI üretimi, metin enum'larda şemaya `type: string` bilgisini her durumda eklemeyebilir ([kaynak](https://github.com/dotnet/aspnetcore/issues/62022)). Bunu BuildingBlocks'taki şema dönüştürücüsü (`ApiSchemaTransformer`) garanti eder.
 
 ## 7. Ön yüz adları
 
@@ -402,3 +402,4 @@ Araçların kurulumu ve kuralların tam listesi [code-style.md](code-style.md)'d
 | 2026-09-26 | v1.4 | Palet değişkenlerinin numaralandırması (Faz 1.0). |
 | 2026-09-26 | v1.5 | Varsayılan dışa aktarım istisnasına Storybook dosyaları eklendi (Faz 1.0). |
 | 2026-09-30 | v1.6 | Enum saklama notu güncellendi; enum kısıtlarının adı (Faz 1.1). |
+| 2026-09-30 | v1.7 | §6: metin enum'ları garanti eden şema dönüştürücüsü yazıldı (Faz 1.1). |

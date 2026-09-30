@@ -1,6 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
+  <!--
+    The build writes the OpenAPI document to src/web/openapi/festos.json; the front end's client is
+    generated from that file, so building the front end needs no running API (08 §10, api §14.1).
+  -->
+  <PropertyGroup>
+    <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)/../web/openapi</OpenApiDocumentsDirectory>
+    <OpenApiGenerateDocumentsOptions>--file-name festos</OpenApiGenerateDocumentsOptions>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Server">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

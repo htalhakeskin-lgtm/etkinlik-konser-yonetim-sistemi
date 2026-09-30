@@ -50,7 +50,9 @@ public static class CsrfProtection
                     return TypedResults.NoContent();
                 }
             )
-            .AllowAnonymous();
+            .AllowAnonymous()
+            // The request wrapper calls it itself; the generated client does not need it.
+            .ExcludeFromDescription();
         return endpoints;
     }
 
