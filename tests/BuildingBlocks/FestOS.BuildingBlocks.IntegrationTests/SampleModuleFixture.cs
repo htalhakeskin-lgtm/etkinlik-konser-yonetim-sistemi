@@ -14,11 +14,13 @@ namespace FestOS.BuildingBlocks.IntegrationTests;
 
 /// <summary>
 /// A host with the sample module (building-blocks BB-08) on a migrated PostgreSQL database, shared by
-/// the platform integration tests. Each test calls <see cref="ResetAsync"/> first.
+/// the platform integration tests. Each test calls <see cref="ResetAsync"/> first. The host is built but
+/// not started, so no dispatcher runs unless a test starts a host of its own.
 /// </summary>
 public sealed class SampleModuleFixture : IAsyncLifetime
 {
     private readonly PostgresDatabase _database = new();
+    private readonly Dictionary<string, string?> _settings = new(StringComparer.Ordinal);
     private IHost? _host;
 
     /// <summary>The clock; starts on a microsecond-aligned Monday morning in Istanbul (testing §11).</summary>
@@ -34,24 +36,28 @@ public sealed class SampleModuleFixture : IAsyncLifetime
     public async ValueTask InitializeAsync()
     {
         await _database.InitializeAsync();
+        _settings[$"ConnectionStrings:{DatabaseConnections.ConnectionStringName}"] = _database.AdminConnectionString;
+        _settings[$"Database:Passwords:{DatabaseRoles.Migrator}"] = Guid.CreateVersion7().ToString("N");
+        _settings["Database:Passwords:festos_audit"] = Guid.CreateVersion7().ToString("N");
+        _settings["Database:Passwords:festos_sample"] = Guid.CreateVersion7().ToString("N");
 
+        _host = CreateHost(Time);
+        await _host.Services.GetRequiredService<DatabaseMigrator>().RunAsync(TestContext.Current.CancellationToken);
+    }
+
+    /// <summary>
+    /// Builds another host on the same database with its own clock, e.g. to start it and watch the
+    /// dispatcher work; the caller starts, stops and disposes it.
+    /// </summary>
+    public IHost CreateHost(TimeProvider time)
+    {
         HostApplicationBuilder builder = Host.CreateEmptyApplicationBuilder(new HostApplicationBuilderSettings());
-        builder.Configuration.AddInMemoryCollection(
-            new Dictionary<string, string?>(StringComparer.Ordinal)
-            {
-                [$"ConnectionStrings:{DatabaseConnections.ConnectionStringName}"] = _database.AdminConnectionString,
-                [$"Database:Passwords:{DatabaseRoles.Migrator}"] = Guid.CreateVersion7().ToString("N"),
-                ["Database:Passwords:festos_audit"] = Guid.CreateVersion7().ToString("N"),
-                ["Database:Passwords:festos_sample"] = Guid.CreateVersion7().ToString("N"),
-            }
-        );
+        builder.Configuration.AddInMemoryCollection(_settings);
         builder.Services.AddLogging();
-        builder.Services.AddSingleton<TimeProvider>(Time);
+        builder.Services.AddSingleton(time);
         builder.Services.AddSingleton<ICurrentUser>(CurrentUser);
         builder.AddModules(new AuditModuleDefinition(), new SampleModuleDefinition());
-        _host = builder.Build();
-
-        await _host.Services.GetRequiredService<DatabaseMigrator>().RunAsync(TestContext.Current.CancellationToken);
+        return builder.Build();
     }
 
     /// <summary>Empties the sample module's tables and the change history, and restores the default user and probe.</summary>

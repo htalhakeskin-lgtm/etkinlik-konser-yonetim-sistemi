@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using FestOS.BuildingBlocks.Contracts;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
@@ -79,6 +80,9 @@ public sealed partial class OutboxProcessor(
 
     private async Task DeliverAsync(string moduleName, OutboxMessage message, CancellationToken cancellationToken)
     {
+        string eventName = message.Type.Split(',')[0].Split('.')[^1];
+        using Activity? activity = MessagingTelemetry.StartDelivery(message, moduleName, eventName);
+
         try
         {
             Type type = Type.GetType(message.Type, throwOnError: true)!;
@@ -89,6 +93,8 @@ public sealed partial class OutboxProcessor(
         }
         catch (Exception exception) when (exception is not OperationCanceledException)
         {
+            activity?.AddException(exception);
+            activity?.SetStatus(ActivityStatusCode.Error);
             DateTimeOffset now = timeProvider.GetUtcNow();
             message.AttemptCount++;
             message.LastError = Describe(exception);

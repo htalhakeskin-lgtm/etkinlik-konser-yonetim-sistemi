@@ -1,6 +1,7 @@
 using FestOS.BuildingBlocks.Application.Messaging;
 using FestOS.BuildingBlocks.Infrastructure.Messaging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -45,6 +46,13 @@ internal static class ModuleUnitOfWork
                     TResult result = await work(retryCancellationToken);
                     await context.SaveChangesAsync(retryCancellationToken);
                     await transaction.CommitAsync(retryCancellationToken);
+
+                    // The events are durable now; their module's dispatcher delivers them at once (05 §9.2).
+                    if (outbox.WroteMessages)
+                    {
+                        context.GetService<OutboxSignals>().Notify(context.Schema);
+                    }
+
                     return result;
                 },
                 cancellationToken
