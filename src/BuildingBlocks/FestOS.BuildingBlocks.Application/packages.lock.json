@@ -55,6 +55,9 @@
         "resolved": "10.0.0",
         "contentHash": "RFYJR7APio/BiqdQunRq6DB+nDB6nc2qhHr77mlvZ0q0BT8PubMXN7XicmfzCbrDE/dzhBnUKBRXLTcqUiZDGg=="
       },
+      "festos.buildingblocks.contracts": {
+        "type": "Project"
+      },
       "festos.buildingblocks.domain": {
         "type": "Project"
       }

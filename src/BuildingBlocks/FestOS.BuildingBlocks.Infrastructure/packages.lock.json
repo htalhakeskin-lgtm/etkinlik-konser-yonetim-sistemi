@@ -65,10 +65,14 @@
       "festos.buildingblocks.application": {
         "type": "Project",
         "dependencies": {
+          "FestOS.BuildingBlocks.Contracts": "[1.0.0, )",
           "FestOS.BuildingBlocks.Domain": "[1.0.0, )",
           "FluentValidation": "[12.1.1, )",
           "Scrutor": "[7.0.0, )"
         }
+      },
+      "festos.buildingblocks.contracts": {
+        "type": "Project"
       },
       "festos.buildingblocks.domain": {
         "type": "Project"

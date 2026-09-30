@@ -80,6 +80,95 @@ namespace FestOS.Modules.Audit.Infrastructure.Migrations
                             t.HasCheckConstraint("ck_audit_entries_action_enum", "action IN ('created', 'deleted', 'statusChanged', 'updated')");
                         });
                 });
+
+            modelBuilder.Entity("FestOS.BuildingBlocks.Infrastructure.Messaging.InboxMessage", b =>
+                {
+                    b.Property<Guid>("MessageId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("message_id");
+
+                    b.Property<string>("Handler")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
+                        .HasColumnName("handler");
+
+                    b.Property<DateTimeOffset>("ProcessedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("processed_at");
+
+                    b.HasKey("MessageId", "Handler")
+                        .HasName("pk_inbox_messages");
+
+                    b.ToTable("inbox_messages", "audit");
+                });
+
+            modelBuilder.Entity("FestOS.BuildingBlocks.Infrastructure.Messaging.OutboxMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("AttemptCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("attempt_count");
+
+                    b.Property<DateTimeOffset?>("DispatchedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("dispatched_at");
+
+                    b.Property<DateTimeOffset?>("FailedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("failed_at");
+
+                    b.Property<string>("LastError")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)")
+                        .HasColumnName("last_error");
+
+                    b.Property<DateTimeOffset?>("NextAttemptAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("next_attempt_at");
+
+                    b.Property<DateTimeOffset>("OccurredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("occurred_at");
+
+                    b.Property<Guid>("OrderingKey")
+                        .HasColumnType("uuid")
+                        .HasColumnName("ordering_key");
+
+                    b.Property<string>("Payload")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("payload");
+
+                    b.Property<long>("Sequence")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("sequence");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Sequence"));
+
+                    b.Property<string>("TraceParent")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("trace_parent");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
+                        .HasColumnName("type");
+
+                    b.HasKey("Id")
+                        .HasName("pk_outbox_messages");
+
+                    b.HasIndex("Sequence")
+                        .HasDatabaseName("ix_outbox_messages_sequence")
+                        .HasFilter("dispatched_at IS NULL AND failed_at IS NULL");
+
+                    b.ToTable("outbox_messages", "audit");
+                });
 #pragma warning restore 612, 618
         }
     }

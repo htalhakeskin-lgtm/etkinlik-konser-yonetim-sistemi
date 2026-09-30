@@ -1,4 +1,5 @@
 using FestOS.BuildingBlocks.Application.Messaging;
+using FestOS.BuildingBlocks.Infrastructure.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +12,8 @@ namespace FestOS.BuildingBlocks.Infrastructure.Persistence;
 /// </summary>
 internal sealed class UnitOfWorkCommandDecorator<TCommand, TResult>(
     ICommandHandler<TCommand, TResult> inner,
-    IServiceProvider services
+    IServiceProvider services,
+    Outbox outbox
 ) : ICommandHandler<TCommand, TResult>
     where TCommand : ICommand<TResult>
 {
@@ -31,6 +33,7 @@ internal sealed class UnitOfWorkCommandDecorator<TCommand, TResult>(
                 {
                     // A retry starts from a clean context and runs the handler again, so it reloads its data.
                     context.ChangeTracker.Clear();
+                    outbox.Clear();
                     await using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync(
                         retryCancellationToken
                     );
