@@ -16,6 +16,9 @@ internal sealed class Outbox : IOutbox
 
     private readonly List<IIntegrationEvent> _pending = [];
 
+    /// <summary>Whether the last save of this unit of work wrote events, so the commit wakes the dispatcher.</summary>
+    public bool WroteMessages { get; private set; }
+
     public void Add(IIntegrationEvent integrationEvent)
     {
         ArgumentNullException.ThrowIfNull(integrationEvent);
@@ -23,7 +26,11 @@ internal sealed class Outbox : IOutbox
     }
 
     /// <summary>Forgets what a failed attempt added; the retried handler adds its events again.</summary>
-    public void Clear() => _pending.Clear();
+    public void Clear()
+    {
+        _pending.Clear();
+        WroteMessages = false;
+    }
 
     public void MoveTo(DbContext context)
     {
@@ -46,6 +53,7 @@ internal sealed class Outbox : IOutbox
                 );
         }
 
+        WroteMessages |= _pending.Count > 0;
         _pending.Clear();
     }
 

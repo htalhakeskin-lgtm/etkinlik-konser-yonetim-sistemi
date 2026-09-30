@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.12 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.13 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -196,6 +196,12 @@ Kararlar [ADR-0010](../adr/0010-messaging-infrastructure.md)'da, tablolar [datab
 - Dinleyicilerin ve işleyicinin değişiklikleri sistem kullanıcısıyla kaydedilir (`ActingUser`; [database §9](../standards/database.md#9-ortak-kolonlar)). Komutlar, dinleyiciler ve işleyici aynı işlem birimi yardımcısını (`ModuleUnitOfWork`) kullanır.
 - Kayıt yazarken ve hatada `Warning` (yeniden denenecek) ya da `Error` (hatalı olarak işaretlendi) loglanır ([observability §3.3](../standards/observability.md#33-ne-loglanır)).
 
+**Dağıtıcı** (6b-2):
+- `OutboxDispatcher` bir arka plan hizmetidir ve her modül için bir döngü çalıştırır: açılışta bekleyenleri teslim eder, dolu grup geldikçe devam eder, sonra bir sinyal ya da `Messaging:PollInterval` (varsayılan 5 sn, 1 sn–10 dk arası doğrulanır) gelene kadar bekler.
+- İşlem birimi, commit ettiği kayıt outbox'a olay yazdıysa o modülün dağıtıcısını uyandırır (`OutboxSignals`); art arda gelen sinyaller tek sinyale indirgenir. Doğrudan `SaveChanges` sinyal vermez; o olayları yedek tarama alır.
+- Bir turdaki hata `Warning` olarak loglanır ve döngü sürer. Temel bağlantı dizesi yoksa (Host'u veritabanısız açarken) dağıtıcı bir kez bilgi verip çalışmaz. `migrate` komutunun host'u başlatılmadığı için dağıtıcı orada çalışmaz.
+- Her teslim `Deliver {Olay}` adlı bir iz aralığıdır ve olayı doğuran isteğin izine bağlanır (`trace_parent`).
+
 ## 8. Zamanlanmış işler ve kilitler
 
 - `ScheduledJob` temel sınıfı ([ADR-0013](../adr/0013-scheduled-jobs.md)): aralıklı işler `PeriodicTimer`, saatli işler Cronos; saatler Europe/Istanbul; zaman `TimeProvider`'dan.
@@ -355,3 +361,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.10 | §6 yazıcının uygulama ayrıntıları (5b). |
 | 2026-09-30 | v1.11 | §3 ve §7 outbox'a yazmanın uygulama ayrıntıları (`MessageId`, `IOutbox`); ölçüm adları gözlemlenebilirlik standardına uyduruldu; 6. PR üçe bölündü, temizlik 7. PR'a kaydı. |
 | 2026-09-30 | v1.12 | §7 teslimin uygulama ayrıntıları (6b-1); 6. PR'ın kalanı yeniden bölündü (6b-1 teslim, 6b-2 dağıtıcı, 6c sıra ve ölçümler). |
+| 2026-09-30 | v1.13 | §7 dağıtıcının uygulama ayrıntıları (6b-2). |

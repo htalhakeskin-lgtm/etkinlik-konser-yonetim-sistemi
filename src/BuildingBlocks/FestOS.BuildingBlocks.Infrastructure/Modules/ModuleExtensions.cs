@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace FestOS.BuildingBlocks.Infrastructure.Modules;
 
@@ -44,6 +45,13 @@ public static class ModuleExtensions
         builder.Services.TryDecorate(typeof(IIntegrationEventHandler<>), typeof(InboxIntegrationEventDecorator<>));
         builder.Services.TryAddSingleton<IEventBus, InProcessEventBus>();
         builder.Services.TryAddSingleton<OutboxProcessor>();
+        builder.Services.TryAddSingleton<OutboxSignals>();
+        builder
+            .Services.AddOptions<MessagingOptions>()
+            .Bind(builder.Configuration.GetSection(MessagingOptions.SectionName))
+            .ValidateOnStart();
+        builder.Services.TryAddSingleton<IValidateOptions<MessagingOptions>, MessagingOptionsValidator>();
+        builder.Services.AddHostedService<OutboxDispatcher>();
         builder.Services.AddSingleton(new ModuleCatalog(modules));
         builder.Services.AddSingleton<DatabaseBootstrapper>();
         builder.Services.AddSingleton<DatabaseMigrator>();
