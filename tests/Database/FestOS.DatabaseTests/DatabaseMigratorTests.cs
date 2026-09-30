@@ -1,3 +1,4 @@
+using FestOS.BuildingBlocks.Application.Users;
 using FestOS.BuildingBlocks.Infrastructure.Modules;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
 using FestOS.Modules.Sample.Domain;
@@ -64,6 +65,7 @@ public sealed class DatabaseMigratorTests(PostgresDatabase database)
             }
         );
         builder.Services.AddLogging();
+        builder.Services.AddSingleton<ICurrentUser>(new FakeCurrentUser());
         builder.AddModules(new SampleModuleDefinition());
         return builder.Build();
     }

@@ -146,7 +146,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | [11 — Ekran şablonları ve envanteri](docs/11-screens.md) | v1.0 |
 | [Ekran tasarım özeti (v0)](docs/design/screen-brief.md) | v1.1 |
 | [12 — Uygulama planı (Faz 1: S1)](docs/12-implementation-plan.md) | v1.0 |
-| [Modül tasarımı: Ortak yapı taşları](docs/modules/building-blocks.md) | v1.6 |
+| [Modül tasarımı: Ortak yapı taşları](docs/modules/building-blocks.md) | v1.7 |
 
 ### Teknoloji
 

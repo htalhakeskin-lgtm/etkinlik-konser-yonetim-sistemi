@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.6 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.7 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -39,7 +39,7 @@ Tasarım değişkenleri, temalar, düğme ve durum rozeti Faz 1.0'da tamamlandı
 
 | Proje | Klasör | Temel tipler |
 |---|---|---|
-| `BuildingBlocks.Domain` | `Entities/` | `Entity<TId>`, `AggregateRoot<TId>` (modül içi olay listesi, `Version`), `IAuditable` (`Created…`/`Updated…`), `IDeactivatable` |
+| `BuildingBlocks.Domain` | `Entities/` | `Entity<TId>`, `AggregateRoot<TId>` (modül içi olay listesi, `Version`), `IAggregateRoot` (işlem biriminin kimlik tipinden bağımsız eriştiği yüz), `IAuditable` (`Created…`/`Updated…`), `IDeactivatable` |
 | | `Rules/` | `BusinessRuleViolationException(ruleCode, message, kind, parameters)`; kural numarası ilk parametredir. `RuleKind`: Kısıt ve Geçiş 422, Yetki 403 döner ([api §8.3](../standards/api.md#83-i̇stisnaların-eşlenmesi)); Tetikleyici ve Hesaplama kuralları fırlatılmaz |
 | | `Events/` | `IDomainEvent` |
 | | `Time/` | `TimeRange` (yarı açık `[başlangıç, bitiş)`, çakışma ve kapsama), `IstanbulCalendar` (takvim günü dönüşümleri) |
@@ -85,6 +85,13 @@ Sıra [08 §6](../08-architecture.md#6-bir-isteğin-yolculuğu)'dakidir; burada 
 4. İşlem geçmişi kayıtları üretilir (§6).
 5. Entegrasyon olayları outbox'a yazılır (§7).
 6. Veritabanına yazılır. Sürüm çakışması `ConcurrencyConflictException`'a, kurala eşlenmiş kısıt ihlali kural numaralı hataya çevrilir.
+
+**Uygulama ayrıntıları** (4a):
+- Adımlar, uygulama DI'ından alınan kapsamlı bir servistedir (`SaveChangesPipeline`); böylece modül bağlamlarının kurucusu yalnızca seçenekleri alır ve olay dinleyicileri isteğin bağlamını paylaşır.
+- Alt varlığın toplu kökü, alt varlığın **basamaklı silinen** yabancı anahtarıyla bulunur: V-11'e göre yalnızca kökün kendi alt varlıkları basamaklıdır. Kökü yüklenmeden değiştirilen alt varlık hata verir.
+- Yeni kökün sürümü 1'dir. Zaman damgaları mikrosaniyeye yuvarlanır; bellekteki değer veritabanındakiyle aynı kalır ([database §7.1](../standards/database.md#71-anlar)).
+- Kısıt eşlemesi modül bağlamının `ConstraintRules` sözlüğündedir (kısıt adı → kural kodu).
+- `SaveChanges` (senkron) desteklenmez; olay dinleyicileri kaydetmez, onları tetikleyen kayıt değişikliklerini de yazar.
 
 **İşleyicinin çağrılma biçimi:** Uç nokta, dekoratörlerle sarılmış işleyici arayüzünü doğrudan alır. Araya bir "mediator" (MediatR benzeri) konmaz: çağrı derleme anında bellidir, yansıma ile tip çözme yoktur ve IDE'de doğrudan işleyiciye gidilir (BB-02). Dekoratörler Scrutor ile kaydedilir ([07](../07-tech-stack.md)).
 
@@ -257,9 +264,10 @@ Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir
 | 3a | Veritabanı test altyapısı | `FestOS.Testing` (PostgreSQL konteyneri), `FestOS.DatabaseTests`, DT-05; CI `backend-integration` işi |
 | 3b | Veritabanı hazırlığı | `bootstrap`: roller, eklentiler, rol düzeyi ayarları; testleri |
 | 3c | Modül kaydı | `IModuleDefinition`, `AddModules` (kayıt sırası, dekoratörler bir kez), `MapModules` (`/api/v1`, modül etiketi), `ModuleCatalog`; Host'a bağlanması |
-| 3d | Veritabanı bağlamı ve test modülü | `ModuleDbContext` ve EF kuralları (§5.3), test modülü ve migration'ı; DT-01 (Respawn, veri yazan ilk entegrasyon testleriyle 4. PR'da) |
+| 3d | Veritabanı bağlamı ve test modülü | `ModuleDbContext` ve EF kuralları (§5.3), test modülü ve migration'ı; DT-01 |
 | 3e | `migrate` komutu | Hazırlık + tüm modüllerin migration'ları; AppHost'ta rol parolaları ve modül bağlantı dizeleri |
-| 4 | İşlem birimi | Dekoratör, kaydetme adımları 1–3 ve 6, sürüm artışı, kısıt eşlemesi; DT-02 (roller) |
+| 4a | Kaydetme adımları | `SaveChangesPipeline`: adımlar 1–3 ve 6, sürüm artışı, kısıt eşlemesi; `FestOS.BuildingBlocks.IntegrationTests`, Respawn |
+| 4b | İşlem birimi dekoratörü | İşlem ve yeniden deneme stratejisi, modülün bağlamının seçimi, örnek komutlar |
 | 5 | İşlem geçmişi | Audit iskeleti, `audit_entries`, yazıcı, `[NotAudited]` |
 | 6 | Outbox ve olay yolu | Tablolar, yazma, dağıtıcı, olay yolu, inbox dekoratörü, sıra ve kısmi hata, ölçümler, temizlik; AT-10 |
 | 7 | Zamanlanmış işler ve kilitler | `ScheduledJob`, danışma kilitleri; sahte zamanla testler |
@@ -312,3 +320,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.4 | 3c ayrıca bölündü: 3c modül kaydı, 3d veritabanı bağlamı ve test modülü, 3e `migrate` komutu. |
 | 2026-09-30 | v1.5 | §5.3 uygulamaya göre netleşti; Respawn 4. PR'a kaydı. |
 | 2026-09-30 | v1.6 | §5.2 bağlantı düzeni: tek temel bağlantı dizesi ve rol parolaları; §5.4 `migrate` komutu (3e). |
+| 2026-09-30 | v1.7 | §4 kaydetme adımlarının uygulama ayrıntıları; 4. PR ikiye bölündü (4a kaydetme adımları, 4b dekoratör). |
