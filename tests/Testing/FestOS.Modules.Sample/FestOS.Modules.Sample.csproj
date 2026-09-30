@@ -1,11 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <!-- A module used only by the platform tests (building-blocks BB-08); never registered by the Host. -->
   <ItemGroup>
-    <PackageReference Include="Npgsql" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\BuildingBlocks\FestOS.BuildingBlocks.Infrastructure\FestOS.BuildingBlocks.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\Testing\FestOS.Testing\FestOS.Testing.csproj" />
-    <ProjectReference Include="..\..\Testing\FestOS.Modules.Sample\FestOS.Modules.Sample.csproj" />
   </ItemGroup>
 </Project>

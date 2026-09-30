@@ -1,6 +1,6 @@
 # İsimlendirme Standardı
 
-> **Durum:** v1.5 · **Son güncelleme:** 2026-09-26
+> **Durum:** v1.6 · **Son güncelleme:** 2026-09-30
 > **Kararlar:** [Bölüm 12](#12-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -191,7 +191,7 @@ Dönüşüm elle yapılmaz. EF Core'a [EFCore.NamingConventions](https://github.
 - **Ayrılmış kelimeler:** Hiçbir tablo ya da kolon adı PostgreSQL'in ayrılmış kelimelerinden biri olamaz (`user`, `order`, `group`, `end`, `case`, `check`, `default`, `limit`, `offset`, `table`, `column`, `window` vb.). Tablo adlarının çoğul olması bu çakışmaların çoğunu kendiliğinden önler: `User` → `users`, `Case` → `cases`. Kolonlarda bir önek eklenir: `End` değil `EndsAt`, `Order` değil `SortOrder`.
 - **Tablo adı açıkça yazılır.** EF Core, `DbSet` özelliği olmayan varlıklarda tablo adını tekil sınıf adından üretir; bu da çoğul ve tekil tabloların karışmasına yol açar. Bu yüzden her tablo eşlemesinde (`…Configuration`) tablo adı `ToTable("venue_holds")` ile açıkça verilir.
 - **Benzersiz indeksler** `ux_` önekini almak için `HasDatabaseName` ile açıkça adlandırılır. EF bunları varsayılan olarak `ix_` ile adlandırır.
-- Enum'ların veritabanında nasıl saklanacağı (metin mi sayı mı) C.4'te belirlenecek.
+- Enum'lar camelCase metin olarak saklanır; izin verilen değerlerin kısıtı otomatik üretilir ve `ck_` + tablo + kolon + `_enum` adını alır (`ck_venue_holds_status_enum`; [database §6.2](database.md#62-enumlar)).
 
 ### 5.2 Zaman, tarih ve süre sonekleri
 
@@ -401,3 +401,4 @@ Araçların kurulumu ve kuralların tam listesi [code-style.md](code-style.md)'d
 | 2026-09-25 | v1.3 | Tasarım sistemi örneği ve CSS değişkeni adları (D.4). |
 | 2026-09-26 | v1.4 | Palet değişkenlerinin numaralandırması (Faz 1.0). |
 | 2026-09-26 | v1.5 | Varsayılan dışa aktarım istisnasına Storybook dosyaları eklendi (Faz 1.0). |
+| 2026-09-30 | v1.6 | Enum saklama notu güncellendi; enum kısıtlarının adı (Faz 1.1). |
