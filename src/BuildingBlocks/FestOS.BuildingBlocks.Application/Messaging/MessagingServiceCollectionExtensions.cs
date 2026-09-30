@@ -13,11 +13,12 @@ public static class MessagingServiceCollectionExtensions
         typeof(ICommandHandler<,>),
         typeof(IQueryHandler<,>),
         typeof(IDomainEventHandler<>),
+        typeof(IIntegrationEventHandler<>),
         typeof(IValidator<>),
     ];
 
     /// <summary>
-    /// Registers the command, query and domain event handlers and the validators of one module's
+    /// Registers the command, query, domain and integration event handlers and the validators of one module's
     /// Application assembly. Internal types are included, since handlers are <c>internal sealed</c>.
     /// </summary>
     public static IServiceCollection AddHandlersFrom(this IServiceCollection services, Assembly assembly) =>

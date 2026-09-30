@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.11 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.12 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -187,7 +187,14 @@ Kararlar [ADR-0010](../adr/0010-messaging-infrastructure.md)'da, tablolar [datab
 | Ölçümler | [observability §5](../standards/observability.md#5-ölçümler)'teki adlarla: `festos.messaging.event.latency` (oluşma → işlenme), `festos.messaging.dead_letters`, `festos.messaging.outbox.pending` |
 | Temizlik | Gönderilmiş outbox ve inbox kayıtları 30 günden eski olanlar, gecelik bir işle küçük gruplar halinde silinir. Hatalı olaylar silinmez. İş, zamanlanmış işler altyapısıyla (7. PR) gelir. |
 
-`outbox_messages`'a [database §15](../standards/database.md#15-outbox-ve-inbox-tabloları)'teki kolonlara ek olarak `failed_at` eklenir (belgeye işlenecek).
+`outbox_messages`'a [database §15](../standards/database.md#15-outbox-ve-inbox-tabloları)'teki kolonlara ek olarak `failed_at` eklenir.
+
+**Teslimin uygulama ayrıntıları** (6b-1):
+- `OutboxProcessor.ProcessBatchAsync(modül)` bir grup bekleyen kaydı modülün rolüyle, kendi işlem biriminde alır ve sırayla teslim eder. Sorgu şemasız yazılır; modül rolünün `search_path`'i modülün şemasıyla başlar, böylece ham SQL'e şema adı eklenmez.
+- Olay yolu (`InProcessEventBus`) her dinleyiciyi **kendi DI kapsamında** ve paralel çalıştırır; farklı modüllerin dinleyicileri ayrı işlemlerdedir. Tüm dinleyiciler bitince hatalar tek bir `AggregateException`'da toplanır.
+- Inbox dekoratörü dinleyiciyi, dinleyicinin ad alanından bulunan modülün işlem biriminde çalıştırır: inbox'ta kayıt varsa atlar, yoksa dinleyiciyi çalıştırır ve inbox satırını aynı işlemde ekler.
+- Dinleyicilerin ve işleyicinin değişiklikleri sistem kullanıcısıyla kaydedilir (`ActingUser`; [database §9](../standards/database.md#9-ortak-kolonlar)). Komutlar, dinleyiciler ve işleyici aynı işlem birimi yardımcısını (`ModuleUnitOfWork`) kullanır.
+- Kayıt yazarken ve hatada `Warning` (yeniden denenecek) ya da `Error` (hatalı olarak işaretlendi) loglanır ([observability §3.3](../standards/observability.md#33-ne-loglanır)).
 
 ## 8. Zamanlanmış işler ve kilitler
 
@@ -289,8 +296,9 @@ Her PR tek bir davranışı testleriyle getirir; sıra bağımlılığa göredir
 | 5a | İşlem geçmişi tablosu | Audit iskeleti, `audit_entries`, her bağlamda migration dışı eşleme, `festos_audit_writer`; yetki testleri |
 | 5b | İşlem geçmişi yazıcısı | `AuditEntryWriter` (kaydetme adımı 4), `[NotAudited]` |
 | 6a | Outbox'a yazma | Entegrasyon olayı tipleri, `IOutbox`, outbox ve inbox tabloları, kaydetme adımı 5 |
-| 6b | Dağıtıcı ve olay yolu | Dağıtıcı, olay yolu, inbox dekoratörü, işlem sonrası sinyal; AT-10 |
-| 6c | Sıra ve hata | Sıra anahtarı, kısmi hata ve artan aralıklı deneme, hatalı olaylar, ölçümler |
+| 6b-1 | Teslim | Entegrasyon olayı dinleyicileri, inbox dekoratörü, olay yolu, `OutboxProcessor` (kısmi hata, artan aralıklı deneme, hatalı olaylar); AT-10 |
+| 6b-2 | Dağıtıcı | Arka plan dağıtıcısı, işlem sonrası sinyal, yedek tarama (`Messaging:PollInterval`), iz bağlamı |
+| 6c | Sıra ve ölçümler | Sıra anahtarı, ölçümler |
 | 7 | Zamanlanmış işler ve kilitler | `ScheduledJob`, danışma kilitleri; sahte zamanla testler |
 | 8 | Hata yanıtları ve JSON | `IExceptionHandler`, doğrulama eşlemesi, JSON ayarları, metin kırpma, `X-App-Version`, güvenlik başlıkları |
 | 9 | ETag ve tekrar güvenliği | `IfMatchFilter`, `IdempotencyFilter`, `idempotency_keys`; eşzamanlılık testleri |
@@ -346,3 +354,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.9 | §6 işlem geçmişi tablosunun uygulama ayrıntıları; 5. PR ikiye bölündü (5a tablo, 5b yazıcı). |
 | 2026-09-30 | v1.10 | §6 yazıcının uygulama ayrıntıları (5b). |
 | 2026-09-30 | v1.11 | §3 ve §7 outbox'a yazmanın uygulama ayrıntıları (`MessageId`, `IOutbox`); ölçüm adları gözlemlenebilirlik standardına uyduruldu; 6. PR üçe bölündü, temizlik 7. PR'a kaydı. |
+| 2026-09-30 | v1.12 | §7 teslimin uygulama ayrıntıları (6b-1); 6. PR'ın kalanı yeniden bölündü (6b-1 teslim, 6b-2 dağıtıcı, 6c sıra ve ölçümler). |

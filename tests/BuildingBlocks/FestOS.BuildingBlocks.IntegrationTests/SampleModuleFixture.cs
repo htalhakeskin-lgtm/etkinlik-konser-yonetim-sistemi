@@ -2,6 +2,7 @@ using FestOS.BuildingBlocks.Application.Users;
 using FestOS.BuildingBlocks.Infrastructure.Modules;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
 using FestOS.Modules.Audit.Infrastructure;
+using FestOS.Modules.Sample.Application;
 using FestOS.Modules.Sample.Infrastructure;
 using FestOS.Testing;
 using Microsoft.Extensions.Configuration;
@@ -53,10 +54,11 @@ public sealed class SampleModuleFixture : IAsyncLifetime
         await _host.Services.GetRequiredService<DatabaseMigrator>().RunAsync(TestContext.Current.CancellationToken);
     }
 
-    /// <summary>Empties the sample module's tables and the change history, and restores the default user.</summary>
+    /// <summary>Empties the sample module's tables and the change history, and restores the default user and probe.</summary>
     public async Task ResetAsync()
     {
         CurrentUser.UserId = FakeCurrentUser.DefaultUserId;
+        Services.GetRequiredService<SampleListenerProbe>().Reset();
         await _database.ResetAsync(
             [AuditModuleDefinition.SchemaName, SampleModuleDefinition.SchemaName],
             TestContext.Current.CancellationToken
