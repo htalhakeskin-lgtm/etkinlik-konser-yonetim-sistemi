@@ -1,5 +1,6 @@
 using FestOS.BuildingBlocks.Application.Concurrency;
 using FestOS.BuildingBlocks.Application.Messaging;
+using FestOS.BuildingBlocks.Infrastructure.Authorization;
 using FestOS.BuildingBlocks.Infrastructure.Http;
 using FestOS.BuildingBlocks.Infrastructure.Idempotency;
 using FestOS.BuildingBlocks.Infrastructure.Jobs;
@@ -78,6 +79,7 @@ public static class ModuleExtensions
             ));
         }
         builder.Services.AddSingleton(new ModuleCatalog(modules));
+        builder.Services.AddPermissionAuthorization();
         builder.Services.AddSingleton<DatabaseBootstrapper>();
         builder.Services.AddSingleton<DatabaseMigrator>();
         return builder;

@@ -1,6 +1,6 @@
 # Modül tasarımı: Identity — Kimlik ve erişim
 
-> **Durum:** v1.0 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.1 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 12](#12-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -76,6 +76,7 @@ Testler: rollerdeki her kod katalogda vardır; katalogdaki her yetki en az bir r
 
 - `RequirePermission(kod)` uç nokta metadatasıdır; kod aynı adlı bir yetki politikasına dönüşür ve politikalar katalogdan dinamik üretilir ([security §3.3](../standards/security.md#33-uç-nokta-düzeyinde-kontrol)). Yetki yoksa `403 forbidden`.
 - Bu altyapı Identity'ye değil BuildingBlocks'a aittir (BB-01): `RequirePermission`, politika sağlayıcısı ve AT-09 testi (her uç nokta yetki ister ya da açıkça anonimdir) bu adımın ilk PR'larındadır.
+- **Uygulama (PR 1):** `PermissionClaims.Type` (`festos:permission`) talebi, `PermissionPolicyProvider` ve `RequirePermission` BuildingBlocks.Infrastructure'ın `Authorization/` klasöründedir. Katalogda olmayan kodun politikası yoktur; böyle bir uç nokta `500` verir, yazım hatası sessizce geçmez. AT-09, Host'u `WebApplicationFactory` ile bellekte açar ve `/api` ile `/hubs` altındaki her uç noktanın bir yetki istediğini ya da açıkça anonim olduğunu, istenen her yetkinin katalogda bulunduğunu denetler. Hub, oturumlar gelene kadar açıkça anonimdir (PR 6'da kimlik doğrulaması ister).
 - **Geçici şifre kapısı (BR-SYS-006):** `must_change_password` olan oturum yalnızca `/me`, şifre belirleme ve çıkış uçlarını çağırabilir; diğer her uç `403` ve `code: BR-SYS-006` döner.
 
 ## 6. Giriş ve oturum
@@ -192,3 +193,4 @@ Depo ve işlem geçmişi PR'ları kendi belgelerindedir; sıra Inventory'nin dep
 |---|---|---|
 | 2026-10-01 | v0.1 | İlk taslak |
 | 2026-10-01 | v1.0 | Sorular yanıtlandı (ID-07, ID-08); ID-09 eklendi; onaylandı. |
+| 2026-10-01 | v1.1 | §5.3 yetki altyapısının uygulama ayrıntıları (PR 1). |

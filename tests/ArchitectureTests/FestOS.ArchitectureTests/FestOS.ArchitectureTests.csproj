@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
     <PackageReference Include="TngTech.ArchUnitNET.xUnitV3" />
   </ItemGroup>
 
@@ -8,5 +9,6 @@
     <ProjectReference Include="..\..\..\src\BuildingBlocks\FestOS.BuildingBlocks.Application\FestOS.BuildingBlocks.Application.csproj" />
     <ProjectReference Include="..\..\..\src\BuildingBlocks\FestOS.BuildingBlocks.Infrastructure\FestOS.BuildingBlocks.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\src\BuildingBlocks\FestOS.BuildingBlocks.Contracts\FestOS.BuildingBlocks.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\src\Host\FestOS.Host.csproj" />
   </ItemGroup>
 </Project>

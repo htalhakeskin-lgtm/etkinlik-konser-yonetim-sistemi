@@ -26,7 +26,8 @@ public static class RealtimeExtensions
     public static IEndpointRouteBuilder MapRealtime(this IEndpointRouteBuilder endpoints)
     {
         ArgumentNullException.ThrowIfNull(endpoints);
-        endpoints.MapHub<NotificationsHub>(NotificationsHub.Path);
+        // Open until sessions arrive later in step 1.2, which turns this into RequireAuthorization (AT-09).
+        endpoints.MapHub<NotificationsHub>(NotificationsHub.Path).AllowAnonymous();
         return endpoints;
     }
 
