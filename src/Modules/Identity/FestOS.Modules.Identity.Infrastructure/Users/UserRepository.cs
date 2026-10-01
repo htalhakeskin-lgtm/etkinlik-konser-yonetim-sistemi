@@ -12,6 +12,11 @@ internal sealed class UserRepository(IdentityDbContext context) : IUserRepositor
     public Task<User?> FindAsync(UserId id, CancellationToken cancellationToken) =>
         context.Users.SingleOrDefaultAsync(user => user.Id == id, cancellationToken);
 
+    public async Task<IReadOnlyList<User>> ListWithWarehouseAsync(
+        Guid warehouseId,
+        CancellationToken cancellationToken
+    ) => await context.Users.Where(user => user.WarehouseIds.Contains(warehouseId)).ToListAsync(cancellationToken);
+
     public void Add(User user) => context.Users.Add(user);
 
     public Task<User?> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken) =>

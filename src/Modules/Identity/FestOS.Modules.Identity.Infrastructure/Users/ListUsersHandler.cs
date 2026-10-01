@@ -50,6 +50,7 @@ internal sealed class ListUsersHandler(IdentityDbContext context, TimeProvider t
                 user.Roles,
                 user.DeactivatedAt == null,
                 user.LockedUntil > now ? user.LockedUntil : null,
+                user.Roles.Contains(Role.WarehouseManager) && user.WarehouseIds.Count == 0,
                 user.Version
             ))
             .ToPagedResultAsync(query.Page, cancellationToken);

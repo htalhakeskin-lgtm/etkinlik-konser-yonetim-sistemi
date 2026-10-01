@@ -4,11 +4,16 @@ using FestOS.BuildingBlocks.Domain.Rules;
 using FestOS.Modules.Identity.Application.Authentication;
 using FestOS.Modules.Identity.Domain;
 using FestOS.Modules.Identity.Domain.Users;
+using FestOS.Modules.Inventory.Contracts;
 
 namespace FestOS.Modules.Identity.Application.Users;
 
-internal sealed class EditUserHandler(IUserRepository users, IUserSessions sessions, ExpectedVersion expectedVersion)
-    : ICommandHandler<EditUserCommand, bool>
+internal sealed class EditUserHandler(
+    IUserRepository users,
+    IUserSessions sessions,
+    IWarehouseDirectory warehouses,
+    ExpectedVersion expectedVersion
+) : ICommandHandler<EditUserCommand, bool>
 {
     public async Task<bool> HandleAsync(EditUserCommand command, CancellationToken cancellationToken)
     {
@@ -32,6 +37,7 @@ internal sealed class EditUserHandler(IUserRepository users, IUserSessions sessi
             );
         }
 
+        await warehouses.EnsureActiveAsync(command.Roles, command.WarehouseIds, cancellationToken);
         user.Edit(command.FullName, command.Email, command.Roles, command.WarehouseIds);
 
         if (!string.Equals(user.Email, oldEmail, StringComparison.Ordinal))

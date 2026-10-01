@@ -66,7 +66,8 @@
     "status": {
       "active": "Aktif",
       "inactive": "Pasif",
-      "locked": "Kilitli (bitiş: {{time}})"
+      "locked": "Kilitli (bitiş: {{time}})",
+      "needsWarehouse": "Depo bekliyor"
     },
     "filters": {
       "role": "Rol",
@@ -108,10 +109,11 @@
     "email": "E-posta",
     "emailChange": "E-posta değişirse kullanıcının açık oturumları kapanır.",
     "roles": "Roller",
-    "warehouseRoleLater": "Depo sorumlusu rolü, depo seçimi eklendiğinde verilebilecek.",
-    "warehouseRoleKept": "Depo sorumlusu rolü ve depoları olduğu gibi kalır; depo seçimi eklendiğinde değiştirilebilecek.",
     "create": "Kullanıcıyı oluştur",
-    "save": "Kaydet"
+    "save": "Kaydet",
+    "warehouses": "Depolar",
+    "warehousesHelp": "Depo sorumlusunun çalıştığı depolar; en az biri seçilmelidir.",
+    "noWarehouses": "Aktif depo yok; önce Depolar ekranından bir depo ekleyin."
   },
   "temporaryPassword": {
     "title": "{{name}} için geçici şifre",

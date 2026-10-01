@@ -164,6 +164,10 @@ export function UsersPage({ search, onSearchChange }: UsersPageProps) {
           return <StatusBadge tone="muted" label={t("users.status.inactive")} />;
         }
 
+        if (listed.lockedUntil === null && listed.needsWarehouse) {
+          return <StatusBadge tone="warning" label={t("users.status.needsWarehouse")} />;
+        }
+
         return listed.lockedUntil === null ? (
           <StatusBadge tone="success" label={t("users.status.active")} />
         ) : (

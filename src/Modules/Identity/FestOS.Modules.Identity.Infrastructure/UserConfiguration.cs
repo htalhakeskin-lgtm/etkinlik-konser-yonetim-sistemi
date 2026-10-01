@@ -17,6 +17,7 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
             .HasOperators("gin_trgm_ops")
             .HasDatabaseName("ix_users_full_name_search");
         builder.ToTable("users");
+        builder.Ignore(user => user.NeedsWarehouse);
         builder.Property(user => user.FullName).HasMaxLength(User.FullNameMaxLength);
         builder.Property(user => user.Email).HasMaxLength(EmailAddress.MaxLength);
         builder.HasIndex(user => user.Email).IsUnique().HasDatabaseName("ux_users_email");

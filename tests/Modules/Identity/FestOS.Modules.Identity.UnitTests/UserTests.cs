@@ -78,6 +78,34 @@ public sealed class UserTests
     }
 
     [Fact]
+    public void Warehouses_BelongToTheWarehouseManagerRole()
+    {
+        var warehouse = Guid.CreateVersion7();
+        var user = User.Create("Ali Bal", "ali@example.com", [Role.WarehouseManager], [warehouse], "hash");
+
+        user.Edit("Ali Bal", "ali@example.com", [Role.BookingManager], [warehouse]);
+
+        user.WarehouseIds.ShouldBeEmpty();
+        user.NeedsWarehouse.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void RemovingTheLastWarehouse_LeavesTheManagerActive_WaitingForANewOne()
+    {
+        var first = Guid.CreateVersion7();
+        var second = Guid.CreateVersion7();
+        var user = User.Create("Ali Bal", "ali@example.com", [Role.WarehouseManager], [first, second], "hash");
+
+        user.RemoveWarehouse(first);
+        bool waitsAfterFirst = user.NeedsWarehouse;
+        user.RemoveWarehouse(second);
+
+        waitsAfterFirst.ShouldBeFalse();
+        user.NeedsWarehouse.ShouldBeTrue();
+        user.DeactivatedAt.ShouldBeNull();
+    }
+
+    [Fact]
     public void Edit_KeepsTheEmailAndTheSearchKeyInTheirStoredForms()
     {
         var user = User.Create("Ali Bal", "ali@example.com", [Role.BookingManager], [], "hash");

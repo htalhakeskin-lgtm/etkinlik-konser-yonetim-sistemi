@@ -5,6 +5,7 @@ using FestOS.BuildingBlocks.Infrastructure.Persistence;
 using FestOS.BuildingBlocks.Infrastructure.Realtime;
 using FestOS.Modules.Audit.Infrastructure;
 using FestOS.Modules.Identity.Infrastructure;
+using FestOS.Modules.Inventory.Infrastructure;
 using FestOS.Testing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
@@ -17,7 +18,7 @@ using Microsoft.Extensions.Time.Testing;
 namespace FestOS.Modules.Identity.IntegrationTests;
 
 /// <summary>
-/// The Identity module on a migrated PostgreSQL database: a plain host for commands and data, and a web
+/// The Identity module on a migrated PostgreSQL database, with Inventory for the warehouses: a plain host for commands and data, and a web
 /// application wired like the Host for requests. Each test resets the database first.
 /// </summary>
 public sealed class IdentityFixture : IAsyncLifetime
@@ -43,13 +44,18 @@ public sealed class IdentityFixture : IAsyncLifetime
         _settings[$"Database:Passwords:{DatabaseRoles.Migrator}"] = Guid.CreateVersion7().ToString("N");
         _settings["Database:Passwords:festos_audit"] = Guid.CreateVersion7().ToString("N");
         _settings["Database:Passwords:festos_identity"] = Guid.CreateVersion7().ToString("N");
+        _settings["Database:Passwords:festos_inventory"] = Guid.CreateVersion7().ToString("N");
 
         HostApplicationBuilder builder = Host.CreateEmptyApplicationBuilder(new HostApplicationBuilderSettings());
         builder.Configuration.AddInMemoryCollection(_settings);
         builder.Services.AddLogging();
         builder.Services.AddSingleton<TimeProvider>(Time);
         builder.Services.AddSingleton<ICurrentUser>(CurrentUser);
-        builder.AddModules(new AuditModuleDefinition(), new IdentityModuleDefinition());
+        builder.AddModules(
+            new AuditModuleDefinition(),
+            new IdentityModuleDefinition(),
+            new InventoryModuleDefinition()
+        );
         _host = builder.Build();
         await _host.Services.GetRequiredService<DatabaseMigrator>().RunAsync(TestContext.Current.CancellationToken);
     }
@@ -64,7 +70,11 @@ public sealed class IdentityFixture : IAsyncLifetime
         builder.Services.AddSingleton<TimeProvider>(Time);
         builder.AddHttpPlatform();
         builder.AddRealtime();
-        builder.AddModules(new AuditModuleDefinition(), new IdentityModuleDefinition());
+        builder.AddModules(
+            new AuditModuleDefinition(),
+            new IdentityModuleDefinition(),
+            new InventoryModuleDefinition()
+        );
 
         WebApplication app = builder.Build();
         app.UseHttpPlatform();
@@ -85,10 +95,14 @@ public sealed class IdentityFixture : IAsyncLifetime
             BaseAddress = new Uri("https://localhost/"),
         };
 
-    /// <summary>Empties the Identity tables and the change history.</summary>
+    /// <summary>Empties the Identity and Inventory tables and the change history.</summary>
     public Task ResetAsync() =>
         _database.ResetAsync(
-            [AuditModuleDefinition.SchemaName, IdentityModuleDefinition.SchemaName],
+            [
+                AuditModuleDefinition.SchemaName,
+                IdentityModuleDefinition.SchemaName,
+                InventoryModuleDefinition.SchemaName,
+            ],
             TestContext.Current.CancellationToken
         );
 

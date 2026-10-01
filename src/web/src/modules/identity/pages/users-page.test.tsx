@@ -37,6 +37,7 @@ function aListedUser(overrides: Partial<UserListItem>): UserListItem {
     roles: ["bookingManager"],
     isActive: true,
     lockedUntil: null,
+    needsWarehouse: false,
     version: 1,
     ...overrides,
   };
@@ -73,10 +74,11 @@ describe("UsersPage", () => {
         aListedUser({ fullName: "Ali Bal", roles: ["bookingManager", "technicalManager"] }),
         aListedUser({ fullName: "Banu Can", isActive: false }),
         aListedUser({ fullName: "Cem Dal", lockedUntil: "2027-01-04T11:30:00+00:00" }),
+        aListedUser({ fullName: "Deniz Su", roles: ["warehouseManager"], needsWarehouse: true }),
       ],
       page: 1,
       pageSize: 25,
-      totalCount: 3,
+      totalCount: 4,
     });
 
     renderPage({ role: "bookingManager" });
@@ -84,6 +86,7 @@ describe("UsersPage", () => {
     expect(await screen.findByText("Booking müdürü, Teknik müdür")).toBeInTheDocument();
     expect(screen.getByText("Pasif")).toBeInTheDocument();
     expect(screen.getByText("Kilitli (bitiş: 14:30)")).toBeInTheDocument();
+    expect(screen.getByText("Depo bekliyor")).toBeInTheDocument();
     expect(listUsersMock).toHaveBeenCalledWith(
       { role: "bookingManager", page: 1, pageSize: 25 },
       expect.anything(),

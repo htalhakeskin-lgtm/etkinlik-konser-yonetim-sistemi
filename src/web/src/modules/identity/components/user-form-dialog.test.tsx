@@ -4,12 +4,17 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { createUser, editUser, getUser } from "@/api/endpoints/identity/identity";
+import { listWarehouses } from "@/api/endpoints/inventory/inventory";
 import type { UserDetails } from "@/api/model";
 import { ApiError } from "@/lib/api-error";
 import { createQueryClient } from "@/lib/query-client";
 
 import { UserFormDialog } from "./user-form-dialog";
 
+vi.mock("@/api/endpoints/inventory/inventory", () => ({
+  listWarehouses: vi.fn(),
+  getListWarehousesQueryKey: (params: unknown) => ["/api/v1/warehouses", params],
+}));
 vi.mock("@/api/endpoints/identity/identity", () => ({
   createUser: vi.fn(),
   editUser: vi.fn(),
@@ -98,14 +103,52 @@ describe("UserFormDialog", () => {
     expect(createUser).not.toHaveBeenCalled();
   });
 
-  it("cannot give the warehouse manager role until warehouses can be chosen", () => {
+  it("asks a warehouse manager for at least one active warehouse and sends the chosen one", async () => {
+    const warehouseId = "0190f0c4-0000-7000-8000-0000000000b1";
+    vi.mocked(listWarehouses).mockResolvedValue({
+      items: [
+        {
+          id: warehouseId,
+          name: "Merkez Depo",
+          city: "İstanbul",
+          address: "Adres",
+          isActive: true,
+          version: 1,
+        },
+      ],
+      page: 1,
+      pageSize: 100,
+      totalCount: 1,
+    });
+    vi.mocked(createUser).mockResolvedValue({
+      id: "u-2",
+      temporaryPassword: "AAAA-BBBB-CCCC-DDDD",
+    });
     renderDialog();
+    const user = userEvent.setup();
 
-    expect(screen.getByRole("checkbox", { name: "Depo sorumlusu" })).toHaveAttribute(
-      "aria-disabled",
-      "true",
+    await user.click(screen.getByLabelText("Ad soyad *"));
+    await user.paste("Banu Can");
+    await user.click(screen.getByLabelText("E-posta *"));
+    await user.paste("banu@example.com");
+    await user.click(screen.getByRole("checkbox", { name: "Depo sorumlusu" }));
+    await user.click(screen.getByRole("button", { name: "Kullanıcıyı oluştur" }));
+    expect(await screen.findByText("Bu alan zorunludur.")).toBeInTheDocument();
+    await user.click(screen.getByRole("checkbox", { name: "Merkez Depo · İstanbul" }));
+    await user.click(screen.getByRole("button", { name: "Kullanıcıyı oluştur" }));
+
+    await vi.waitFor(() => {
+      expect(createUser).toHaveBeenCalledWith({
+        fullName: "Banu Can",
+        email: "banu@example.com",
+        roles: ["warehouseManager"],
+        warehouseIds: [warehouseId],
+      });
+    });
+    expect(listWarehouses).toHaveBeenCalledWith(
+      { status: "active", pageSize: 100 },
+      expect.anything(),
     );
-    expect(screen.getByText(/depo seçimi eklendiğinde verilebilecek/u)).toBeInTheDocument();
   });
 
   it("shows a taken email under its field", async () => {

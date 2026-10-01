@@ -1329,6 +1329,7 @@
           "roles",
           "isActive",
           "lockedUntil",
+          "needsWarehouse",
           "version"
         ],
         "type": "object",
@@ -1357,6 +1358,9 @@
               "string"
             ],
             "format": "date-time"
+          },
+          "needsWarehouse": {
+            "type": "boolean"
           },
           "version": {
             "type": "integer",

@@ -47,8 +47,14 @@ public sealed class User : AggregateRoot<UserId>, IDeactivatable
     /// <summary>The roles; the user's permissions are their union (BR-SYS-002).</summary>
     public IReadOnlyList<Role> Roles => _roles;
 
-    /// <summary>The warehouses a warehouse manager works in.</summary>
+    /// <summary>The warehouses a warehouse manager works in; empty for every other role.</summary>
     public IReadOnlyList<Guid> WarehouseIds => _warehouseIds;
+
+    /// <summary>
+    /// A warehouse manager whose last warehouse was deactivated: still active, waiting for a new one
+    /// (ID-09). BR-SYS-014 applies when the user is saved, not after the warehouse changes.
+    /// </summary>
+    public bool NeedsWarehouse => _roles.Contains(Role.WarehouseManager) && _warehouseIds.Count == 0;
 
     /// <inheritdoc />
     public DateTimeOffset? DeactivatedAt { get; private set; }
@@ -107,6 +113,15 @@ public sealed class User : AggregateRoot<UserId>, IDeactivatable
     public void Edit(string fullName, string email, IEnumerable<Role> roles, IEnumerable<Guid> warehouseIds) =>
         Describe(fullName, email, roles, warehouseIds);
 
+    /// <summary>Takes a deactivated warehouse out of the user's warehouses (ID-09).</summary>
+    public void RemoveWarehouse(Guid warehouseId)
+    {
+        if (_warehouseIds.Contains(warehouseId))
+        {
+            _warehouseIds = [.. _warehouseIds.Where(held => held != warehouseId)];
+        }
+    }
+
     /// <summary>Closes the user's access; the user stays, so the records that name them keep their name (BR-SYS-001).</summary>
     public void Deactivate(Guid deactivatedBy, DateTimeOffset at)
     {
@@ -140,7 +155,10 @@ public sealed class User : AggregateRoot<UserId>, IDeactivatable
     private void Describe(string fullName, string email, IEnumerable<Role> roles, IEnumerable<Guid> warehouseIds)
     {
         List<Role> distinctRoles = [.. roles.Distinct().Order()];
-        List<Guid> distinctWarehouses = [.. warehouseIds.Distinct().Order()];
+        // Warehouses belong to the warehouse manager role; other roles keep none.
+        List<Guid> distinctWarehouses = distinctRoles.Contains(Role.WarehouseManager)
+            ? [.. warehouseIds.Distinct().Order()]
+            : [];
         if (distinctRoles.Contains(Role.WarehouseManager) && distinctWarehouses.Count == 0)
         {
             throw new BusinessRuleViolationException(
