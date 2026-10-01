@@ -35,6 +35,7 @@ app.UseHttpPlatform();
 
 // Authentication (1.2) goes before this line: the antiforgery token is bound to the signed-in user.
 app.UseCsrfProtection();
+app.UseAuthorization();
 
 // Development prepares the database on startup; other environments run "migrate" as a separate
 // release step (docs/standards/database.md §16.2).
@@ -60,3 +61,6 @@ await app.RunAsync();
 
 // The only list of modules; a new module is added here (08 §5).
 static IModuleDefinition[] Modules() => [new AuditModuleDefinition()];
+
+/// <summary>The Host's entry point; public so the architecture tests can start it in memory (AT-09).</summary>
+public partial class Program;
