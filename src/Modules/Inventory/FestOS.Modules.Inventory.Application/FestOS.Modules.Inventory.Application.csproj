@@ -3,6 +3,7 @@
     <ProjectReference Include="..\..\..\BuildingBlocks\FestOS.BuildingBlocks.Application\FestOS.BuildingBlocks.Application.csproj" />
     <ProjectReference Include="..\FestOS.Modules.Inventory.Contracts\FestOS.Modules.Inventory.Contracts.csproj" />
     <ProjectReference Include="..\FestOS.Modules.Inventory.Domain\FestOS.Modules.Inventory.Domain.csproj" />
+    <ProjectReference Include="..\FestOS.Modules.Inventory.IntegrationEvents\FestOS.Modules.Inventory.IntegrationEvents.csproj" />
   </ItemGroup>
 
   <ItemGroup>

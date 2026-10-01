@@ -27,4 +27,22 @@ public sealed class WarehouseTests
         warehouse.NameSearch.ShouldBe("kuzey depo");
         warehouse.City.ShouldBe("Ankara");
     }
+
+    [Fact]
+    [Trait("Rule", "BR-SYS-001")]
+    public void Deactivate_KeepsTheWarehouseAndTellsOnce_AndActivateOpensItAgain()
+    {
+        var warehouse = Warehouse.Create("Merkez Depo", "İstanbul", "Adres 1");
+        var by = Guid.CreateVersion7();
+        var at = new DateTimeOffset(2027, 1, 4, 6, 0, 0, TimeSpan.Zero);
+
+        warehouse.Deactivate(by, at);
+        warehouse.Deactivate(Guid.CreateVersion7(), at.AddDays(1));
+        DateTimeOffset? deactivatedAt = warehouse.DeactivatedAt;
+        warehouse.Activate();
+
+        deactivatedAt.ShouldBe(at);
+        warehouse.DequeueDomainEvents().ShouldBe([new WarehouseDeactivatedDomainEvent(warehouse.Id)]);
+        warehouse.DeactivatedAt.ShouldBeNull();
+    }
 }

@@ -1,6 +1,6 @@
 # Modül tasarımı: Inventory — Stok ve depo
 
-> **Durum:** v1.1 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.2 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 (depolar); stok 1.5'te, depo işlemleri 1.7'de bu belgeye eklenir ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 8](#8-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -48,6 +48,8 @@ Inventory modülünün fiziksel tasarımıdır. Modül üç adımda yazılır; b
 - **Yayınladığı olaylar (IntegrationEvents):** `WarehouseDeactivated { WarehouseId }`, sıra anahtarı depo kimliği. 1.2'de Identity dinler.
 - **Anlık bildirim:** `warehouses` liste grubu ve `warehouses:{id}` kayıt grubu; değişiklik `resourceChanged` olarak duyurulur (building-blocks §11). Gruba her oturum açmış kullanıcı katılabilir, çünkü depo listesi herkese açıktır.
 
+**Uygulama (PR 1b):** Uçlar §5'teki gibidir; değiştirenler `If-Match` ister ve yanıtta deponun kaydedilmiş halini yeni `ETag` ile döner, oluşturma `201` ve `Location` ile döner. Liste adın arama anahtarında arar (`q`), `status` (`active` varsayılan, `inactive`, `all`) ile süzer, `name` ve `city`'ye göre Türkçe sırayla sıralar. BR-SYS-013: pasifleştirme, `inventory:warehouses:active` danışma kilidini aldıktan sonra başka aktif depo arar (IN-02); zaten pasif olan depoda bir şey yapmaz. Pasifleşen depo `WarehouseDeactivatedDomainEvent` üretir, aynı kayıtta giden kutusuna `WarehouseDeactivatedIntegrationEvent` yazılır ve `warehouses` ile `warehouses:{id}` gruplarına `resourceChanged` duyurulur. Oluşturma ve düzenleme bir bütünleşme olayı üretmediği için şimdilik duyurulmaz; ekran kendi değişikliğinden sonra listeyi yeniler. `IWarehouseDirectory` Inventory'nin Infrastructure'ında, kendi bağlamı ve rolüyle uygulanır.
+
 ## 7. Ekranlar ve PR planı
 
 | Ekran | Adres | Not |
@@ -77,3 +79,4 @@ Bu belgede proje sahibine soru yoktur.
 | 2026-10-01 | v0.1 | İlk taslak (depolar) |
 | 2026-10-01 | v1.0 | Onaylandı. |
 | 2026-10-01 | v1.1 | §3: PR 1a'nın uygulama ayrıntıları (ortak pasifleştirme kolonları, ad için arama anahtarı); §7: PR 1 ikiye bölündü. |
+| 2026-10-01 | v1.2 | §6: depo uçlarının uygulama ayrıntıları (PR 1b). |

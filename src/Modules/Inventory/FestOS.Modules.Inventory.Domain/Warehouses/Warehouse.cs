@@ -54,6 +54,27 @@ public sealed class Warehouse : AggregateRoot<WarehouseId>, IDeactivatable
     /// <summary>Changes the name, city and address; the change history keeps the old values.</summary>
     public void Edit(string name, string city, string address) => Describe(name, city, address);
 
+    /// <summary>
+    /// Takes the warehouse out of new work; what already refers to it keeps its name (BR-SYS-001). Whether
+    /// it is the last active one is checked by the command, which can count them (BR-SYS-013).
+    /// </summary>
+    public void Deactivate(Guid deactivatedBy, DateTimeOffset at)
+    {
+        if (DeactivatedAt is null)
+        {
+            DeactivatedAt = at;
+            DeactivatedBy = deactivatedBy;
+            Raise(new WarehouseDeactivatedDomainEvent(Id));
+        }
+    }
+
+    /// <summary>Opens a deactivated warehouse again (IN-03).</summary>
+    public void Activate()
+    {
+        DeactivatedAt = null;
+        DeactivatedBy = null;
+    }
+
     private void Describe(string name, string city, string address)
     {
         Name = name.Trim();
