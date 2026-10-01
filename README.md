@@ -149,7 +149,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | [Modül tasarımı: Ortak yapı taşları](docs/modules/building-blocks.md) | v1.35 |
 | [Modül tasarımı: Identity](docs/modules/identity.md) | v1.13 |
 | [Modül tasarımı: Audit](docs/modules/audit.md) | v1.0 |
-| [Modül tasarımı: Inventory](docs/modules/inventory.md) | v1.1 |
+| [Modül tasarımı: Inventory](docs/modules/inventory.md) | v1.2 |
 
 ### Teknoloji
 

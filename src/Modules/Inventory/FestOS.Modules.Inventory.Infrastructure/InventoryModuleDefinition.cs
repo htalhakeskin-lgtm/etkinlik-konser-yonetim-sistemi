@@ -1,9 +1,11 @@
 using FestOS.BuildingBlocks.Application.Messaging;
 using FestOS.BuildingBlocks.Infrastructure.Modules;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
+using FestOS.BuildingBlocks.Infrastructure.Realtime;
 using FestOS.Modules.Inventory.Application.Warehouses;
 using FestOS.Modules.Inventory.Contracts;
 using FestOS.Modules.Inventory.Infrastructure.Warehouses;
+using FestOS.Modules.Inventory.IntegrationEvents;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -35,11 +37,16 @@ public sealed class InventoryModuleDefinition : IModuleDefinition
         builder.Services.AddHandlersFrom(typeof(IWarehouseRepository).Assembly);
         builder.Services.AddHandlersFrom(typeof(InventoryModuleDefinition).Assembly);
         builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+        builder.Services.AddScoped<IWarehouseDirectory, WarehouseDirectory>();
+        builder.Services.AddRealtimeGroup<WarehouseGroupPolicy>();
+        builder.Services.AddResourceChange<WarehouseDeactivatedIntegrationEvent>(deactivated => new ResourceChange(
+            "warehouses",
+            deactivated.WarehouseId,
+            Version: null,
+            ["warehouses", $"warehouses:{deactivated.WarehouseId}"]
+        ));
     }
 
     /// <inheritdoc />
-    public void MapEndpoints(IEndpointRouteBuilder endpoints)
-    {
-        // The warehouse endpoints arrive with the next change (inventory §7, PR 1b).
-    }
+    public void MapEndpoints(IEndpointRouteBuilder endpoints) => WarehouseEndpoints.Map(endpoints);
 }

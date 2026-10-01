@@ -26,6 +26,7 @@
     <Project Path="src/Modules/Inventory/FestOS.Modules.Inventory.Contracts/FestOS.Modules.Inventory.Contracts.csproj" />
     <Project Path="src/Modules/Inventory/FestOS.Modules.Inventory.Domain/FestOS.Modules.Inventory.Domain.csproj" />
     <Project Path="src/Modules/Inventory/FestOS.Modules.Inventory.Infrastructure/FestOS.Modules.Inventory.Infrastructure.csproj" />
+    <Project Path="src/Modules/Inventory/FestOS.Modules.Inventory.IntegrationEvents/FestOS.Modules.Inventory.IntegrationEvents.csproj" />
   </Folder>
   <Folder Name="/src/ServiceDefaults/">
     <Project Path="src/ServiceDefaults/FestOS.ServiceDefaults.csproj" />
