@@ -14,6 +14,7 @@ function fakeConnection() {
   const invoke = vi.fn(() => Promise.resolve());
   const connection = {
     start: vi.fn(() => Promise.resolve()),
+    stop: vi.fn(() => Promise.resolve()),
     invoke,
     on: (name: string, handler: Handler) => {
       handlers.set(name, handler);

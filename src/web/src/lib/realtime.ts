@@ -13,7 +13,7 @@ export type ResourceChangedMessage = { resource: string; id: string; version: nu
 /** The part of a SignalR connection the client uses; tests pass a fake. */
 export type RealtimeConnection = Pick<
   HubConnection,
-  "start" | "invoke" | "on" | "onreconnecting" | "onreconnected" | "onclose"
+  "start" | "stop" | "invoke" | "on" | "onreconnecting" | "onreconnected" | "onclose"
 >;
 
 const hubPath = "/hubs/notifications";
@@ -64,6 +64,11 @@ export class RealtimeClient {
 
     this.#setState("connected");
     await this.#joinAll();
+  }
+
+  /** Closes the connection, e.g. when the user signs out; the server forgets the groups. */
+  async stop(): Promise<void> {
+    await this.#connection.stop();
   }
 
   /** Joins a group for a screen; returns the function that leaves it when the screen closes. */

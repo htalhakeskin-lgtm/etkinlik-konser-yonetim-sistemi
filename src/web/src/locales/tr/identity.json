@@ -30,5 +30,24 @@
     "title": "Oturumunuz sona erdi",
     "description": "Kaldığınız yerden devam etmek için yeniden giriş yapın. Ekrandaki bilgiler korunur."
   },
-  "signOut": "Çıkış yap"
+  "signOut": "Çıkış yap",
+  "roles": {
+    "systemAdministrator": "Sistem yöneticisi",
+    "bookingManager": "Booking müdürü",
+    "technicalManager": "Teknik müdür",
+    "warehouseManager": "Depo sorumlusu",
+    "generalManager": "Genel müdür"
+  },
+  "userMenu": {
+    "open": "Kullanıcı menüsü: {{name}}",
+    "readOnly": "Salt okunur erişim",
+    "changePassword": "Şifreyi değiştir"
+  },
+  "changePassword": {
+    "title": "Şifreyi değiştir",
+    "description": "Diğer cihazlardaki oturumlarınız kapanır; bu oturum açık kalır.",
+    "currentPassword": "Mevcut şifre",
+    "cancel": "Vazgeç",
+    "done": "Şifreniz değiştirildi."
+  }
 }

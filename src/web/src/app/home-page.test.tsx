@@ -1,14 +1,12 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { createQueryClient } from "@/lib/query-client";
 import { meQuery } from "@/modules/identity";
 import { aUser } from "@/test/identity-fixtures";
 
 import { HomePage } from "./home-page";
-
-vi.mock("@tanstack/react-router", () => ({ useNavigate: () => vi.fn() }));
 
 describe("HomePage", () => {
   it("greets the signed-in user under the product name", () => {

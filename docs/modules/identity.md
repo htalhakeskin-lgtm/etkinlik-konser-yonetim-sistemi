@@ -1,6 +1,6 @@
 # Modül tasarımı: Identity — Kimlik ve erişim
 
-> **Durum:** v1.7 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.8 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 12](#12-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -134,6 +134,8 @@ Doğrulama: ad soyad zorunlu, en çok 200; e-posta geçerli biçim, en çok 320;
 
 Uygulama (PR 6a): Oturum isteyen ekranlar `_app` yerleşim rotasının altındadır; rota `/me`'yi bir kez yükler (`meQuery`, kendiliğinden eskimez), oturum yoksa `/login?redirect=…`'e, geçici şifrede `/set-password`'e gönderir. Dönüş adresi yalnızca uygulamanın kendi adresi olabilir. Oturum bitince sorgu istemcisi `401`'i bildirir ve kabuk yeniden giriş diyaloğunu açar; aynı kullanıcı dönünce diyalog kapanır ve sorgular yenilenir, başka kullanıcıda sayfa baştan yüklenir. Kendi `401`'ini bekleyen çağrılar (giriş, çıkış) `expectsUnauthorized` ile işaretlenir. Kilitli hesapta bitiş saati İstanbul saatiyle yazılır. Yeni şifre ekranında kural metni sabittir; P-04 ayarlanabildiği için en kısa uzunluk yalnızca ret yanıtındaki `minLength`'ten yazılır.
 
+Uygulama (PR 6b): Kabuk; bağlantı şeridi, shadcn/ui kenar menüsü (240/56 px, 1024 px altında panel; renkleri tasarım değişkenlerine bağlandı, tek harfli kısayolu kaldırıldı) ve kullanıcı menülü üst çubuktan oluşur. Menü `app/navigation.ts`'teki gruplardan yetkiye göre süzülür; her ekran menüye kendi rotasıyla aynı değişiklikte eklenir, bu yüzden ilk ekranlar gelene kadar menü boştur. Kullanıcı menüsü ad, roller, salt okunur erişim (yalnızca genel müdür rolünde), şifre değiştirme diyaloğu ve çıkışı içerir. Şifre değişince kısa bildirim gösterilir (Sonner; `next-themes` gerektirmeyen kendi sarmalayıcısıyla). Kabuk açılınca gerçek zamanlı bağlantı kurulur, ilk deneme başarısızsa artan aralıklarla yeniden denenir; çıkışta bağlantı kapanır. Rol başlangıç ekranları (11 §4), hedef ekranlar geldiğinde eklenir.
+
 Kabuk oturum açınca `RealtimeClient`'ı başlatır ve `ConnectionIndicator`'ı yerleştirir (building-blocks §12). Menü `/me`'deki yetkilerden üretilir; boş kalan grup gizlenir. `/` rolüne göre yönlendirir ([11 §4](../11-screens.md#4-başlangıç-ekranı)).
 
 ## 10. Hikaye ve kural eşlemesi
@@ -207,3 +209,4 @@ Depo ve işlem geçmişi PR'ları kendi belgelerindedir; sıra Inventory'nin dep
 | 2026-10-01 | v1.5 | §6: girişin sertleştirilmesinin uygulama ayrıntıları (PR 4b). |
 | 2026-10-01 | v1.6 | §6: şifre değiştirmenin uygulama ayrıntıları (PR 5); P-04 en az 8. |
 | 2026-10-01 | v1.7 | §9: giriş ekranlarının uygulama ayrıntıları (PR 6a); PR 6 ikiye bölündü. |
+| 2026-10-01 | v1.8 | §9: kabuğun uygulama ayrıntıları (PR 6b). |

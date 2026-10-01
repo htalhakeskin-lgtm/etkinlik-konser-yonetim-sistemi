@@ -28,5 +28,13 @@
     "reconnecting": "Bağlantı yeniden kuruluyor…",
     "offline": "Bağlantı yok. Ekrandaki bilgiler güncel olmayabilir.",
     "restored": "Bağlantı yeniden kuruldu."
+  },
+  "shell": {
+    "menu": "Menü",
+    "menuDescription": "Yetkili olduğunuz ekranlar",
+    "toggleMenu": "Menüyü aç ya da kapat"
+  },
+  "ui": {
+    "close": "Kapat"
   }
 }
