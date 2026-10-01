@@ -1,5 +1,6 @@
 using System.Text.Json.Nodes;
 using FestOS.BuildingBlocks.Infrastructure.Http;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
 
@@ -15,6 +16,44 @@ internal sealed class ApiOperationTransformer : IOpenApiOperationTransformer
     public const string ProblemSchema = "ApiProblem";
 
     public const string NoIdempotencyKeyExtension = "x-festos-no-idempotency-key";
+
+    // A query string enum is bound as text, so its schema says only "string". It takes the names of the
+    // enum's JSON form (EnumQueryValue<T>), so the parameter points to the enum's own schema and the
+    // generated client offers the same type as in the bodies.
+    private static async Task DescribeEnumQueryValuesAsync(
+        OpenApiOperation operation,
+        OpenApiOperationTransformerContext context,
+        OpenApiDocument document,
+        CancellationToken cancellationToken
+    )
+    {
+        foreach (ApiParameterDescription parameter in context.Description.ParameterDescriptions)
+        {
+            Type? type = parameter.Type is null ? null : Nullable.GetUnderlyingType(parameter.Type) ?? parameter.Type;
+            if (
+                type is not { IsGenericType: true }
+                || type.GetGenericTypeDefinition() != typeof(EnumQueryValue<>)
+                || operation
+                    .Parameters?.OfType<OpenApiParameter>()
+                    .FirstOrDefault(found => string.Equals(found.Name, parameter.Name, StringComparison.Ordinal))
+                    is not { } documented
+            )
+            {
+                continue;
+            }
+
+            Type enumType = type.GetGenericArguments()[0];
+            if (document.Components?.Schemas?.ContainsKey(enumType.Name) != true)
+            {
+                document.AddComponent(
+                    enumType.Name,
+                    await context.GetOrCreateSchemaAsync(enumType, cancellationToken: cancellationToken)
+                );
+            }
+
+            documented.Schema = new OpenApiSchemaReference(enumType.Name, document);
+        }
+    }
 
     public async Task TransformAsync(
         OpenApiOperation operation,
@@ -59,6 +98,7 @@ internal sealed class ApiOperationTransformer : IOpenApiOperationTransformer
 
         OpenApiDocument document =
             context.Document ?? throw new InvalidOperationException("The operation belongs to no document.");
+        await DescribeEnumQueryValuesAsync(operation, context, document, cancellationToken);
         if (document.Components?.Schemas?.ContainsKey(ProblemSchema) != true)
         {
             document.AddComponent(

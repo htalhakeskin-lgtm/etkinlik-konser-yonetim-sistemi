@@ -60,5 +60,9 @@ public sealed class IdentityModuleDefinition : IModuleDefinition
     }
 
     /// <inheritdoc />
-    public void MapEndpoints(IEndpointRouteBuilder endpoints) => AuthenticationEndpoints.Map(endpoints);
+    public void MapEndpoints(IEndpointRouteBuilder endpoints)
+    {
+        AuthenticationEndpoints.Map(endpoints);
+        UserEndpoints.Map(endpoints);
+    }
 }

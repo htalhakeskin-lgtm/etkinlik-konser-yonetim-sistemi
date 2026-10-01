@@ -69,3 +69,50 @@ export const ChangeMyPasswordResponse = zod.object({
   "mustChangePassword": zod.boolean()
 })
 
+/**
+ * @summary Lists the users, searched and filtered, one page at a time.
+ */
+export const ListUsersQueryParams = zod.object({
+  "q": zod.string().optional(),
+  "role": zod.enum(['systemAdministrator', 'bookingManager', 'technicalManager', 'warehouseManager', 'generalManager']).optional(),
+  "status": zod.enum(['active', 'inactive', 'all']).optional(),
+  "sort": zod.string().optional(),
+  "page": zod.int().optional(),
+  "pageSize": zod.int().optional()
+})
+
+export const ListUsersResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.uuid(),
+  "fullName": zod.string(),
+  "email": zod.string(),
+  "roles": zod.array(zod.enum(['systemAdministrator', 'bookingManager', 'technicalManager', 'warehouseManager', 'generalManager'])),
+  "isActive": zod.boolean(),
+  "lockedUntil": zod.iso.datetime({"offset":true}).nullable()
+})),
+  "page": zod.int(),
+  "pageSize": zod.int(),
+  "totalCount": zod.int()
+})
+
+/**
+ * @summary Gets a user.
+ */
+export const GetUserParams = zod.object({
+  "userId": zod.uuid()
+})
+
+export const GetUserResponse = zod.object({
+  "id": zod.uuid(),
+  "fullName": zod.string(),
+  "email": zod.string(),
+  "roles": zod.array(zod.enum(['systemAdministrator', 'bookingManager', 'technicalManager', 'warehouseManager', 'generalManager'])),
+  "warehouseIds": zod.array(zod.uuid()),
+  "mustChangePassword": zod.boolean(),
+  "lockedUntil": zod.iso.datetime({"offset":true}).nullable(),
+  "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "version": zod.int()
+})
+

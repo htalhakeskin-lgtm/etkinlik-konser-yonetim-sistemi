@@ -1,6 +1,6 @@
 # Modül tasarımı: Identity — Kimlik ve erişim
 
-> **Durum:** v1.8 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.9 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 12](#12-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -113,6 +113,8 @@ Testler: rollerdeki her kod katalogda vardır; katalogdaki her yetki en az bir r
 | `POST /api/v1/users/{userId}/reset-password` | `ResetUserPassword` | `Identity.Users.ResetPassword` | Yeni geçici şifre bir kez döner; kilidi de kaldırır; kullanıcının oturumlarını siler |
 | `GET /api/v1/roles` | `ListRoles` | `Identity.Roles.View` | Katalog (modüle göre gruplu) ve rol matrisi |
 
+Uygulama (PR 7a): `ListUsers` adın arama anahtarında (`full_name_search`, `pg_trgm` GIN indeksi) ve e-postada "içerir" araması yapar; `q` da aynı anahtara çevrilir. Süzgeçler `role`, `status` (`active` varsayılan, `inactive`, `all`); sıralama `fullName` (Türkçe sıra), `email`, `createdAt`, sonunda kimlik. Sistem kullanıcısı listede ve detayda görünmez (ID-11). `lockedUntil` yalnızca kilit sürerken doludur. `GetUser` gövdede `version`, başlıkta `ETag` döner.
+
 Doğrulama: ad soyad zorunlu, en çok 200; e-posta geçerli biçim, en çok 320; en az bir rol; depo sorumlusu rolünde en az bir depo (BR-SYS-014). Atanan depoların var ve aktif olduğu Inventory'nin senkron sözleşmesiyle doğrulanır ([05 §3](../05-module-map.md), `IWarehouseDirectory`).
 
 ## 8. Olaylar
@@ -164,7 +166,8 @@ Kabuk oturum açınca `RealtimeClient`'ı başlatır ve `ConnectionIndicator`'ı
 | 5 | Şifre değiştirme | Politika, yaygın şifre listesi, `ChangeMyPassword` |
 | 6a | Giriş ekranları | Giriş, yeni şifre, oturum koruması, yeniden giriş diyaloğu, hub'ın oturum istemesi |
 | 6b | Kabuk | Menü, üst çubuk, kullanıcı menüsü, şifre değiştirme diyaloğu, kabukta anlık bildirim, rol başlangıç ekranı |
-| 7 | Kullanıcı yönetimi (sunucu) | Oluşturma, düzenleme, pasifleştirme, etkinleştirme, sıfırlama |
+| 7a | Kullanıcı listesi ve detayı (sunucu) | `ListUsers`, `GetUser`; arama anahtarı, sayfalama ve sıralama altyapısı |
+| 7b | Kullanıcı yönetimi (sunucu) | Oluşturma, düzenleme, pasifleştirme, etkinleştirme, sıfırlama |
 | 8 | Kullanıcı yönetimi (ekran) | `/admin/users` |
 | 9 | Rol matrisi ekranı | `ListRoles`, `/admin/roles` |
 | 10 | Depo atamaları | `IWarehouseDirectory` ile doğrulama, `WarehouseDeactivated` dinleyicisi, temizlik işleri |
@@ -210,3 +213,4 @@ Depo ve işlem geçmişi PR'ları kendi belgelerindedir; sıra Inventory'nin dep
 | 2026-10-01 | v1.6 | §6: şifre değiştirmenin uygulama ayrıntıları (PR 5); P-04 en az 8. |
 | 2026-10-01 | v1.7 | §9: giriş ekranlarının uygulama ayrıntıları (PR 6a); PR 6 ikiye bölündü. |
 | 2026-10-01 | v1.8 | §9: kabuğun uygulama ayrıntıları (PR 6b). |
+| 2026-10-01 | v1.9 | §7: kullanıcı listesi ve detayının uygulama ayrıntıları (PR 7a); PR 7 ikiye bölündü. |

@@ -1,6 +1,6 @@
 # API Standardı
 
-> **Durum:** v1.12 · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.13 · **Son güncelleme:** 2026-10-01
 > **Kararlar:** [Bölüm 15](#15-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -147,6 +147,7 @@ Adların yazımı (kebab-case adres, camelCase JSON, işlem adı) [naming §6](n
 
 - Filtreler, adlandırılmış sorgu parametreleridir: `?status=confirmed&warehouseId=…&from=2027-06-01`. Genel bir sorgu dili (OData, `filter=` ifadeleri) kullanılmaz; her uç nokta desteklediği filtreleri OpenAPI'de açıkça gösterir.
 - Çoklu değer parametre tekrarıyla verilir: `?status=confirmed&status=advancing`.
+- Sabit değer kümesinden seçilen filtreler (enum) JSON gövdesindeki camelCase adlarıyla yazılır ve büyük / küçük harf duyarsız okunur (`?role=bookingManager`). Uç nokta bunları `EnumQueryValue<T>` olarak alır; ASP.NET'in kendi enum okuması C# adına ve harfe duyarlıdır. OpenAPI'de parametre enum'un kendi şemasına başvurur.
 - Aralık filtreleri `from` / `to` çiftidir ve yarı açıktır: `[from, to)` ([database §7.3](database.md#73-zaman-aralıkları)).
 - Serbest metin araması `q` parametresidir ve arama anahtarı kolonunda çalışır: büyük / küçük harf ve Türkçe karakter duyarsızdır ([database §13](database.md#13-metin-sıralama-ve-arama)).
 
@@ -411,3 +412,4 @@ Oturum [ADR-0011](../adr/0011-authentication.md)'deki gibi sunucu tarafı oturum
 | 2026-09-30 | v1.10 | §8.3'e `csrfRejected`; §11'de belirteç çerezleri ve uç noktası (Faz 1.1). |
 | 2026-09-30 | v1.11 | §14.1: hata yanıtlarının `default` yanıt olarak yazılışı, açıklamaların kaynağı (Faz 1.1). |
 | 2026-09-30 | v1.12 | §13: `version` alanı `null` olabilir (Faz 1.1). |
+| 2026-10-01 | v1.13 | §6.3: sorgu dizesindeki enum filtreleri camelCase adlarıyla, harf duyarsız (Faz 1.2). |
