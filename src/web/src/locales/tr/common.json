@@ -40,7 +40,8 @@
   "menu": {
     "administration": "Yönetim",
     "users": "Kullanıcılar",
-    "roles": "Roller ve yetkiler"
+    "roles": "Roller ve yetkiler",
+    "warehouses": "Depolar"
   },
   "dataTable": {
     "range": "{{from}}–{{to}} / {{total}} kayıt",

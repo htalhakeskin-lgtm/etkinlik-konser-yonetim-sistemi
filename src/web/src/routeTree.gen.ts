@@ -15,6 +15,7 @@ import { Route as SetPasswordRouteImport } from './routes/set-password'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppAdminRolesRouteImport } from './routes/_app/admin/roles'
 import { Route as AppAdminUsersRouteImport } from './routes/_app/admin/users'
+import { Route as AppAdminWarehousesRouteImport } from './routes/_app/admin/warehouses'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -45,6 +46,11 @@ const AppAdminUsersRoute = AppAdminUsersRouteImport.update({
   path: '/admin/users',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAdminWarehousesRoute = AppAdminWarehousesRouteImport.update({
+  id: '/admin/warehouses',
+  path: '/admin/warehouses',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/set-password': typeof SetPasswordRoute
   '/admin/roles': typeof AppAdminRolesRoute
   '/admin/users': typeof AppAdminUsersRoute
+  '/admin/warehouses': typeof AppAdminWarehousesRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
   '/admin/roles': typeof AppAdminRolesRoute
   '/admin/users': typeof AppAdminUsersRoute
+  '/admin/warehouses': typeof AppAdminWarehousesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -68,12 +76,25 @@ export interface FileRoutesById {
   '/_app/': typeof AppIndexRoute
   '/_app/admin/roles': typeof AppAdminRolesRoute
   '/_app/admin/users': typeof AppAdminUsersRoute
+  '/_app/admin/warehouses': typeof AppAdminWarehousesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/set-password' | '/admin/roles' | '/admin/users'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/set-password'
+    | '/admin/roles'
+    | '/admin/users'
+    | '/admin/warehouses'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/set-password' | '/' | '/admin/roles' | '/admin/users'
+  to:
+    | '/login'
+    | '/set-password'
+    | '/'
+    | '/admin/roles'
+    | '/admin/users'
+    | '/admin/warehouses'
   id:
     | '__root__'
     | '/_app'
@@ -82,6 +103,7 @@ export interface FileRouteTypes {
     | '/_app/'
     | '/_app/admin/roles'
     | '/_app/admin/users'
+    | '/_app/admin/warehouses'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -134,6 +156,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAdminUsersRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/admin/warehouses': {
+      id: '/_app/admin/warehouses'
+      path: '/admin/warehouses'
+      fullPath: '/admin/warehouses'
+      preLoaderRoute: typeof AppAdminWarehousesRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -141,12 +170,14 @@ interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppAdminRolesRoute: typeof AppAdminRolesRoute
   AppAdminUsersRoute: typeof AppAdminUsersRoute
+  AppAdminWarehousesRoute: typeof AppAdminWarehousesRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppAdminRolesRoute: AppAdminRolesRoute,
   AppAdminUsersRoute: AppAdminUsersRoute,
+  AppAdminWarehousesRoute: AppAdminWarehousesRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
