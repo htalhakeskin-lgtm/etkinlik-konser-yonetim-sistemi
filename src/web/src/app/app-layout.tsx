@@ -3,6 +3,7 @@ import { Outlet } from "@tanstack/react-router";
 
 import { ConnectionIndicator } from "@/components/common/connection-indicator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { meQuery, ReauthDialog, UserMenu } from "@/modules/identity";
 
 import { AppSidebar } from "./app-sidebar";
@@ -16,18 +17,20 @@ export function AppLayout() {
   return (
     <RealtimeProvider>
       <ConnectionIndicator />
-      <SidebarProvider>
-        <AppSidebar permissions={user.permissions} />
-        <SidebarInset>
-          <header className="flex h-12 items-center gap-2 border-b px-3">
-            <SidebarTrigger />
-            <div className="ml-auto">
-              <UserMenu user={user} />
-            </div>
-          </header>
-          <Outlet />
-        </SidebarInset>
-      </SidebarProvider>
+      <TooltipProvider>
+        <SidebarProvider>
+          <AppSidebar permissions={user.permissions} />
+          <SidebarInset>
+            <header className="flex h-12 items-center gap-2 border-b px-3">
+              <SidebarTrigger />
+              <div className="ml-auto">
+                <UserMenu user={user} />
+              </div>
+            </header>
+            <Outlet />
+          </SidebarInset>
+        </SidebarProvider>
+      </TooltipProvider>
       <ReauthDialog />
     </RealtimeProvider>
   );

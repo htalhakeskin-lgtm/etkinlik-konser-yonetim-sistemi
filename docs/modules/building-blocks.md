@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.34 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.35 (onaylandı) · **Son güncelleme:** 2026-10-01
 
 ## 1. Bu belge ne işe yarar
 
@@ -481,3 +481,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-10-01 | v1.32 | Hub oturum ister; `SignedInTestUser` test şeması. Ön yüzde sorgu istemcisi `401`'i yeniden giriş diyaloğuna bildirir (`session-expiry`), Zod hata metinleri sunucunun doğrulama kodlarının metinlerini kullanır (`schema-messages`). |
 | 2026-10-01 | v1.33 | Ön yüz: `Toaster` (Sonner, ui §9.3), `RealtimeClient.stop()`; shadcn/ui `sidebar`, `dropdown-menu`, `sheet`, `tooltip`, `skeleton` eklendi ve tasarım değişkenlerine uyarlandı. |
 | 2026-10-01 | v1.34 | Liste sorguları için `SearchKey` (Domain, database §13), `SortKeys<T>`, `ToPagedResultAsync`, `Collations.Turkish` (Infrastructure); sorgu dizesi enum'ları için `EnumQueryValue<T>` ve OpenAPI'de enum şemasına başvuru (api §6.3). |
+| 2026-10-01 | v1.35 | Ön yüz: ortak `DataTable` (TanStack Table 9; sunucu tarafı sıralama ve sayfalama, ui §8); shadcn/ui `table` ve `select` eklendi. |
