@@ -4,6 +4,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="FestOS.Modules.Identity.UnitTests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\FestOS.BuildingBlocks.Infrastructure\FestOS.BuildingBlocks.Infrastructure.csproj" />
     <ProjectReference Include="..\FestOS.Modules.Identity.Application\FestOS.Modules.Identity.Application.csproj" />
   </ItemGroup>

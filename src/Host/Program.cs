@@ -1,4 +1,5 @@
 using System.Globalization;
+using FestOS.BuildingBlocks.Application.Users;
 using FestOS.BuildingBlocks.Infrastructure.Http;
 using FestOS.BuildingBlocks.Infrastructure.Modules;
 using FestOS.BuildingBlocks.Infrastructure.OpenApi;
@@ -6,6 +7,7 @@ using FestOS.BuildingBlocks.Infrastructure.Persistence;
 using FestOS.BuildingBlocks.Infrastructure.Realtime;
 using FestOS.Modules.Audit.Infrastructure;
 using FestOS.Modules.Identity.Infrastructure;
+using FestOS.Modules.Identity.Infrastructure.Users;
 using FestOS.ServiceDefaults;
 
 // Server code runs with the invariant culture; text for people is formatted with tr-TR explicitly
@@ -20,7 +22,19 @@ if (args is ["migrate", .. var migrateArgs])
     migrateBuilder.AddModules(Modules());
     using IHost migrateHost = migrateBuilder.Build();
     await migrateHost.Services.GetRequiredService<DatabaseMigrator>().RunAsync(CancellationToken.None);
-    return;
+    return 0;
+}
+
+// Makes the first system administrator of a new installation (docs/modules/identity.md, ID-07).
+if (args is ["create-admin", .. var adminArgs])
+{
+    HostApplicationBuilder adminBuilder = Host.CreateApplicationBuilder(adminArgs);
+    adminBuilder.Services.AddSingleton<ICurrentUser, SystemCurrentUser>();
+    adminBuilder.AddModules(Modules());
+    using IHost adminHost = adminBuilder.Build();
+#pragma warning disable RS0030 // The temporary password goes to the operator's console only, never to the logs.
+    return await CreateAdminCommandLine.RunAsync(adminHost.Services, adminBuilder.Configuration, Console.Out);
+#pragma warning restore RS0030
 }
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -59,6 +73,7 @@ if (app.Environment.IsDevelopment())
 }
 
 await app.RunAsync();
+return 0;
 
 // The only list of modules; a new module is added here (08 §5).
 static IModuleDefinition[] Modules() => [new AuditModuleDefinition(), new IdentityModuleDefinition()];

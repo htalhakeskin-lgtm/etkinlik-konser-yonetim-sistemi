@@ -1,6 +1,6 @@
 # Modül tasarımı: Identity — Kimlik ve erişim
 
-> **Durum:** v1.2 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.3 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 12](#12-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -174,6 +174,7 @@ Depo ve işlem geçmişi PR'ları kendi belgelerindedir; sıra Inventory'nin dep
 | ID-06 | Yaygın şifre listesi | SecLists ilk 100.000, gömülü kaynak | Dış servis yok (ADR-0027); MIT lisanslı; 100.000 kayıt bellekte küçük |
 | ID-07 | İlk sistem yöneticisi | Host'ta `create-admin --email … --name …` komutu; geçici şifreyi bir kez yazar. Sistemde aktif sistem yöneticisi varsa reddeder. Demo verisi de bu yolu kullanır. | S1; açık ve tekrarlanabilir, gizli bilgi ayarlarda durmaz |
 | ID-08 | E-posta değişikliği | Sistem yöneticisi değiştirebilir; değişince kullanıcının tüm oturumları sonlanır | S2; kimlik `id`'dir, e-posta değil |
+| ID-11 | Sistem kullanıcısı | Identity'nin migration'ı `SystemUser.Id` ile "Sistem" kullanıcısını tohumlar; şifresi ve rolü yoktur, giriş yapamaz | `…_by` kolonları ve işlem geçmişi sistem işlerinde de bir kullanıcıya bağlanır ([database §9](../standards/database.md#9-ortak-kolonlar)) |
 | ID-10 | Roller ve depo atamaları | `users` tablosunda `roles text[]` ve `warehouse_ids uuid[]`; ayrı tablolar yok | Rol kümesi küçük ve sabit, depoya yabancı anahtar zaten yok; alt varlık ve birleşik anahtar gerekmez, işlem geçmişi değişikliği tek alanda eski → yeni gösterir. 06'daki `UserRole` ve `UserWarehouseAssignment` kavramsal varlıklardır. |
 | ID-09 | Son deposu pasifleşen depo sorumlusu | Kullanıcı aktif kalır; kullanıcı listesinde "depo bekliyor" uyarısıyla görünür; BR-SYS-014 kayıtta uygulanır | Depo pasifleştirmesi, başka modüldeki kullanıcı yüzünden engellenmez |
 
@@ -194,3 +195,4 @@ Depo ve işlem geçmişi PR'ları kendi belgelerindedir; sıra Inventory'nin dep
 | 2026-10-01 | v1.0 | Sorular yanıtlandı (ID-07, ID-08); ID-09 eklendi; onaylandı. |
 | 2026-10-01 | v1.1 | §5.3 yetki altyapısının uygulama ayrıntıları (PR 1). |
 | 2026-10-01 | v1.2 | ID-10: roller ve depo atamaları `users` tablosunda dizi kolonları; pasifleştirme ortak kalıpla (PR 2). |
+| 2026-10-01 | v1.3 | ID-11 sistem kullanıcısının tohumlanması; `create-admin` komutu (PR 3). |
