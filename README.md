@@ -107,7 +107,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | [00 — Kapsam ve MVP sınırları](docs/00-scope.md) | v1.7 |
 | [01 — Terimler sözlüğü](docs/01-glossary.md) | v1.9 |
 | [02 — Kullanıcı hikayeleri](docs/02-user-stories/README.md) (52 hikaye) | v1.7 |
-| [03 — İş kuralları](docs/03-business-rules.md) (91 kural) | v1.7 |
+| [03 — İş kuralları](docs/03-business-rules.md) (93 kural) | v1.8 |
 | [04 — Durum makineleri](docs/04-state-machines.md) (62 geçiş) | v1.1 |
 | [05 — Modül haritası](docs/05-module-map.md) | v1.3 |
 | [06 — Kavramsal veri modeli](docs/06-erd-conceptual.md) | v1.0 |
@@ -147,6 +147,9 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | [Ekran tasarım özeti (v0)](docs/design/screen-brief.md) | v1.1 |
 | [12 — Uygulama planı (Faz 1: S1)](docs/12-implementation-plan.md) | v1.0 |
 | [Modül tasarımı: Ortak yapı taşları](docs/modules/building-blocks.md) | v1.29 |
+| [Modül tasarımı: Identity](docs/modules/identity.md) | v1.0 |
+| [Modül tasarımı: Audit](docs/modules/audit.md) | v1.0 |
+| [Modül tasarımı: Inventory](docs/modules/inventory.md) | v1.0 |
 
 ### Teknoloji
 

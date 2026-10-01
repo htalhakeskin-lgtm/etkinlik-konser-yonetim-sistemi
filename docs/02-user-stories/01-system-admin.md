@@ -6,7 +6,7 @@
 **Sistem yöneticisi olarak** yeni bir çalışan için kullanıcı açıp rol atamak **istiyorum**, **çünkü** her çalışan yalnızca işinin gerektirdiği yetkilerle çalışmalı.
 
 Öncelik: Must · Demo adımı: —
-Kurallar: BR-SYS-006, BR-SYS-014
+Kurallar: BR-SYS-006, BR-SYS-014, BR-SYS-015
 
 **Kabul kriterleri**
 1. Ad soyad, e-posta ve en az bir rol zorunludur.
@@ -41,7 +41,7 @@ Kurallar: —
 **Sistem yöneticisi olarak** şirketin depolarını tanımlamak **istiyorum**, **çünkü** tüm stok ve depo işlemleri bir depoya bağlıdır.
 
 Öncelik: Must · Demo adımı: —
-Kurallar: BR-SYS-001, BR-SYS-013
+Kurallar: BR-SYS-001, BR-SYS-013, BR-SYS-016
 
 **Kabul kriterleri**
 1. Depo adı, şehir ve adres zorunludur; depo adı tekildir.
