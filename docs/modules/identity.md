@@ -1,6 +1,6 @@
 # Modül tasarımı: Identity — Kimlik ve erişim
 
-> **Durum:** v1.3 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.4 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 12](#12-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -35,7 +35,7 @@ Aynı adımın diğer belgeleri: [audit.md](audit.md) (işlem geçmişinin okunm
 | Tablo | Kolonlar (ortak kolonlar hariç) | Kısıtlar ve indeksler |
 |---|---|---|
 | `users` | `id`, `full_name varchar(200)`, `email varchar(320)` (küçük harf, NFC), `password_hash text`, `must_change_password bool`, `failed_login_count int`, `locked_until timestamptz null`, `roles text[]`, `warehouse_ids uuid[]`, `deactivated_at`, `deactivated_by`, `version` | `ux_users_email` → BR-SYS-015 (pasif kullanıcılarda da tekil); `ck_users_roles_enum`; `ix_users_roles` ve `ix_users_warehouse_ids` (GIN: "bu rolde / bu depoda kim var") |
-| `sessions` | `id`, `user_id`, `key_hash char(64)`, `created_at`, `last_seen_at`, `expires_at`, `permissions text[]`, `warehouse_ids uuid[]`, `user_agent varchar(400)` | `ux_sessions_key_hash` (teknik, DT-04 istisnası); FK `users` basamaklı |
+| `sessions` | `id`, `user_id`, `key_hash char(64)`, `created_at`, `last_seen_at`, `expires_at`, `permissions text[]`, `warehouse_ids uuid[]`, `must_change_password bool` | `ux_sessions_key_hash` (teknik, DT-04 istisnası); FK `users` basamaksız: oturum toplu kökün parçası değildir ve kullanıcılar silinmez |
 | `login_attempts` | `id`, `email varchar(320)`, `user_id null`, `occurred_at`, `succeeded bool`, `ip_address inet null` | `ix_login_attempts_occurred_at`; 90 gün sonra silinir (kişisel veri, [security §10](../standards/security.md)) |
 | `data_protection_keys` | ASP.NET veri koruma anahtarları (EF sağlayıcısı) | [security §7](../standards/security.md#7-veri-koruma-anahtarları) |
 
@@ -75,7 +75,7 @@ Testler: rollerdeki her kod katalogda vardır; katalogdaki her yetki en az bir r
 - `RequirePermission(kod)` uç nokta metadatasıdır; kod aynı adlı bir yetki politikasına dönüşür ve politikalar katalogdan dinamik üretilir ([security §3.3](../standards/security.md#33-uç-nokta-düzeyinde-kontrol)). Yetki yoksa `403 forbidden`.
 - Bu altyapı Identity'ye değil BuildingBlocks'a aittir (BB-01): `RequirePermission`, politika sağlayıcısı ve AT-09 testi (her uç nokta yetki ister ya da açıkça anonimdir) bu adımın ilk PR'larındadır.
 - **Uygulama (PR 1):** `PermissionClaims.Type` (`festos:permission`) talebi, `PermissionPolicyProvider` ve `RequirePermission` BuildingBlocks.Infrastructure'ın `Authorization/` klasöründedir. Katalogda olmayan kodun politikası yoktur; böyle bir uç nokta `500` verir, yazım hatası sessizce geçmez. AT-09, Host'u `WebApplicationFactory` ile bellekte açar ve `/api` ile `/hubs` altındaki her uç noktanın bir yetki istediğini ya da açıkça anonim olduğunu, istenen her yetkinin katalogda bulunduğunu denetler. Hub, oturumlar gelene kadar açıkça anonimdir (PR 6'da kimlik doğrulaması ister).
-- **Geçici şifre kapısı (BR-SYS-006):** `must_change_password` olan oturum yalnızca `/me`, şifre belirleme ve çıkış uçlarını çağırabilir; diğer her uç `403` ve `code: BR-SYS-006` döner.
+- **Geçici şifre kapısı (BR-SYS-006):** `must_change_password` olan kullanıcının oturumu hiçbir yetki taşımaz; yetki isteyen her uç `403 forbidden` döner. Oturum açık kalır; `/me`, şifre belirleme ve çıkış yetki istemez. Ön yüz `/me`'deki `mustChangePassword`'e bakıp `/set-password`'e yönlendirir.
 
 ## 6. Giriş ve oturum
 
@@ -91,6 +91,7 @@ Testler: rollerdeki her kod katalogda vardır; katalogdaki her yetki en az bir r
 | Şifre | ASP.NET Core Identity `PasswordHasher` (PBKDF2-HMAC-SHA512, 210.000 tur). Politika (BR-SYS-007): en az P-04 (15), en çok 128 karakter, boşluk yok, NFC, yaygın şifre listesinde değil, e-posta ve ürün adı değil, mevcut şifreyle aynı değil. Yaygın şifre listesi SecLists'in ilk 100.000 şifresidir (MIT), sunucuda gömülü kaynak olarak durur. |
 | Geçici şifre | 16 karakter, karıştırılmayan harf ve rakamlardan (`0/O`, `1/l/I` yok), 4'lü gruplar halinde; kriptografik rastgele. Yalnızca oluşturan yanıtta bir kez döner (BR-SYS-006). |
 | Şifre değişince | Kullanıcının diğer tüm oturumları silinir; bu oturum kalır (BR-SYS-007). Geçici şifreden yeni şifreye geçişte mevcut şifre istenmez; oturum onu zaten kanıtlamıştır. |
+| Uygulama (PR 4a) | `SessionTicketStore` (`ITicketStore`): her istekte asıl kullanıcı oturum satırından yeniden kurulur. Önbellekteki kopya oturumun sınırlarını taşır, böylece süresi dolmuş oturum önbellekten de geçmez. Veri koruma anahtarları ayrı ve sade bir bağlamla (`DataProtectionKeyStore`) yazılır, çünkü ASP.NET'in anahtar yöneticisi senkron kaydeder ve modül bağlamları bunu reddeder; tablo Identity'nin migration'ındadır. Giriş, tekrar güvenliği anahtarından muaftır (`WithoutIdempotencyKey`): saklanan bir giriş yanıtı, hesap sonradan kilitlense ya da pasifleşse de tekrar oynatılabilirdi; OpenAPI'de `x-festos-no-idempotency-key` ile belirtilir ve AT-15 bunu tanır. Hatalı giriş BuildingBlocks'taki `AuthenticationFailedException` ile `401` döner. |
 | `ICurrentUser` | Identity'nin Infrastructure'ı uygular: oturumdan kullanıcı kimliği, adı, yetkileri ve depo atamaları. İsteğin dışındaki işler `SystemUser`'dır. Bu, 1.1'den kalan `ICurrentUser` kaydı sorusunu kapatır. |
 
 ## 7. Uç noktalar
@@ -152,7 +153,8 @@ Kabuk oturum açınca `RealtimeClient`'ı başlatır ve `ConnectionIndicator`'ı
 | 1 | Yetki altyapısı | BuildingBlocks: `RequirePermission`, dinamik politika sağlayıcısı, yetki kataloğu, AT-09 |
 | 2 | Identity iskeleti | Projeler, şema, `users`, rol matrisi ve testleri, AppHost rolü |
 | 3 | `create-admin` komutu | İlk sistem yöneticisi (ID-07) |
-| 4 | Giriş ve oturum | `ITicketStore`, oturum tablosu ve önbelleği, kilit, istek sınırı, `ICurrentUser`, geçici şifre kapısı, `Login` / `Logout` / `GetMe` |
+| 4a | Giriş ve oturum | Oturum tablosu, `ITicketStore` ve önbelleği, veri koruma anahtarları, `ICurrentUser`, geçici şifre kapısı, `Login` / `Logout` / `GetMe` |
+| 4b | Girişin sertleştirilmesi | Hesap kilidi, giriş denemeleri, istek sınırı, zamanlama eşitliği, oturum temizliği |
 | 5 | Şifre değiştirme | Politika, yaygın şifre listesi, `ChangeMyPassword` |
 | 6 | Kabuk ve giriş ekranları | Giriş, yeni şifre, kabuk, menü, kullanıcı menüsü, yeniden giriş diyaloğu, kabukta anlık bildirim |
 | 7 | Kullanıcı yönetimi (sunucu) | Oluşturma, düzenleme, pasifleştirme, etkinleştirme, sıfırlama |
@@ -196,3 +198,4 @@ Depo ve işlem geçmişi PR'ları kendi belgelerindedir; sıra Inventory'nin dep
 | 2026-10-01 | v1.1 | §5.3 yetki altyapısının uygulama ayrıntıları (PR 1). |
 | 2026-10-01 | v1.2 | ID-10: roller ve depo atamaları `users` tablosunda dizi kolonları; pasifleştirme ortak kalıpla (PR 2). |
 | 2026-10-01 | v1.3 | ID-11 sistem kullanıcısının tohumlanması; `create-admin` komutu (PR 3). |
+| 2026-10-01 | v1.4 | §4, §5.3, §6: giriş ve oturumun uygulama ayrıntıları (PR 4a); PR 4 ikiye bölündü; geçici şifre kapısı yetkisiz oturumla. |

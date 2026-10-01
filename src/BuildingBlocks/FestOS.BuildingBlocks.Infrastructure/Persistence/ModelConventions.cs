@@ -18,10 +18,14 @@ internal static class ModelConventions
     {
         foreach (IMutableEntityType entityType in modelBuilder.Model.GetEntityTypes())
         {
-            // Identifiers are chosen by the domain before saving (database §5.1).
+            // Identifiers are chosen by the domain before saving (database §5.1). Integer keys belong only
+            // to framework types such as ASP.NET's data protection keys; the database numbers those.
             foreach (IMutableProperty key in entityType.FindPrimaryKey()?.Properties ?? [])
             {
-                key.ValueGenerated = ValueGenerated.Never;
+                if (key.ClrType != typeof(int) && key.ClrType != typeof(long))
+                {
+                    key.ValueGenerated = ValueGenerated.Never;
+                }
             }
 
             // The aggregate's version guards against lost updates (V-09).

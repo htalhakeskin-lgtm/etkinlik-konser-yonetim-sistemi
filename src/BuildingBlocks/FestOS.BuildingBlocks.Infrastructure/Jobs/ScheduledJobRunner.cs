@@ -103,7 +103,15 @@ public sealed partial class ScheduledJobRunner(
         {
             DateTimeOffset now = timeProvider.GetUtcNow();
             TimeSpan wait = job.Schedule.NextAfter(now) - now;
-            await Task.Delay(wait > TimeSpan.Zero ? wait : TimeSpan.Zero, timeProvider, stoppingToken);
+            try
+            {
+                await Task.Delay(wait > TimeSpan.Zero ? wait : TimeSpan.Zero, timeProvider, stoppingToken);
+            }
+            catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+            {
+                // The host is stopping; waiting for the next run is not a failure.
+                return;
+            }
 
             try
             {

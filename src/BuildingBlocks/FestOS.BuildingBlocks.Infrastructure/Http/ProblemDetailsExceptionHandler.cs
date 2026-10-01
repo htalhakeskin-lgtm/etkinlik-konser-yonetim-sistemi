@@ -72,6 +72,14 @@ internal sealed partial class ProblemDetailsExceptionHandler(
                 ErrorCodes.ConcurrencyConflict,
                 exception.Message
             ),
+            AuthenticationFailedException failed => Problem(
+                StatusCodes.Status401Unauthorized,
+                "authentication-failed",
+                "Authentication failed",
+                failed.Code,
+                failed.Message,
+                failed.Parameters
+            ),
             IdempotencyKeyReusedException => Problem(
                 StatusCodes.Status422UnprocessableEntity,
                 "idempotency-key-reused",

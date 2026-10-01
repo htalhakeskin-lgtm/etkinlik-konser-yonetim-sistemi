@@ -48,7 +48,8 @@ builder.AddModules(Modules());
 WebApplication app = builder.Build();
 app.UseHttpPlatform();
 
-// Authentication (1.2) goes before this line: the antiforgery token is bound to the signed-in user.
+// Authentication goes first: the antiforgery token is bound to the signed-in user.
+app.UseAuthentication();
 app.UseCsrfProtection();
 app.UseAuthorization();
 

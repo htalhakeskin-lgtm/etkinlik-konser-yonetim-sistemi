@@ -24,7 +24,10 @@ internal sealed class IdempotencyFilter : IEndpointFilter
         ArgumentNullException.ThrowIfNull(next);
 
         HttpContext httpContext = context.HttpContext;
-        if (!ChangesData(httpContext.Request.Method))
+        if (
+            !ChangesData(httpContext.Request.Method)
+            || httpContext.GetEndpoint()?.Metadata.GetMetadata<NoIdempotencyKeyMetadata>() is not null
+        )
         {
             return await next(context);
         }
