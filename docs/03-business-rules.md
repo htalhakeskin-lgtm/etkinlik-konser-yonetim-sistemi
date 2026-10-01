@@ -1,6 +1,6 @@
 # 03 — İş Kuralları Kataloğu
 
-> **Durum:** v1.7 · **Son güncelleme:** 2026-09-25
+> **Durum:** v1.8 · **Son güncelleme:** 2026-10-01
 > **Kararlar:** [Bölüm 7](#7-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -122,6 +122,14 @@ Sistemde her zaman en az bir aktif depo bulunur. Stoğu, açık transferi ya da 
 #### BR-SYS-014 · Depo sorumlusunun bağlı deposu
 Depo sorumlusu rolündeki her kullanıcının en az bir aktif bağlı deposu vardır.
 *Tür:* Kısıt · *Hikayeler:* US-SYS-001
+
+#### BR-SYS-015 · Tekil e-posta
+Kullanıcı e-postası, büyük-küçük harf ve yazım biçimi farkı gözetilmeden sistemde tekildir. Pasif kullanıcıların e-postası da yeniden kullanılamaz.
+*Tür:* Kısıt · *Hikayeler:* US-SYS-001
+
+#### BR-SYS-016 · Tekil depo adı
+Depo adı, büyük-küçük harf farkı gözetilmeden tekildir. Pasif depoların adı da yeniden kullanılamaz.
+*Tür:* Kısıt · *Hikayeler:* US-SYS-005
 
 ### 5.2 Kişi ve firma (PTY)
 
@@ -582,3 +590,4 @@ Rider karşılama raporu, son ihtiyaç hesabından ve güncel onaylı rezervasyo
 | 2026-09-25 | v1.5 | Kavramsal modelle uyum: BR-EVT-020 (zaman noktalarının sırası) eklendi; BR-EQP-006 (kasa içeriği ile stok), BR-MRP-007 (transferin depoları ve tarihleri), BR-MRP-008 (sipariş satırının ihtiyaçla eşleşmesi) genişletildi. |
 | 2026-09-25 | v1.6 | Mekan ekipmanı tarihe göre değişebilir: BR-VEN-001 genişletildi, BR-VEN-002 eklendi, BR-MRP-010 güncellendi. |
 | 2026-09-25 | v1.7 | Güvenlik standardıyla uyum: P-04 15 karaktere çıktı; BR-SYS-007'ye boşluk yasağı ve yaygın şifre kontrolü, BR-SYS-008'e mutlak oturum süresi (yeni P-16) eklendi. |
+| 2026-10-01 | v1.8 | BR-SYS-015 (tekil e-posta) ve BR-SYS-016 (tekil depo adı) eklendi; ikisi de hikayelerin kabul kriteriydi, veritabanı kısıtına bağlanabilmek için numaralı kural oldu (Faz 1.2). |
