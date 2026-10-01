@@ -3,10 +3,11 @@ import { expect, test } from "@playwright/test";
 import { expectNoAccessibilityViolations } from "../support/accessibility";
 
 // Keeps the pipeline honest until the demo scenario tests arrive: the built app loads, speaks
-// Turkish, applies the saved theme before the first paint and passes the accessibility scan.
+// Turkish, applies the saved theme before the first paint and passes the accessibility scan. The
+// sign-in screen needs no server, so the built front end alone serves it.
 test.describe("application", () => {
   test("opens in Turkish with the product name", { tag: ["@smoke"] }, async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/login");
 
     await expect(page.locator("html")).toHaveAttribute("lang", "tr");
     await expect(page.getByRole("heading", { level: 1, name: "FestOS" })).toBeVisible();
@@ -29,7 +30,7 @@ test.describe("application", () => {
         });
       });
 
-      await page.goto("/");
+      await page.goto("/login");
 
       await expect(page.locator("html")).toHaveAttribute("data-theme-at-parse", "true");
       await expect(page.locator("html")).toHaveClass(/dark/);

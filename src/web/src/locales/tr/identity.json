@@ -1,0 +1,34 @@
+{
+  "signIn": {
+    "title": "FestOS",
+    "email": "E-posta",
+    "password": "Şifre",
+    "submit": "Giriş yap",
+    "locked": "Art arda çok sayıda hatalı şifre girildiği için hesap {{time}} saatine kadar kilitli."
+  },
+  "password": {
+    "show": "Şifreyi göster",
+    "hide": "Şifreyi gizle"
+  },
+  "setPassword": {
+    "title": "Yeni şifre belirleyin",
+    "description": "Geçici şifreyle giriş yaptınız. Devam etmek için kendi şifrenizi belirleyin.",
+    "newPassword": "Yeni şifre",
+    "rules": "Uzun ve tahmin edilmesi zor bir şifre seçin. Boşluk içeremez; yaygın şifreler, e-postanız ve ürün adı kabul edilmez.",
+    "submit": "Şifreyi kaydet",
+    "problem": {
+      "tooShort": "Şifre en az {{minLength}} karakter olmalıdır.",
+      "tooLong": "Şifre en fazla 128 karakter olabilir.",
+      "whitespace": "Şifre boşluk içeremez.",
+      "containsEmail": "Şifre e-posta adresinizi içeremez.",
+      "containsProductName": "Şifre ürün adını içeremez.",
+      "common": "Bu şifre çok yaygın; tahmin edilmesi kolay. Başka bir şifre seçin.",
+      "sameAsCurrent": "Yeni şifre mevcut şifrenizle aynı olamaz."
+    }
+  },
+  "reauth": {
+    "title": "Oturumunuz sona erdi",
+    "description": "Kaldığınız yerden devam etmek için yeniden giriş yapın. Ekrandaki bilgiler korunur."
+  },
+  "signOut": "Çıkış yap"
+}

@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.31 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.32 (onaylandı) · **Son güncelleme:** 2026-10-01
 
 ## 1. Bu belge ne işe yarar
 
@@ -325,7 +325,7 @@ Anahtar denetimi `If-Match`'ten önce yapılır; filtre sırası bunu garanti ed
 - Modül olayını `AddResourceChange<TOlay>(olay => new ResourceChange(kaynak, kimlik, sürüm, gruplar))` ile eşler.
 - `ResourceChangedPublisher`'ı olay yolu, modül dinleyicilerinden önce çağırır. Modül dinleyicisi olarak kaydedilmez, çünkü her dinleyici kendi modülünün inbox işleminde çalışır; bildirimin ise veritabanı işi yoktur. Değişiklik bu noktada zaten kaydedilmiştir. Gönderilemeyen bildirim loglanır ve teslimi durdurmaz; istemci yeniden bağlanınca her şeyi yeniden okur.
 - `version`, olay taşıyorsa gönderilir; yoksa `null`'dır ve istemci her durumda yeniden okur. Modül içi olaylar sürüm artışından önce işlendiği için, onların dinleyicisinde üretilen olay kaydın yeni sürümünü ancak `Version + 1` olarak bilebilir.
-- Hub, oturum 1.2'de geldiğinde kimlik doğrulaması ister (`MapRealtime().RequireAuthorization()`); grup politikaları kullanıcıyı `Context.User`'dan alır.
+- Hub yalnızca oturumu olan kullanıcıyı kabul eder (`MapRealtime()` içinde `RequireAuthorization()`, 1.2); grup politikaları kullanıcıyı `Context.User`'dan alır. Identity modülü olmayan test uygulamaları, herkesi aynı test kullanıcısı sayan `SignedInTestUser` şemasını kullanır (`FestOS.Testing`).
 
 ## 12. Ön yüz platformu
 
@@ -478,3 +478,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-10-01 | v1.29 | 15. PR ikiye bölündü (15a izlenebilirlik, 15b DT-03 / DT-04). |
 | 2026-10-01 | v1.30 | Faz 1.2 eklemeleri: `WithoutIdempotencyKey`, `AuthenticationFailedException` (`401`), `ExcludeFromChangeHistory()` (sahiplenilmeyen tipler işlem geçmişinden muaf), tamsayı anahtarlar veritabanında üretilir (yalnızca çatı tipleri). |
 | 2026-10-01 | v1.31 | `RateLimitedException`: `429`, `rateLimited` ve tam saniyeye yuvarlanmış `Retry-After` (api §11). |
+| 2026-10-01 | v1.32 | Hub oturum ister; `SignedInTestUser` test şeması. Ön yüzde sorgu istemcisi `401`'i yeniden giriş diyaloğuna bildirir (`session-expiry`), Zod hata metinleri sunucunun doğrulama kodlarının metinlerini kullanır (`schema-messages`). |

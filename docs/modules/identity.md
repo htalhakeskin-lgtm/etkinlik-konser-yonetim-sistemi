@@ -1,6 +1,6 @@
 # Modül tasarımı: Identity — Kimlik ve erişim
 
-> **Durum:** v1.6 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.7 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 12](#12-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -132,6 +132,8 @@ Doğrulama: ad soyad zorunlu, en çok 200; e-posta geçerli biçim, en çok 320;
 | Roller ve yetkiler | `/admin/roles` | Salt okunur matris |
 | Uygulama kabuğu | — | Menü, üst çubuk, kullanıcı menüsü, sürüm ve bağlantı şeritleri, yeniden giriş diyaloğu ([ui §7.7](../standards/ui.md)) |
 
+Uygulama (PR 6a): Oturum isteyen ekranlar `_app` yerleşim rotasının altındadır; rota `/me`'yi bir kez yükler (`meQuery`, kendiliğinden eskimez), oturum yoksa `/login?redirect=…`'e, geçici şifrede `/set-password`'e gönderir. Dönüş adresi yalnızca uygulamanın kendi adresi olabilir. Oturum bitince sorgu istemcisi `401`'i bildirir ve kabuk yeniden giriş diyaloğunu açar; aynı kullanıcı dönünce diyalog kapanır ve sorgular yenilenir, başka kullanıcıda sayfa baştan yüklenir. Kendi `401`'ini bekleyen çağrılar (giriş, çıkış) `expectsUnauthorized` ile işaretlenir. Kilitli hesapta bitiş saati İstanbul saatiyle yazılır. Yeni şifre ekranında kural metni sabittir; P-04 ayarlanabildiği için en kısa uzunluk yalnızca ret yanıtındaki `minLength`'ten yazılır.
+
 Kabuk oturum açınca `RealtimeClient`'ı başlatır ve `ConnectionIndicator`'ı yerleştirir (building-blocks §12). Menü `/me`'deki yetkilerden üretilir; boş kalan grup gizlenir. `/` rolüne göre yönlendirir ([11 §4](../11-screens.md#4-başlangıç-ekranı)).
 
 ## 10. Hikaye ve kural eşlemesi
@@ -158,7 +160,8 @@ Kabuk oturum açınca `RealtimeClient`'ı başlatır ve `ConnectionIndicator`'ı
 | 4a | Giriş ve oturum | Oturum tablosu, `ITicketStore` ve önbelleği, veri koruma anahtarları, `ICurrentUser`, geçici şifre kapısı, `Login` / `Logout` / `GetMe` |
 | 4b | Girişin sertleştirilmesi | Hesap kilidi, giriş denemeleri, istek sınırı, zamanlama eşitliği, oturum temizliği |
 | 5 | Şifre değiştirme | Politika, yaygın şifre listesi, `ChangeMyPassword` |
-| 6 | Kabuk ve giriş ekranları | Giriş, yeni şifre, kabuk, menü, kullanıcı menüsü, yeniden giriş diyaloğu, kabukta anlık bildirim |
+| 6a | Giriş ekranları | Giriş, yeni şifre, oturum koruması, yeniden giriş diyaloğu, hub'ın oturum istemesi |
+| 6b | Kabuk | Menü, üst çubuk, kullanıcı menüsü, şifre değiştirme diyaloğu, kabukta anlık bildirim, rol başlangıç ekranı |
 | 7 | Kullanıcı yönetimi (sunucu) | Oluşturma, düzenleme, pasifleştirme, etkinleştirme, sıfırlama |
 | 8 | Kullanıcı yönetimi (ekran) | `/admin/users` |
 | 9 | Rol matrisi ekranı | `ListRoles`, `/admin/roles` |
@@ -203,3 +206,4 @@ Depo ve işlem geçmişi PR'ları kendi belgelerindedir; sıra Inventory'nin dep
 | 2026-10-01 | v1.4 | §4, §5.3, §6: giriş ve oturumun uygulama ayrıntıları (PR 4a); PR 4 ikiye bölündü; geçici şifre kapısı yetkisiz oturumla. |
 | 2026-10-01 | v1.5 | §6: girişin sertleştirilmesinin uygulama ayrıntıları (PR 4b). |
 | 2026-10-01 | v1.6 | §6: şifre değiştirmenin uygulama ayrıntıları (PR 5); P-04 en az 8. |
+| 2026-10-01 | v1.7 | §9: giriş ekranlarının uygulama ayrıntıları (PR 6a); PR 6 ikiye bölündü. |

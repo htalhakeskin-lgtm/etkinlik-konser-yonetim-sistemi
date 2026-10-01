@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Npgsql" />
     <PackageReference Include="Respawn" />
     <PackageReference Include="Testcontainers.PostgreSql" />

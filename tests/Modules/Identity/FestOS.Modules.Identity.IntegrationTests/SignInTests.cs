@@ -105,6 +105,20 @@ public sealed class SignInTests(IdentityFixture fixture) : IAsyncLifetime
     }
 
     [Fact]
+    public async Task NotificationHub_AcceptsOnlyASignedInUser()
+    {
+        await AddUserAsync("ayse@example.com", [Role.BookingManager], mustChangePassword: false);
+        var negotiate = new Uri("/hubs/notifications/negotiate?negotiateVersion=1", UriKind.Relative);
+
+        using HttpResponseMessage anonymous = await Client.PostAsync(negotiate, content: null, Cancellation);
+        (await LoginAsync("ayse@example.com", Password)).Dispose();
+        using HttpResponseMessage signedIn = await Client.PostAsync(negotiate, content: null, Cancellation);
+
+        anonymous.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        signedIn.StatusCode.ShouldBe(HttpStatusCode.OK);
+    }
+
+    [Fact]
     public async Task Logout_EndsTheSessionOnTheServer()
     {
         await AddUserAsync("ayse@example.com", [Role.BookingManager], mustChangePassword: false);

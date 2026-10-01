@@ -3,6 +3,7 @@ using System.Security.Claims;
 using FestOS.BuildingBlocks.Infrastructure.Http;
 using FestOS.BuildingBlocks.Infrastructure.Messaging;
 using FestOS.BuildingBlocks.Infrastructure.Realtime;
+using FestOS.Testing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR;
@@ -30,8 +31,11 @@ public sealed class NotificationsHubTests : IAsyncLifetime
         builder.AddHttpPlatform();
         builder.AddRealtime();
         builder.Services.AddRealtimeGroup<ThingsPolicy>();
+        SignedInTestUser.Register(builder.Services);
         _app = builder.Build();
         _app.UseHttpPlatform();
+        _app.UseAuthentication();
+        _app.UseAuthorization();
         _app.MapRealtime();
         await _app.StartAsync(Cancellation);
 

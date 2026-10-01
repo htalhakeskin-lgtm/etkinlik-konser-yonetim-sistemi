@@ -3,6 +3,7 @@
     "name": "FestOS"
   },
   "home": {
+    "welcome": "Hoş geldiniz, {{name}}.",
     "placeholder": "Uygulamanın iskeleti hazır. Ekranlar sonraki adımlarda eklenecek."
   },
   "versionBanner": {

@@ -2,6 +2,7 @@ using FestOS.BuildingBlocks.Application.Users;
 using FestOS.BuildingBlocks.Infrastructure.Http;
 using FestOS.BuildingBlocks.Infrastructure.Modules;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
+using FestOS.BuildingBlocks.Infrastructure.Realtime;
 using FestOS.Modules.Audit.Infrastructure;
 using FestOS.Modules.Identity.Infrastructure;
 using FestOS.Testing;
@@ -62,6 +63,7 @@ public sealed class IdentityFixture : IAsyncLifetime
         builder.Configuration.AddInMemoryCollection(_settings);
         builder.Services.AddSingleton<TimeProvider>(Time);
         builder.AddHttpPlatform();
+        builder.AddRealtime();
         builder.AddModules(new AuditModuleDefinition(), new IdentityModuleDefinition());
 
         WebApplication app = builder.Build();
@@ -70,6 +72,7 @@ public sealed class IdentityFixture : IAsyncLifetime
         app.UseCsrfProtection();
         app.UseAuthorization();
         app.MapAntiforgeryToken();
+        app.MapRealtime();
         app.MapModules();
         await app.StartAsync(TestContext.Current.CancellationToken);
         return app;
