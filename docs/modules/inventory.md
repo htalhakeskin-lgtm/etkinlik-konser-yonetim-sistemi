@@ -1,6 +1,6 @@
 # Modül tasarımı: Inventory — Stok ve depo
 
-> **Durum:** v1.2 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.3 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 (depolar); stok 1.5'te, depo işlemleri 1.7'de bu belgeye eklenir ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 8](#8-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -62,6 +62,8 @@ Inventory modülünün fiziksel tasarımıdır. Modül üç adımda yazılır; b
 | 1b | Depolar (sunucu) | Uç noktalar, BR-SYS-013 (son aktif depo), `WarehouseDeactivated`, `IWarehouseDirectory` |
 | 2 | Depolar ekranı | `/admin/warehouses` |
 
+**Uygulama (PR 2):** `/admin/warehouses` kullanıcılar ekranının kalıbını izler: arama, durum süzgeci, sıralama ve sayfa adreste; satır sonundaki "⋯" menüsü yalnızca yetkili işlemleri gösterir; pasifleştirme onay ister, etkinleştirme istemez. Alınmış ad (BR-SYS-016) ad alanının altında, son aktif depo reddi (BR-SYS-013) kısa bildirimle gösterilir. Menüde "Yönetim › Depolar" olarak yer alır; depoları görme her rolde olduğundan menü öğesi herkese görünür, yönetim düğmeleri yalnızca sistem yöneticisine. Ön yüz kodu `modules/inventory`, metinler `locales/tr/inventory.json`'dadır.
+
 ## 8. Kararlar
 
 | No | Konu | Karar | Gerekçe |
@@ -80,3 +82,4 @@ Bu belgede proje sahibine soru yoktur.
 | 2026-10-01 | v1.0 | Onaylandı. |
 | 2026-10-01 | v1.1 | §3: PR 1a'nın uygulama ayrıntıları (ortak pasifleştirme kolonları, ad için arama anahtarı); §7: PR 1 ikiye bölündü. |
 | 2026-10-01 | v1.2 | §6: depo uçlarının uygulama ayrıntıları (PR 1b). |
+| 2026-10-01 | v1.3 | §7: depolar ekranının uygulama ayrıntıları (PR 2). |

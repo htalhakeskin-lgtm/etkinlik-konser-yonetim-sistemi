@@ -1,0 +1,49 @@
+{
+  "warehouses": {
+    "title": "Depolar",
+    "description": "Şirketin depoları; stok ve depo işlemleri bir depoya bağlıdır.",
+    "add": "Depo ekle",
+    "search": "Depo adı ara",
+    "empty": "Aramanıza uyan depo yok.",
+    "forbidden": "Bu ekranı görme yetkiniz yok.",
+    "columns": {
+      "name": "Ad",
+      "city": "Şehir",
+      "address": "Adres",
+      "status": "Durum",
+      "actions": "İşlemler"
+    },
+    "status": { "active": "Aktif", "inactive": "Pasif" },
+    "filters": {
+      "statusLabel": "Durum",
+      "status": { "active": "Aktif", "inactive": "Pasif", "all": "Tümü" }
+    },
+    "actions": {
+      "open": "{{name}} için işlemler",
+      "edit": "Düzenle",
+      "deactivate": "Pasifleştir",
+      "activate": "Etkinleştir"
+    },
+    "confirm": {
+      "deactivateTitle": "{{name}} pasifleştirilsin mi?",
+      "deactivateDescription": "Depo yeni işlemlerde seçilemez; mevcut kayıtlarda adı görünmeye devam eder. Bu depoya bağlı depo sorumlularının ataması kaldırılır. Gerekirse yeniden etkinleştirebilirsiniz."
+    },
+    "done": {
+      "created": "Depo oluşturuldu.",
+      "saved": "Depo kaydedildi.",
+      "deactivated": "Depo pasifleştirildi.",
+      "activated": "Depo etkinleştirildi."
+    }
+  },
+  "warehouseForm": {
+    "createTitle": "Depo ekle",
+    "editTitle": "Depoyu düzenle",
+    "required": "* zorunlu alan",
+    "name": "Ad",
+    "city": "Şehir",
+    "address": "Adres",
+    "cancel": "Vazgeç",
+    "create": "Depoyu oluştur",
+    "save": "Kaydet"
+  }
+}
