@@ -1,5 +1,7 @@
 using System.Text.RegularExpressions;
+using FestOS.Modules.Identity.Application;
 using FestOS.Modules.Identity.Domain.Users;
+using FestOS.Modules.Identity.Infrastructure;
 using FestOS.Modules.Identity.Infrastructure.Passwords;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -30,6 +32,27 @@ public sealed partial class PasswordTests
         hasher.Verify(hash, "doğru at pil zımba", out bool needsRehash).ShouldBeTrue();
         needsRehash.ShouldBeFalse();
         hasher.Verify(hash, "doğru at pil zimba", out _).ShouldBeFalse();
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    public void Verify_WithoutAHash_NeverMatches(string? hash)
+    {
+        new PasswordHasher().Verify(hash, "", out bool needsRehash).ShouldBeFalse();
+        needsRehash.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Options_OutsideTheirLimits_AreRejectedAtStartup()
+    {
+        var validator = new IdentityModuleOptionsValidator();
+
+        validator.Validate(null, new IdentityModuleOptions()).Succeeded.ShouldBeTrue();
+        validator.Validate(null, new IdentityModuleOptions { LockoutMaxFailedAttempts = 0 }).Failed.ShouldBeTrue();
+        validator
+            .Validate(null, new IdentityModuleOptions { SessionIdleTimeout = TimeSpan.Zero })
+            .Failed.ShouldBeTrue();
     }
 
     [Fact]

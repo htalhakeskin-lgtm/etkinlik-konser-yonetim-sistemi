@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="FestOS.Modules.Identity.UnitTests" />
+    <InternalsVisibleTo Include="FestOS.Modules.Identity.IntegrationTests" />
   </ItemGroup>
 
   <ItemGroup>

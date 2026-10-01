@@ -20,6 +20,9 @@ public static class ErrorCodes
     /// <summary>A request with the same idempotency key is still running.</summary>
     public const string IdempotencyKeyInProgress = "idempotencyKeyInProgress";
 
+    /// <summary>Too many requests of one kind.</summary>
+    public const string RateLimited = "rateLimited";
+
     /// <summary>
     /// The code of an expected outcome: the rule number for a business rule violation, a technical
     /// code otherwise. Returns <see langword="null"/> for unexpected exceptions.
@@ -34,6 +37,7 @@ public static class ErrorCodes
             IdempotencyKeyReusedException => IdempotencyKeyReused,
             IdempotencyKeyInProgressException => IdempotencyKeyInProgress,
             AuthenticationFailedException failed => failed.Code,
+            RateLimitedException => RateLimited,
             _ => null,
         };
 }

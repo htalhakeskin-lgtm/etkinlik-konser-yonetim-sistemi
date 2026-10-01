@@ -1,7 +1,9 @@
 using FestOS.BuildingBlocks.Application.Messaging;
+using FestOS.BuildingBlocks.Infrastructure.Jobs;
 using FestOS.BuildingBlocks.Infrastructure.Modules;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
 using FestOS.Modules.Identity.Application;
+using FestOS.Modules.Identity.Application.Authentication;
 using FestOS.Modules.Identity.Application.Passwords;
 using FestOS.Modules.Identity.Application.Users;
 using FestOS.Modules.Identity.Infrastructure.Authentication;
@@ -11,6 +13,7 @@ using FestOS.Modules.Identity.Infrastructure.Users;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace FestOS.Modules.Identity.Infrastructure;
 
@@ -37,7 +40,17 @@ public sealed class IdentityModuleDefinition : IModuleDefinition
     {
         builder.AddModuleDbContext<IdentityDbContext>(ModuleName, SchemaName);
         builder.Services.AddHandlersFrom(typeof(IdentityPermissions).Assembly);
+        builder
+            .Services.AddOptions<IdentityModuleOptions>()
+            .Bind(builder.Configuration.GetSection(IdentityModuleOptions.SectionName))
+            .ValidateOnStart();
+        builder.Services.AddSingleton<IValidateOptions<IdentityModuleOptions>, IdentityModuleOptionsValidator>();
+        builder.Services.AddSingleton(services => services.GetRequiredService<IOptions<IdentityModuleOptions>>().Value);
         builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<ILoginAttemptLog, LoginAttemptLog>();
+        builder.Services.AddSingleton<LoginRateLimiter>();
+        builder.Services.AddScheduledJob<SessionsCleanupJob>();
+        builder.Services.AddScheduledJob<LoginAttemptsCleanupJob>();
         builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
         builder.Services.AddSingleton<ITemporaryPasswordGenerator, TemporaryPasswordGenerator>();
         builder.Services.AddHandlersFrom(typeof(IdentityModuleDefinition).Assembly);

@@ -1,5 +1,6 @@
 using FestOS.BuildingBlocks.Application.Users;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
+using FestOS.Modules.Identity.Application;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
@@ -48,7 +49,6 @@ internal static class SessionAuthentication
                     ? CookieSecurePolicy.SameAsRequest
                     : CookieSecurePolicy.Always;
                 options.Cookie.Path = "/";
-                options.ExpireTimeSpan = SessionTicketStore.AbsoluteTimeout;
                 options.SlidingExpiration = false;
 
                 // An API answers 401 and 403 with Problem Details; it never redirects to a login page (api §11).
@@ -65,6 +65,12 @@ internal static class SessionAuthentication
             });
         builder
             .Services.AddOptions<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme)
-            .Configure<SessionTicketStore>((options, store) => options.SessionStore = store);
+            .Configure<SessionTicketStore, IdentityModuleOptions>(
+                (options, store, identity) =>
+                {
+                    options.SessionStore = store;
+                    options.ExpireTimeSpan = identity.SessionAbsoluteLifetime;
+                }
+            );
     }
 }

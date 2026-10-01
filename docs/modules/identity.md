@@ -1,6 +1,6 @@
 # Modül tasarımı: Identity — Kimlik ve erişim
 
-> **Durum:** v1.4 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.5 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 12](#12-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -92,6 +92,7 @@ Testler: rollerdeki her kod katalogda vardır; katalogdaki her yetki en az bir r
 | Geçici şifre | 16 karakter, karıştırılmayan harf ve rakamlardan (`0/O`, `1/l/I` yok), 4'lü gruplar halinde; kriptografik rastgele. Yalnızca oluşturan yanıtta bir kez döner (BR-SYS-006). |
 | Şifre değişince | Kullanıcının diğer tüm oturumları silinir; bu oturum kalır (BR-SYS-007). Geçici şifreden yeni şifreye geçişte mevcut şifre istenmez; oturum onu zaten kanıtlamıştır. |
 | Uygulama (PR 4a) | `SessionTicketStore` (`ITicketStore`): her istekte asıl kullanıcı oturum satırından yeniden kurulur. Önbellekteki kopya oturumun sınırlarını taşır, böylece süresi dolmuş oturum önbellekten de geçmez. Veri koruma anahtarları ayrı ve sade bir bağlamla (`DataProtectionKeyStore`) yazılır, çünkü ASP.NET'in anahtar yöneticisi senkron kaydeder ve modül bağlamları bunu reddeder; tablo Identity'nin migration'ındadır. Giriş, tekrar güvenliği anahtarından muaftır (`WithoutIdempotencyKey`): saklanan bir giriş yanıtı, hesap sonradan kilitlense ya da pasifleşse de tekrar oynatılabilirdi; OpenAPI'de `x-festos-no-idempotency-key` ile belirtilir ve AT-15 bunu tanır. Hatalı giriş BuildingBlocks'taki `AuthenticationFailedException` ile `401` döner. |
+| Uygulama (PR 4b) | Giriş işlemi reddi istisna olarak değil sonuç olarak döner (`SignInResult`); böylece hatalı deneme sayacı ve deneme kaydı reddedilen istekte de işlemle birlikte kaydedilir. Kilidi açan deneme hemen `BR-SYS-005` ile yanıtlanır; kilitliyken yapılan denemeler sayılmaz ve kilidi uzatmaz. Sayaç kullanıcı satırında olduğundan hatalı giriş kullanıcının sürümünü artırır; aynı anda açık bir düzenleme formu `412` alabilir, bu kabul edildi. İstek sınırı uçta, zincirlenmiş bir `PartitionedRateLimiter` ile uygulanır (adres ve e-posta), çünkü e-posta gövdededir ve ara katman gövdeyi okuyamaz. Adres `RemoteIpAddress`'tir; ters vekil arkasında doğru adres için yönlendirme başlıkları kurulumda (1.9) eklenir. Süreler ve kilit `Modules:Identity` bölümünden okunur ([configuration §5](../standards/configuration.md)). Temizlik işleri §8'deki gibidir: `sessions-cleanup` saatlik, `login-attempts-cleanup` gecelik 05:15'te (İstanbul saati). |
 | `ICurrentUser` | Identity'nin Infrastructure'ı uygular: oturumdan kullanıcı kimliği, adı, yetkileri ve depo atamaları. İsteğin dışındaki işler `SystemUser`'dır. Bu, 1.1'den kalan `ICurrentUser` kaydı sorusunu kapatır. |
 
 ## 7. Uç noktalar
@@ -199,3 +200,4 @@ Depo ve işlem geçmişi PR'ları kendi belgelerindedir; sıra Inventory'nin dep
 | 2026-10-01 | v1.2 | ID-10: roller ve depo atamaları `users` tablosunda dizi kolonları; pasifleştirme ortak kalıpla (PR 2). |
 | 2026-10-01 | v1.3 | ID-11 sistem kullanıcısının tohumlanması; `create-admin` komutu (PR 3). |
 | 2026-10-01 | v1.4 | §4, §5.3, §6: giriş ve oturumun uygulama ayrıntıları (PR 4a); PR 4 ikiye bölündü; geçici şifre kapısı yetkisiz oturumla. |
+| 2026-10-01 | v1.5 | §6: girişin sertleştirilmesinin uygulama ayrıntıları (PR 4b). |

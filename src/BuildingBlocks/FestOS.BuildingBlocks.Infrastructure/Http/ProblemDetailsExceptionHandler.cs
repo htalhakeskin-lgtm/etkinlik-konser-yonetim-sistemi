@@ -1,3 +1,4 @@
+using System.Globalization;
 using FestOS.BuildingBlocks.Application.Errors;
 using FestOS.BuildingBlocks.Domain.Rules;
 using Microsoft.AspNetCore.Diagnostics;
@@ -80,6 +81,13 @@ internal sealed partial class ProblemDetailsExceptionHandler(
                 failed.Message,
                 failed.Parameters
             ),
+            RateLimitedException => Problem(
+                StatusCodes.Status429TooManyRequests,
+                "rate-limited",
+                "Too many requests",
+                ErrorCodes.RateLimited,
+                exception.Message
+            ),
             IdempotencyKeyReusedException => Problem(
                 StatusCodes.Status422UnprocessableEntity,
                 "idempotency-key-reused",
@@ -107,6 +115,12 @@ internal sealed partial class ProblemDetailsExceptionHandler(
         if (problem.Status == StatusCodes.Status500InternalServerError)
         {
             LogUnexpected(logger, exception, httpContext.Request.Method, httpContext.Request.Path);
+        }
+
+        if (exception is RateLimitedException limited)
+        {
+            httpContext.Response.Headers.RetryAfter = Math.Ceiling(limited.RetryAfter.TotalSeconds)
+                .ToString(CultureInfo.InvariantCulture);
         }
 
         httpContext.Response.StatusCode = problem.Status!.Value;
