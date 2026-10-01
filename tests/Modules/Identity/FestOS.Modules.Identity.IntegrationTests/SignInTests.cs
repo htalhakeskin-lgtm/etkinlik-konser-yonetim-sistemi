@@ -316,7 +316,7 @@ public sealed class SignInTests(IdentityFixture fixture) : IAsyncLifetime
         await AddSessionAsync(user, lastSeenAt: now.AddHours(-12), expiresAt: now.AddHours(1));
         await AddSessionAsync(user, lastSeenAt: now, expiresAt: now);
 
-        await RunJobAsync("session-cleanup");
+        await RunJobAsync("sessions-cleanup");
 
         await using AsyncServiceScope scope = fixture.Services.CreateAsyncScope();
         (
@@ -352,7 +352,7 @@ public sealed class SignInTests(IdentityFixture fixture) : IAsyncLifetime
             await context.SaveChangesAsync(Cancellation);
         }
 
-        await RunJobAsync("login-attempt-cleanup");
+        await RunJobAsync("login-attempts-cleanup");
 
         await using AsyncServiceScope check = fixture.Services.CreateAsyncScope();
         (

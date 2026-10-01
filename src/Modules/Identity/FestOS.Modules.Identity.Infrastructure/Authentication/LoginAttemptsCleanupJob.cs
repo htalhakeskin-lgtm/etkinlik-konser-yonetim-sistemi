@@ -5,14 +5,14 @@ using Microsoft.Extensions.DependencyInjection;
 namespace FestOS.Modules.Identity.Infrastructure.Authentication;
 
 /// <summary>Deletes sign-in attempts older than 90 days, since they hold personal data (security §10).</summary>
-internal sealed class LoginAttemptCleanupJob(TimeProvider timeProvider) : IScheduledJob
+internal sealed class LoginAttemptsCleanupJob(TimeProvider timeProvider) : IScheduledJob
 {
     /// <summary>How long an attempt is kept.</summary>
     public static readonly TimeSpan RetentionPeriod = TimeSpan.FromDays(90);
 
     private const int BatchSize = 1000;
 
-    public string Name => "login-attempt-cleanup";
+    public string Name => "login-attempts-cleanup";
 
     public string ModuleName => IdentityModuleDefinition.ModuleName;
 

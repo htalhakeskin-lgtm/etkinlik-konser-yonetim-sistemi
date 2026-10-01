@@ -9,14 +9,14 @@ namespace FestOS.Modules.Identity.Infrastructure.Sessions;
 /// Deletes the sessions that have ended (BR-SYS-008). An ended session is refused anyway when its cookie
 /// comes back; this only keeps the table small.
 /// </summary>
-internal sealed class SessionCleanupJob(TimeProvider timeProvider, IdentityModuleOptions options) : IScheduledJob
+internal sealed class SessionsCleanupJob(TimeProvider timeProvider, IdentityModuleOptions options) : IScheduledJob
 {
-    public string Name => "session-cleanup";
+    public string Name => "sessions-cleanup";
 
     public string ModuleName => IdentityModuleDefinition.ModuleName;
 
-    // Nightly, in Istanbul time, after the platform's cleanups.
-    public JobSchedule Schedule { get; } = JobSchedule.Cron("0 5 * * *");
+    // Hourly, so the table holds little more than the open sessions (identity §8).
+    public JobSchedule Schedule { get; } = JobSchedule.Every(TimeSpan.FromHours(1));
 
     public async Task RunAsync(IServiceProvider services, CancellationToken cancellationToken)
     {

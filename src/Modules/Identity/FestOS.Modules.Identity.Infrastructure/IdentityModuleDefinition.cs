@@ -49,8 +49,8 @@ public sealed class IdentityModuleDefinition : IModuleDefinition
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<ILoginAttemptLog, LoginAttemptLog>();
         builder.Services.AddSingleton<LoginRateLimiter>();
-        builder.Services.AddScheduledJob<SessionCleanupJob>();
-        builder.Services.AddScheduledJob<LoginAttemptCleanupJob>();
+        builder.Services.AddScheduledJob<SessionsCleanupJob>();
+        builder.Services.AddScheduledJob<LoginAttemptsCleanupJob>();
         builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
         builder.Services.AddSingleton<ITemporaryPasswordGenerator, TemporaryPasswordGenerator>();
         builder.Services.AddHandlersFrom(typeof(IdentityModuleDefinition).Assembly);
