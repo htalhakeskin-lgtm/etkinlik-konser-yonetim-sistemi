@@ -449,7 +449,8 @@
         "type": "Project",
         "dependencies": {
           "FestOS.BuildingBlocks.Application": "[1.0.0, )",
-          "FestOS.Modules.Identity.Domain": "[1.0.0, )"
+          "FestOS.Modules.Identity.Domain": "[1.0.0, )",
+          "FestOS.Modules.Inventory.Contracts": "[1.0.0, )"
         }
       },
       "festos.modules.identity.domain": {
@@ -464,6 +465,33 @@
           "FestOS.BuildingBlocks.Infrastructure": "[1.0.0, )",
           "FestOS.Modules.Identity.Application": "[1.0.0, )",
           "Microsoft.AspNetCore.DataProtection.EntityFrameworkCore": "[10.0.12, )"
+        }
+      },
+      "festos.modules.inventory.application": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Application": "[1.0.0, )",
+          "FestOS.Modules.Inventory.Contracts": "[1.0.0, )",
+          "FestOS.Modules.Inventory.Domain": "[1.0.0, )"
+        }
+      },
+      "festos.modules.inventory.contracts": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Contracts": "[1.0.0, )"
+        }
+      },
+      "festos.modules.inventory.domain": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Domain": "[1.0.0, )"
+        }
+      },
+      "festos.modules.inventory.infrastructure": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Infrastructure": "[1.0.0, )",
+          "FestOS.Modules.Inventory.Application": "[1.0.0, )"
         }
       },
       "festos.modules.sample": {

@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\Modules\Inventory\FestOS.Modules.Inventory.Infrastructure\FestOS.Modules.Inventory.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

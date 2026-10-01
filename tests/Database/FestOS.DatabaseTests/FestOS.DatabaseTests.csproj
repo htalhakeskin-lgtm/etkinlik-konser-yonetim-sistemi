@@ -7,6 +7,7 @@
     <ProjectReference Include="..\..\..\src\BuildingBlocks\FestOS.BuildingBlocks.Infrastructure\FestOS.BuildingBlocks.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\src\Modules\Audit\FestOS.Modules.Audit.Infrastructure\FestOS.Modules.Audit.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\src\Modules\Identity\FestOS.Modules.Identity.Infrastructure\FestOS.Modules.Identity.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\src\Modules\Inventory\FestOS.Modules.Inventory.Infrastructure\FestOS.Modules.Inventory.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Testing\FestOS.Testing\FestOS.Testing.csproj" />
     <ProjectReference Include="..\..\Testing\FestOS.Modules.Sample\FestOS.Modules.Sample.csproj" />
   </ItemGroup>

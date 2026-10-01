@@ -1,6 +1,7 @@
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
 using FestOS.Modules.Audit.Infrastructure;
 using FestOS.Modules.Identity.Infrastructure;
+using FestOS.Modules.Inventory.Infrastructure;
 using FestOS.Modules.Sample.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +17,12 @@ internal static class ModuleContexts
     public const string ModelOnlyConnectionString = "Host=design-time.invalid;Database=festos";
 
     public static IReadOnlyList<string> Schemas { get; } =
-    [AuditModuleDefinition.SchemaName, IdentityModuleDefinition.SchemaName, SampleModuleDefinition.SchemaName];
+    [
+        AuditModuleDefinition.SchemaName,
+        IdentityModuleDefinition.SchemaName,
+        InventoryModuleDefinition.SchemaName,
+        SampleModuleDefinition.SchemaName,
+    ];
 
     /// <summary>New passwords for the migrator and every module role, for a bootstrap.</summary>
     public static Dictionary<string, string> NewPasswords() =>
@@ -28,6 +34,7 @@ internal static class ModuleContexts
         [
             Create<AuditDbContext>(connectionString, AuditModuleDefinition.SchemaName, options => new(options)),
             Create<IdentityDbContext>(connectionString, IdentityModuleDefinition.SchemaName, options => new(options)),
+            Create<InventoryDbContext>(connectionString, InventoryModuleDefinition.SchemaName, options => new(options)),
             Create<SampleDbContext>(connectionString, SampleModuleDefinition.SchemaName, options => new(options)),
         ];
 
