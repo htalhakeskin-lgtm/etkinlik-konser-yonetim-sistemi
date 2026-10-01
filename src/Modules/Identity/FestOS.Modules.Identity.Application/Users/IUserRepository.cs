@@ -8,6 +8,9 @@ public interface IUserRepository
     /// <summary>The user with the identifier, or <see langword="null"/>.</summary>
     Task<User?> FindAsync(UserId id, CancellationToken cancellationToken);
 
+    /// <summary>The users assigned to the warehouse.</summary>
+    Task<IReadOnlyList<User>> ListWithWarehouseAsync(Guid warehouseId, CancellationToken cancellationToken);
+
     /// <summary>Adds a new user.</summary>
     void Add(User user);
 

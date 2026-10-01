@@ -1,6 +1,6 @@
 # Modül tasarımı: Identity — Kimlik ve erişim
 
-> **Durum:** v1.13 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.14 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 12](#12-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -125,6 +125,8 @@ Doğrulama: ad soyad zorunlu, en çok 200; e-posta geçerli biçim, en çok 320;
 - **Dinlediği:** `WarehouseDeactivated` (Inventory). Depoya atanmış kullanıcıların atamaları kaldırılır. Bu, bir depo sorumlusunun son deposunu kaldırıyorsa kullanıcı aktif kalır; sistem yöneticisine kullanıcının yeni depo beklediği kullanıcı listesinde bir uyarıyla gösterilir (BR-SYS-014 yalnızca kayıtta uygulanır; olay sonrasında uyarı yeterlidir).
 - **Zamanlanmış iş:** `login-attempts-cleanup` (gecelik, 90 gün) ve `sessions-cleanup` (saatlik, süresi dolan oturumlar).
 
+**Uygulama (PR 10):** Kullanıcı oluşturulurken ve düzenlenirken depo sorumlusunun depoları `IWarehouseDirectory` ile Inventory'ye sorulur; var olmayan ya da pasif bir depo `422 BR-SYS-014` döner ve `params.warehouseIds` reddedilen depoları söyler. Depolar yalnızca depo sorumlusu rolüne aittir; başka rollerde kayıtta boşaltılır. `WarehouseDeactivated` dinleyicisi (`RemoveWarehouseOnWarehouseDeactivatedHandler`) depoyu kullanıcılardan kaldırır ve açık oturumlarını aynı işlemde günceller; son deposu giden depo sorumlusu aktif kalır ve listede "Depo bekliyor" rozetiyle görünür (`needsWarehouse`, ID-09). Formda depo sorumlusu rolü seçilince aktif depolar listelenir ve en az biri seçilmelidir.
+
 ## 9. Ekranlar
 
 | Ekran | Adres | Not |
@@ -227,3 +229,4 @@ Depo ve işlem geçmişi PR'ları kendi belgelerindedir; sıra Inventory'nin dep
 | 2026-10-01 | v1.11 | §9: kullanıcılar listesinin uygulama ayrıntıları (PR 8a); PR 8 ikiye bölündü. |
 | 2026-10-01 | v1.12 | §9: kullanıcı yönetimi diyaloglarının uygulama ayrıntıları (PR 8b). |
 | 2026-10-01 | v1.13 | §9: rol matrisinin uygulama ayrıntıları (PR 9). |
+| 2026-10-01 | v1.14 | §8: depo atamalarının uygulama ayrıntıları (PR 10). |

@@ -453,7 +453,8 @@
         "dependencies": {
           "FestOS.BuildingBlocks.Application": "[1.0.0, )",
           "FestOS.Modules.Identity.Domain": "[1.0.0, )",
-          "FestOS.Modules.Inventory.Contracts": "[1.0.0, )"
+          "FestOS.Modules.Inventory.Contracts": "[1.0.0, )",
+          "FestOS.Modules.Inventory.IntegrationEvents": "[1.0.0, )"
         }
       },
       "festos.modules.identity.domain": {

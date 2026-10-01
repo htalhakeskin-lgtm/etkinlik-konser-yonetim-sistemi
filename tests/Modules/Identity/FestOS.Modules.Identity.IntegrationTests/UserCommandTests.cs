@@ -2,11 +2,16 @@ using System.Globalization;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using FestOS.BuildingBlocks.Application.Messaging;
 using FestOS.BuildingBlocks.Infrastructure.Auditing;
+using FestOS.BuildingBlocks.Infrastructure.Messaging;
 using FestOS.Modules.Audit.Infrastructure;
 using FestOS.Modules.Identity.Application.Passwords;
 using FestOS.Modules.Identity.Domain.Users;
 using FestOS.Modules.Identity.Infrastructure;
+using FestOS.Modules.Inventory.Application.Warehouses;
+using FestOS.Modules.Inventory.Domain.Warehouses;
+using FestOS.Modules.Inventory.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -85,17 +90,24 @@ public sealed class UserCommandTests(IdentityFixture fixture) : IAsyncLifetime
 
     [Fact]
     [Trait("Rule", "BR-SYS-014")]
-    public async Task Create_RefusesAWarehouseManagerWithoutAWarehouse()
+    public async Task Create_RefusesAWarehouseManagerWithoutAnActiveWarehouse()
     {
-        using HttpResponseMessage refused = await CreateAsync("ali@example.com", ["warehouseManager"], []);
-        using HttpResponseMessage accepted = await CreateAsync(
+        Guid active = await AddWarehouseAsync("Merkez Depo");
+        Guid inactive = await AddWarehouseAsync("Kuzey Depo", deactivated: true);
+
+        using HttpResponseMessage withNone = await CreateAsync("ali@example.com", ["warehouseManager"], []);
+        using HttpResponseMessage withInactive = await CreateAsync("ali@example.com", ["warehouseManager"], [inactive]);
+        using HttpResponseMessage withUnknown = await CreateAsync(
             "ali@example.com",
             ["warehouseManager"],
             [Guid.CreateVersion7()]
         );
+        using HttpResponseMessage accepted = await CreateAsync("ali@example.com", ["warehouseManager"], [active]);
 
-        refused.StatusCode.ShouldBe(HttpStatusCode.UnprocessableEntity);
-        (await CodeOfAsync(refused)).ShouldBe("BR-SYS-014");
+        withNone.StatusCode.ShouldBe(HttpStatusCode.UnprocessableEntity);
+        (await CodeOfAsync(withNone)).ShouldBe("BR-SYS-014");
+        (await CodeOfAsync(withInactive)).ShouldBe("BR-SYS-014");
+        (await CodeOfAsync(withUnknown)).ShouldBe("BR-SYS-014");
         accepted.StatusCode.ShouldBe(HttpStatusCode.Created);
     }
 
@@ -213,6 +225,30 @@ public sealed class UserCommandTests(IdentityFixture fixture) : IAsyncLifetime
     }
 
     [Fact]
+    public async Task ADeactivatedWarehouse_LeavesItsManagers_WhoWaitForANewOne()
+    {
+        Guid warehouse = await AddWarehouseAsync("Merkez Depo");
+        using HttpResponseMessage created = await CreateAsync("ali@example.com", ["warehouseManager"], [warehouse]);
+        var user = Guid.Parse(
+            (await created.Content.ReadFromJsonAsync<JsonElement>(Cancellation)).GetProperty("id").GetString()!
+        );
+
+        await DeactivateWarehouseAsync(warehouse);
+        await fixture
+            .Services.GetRequiredService<OutboxProcessor>()
+            .ProcessBatchAsync(InventoryModuleDefinition.ModuleName, Cancellation);
+
+        using HttpResponseMessage listed = await Admin.GetAsync(
+            new Uri("/api/v1/users?role=warehouseManager", UriKind.Relative),
+            Cancellation
+        );
+        JsonElement row = (await listed.Content.ReadFromJsonAsync<JsonElement>(Cancellation)).GetProperty("items")[0];
+        row.GetProperty("id").GetString().ShouldBe(user.ToString());
+        row.GetProperty("isActive").GetBoolean().ShouldBeTrue();
+        row.GetProperty("needsWarehouse").GetBoolean().ShouldBeTrue();
+    }
+
+    [Fact]
     [Trait("Rule", "BR-SYS-002")]
     public async Task ManagingUsers_NeedsTheMatchingPermissions()
     {
@@ -239,6 +275,31 @@ public sealed class UserCommandTests(IdentityFixture fixture) : IAsyncLifetime
 
         created.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
         deactivated.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+    }
+
+    private async Task<Guid> AddWarehouseAsync(string name, bool deactivated = false)
+    {
+        await using AsyncServiceScope scope = fixture.Services.CreateAsyncScope();
+        InventoryDbContext context = scope.ServiceProvider.GetRequiredService<InventoryDbContext>();
+        var warehouse = Warehouse.Create(name, "İstanbul", "Depo Sk. 4");
+        if (deactivated)
+        {
+            warehouse.Deactivate(Guid.CreateVersion7(), fixture.Time.GetUtcNow());
+        }
+
+        context.Warehouses.Add(warehouse);
+        await context.SaveChangesAsync(Cancellation);
+        return warehouse.Id.Value;
+    }
+
+    // Through the command, so the deactivation reaches the outbox as it does in the application.
+    private async Task DeactivateWarehouseAsync(Guid warehouse)
+    {
+        await AddWarehouseAsync("Yedek Depo");
+        await using AsyncServiceScope scope = fixture.Services.CreateAsyncScope();
+        await scope
+            .ServiceProvider.GetRequiredService<ICommandHandler<DeactivateWarehouseCommand, bool>>()
+            .HandleAsync(new DeactivateWarehouseCommand(WarehouseId.From(warehouse)), Cancellation);
     }
 
     private Task<HttpResponseMessage> CreateAsync(string email, string[] roles, Guid[] warehouseIds) =>

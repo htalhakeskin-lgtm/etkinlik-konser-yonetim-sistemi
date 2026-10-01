@@ -1,17 +1,20 @@
 using FestOS.BuildingBlocks.Application.Messaging;
 using FestOS.Modules.Identity.Application.Passwords;
 using FestOS.Modules.Identity.Domain.Users;
+using FestOS.Modules.Inventory.Contracts;
 
 namespace FestOS.Modules.Identity.Application.Users;
 
 internal sealed class CreateUserHandler(
     IUserRepository users,
     IPasswordHasher hasher,
-    ITemporaryPasswordGenerator passwords
+    ITemporaryPasswordGenerator passwords,
+    IWarehouseDirectory warehouses
 ) : ICommandHandler<CreateUserCommand, UserCreated>
 {
-    public Task<UserCreated> HandleAsync(CreateUserCommand command, CancellationToken cancellationToken)
+    public async Task<UserCreated> HandleAsync(CreateUserCommand command, CancellationToken cancellationToken)
     {
+        await warehouses.EnsureActiveAsync(command.Roles, command.WarehouseIds, cancellationToken);
         string temporaryPassword = passwords.Generate();
         var user = User.Create(
             command.FullName,
@@ -21,6 +24,6 @@ internal sealed class CreateUserHandler(
             hasher.Hash(temporaryPassword)
         );
         users.Add(user);
-        return Task.FromResult(new UserCreated(user.Id, temporaryPassword));
+        return new UserCreated(user.Id, temporaryPassword);
     }
 }
