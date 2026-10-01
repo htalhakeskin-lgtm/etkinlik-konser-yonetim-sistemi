@@ -12,5 +12,6 @@
   "pattern": "Biçimi geçersiz.",
   "invalidValue": "Geçersiz bir seçim.",
   "invalid": "Geçersiz değer.",
-  "unsupportedSort": "Bu alana göre sıralanamaz."
+  "unsupportedSort": "Bu alana göre sıralanamaz.",
+  "incorrectPassword": "Şifre hatalı."
 }

@@ -48,6 +48,18 @@ public sealed class UserTests
 
     [Fact]
     [Trait("Rule", "BR-SYS-006")]
+    public void ChangePassword_EndsTheTemporaryPassword()
+    {
+        var user = User.Create("Ayşe Kaya", "ayse@example.com", [Role.BookingManager], [], "temporary hash");
+
+        user.ChangePassword("new hash");
+
+        user.PasswordHash.ShouldBe("new hash");
+        user.MustChangePassword.ShouldBeFalse();
+    }
+
+    [Fact]
+    [Trait("Rule", "BR-SYS-006")]
     public void Create_MakesTheUserSetANewPassword()
     {
         var warehouse = Guid.CreateVersion7();

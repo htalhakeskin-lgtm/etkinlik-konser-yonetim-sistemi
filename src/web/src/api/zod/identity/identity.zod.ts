@@ -47,3 +47,25 @@ export const GetMeResponse = zod.object({
   "mustChangePassword": zod.boolean()
 })
 
+/**
+ * @summary Sets a new password for the signed-in user; the user's other sessions end.
+ */
+export const ChangeMyPasswordHeader = zod.object({
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const ChangeMyPasswordBody = zod.object({
+  "currentPassword": zod.string().nullable(),
+  "newPassword": zod.string()
+})
+
+export const ChangeMyPasswordResponse = zod.object({
+  "id": zod.uuid(),
+  "fullName": zod.string(),
+  "email": zod.string(),
+  "roles": zod.array(zod.enum(['systemAdministrator', 'bookingManager', 'technicalManager', 'warehouseManager', 'generalManager'])),
+  "permissions": zod.array(zod.string()),
+  "warehouseIds": zod.array(zod.uuid()),
+  "mustChangePassword": zod.boolean()
+})
+

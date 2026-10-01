@@ -25,6 +25,13 @@ public sealed class IdentityModuleOptions
     [Range(typeof(TimeSpan), "01:00:00", "30.00:00:00")]
     public TimeSpan SessionAbsoluteLifetime { get; set; } = TimeSpan.FromHours(24);
 
+    /// <summary>
+    /// P-04: the shortest password. Not below <see cref="PasswordPolicy.LowestMinLength"/>, since the common
+    /// password list only holds passwords from that length up.
+    /// </summary>
+    [Range(PasswordPolicy.LowestMinLength, PasswordPolicy.MaxLength)]
+    public int PasswordMinLength { get; set; } = 15;
+
     /// <summary>The lockout settings as the user aggregate takes them.</summary>
     public LockoutPolicy Lockout => new(LockoutMaxFailedAttempts, LockoutDuration);
 }

@@ -20,13 +20,14 @@ internal sealed class SignInHandler(
         DateTimeOffset now = timeProvider.GetUtcNow();
 
         // The password is checked even without a user, so the answer takes as long either way (security §4.1).
-        bool passwordMatches = hasher.Verify(user?.PasswordHash, command.Password, out bool needsRehash);
+        string password = PasswordPolicy.Normalize(command.Password);
+        bool passwordMatches = hasher.Verify(user?.PasswordHash, password, out bool needsRehash);
         SignInResult result = Decide(user, passwordMatches, now);
         attempts.Record(email, user?.Id, succeeded: result.User is not null);
 
         if (result.User is not null && needsRehash)
         {
-            user!.Rehash(hasher.Hash(command.Password));
+            user!.Rehash(hasher.Hash(password));
         }
 
         return result;

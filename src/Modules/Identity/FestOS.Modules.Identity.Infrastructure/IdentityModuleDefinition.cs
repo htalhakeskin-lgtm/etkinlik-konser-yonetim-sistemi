@@ -48,6 +48,8 @@ public sealed class IdentityModuleDefinition : IModuleDefinition
         builder.Services.AddSingleton(services => services.GetRequiredService<IOptions<IdentityModuleOptions>>().Value);
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<ILoginAttemptLog, LoginAttemptLog>();
+        builder.Services.AddScoped<IUserSessions, UserSessions>();
+        builder.Services.AddSingleton<ICommonPasswords, CommonPasswords>();
         builder.Services.AddSingleton<LoginRateLimiter>();
         builder.Services.AddScheduledJob<SessionsCleanupJob>();
         builder.Services.AddScheduledJob<LoginAttemptsCleanupJob>();

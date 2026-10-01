@@ -9,6 +9,9 @@ namespace FestOS.Modules.Identity.Infrastructure.Users;
 
 internal sealed class UserRepository(IdentityDbContext context) : IUserRepository
 {
+    public Task<User?> FindAsync(UserId id, CancellationToken cancellationToken) =>
+        context.Users.SingleOrDefaultAsync(user => user.Id == id, cancellationToken);
+
     public void Add(User user) => context.Users.Add(user);
 
     public Task<User?> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken) =>

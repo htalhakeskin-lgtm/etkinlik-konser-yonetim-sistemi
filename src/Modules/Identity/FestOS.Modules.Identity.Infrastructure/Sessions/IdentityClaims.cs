@@ -14,6 +14,8 @@ internal static class IdentityClaims
 
     public const string MustChangePassword = "festos:must_change_password";
 
+    public const string SessionId = "festos:session";
+
     public static ClaimsPrincipal PrincipalFor(SignedInUserDetails user) =>
         Principal(user.Id.Value, user.FullName, user.Permissions, user.WarehouseIds, user.MustChangePassword);
 
@@ -22,7 +24,8 @@ internal static class IdentityClaims
         string fullName,
         IEnumerable<string> permissions,
         IEnumerable<Guid> warehouseIds,
-        bool mustChangePassword
+        bool mustChangePassword,
+        Guid? sessionId = null
     )
     {
         List<Claim> claims =
@@ -32,6 +35,11 @@ internal static class IdentityClaims
             .. permissions.Select(permission => new Claim(PermissionClaims.Type, permission)),
             .. warehouseIds.Select(warehouse => new Claim(Warehouse, warehouse.ToString())),
         ];
+        if (sessionId is { } session)
+        {
+            claims.Add(new Claim(SessionId, session.ToString()));
+        }
+
         if (mustChangePassword)
         {
             claims.Add(new Claim(MustChangePassword, bool.TrueString.ToLower(CultureInfo.InvariantCulture)));
