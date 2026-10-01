@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.30 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.31 (onaylandı) · **Son güncelleme:** 2026-10-01
 
 ## 1. Bu belge ne işe yarar
 
@@ -477,3 +477,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-10-01 | v1.28 | §12 bağlantı göstergesi ve onay diyaloğunun uygulama ayrıntıları (14b). |
 | 2026-10-01 | v1.29 | 15. PR ikiye bölündü (15a izlenebilirlik, 15b DT-03 / DT-04). |
 | 2026-10-01 | v1.30 | Faz 1.2 eklemeleri: `WithoutIdempotencyKey`, `AuthenticationFailedException` (`401`), `ExcludeFromChangeHistory()` (sahiplenilmeyen tipler işlem geçmişinden muaf), tamsayı anahtarlar veritabanında üretilir (yalnızca çatı tipleri). |
+| 2026-10-01 | v1.31 | `RateLimitedException`: `429`, `rateLimited` ve tam saniyeye yuvarlanmış `Retry-After` (api §11). |

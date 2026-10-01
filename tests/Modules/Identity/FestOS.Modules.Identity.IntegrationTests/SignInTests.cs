@@ -1,15 +1,21 @@
+using System.Globalization;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using FestOS.BuildingBlocks.Application.Messaging;
+using FestOS.BuildingBlocks.Infrastructure.Jobs;
+using FestOS.Modules.Identity.Application.Authentication;
 using FestOS.Modules.Identity.Application.Passwords;
 using FestOS.Modules.Identity.Domain.Users;
 using FestOS.Modules.Identity.Infrastructure;
+using FestOS.Modules.Identity.Infrastructure.Authentication;
 using FestOS.Modules.Identity.Infrastructure.Sessions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using SignInResult = FestOS.Modules.Identity.Application.Authentication.SignInResult;
 
 namespace FestOS.Modules.Identity.IntegrationTests;
 
@@ -174,6 +180,241 @@ public sealed class SignInTests(IdentityFixture fixture) : IAsyncLifetime
         needsRehash.ShouldBeFalse();
     }
 
+    [Fact]
+    [Trait("Rule", "BR-SYS-005")]
+    public async Task WrongPasswords_LockTheAccountAtTheFifthInARow_EvenForTheRightPassword()
+    {
+        await AddUserAsync("ayse@example.com", [Role.BookingManager], mustChangePassword: false);
+        DateTimeOffset lockedUntil = fixture.Time.GetUtcNow().AddMinutes(15);
+
+        SignInResult[] wrong = [.. await RepeatAsync(5, () => SignInAsync("ayse@example.com", "yanlış şifre"))];
+        SignInResult right = await SignInAsync("ayse@example.com", Password);
+        fixture.Time.Advance(TimeSpan.FromMinutes(15));
+        SignInResult afterTheLock = await SignInAsync("ayse@example.com", Password);
+
+        wrong[..4].ShouldAllBe(result => result == SignInResult.Refused);
+        wrong[4].LockedUntil.ShouldBe(lockedUntil);
+        right.LockedUntil.ShouldBe(lockedUntil);
+        afterTheLock.User.ShouldNotBeNull();
+    }
+
+    [Fact]
+    [Trait("Rule", "BR-SYS-005")]
+    public async Task SuccessfulLogin_StartsTheCountOfWrongPasswordsAgain()
+    {
+        await AddUserAsync("ayse@example.com", [Role.BookingManager], mustChangePassword: false);
+
+        await RepeatAsync(4, () => SignInAsync("ayse@example.com", "yanlış şifre"));
+        await SignInAsync("ayse@example.com", Password);
+        SignInResult[] wrong = [.. await RepeatAsync(4, () => SignInAsync("ayse@example.com", "yanlış şifre"))];
+
+        wrong.ShouldAllBe(result => result == SignInResult.Refused);
+    }
+
+    [Fact]
+    [Trait("Rule", "BR-SYS-005")]
+    public async Task Login_OfALockedAccount_Answers401WithWhenTheLockEnds()
+    {
+        UserId user = await AddUserAsync("ayse@example.com", [Role.BookingManager], mustChangePassword: false);
+        DateTimeOffset lockedUntil = fixture.Time.GetUtcNow().AddMinutes(10);
+        await LockAsync(user, lockedUntil);
+
+        using HttpResponseMessage login = await LoginAsync("ayse@example.com", Password);
+
+        login.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        using var problem = JsonDocument.Parse(await login.Content.ReadAsStringAsync(Cancellation));
+        problem.RootElement.GetProperty("code").GetString().ShouldBe("BR-SYS-005");
+        problem.RootElement.GetProperty("params").GetProperty("lockedUntil").GetDateTimeOffset().ShouldBe(lockedUntil);
+        (await SessionCountAsync()).ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task EveryAttempt_IsRecordedWithTheEmailTheUserAndTheOutcome()
+    {
+        UserId user = await AddUserAsync("ayse@example.com", [Role.BookingManager], mustChangePassword: false);
+
+        (await LoginAsync("Kimse@Example.com", Password)).Dispose();
+        (await LoginAsync("ayse@example.com", "yanlış şifre")).Dispose();
+        (await LoginAsync("AYSE@example.com", Password)).Dispose();
+
+        await using AsyncServiceScope scope = fixture.Services.CreateAsyncScope();
+        var attempts = await scope
+            .ServiceProvider.GetRequiredService<IdentityDbContext>()
+            .Set<LoginAttempt>()
+            .Select(attempt => new
+            {
+                attempt.Email,
+                attempt.UserId,
+                attempt.Succeeded,
+            })
+            .ToListAsync(Cancellation);
+        attempts.ShouldBe(
+            [
+                new
+                {
+                    Email = "kimse@example.com",
+                    UserId = (UserId?)null,
+                    Succeeded = false,
+                },
+                new
+                {
+                    Email = "ayse@example.com",
+                    UserId = (UserId?)user,
+                    Succeeded = false,
+                },
+                new
+                {
+                    Email = "ayse@example.com",
+                    UserId = (UserId?)user,
+                    Succeeded = true,
+                },
+            ],
+            ignoreOrder: true
+        );
+    }
+
+    [Fact]
+    public async Task Login_MoreThanFiveTimesAMinuteForOneEmail_IsRefusedWithWhenToTryAgain()
+    {
+        HttpResponseMessage[] allowed = [.. await RepeatAsync(5, () => LoginAsync("kimse@example.com", Password))];
+        using HttpResponseMessage sixth = await LoginAsync("kimse@example.com", Password);
+        using HttpResponseMessage otherEmail = await LoginAsync("baska@example.com", Password);
+
+        allowed.ShouldAllBe(response => response.StatusCode == HttpStatusCode.Unauthorized);
+        sixth.StatusCode.ShouldBe(HttpStatusCode.TooManyRequests);
+        (await CodeOfAsync(sixth)).ShouldBe("rateLimited");
+        sixth.Headers.RetryAfter!.Delta!.Value.ShouldBeInRange(TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
+        otherEmail.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+        Array.ForEach(allowed, response => response.Dispose());
+    }
+
+    [Fact]
+    public async Task Login_MoreThanTenTimesAMinuteFromOneAddress_IsRefused()
+    {
+        HttpResponseMessage[] allowed =
+        [
+            .. await RepeatAsync(
+                10,
+                attempt =>
+                    LoginAsync(string.Create(CultureInfo.InvariantCulture, $"kimse{attempt}@example.com"), Password)
+            ),
+        ];
+        using HttpResponseMessage eleventh = await LoginAsync("kimse10@example.com", Password);
+
+        allowed.ShouldAllBe(response => response.StatusCode == HttpStatusCode.Unauthorized);
+        eleventh.StatusCode.ShouldBe(HttpStatusCode.TooManyRequests);
+        Array.ForEach(allowed, response => response.Dispose());
+    }
+
+    [Fact]
+    [Trait("Rule", "BR-SYS-008")]
+    public async Task SessionCleanup_DeletesTheEndedSessionsOnly()
+    {
+        UserId user = await AddUserAsync("ayse@example.com", [Role.BookingManager], mustChangePassword: false);
+        DateTimeOffset now = fixture.Time.GetUtcNow();
+        Guid live = await AddSessionAsync(user, lastSeenAt: now.AddHours(-11), expiresAt: now.AddHours(1));
+        await AddSessionAsync(user, lastSeenAt: now.AddHours(-12), expiresAt: now.AddHours(1));
+        await AddSessionAsync(user, lastSeenAt: now, expiresAt: now);
+
+        await RunJobAsync("session-cleanup");
+
+        await using AsyncServiceScope scope = fixture.Services.CreateAsyncScope();
+        (
+            await scope
+                .ServiceProvider.GetRequiredService<IdentityDbContext>()
+                .Set<Session>()
+                .Select(session => session.Id)
+                .ToListAsync(Cancellation)
+        ).ShouldBe([live]);
+    }
+
+    [Fact]
+    public async Task LoginAttemptCleanup_DeletesAttemptsOlderThanNinetyDays()
+    {
+        DateTimeOffset now = fixture.Time.GetUtcNow();
+        await using (AsyncServiceScope scope = fixture.Services.CreateAsyncScope())
+        {
+            IdentityDbContext context = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
+            context.AddRange(
+                new LoginAttempt
+                {
+                    Id = Guid.CreateVersion7(),
+                    Email = "eski@example.com",
+                    OccurredAt = now.AddDays(-91),
+                },
+                new LoginAttempt
+                {
+                    Id = Guid.CreateVersion7(),
+                    Email = "yeni@example.com",
+                    OccurredAt = now.AddDays(-89),
+                }
+            );
+            await context.SaveChangesAsync(Cancellation);
+        }
+
+        await RunJobAsync("login-attempt-cleanup");
+
+        await using AsyncServiceScope check = fixture.Services.CreateAsyncScope();
+        (
+            await check
+                .ServiceProvider.GetRequiredService<IdentityDbContext>()
+                .Set<LoginAttempt>()
+                .Select(attempt => attempt.Email)
+                .ToListAsync(Cancellation)
+        ).ShouldBe(["yeni@example.com"]);
+    }
+
+    private async Task<SignInResult> SignInAsync(string email, string password)
+    {
+        await using AsyncServiceScope scope = fixture.Services.CreateAsyncScope();
+        return await scope
+            .ServiceProvider.GetRequiredService<ICommandHandler<SignInCommand, SignInResult>>()
+            .HandleAsync(new SignInCommand(email, password), Cancellation);
+    }
+
+    // One after the other, since the order of the attempts is what is tested.
+    private static async Task<List<T>> RepeatAsync<T>(int count, Func<int, Task<T>> attempt)
+    {
+        var results = new List<T>(count);
+        for (int index = 0; index < count; index++)
+        {
+            results.Add(await attempt(index));
+        }
+
+        return results;
+    }
+
+    private static Task<List<T>> RepeatAsync<T>(int count, Func<Task<T>> attempt) => RepeatAsync(count, _ => attempt());
+
+    private async Task<Guid> AddSessionAsync(UserId user, DateTimeOffset lastSeenAt, DateTimeOffset expiresAt)
+    {
+        await using AsyncServiceScope scope = fixture.Services.CreateAsyncScope();
+        IdentityDbContext context = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
+        var session = new Session
+        {
+            Id = Guid.CreateVersion7(),
+            UserId = user,
+            KeyHash = Convert.ToHexStringLower(Guid.CreateVersion7().ToByteArray()).PadRight(64, '0'),
+            CreatedAt = expiresAt.AddHours(-24),
+            LastSeenAt = lastSeenAt,
+            ExpiresAt = expiresAt,
+            Permissions = [],
+            WarehouseIds = [],
+        };
+        context.Add(session);
+        await context.SaveChangesAsync(Cancellation);
+        return session.Id;
+    }
+
+    private async Task RunJobAsync(string name)
+    {
+        await using AsyncServiceScope scope = fixture.Services.CreateAsyncScope();
+        await scope
+            .ServiceProvider.GetServices<IScheduledJob>()
+            .Single(job => string.Equals(job.Name, name, StringComparison.Ordinal))
+            .RunAsync(scope.ServiceProvider, Cancellation);
+    }
+
     private async Task<UserId> AddUserAsync(
         string email,
         Role[] roles,
@@ -208,6 +449,15 @@ public sealed class SignInTests(IdentityFixture fixture) : IAsyncLifetime
             .ServiceProvider.GetRequiredService<IdentityDbContext>()
             .Users.Where(found => found.Id == user)
             .ExecuteUpdateAsync(row => row.SetProperty(found => found.MustChangePassword, false), Cancellation);
+    }
+
+    private async Task LockAsync(UserId user, DateTimeOffset until)
+    {
+        await using AsyncServiceScope scope = fixture.Services.CreateAsyncScope();
+        await scope
+            .ServiceProvider.GetRequiredService<IdentityDbContext>()
+            .Users.Where(found => found.Id == user)
+            .ExecuteUpdateAsync(row => row.SetProperty(found => found.LockedUntil, until), Cancellation);
     }
 
     private async Task DeactivateAsync(UserId user)

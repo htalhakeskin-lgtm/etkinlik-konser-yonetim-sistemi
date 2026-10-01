@@ -13,5 +13,8 @@
   "csrfRejected": "Güvenlik doğrulaması başarısız oldu. Sayfayı yenileyip yeniden deneyin.",
   "internalError": "Beklenmeyen bir hata oluştu. Sorun sürerse iz numarasıyla bildirin.",
   "network": "Sunucuya ulaşılamadı. Bağlantınızı kontrol edip yeniden deneyin.",
+  "invalidCredentials": "E-posta ya da şifre hatalı.",
+  "rateLimited": "Çok fazla deneme yapıldı. Biraz bekleyip yeniden deneyin.",
+  "BR-SYS-005": "Art arda çok sayıda hatalı şifre girildiği için hesap geçici olarak kilitlendi. Biraz sonra yeniden deneyin.",
   "BR-SYS-015": "Bu e-posta adresi başka bir kullanıcıya ait; pasif kullanıcıların adresleri de yeniden kullanılamaz."
 }

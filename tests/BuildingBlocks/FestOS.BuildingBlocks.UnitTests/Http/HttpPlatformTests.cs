@@ -50,6 +50,7 @@ public sealed class HttpPlatformTests : IAsyncLifetime
         _app.MapGet("/api/v1/stale", string () => throw new ConcurrencyConflictException("Sample changed."));
         _app.MapGet("/api/v1/reused-key", string () => throw new IdempotencyKeyReusedException("Other request."));
         _app.MapGet("/api/v1/key-in-progress", string () => throw new IdempotencyKeyInProgressException("Running."));
+        _app.MapGet("/api/v1/limited", string () => throw new RateLimitedException(TimeSpan.FromSeconds(41.2)));
         _app.MapGet(
             "/api/v1/invalid",
             string () =>
@@ -102,6 +103,7 @@ public sealed class HttpPlatformTests : IAsyncLifetime
     [InlineData("/api/v1/stale", HttpStatusCode.PreconditionFailed, "concurrencyConflict")]
     [InlineData("/api/v1/reused-key", HttpStatusCode.UnprocessableEntity, "idempotencyKeyReused")]
     [InlineData("/api/v1/key-in-progress", HttpStatusCode.Conflict, "idempotencyKeyInProgress")]
+    [InlineData("/api/v1/limited", HttpStatusCode.TooManyRequests, "rateLimited")]
     [InlineData("/api/v1/unknown-address", HttpStatusCode.NotFound, "notFound")]
     public async Task ExpectedOutcomes_BecomeTheirStatusAndCode(string path, HttpStatusCode status, string code)
     {
@@ -109,6 +111,18 @@ public sealed class HttpPlatformTests : IAsyncLifetime
 
         response.StatusCode.ShouldBe(status);
         problem.GetProperty("code").GetString().ShouldBe(code);
+    }
+
+    [Fact]
+    public async Task RateLimited_SaysWhenToTryAgainInWholeSeconds()
+    {
+        using HttpResponseMessage response = await _client!.GetAsync(
+            new Uri("/api/v1/limited", UriKind.Relative),
+            TestContext.Current.CancellationToken
+        );
+
+        response.StatusCode.ShouldBe(HttpStatusCode.TooManyRequests);
+        response.Headers.RetryAfter!.Delta.ShouldBe(TimeSpan.FromSeconds(42));
     }
 
     [Fact]

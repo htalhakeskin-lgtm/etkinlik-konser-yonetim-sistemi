@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using FestOS.BuildingBlocks.Infrastructure.Authorization;
+using FestOS.Modules.Identity.Application;
 using FestOS.Modules.Identity.Domain.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -17,14 +18,16 @@ namespace FestOS.Modules.Identity.Infrastructure.Sessions;
 /// <summary>
 /// Server-side sessions behind the cookie (ADR-0011, ADR-0027, identity §6). The cookie holds a random
 /// key; the database holds its SHA-256. Every request rebuilds the principal from the session row, kept
-/// in memory for 30 seconds (ID-03). A session ends after 12 hours without a request or 24 hours after
-/// signing in, whichever comes first (BR-SYS-008).
+/// in memory for 30 seconds (ID-03). A session ends after P-03 without a request or P-16 after signing
+/// in, whichever comes first (BR-SYS-008).
 /// </summary>
-internal sealed class SessionTicketStore(IServiceScopeFactory scopes, IMemoryCache cache, TimeProvider timeProvider)
-    : ITicketStore
+internal sealed class SessionTicketStore(
+    IServiceScopeFactory scopes,
+    IMemoryCache cache,
+    TimeProvider timeProvider,
+    IdentityModuleOptions options
+) : ITicketStore
 {
-    public static readonly TimeSpan IdleTimeout = TimeSpan.FromHours(12);
-    public static readonly TimeSpan AbsoluteTimeout = TimeSpan.FromHours(24);
     private static readonly TimeSpan CacheDuration = TimeSpan.FromSeconds(30);
     private static readonly TimeSpan LastSeenPrecision = TimeSpan.FromMinutes(1);
 
@@ -45,7 +48,7 @@ internal sealed class SessionTicketStore(IServiceScopeFactory scopes, IMemoryCac
                 KeyHash = Hash(key),
                 CreatedAt = now,
                 LastSeenAt = now,
-                ExpiresAt = now + AbsoluteTimeout,
+                ExpiresAt = now + options.SessionAbsoluteLifetime,
                 Permissions = [.. principal.FindAll(PermissionClaims.Type).Select(claim => claim.Value)],
                 WarehouseIds =
                 [
@@ -85,7 +88,9 @@ internal sealed class SessionTicketStore(IServiceScopeFactory scopes, IMemoryCac
         }
 
         Session session = found.session;
-        if (new CachedSession(null!, session.ExpiresAt, session.LastSeenAt).HasExpired(now))
+        if (
+            new CachedSession(null!, session.ExpiresAt, session.LastSeenAt + options.SessionIdleTimeout).HasExpired(now)
+        )
         {
             await context.Set<Session>().Where(expired => expired.Id == session.Id).ExecuteDeleteAsync();
             return null;
@@ -112,7 +117,11 @@ internal sealed class SessionTicketStore(IServiceScopeFactory scopes, IMemoryCac
         // The cached copy keeps the session's limits, so it never outlives them (BR-SYS-008).
         cache.Set(
             keyHash,
-            new CachedSession(ticket, session.ExpiresAt, now > session.LastSeenAt ? now : session.LastSeenAt),
+            new CachedSession(
+                ticket,
+                session.ExpiresAt,
+                (now > session.LastSeenAt ? now : session.LastSeenAt) + options.SessionIdleTimeout
+            ),
             CacheDuration
         );
         return ticket;
@@ -133,13 +142,9 @@ internal sealed class SessionTicketStore(IServiceScopeFactory scopes, IMemoryCac
             .ExecuteDeleteAsync();
     }
 
-    private sealed record CachedSession(
-        AuthenticationTicket Ticket,
-        DateTimeOffset ExpiresAt,
-        DateTimeOffset LastSeenAt
-    )
+    private sealed record CachedSession(AuthenticationTicket Ticket, DateTimeOffset ExpiresAt, DateTimeOffset IdleUntil)
     {
-        public bool HasExpired(DateTimeOffset now) => now >= ExpiresAt || now >= LastSeenAt + IdleTimeout;
+        public bool HasExpired(DateTimeOffset now) => now >= ExpiresAt || now >= IdleUntil;
     }
 
     private static string Hash(string key) => Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(key)));

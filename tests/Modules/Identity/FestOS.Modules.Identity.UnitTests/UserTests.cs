@@ -11,6 +11,42 @@ public sealed class UserTests
             .Email.ShouldBe("ayse.kaya@example.com");
 
     [Fact]
+    [Trait("Rule", "BR-SYS-005")]
+    public void WrongPasswords_LockTheAccountAtTheLastAllowedOneAndStartTheCountAgain()
+    {
+        var user = User.Create("Ayşe Kaya", "ayse@example.com", [Role.BookingManager], [], "hash");
+        var now = new DateTimeOffset(2027, 1, 4, 6, 0, 0, TimeSpan.Zero);
+        var policy = new LockoutPolicy(MaxFailedAttempts: 3, Duration: TimeSpan.FromMinutes(15));
+
+        user.RecordFailedSignIn(now, policy);
+        user.RecordFailedSignIn(now, policy);
+        bool lockedBeforeTheLast = user.IsLockedAt(now);
+        user.RecordFailedSignIn(now, policy);
+
+        lockedBeforeTheLast.ShouldBeFalse();
+        user.LockedUntil.ShouldBe(now.AddMinutes(15));
+        user.FailedLoginCount.ShouldBe(0);
+        user.IsLockedAt(now.AddMinutes(15).AddTicks(-1)).ShouldBeTrue();
+        user.IsLockedAt(now.AddMinutes(15)).ShouldBeFalse();
+    }
+
+    [Fact]
+    [Trait("Rule", "BR-SYS-005")]
+    public void SuccessfulSignIn_ForgetsTheEarlierWrongPasswords()
+    {
+        var user = User.Create("Ayşe Kaya", "ayse@example.com", [Role.BookingManager], [], "hash");
+        var now = new DateTimeOffset(2027, 1, 4, 6, 0, 0, TimeSpan.Zero);
+        var policy = new LockoutPolicy(MaxFailedAttempts: 2, Duration: TimeSpan.FromMinutes(15));
+
+        user.RecordFailedSignIn(now, policy);
+        user.RecordSuccessfulSignIn();
+        user.RecordFailedSignIn(now, policy);
+
+        user.IsLockedAt(now).ShouldBeFalse();
+        user.FailedLoginCount.ShouldBe(1);
+    }
+
+    [Fact]
     [Trait("Rule", "BR-SYS-006")]
     public void Create_MakesTheUserSetANewPassword()
     {

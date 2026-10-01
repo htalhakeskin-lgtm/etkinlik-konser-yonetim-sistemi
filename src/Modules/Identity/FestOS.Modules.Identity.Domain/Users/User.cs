@@ -50,6 +50,28 @@ public sealed class User : AggregateRoot<UserId>, IDeactivatable
     /// <inheritdoc />
     public Guid? DeactivatedBy { get; private set; }
 
+    /// <summary>Whether sign-in is refused at <paramref name="now"/>, even with the right password (BR-SYS-005).</summary>
+    public bool IsLockedAt(DateTimeOffset now) => LockedUntil > now;
+
+    /// <summary>Counts a wrong password; the last one the policy allows locks the account for a while (BR-SYS-005).</summary>
+    public void RecordFailedSignIn(DateTimeOffset now, LockoutPolicy policy)
+    {
+        ArgumentNullException.ThrowIfNull(policy);
+        FailedLoginCount++;
+        if (FailedLoginCount >= policy.MaxFailedAttempts)
+        {
+            LockedUntil = now + policy.Duration;
+            FailedLoginCount = 0;
+        }
+    }
+
+    /// <summary>Starts the count of wrong passwords again.</summary>
+    public void RecordSuccessfulSignIn()
+    {
+        FailedLoginCount = 0;
+        LockedUntil = null;
+    }
+
     /// <summary>Replaces the hash with one made with the current settings; the password stays the same.</summary>
     public void Rehash(string passwordHash) => PasswordHash = passwordHash;
 

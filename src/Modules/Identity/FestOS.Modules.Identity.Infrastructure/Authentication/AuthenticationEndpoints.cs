@@ -1,7 +1,10 @@
 using System.Security.Claims;
+using FestOS.BuildingBlocks.Application.Errors;
 using FestOS.BuildingBlocks.Application.Messaging;
 using FestOS.BuildingBlocks.Infrastructure.Http;
 using FestOS.Modules.Identity.Application.Authentication;
+using FestOS.Modules.Identity.Domain;
+using FestOS.Modules.Identity.Domain.Users;
 using FestOS.Modules.Identity.Infrastructure.Sessions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -15,6 +18,9 @@ namespace FestOS.Modules.Identity.Infrastructure.Authentication;
 /// <summary>Signing in and out, and the signed-in user (identity §7).</summary>
 internal static class AuthenticationEndpoints
 {
+    /// <summary>The code of a wrong email or password; the answer does not tell which (US-SYS-010).</summary>
+    public const string InvalidCredentials = "invalidCredentials";
+
     public static void Map(IEndpointRouteBuilder endpoints)
     {
         endpoints
@@ -37,12 +43,30 @@ internal static class AuthenticationEndpoints
 
     private static async Task<Ok<SignedInUserDetails>> LoginAsync(
         LoginRequest request,
-        ICommandHandler<SignInCommand, SignedInUserDetails> signIn,
+        ICommandHandler<SignInCommand, SignInResult> signIn,
+        LoginRateLimiter rateLimiter,
         HttpContext context,
         CancellationToken cancellationToken
     )
     {
-        SignedInUserDetails user = await signIn.HandleAsync(new(request.Email, request.Password), cancellationToken);
+        string email = EmailAddress.Normalize(request.Email ?? string.Empty);
+        if (!rateLimiter.TryAcquire(context.Connection.RemoteIpAddress, email, out TimeSpan retryAfter))
+        {
+            throw new RateLimitedException(retryAfter);
+        }
+
+        SignInResult result = await signIn.HandleAsync(new(request.Email!, request.Password), cancellationToken);
+        if (result.User is not { } user)
+        {
+            throw result.LockedUntil is { } lockedUntil
+                ? new AuthenticationFailedException(
+                    IdentityRuleCodes.AccountLocked,
+                    "The account is locked for a while after too many wrong passwords.",
+                    new Dictionary<string, object?>(StringComparer.Ordinal) { ["lockedUntil"] = lockedUntil }
+                )
+                : new AuthenticationFailedException(InvalidCredentials, "The email or the password is wrong.");
+        }
+
         ClaimsPrincipal principal = IdentityClaims.PrincipalFor(user);
         await context.SignInAsync(
             CookieAuthenticationDefaults.AuthenticationScheme,
