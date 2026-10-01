@@ -28,6 +28,21 @@ public static class OpenApiExtensions
                     (document, _, _) =>
                     {
                         document.Info = new OpenApiInfo { Title = "FestOS API", Version = DocumentName };
+
+                        // The wrappers of query string enums are bound as text; their parameters point to the
+                        // enum itself (ApiOperationTransformer), so the wrapper's own schema is never used.
+                        foreach (
+                            string name in document
+                                .Components?.Schemas?.Keys.Where(name =>
+                                    name.StartsWith("EnumQueryValueOf", StringComparison.Ordinal)
+                                )
+                                .ToList()
+                                ?? []
+                        )
+                        {
+                            document.Components!.Schemas!.Remove(name);
+                        }
+
                         return Task.CompletedTask;
                     }
                 );

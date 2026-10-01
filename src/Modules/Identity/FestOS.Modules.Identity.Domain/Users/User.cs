@@ -1,4 +1,5 @@
 using FestOS.BuildingBlocks.Domain.Entities;
+using FestOS.BuildingBlocks.Domain.Text;
 
 namespace FestOS.Modules.Identity.Domain.Users;
 
@@ -19,6 +20,10 @@ public sealed class User : AggregateRoot<UserId>, IDeactivatable
 
     /// <summary>The full name.</summary>
     public string FullName { get; private set; } = string.Empty;
+
+    /// <summary>The full name's search key (database §13), kept with the name.</summary>
+    [NotAudited]
+    public string FullNameSearch { get; private set; } = string.Empty;
 
     /// <summary>The email in its stored form (<see cref="EmailAddress.Normalize"/>); unique (BR-SYS-015).</summary>
     public string Email { get; private set; } = string.Empty;
@@ -94,6 +99,7 @@ public sealed class User : AggregateRoot<UserId>, IDeactivatable
         new(UserId.New())
         {
             FullName = fullName.Trim(),
+            FullNameSearch = SearchKey.Of(fullName),
             Email = EmailAddress.Normalize(email),
             _roles = [.. roles.Distinct().Order()],
             _warehouseIds = [.. warehouseIds.Distinct().Order()],

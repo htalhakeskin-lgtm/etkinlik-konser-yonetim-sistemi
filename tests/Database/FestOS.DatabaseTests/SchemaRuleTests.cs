@@ -118,11 +118,12 @@ public sealed class SchemaRuleTests(PostgresDatabase database) : IAsyncLifetime
     public async Task IdentityMigrations_SeedTheSystemUserWhoCannotSignIn()
     {
         List<string> seeded = await QueryAsync(
-            "SELECT full_name || '|' || password_hash FROM identity.users WHERE id = @id",
+            "SELECT full_name || '|' || password_hash || '|' || full_name_search FROM identity.users WHERE id = @id",
             ("id", SystemUser.Id)
         );
 
-        seeded.ShouldBe(["Sistem|"]);
+        // The search key is filled in by a later migration, by the database's version of the rule.
+        seeded.ShouldBe(["Sistem||sistem"]);
     }
 
     // The mapping is the context's own (protected) table of constraint names and rule codes.

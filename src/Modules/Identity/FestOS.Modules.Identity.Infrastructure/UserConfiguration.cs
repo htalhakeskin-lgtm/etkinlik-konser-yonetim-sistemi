@@ -9,6 +9,13 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
+        builder.Property(user => user.FullNameSearch).HasMaxLength(User.FullNameMaxLength);
+        // Searching inside a name ("contains") needs trigrams; a b-tree only serves prefixes (database §13).
+        builder
+            .HasIndex(user => user.FullNameSearch)
+            .HasMethod("gin")
+            .HasOperators("gin_trgm_ops")
+            .HasDatabaseName("ix_users_full_name_search");
         builder.ToTable("users");
         builder.Property(user => user.FullName).HasMaxLength(User.FullNameMaxLength);
         builder.Property(user => user.Email).HasMaxLength(EmailAddress.MaxLength);
