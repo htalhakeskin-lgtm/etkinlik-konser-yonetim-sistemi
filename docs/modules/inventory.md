@@ -1,6 +1,6 @@
 # Modül tasarımı: Inventory — Stok ve depo
 
-> **Durum:** v0.1 (taslak, proje sahibinin onayını bekliyor) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.0 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 (depolar); stok 1.5'te, depo işlemleri 1.7'de bu belgeye eklenir ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 8](#8-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -72,3 +72,4 @@ Bu belgede proje sahibine soru yoktur.
 | Tarih | Versiyon | Değişiklik |
 |---|---|---|
 | 2026-10-01 | v0.1 | İlk taslak (depolar) |
+| 2026-10-01 | v1.0 | Onaylandı. |

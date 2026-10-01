@@ -1,6 +1,6 @@
 # Modül tasarımı: Identity — Kimlik ve erişim
 
-> **Durum:** v0.1 (taslak, proje sahibinin onayını bekliyor) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.0 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 12](#12-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -105,7 +105,7 @@ Testler: rollerdeki her kod katalogda vardır; katalogdaki her yetki en az bir r
 | `GET /api/v1/users` | `ListUsers` | `Identity.Users.View` | Sayfalı; arama (ad, e-posta), rol ve aktiflik süzgeci (varsayılan: aktif) |
 | `GET /api/v1/users/{userId}` | `GetUser` | `Identity.Users.View` | `ETag` |
 | `POST /api/v1/users` | `CreateUser` | `Identity.Users.Create` | Yanıtta geçici şifre bir kez döner |
-| `PUT /api/v1/users/{userId}` | `EditUser` | `Identity.Users.Edit` | Ad, e-posta (S2'ye bağlı), roller, depolar; `If-Match` |
+| `PUT /api/v1/users/{userId}` | `EditUser` | `Identity.Users.Edit` | Ad, e-posta (değişirse oturumlar sonlanır, ID-08), roller, depolar; `If-Match` |
 | `POST /api/v1/users/{userId}/deactivate` | `DeactivateUser` | `Identity.Users.Deactivate` | Oturumları siler; BR-SYS-009 |
 | `POST /api/v1/users/{userId}/activate` | `ActivateUser` | `Identity.Users.Deactivate` | Pasif kullanıcıyı geri açar (ID-05) |
 | `POST /api/v1/users/{userId}/reset-password` | `ResetUserPassword` | `Identity.Users.ResetPassword` | Yeni geçici şifre bir kez döner; kilidi de kaldırır; kullanıcının oturumlarını siler |
@@ -152,7 +152,7 @@ Kabuk oturum açınca `RealtimeClient`'ı başlatır ve `ConnectionIndicator`'ı
 |---|---|---|
 | 1 | Yetki altyapısı | BuildingBlocks: `RequirePermission`, dinamik politika sağlayıcısı, yetki kataloğu, AT-09 |
 | 2 | Identity iskeleti | Projeler, şema, `users` / `user_roles` / `user_warehouses`, rol matrisi ve testleri, AppHost rolü |
-| 3 | `create-admin` komutu | İlk sistem yöneticisi (S1'e bağlı) |
+| 3 | `create-admin` komutu | İlk sistem yöneticisi (ID-07) |
 | 4 | Giriş ve oturum | `ITicketStore`, oturum tablosu ve önbelleği, kilit, istek sınırı, `ICurrentUser`, geçici şifre kapısı, `Login` / `Logout` / `GetMe` |
 | 5 | Şifre değiştirme | Politika, yaygın şifre listesi, `ChangeMyPassword` |
 | 6 | Kabuk ve giriş ekranları | Giriş, yeni şifre, kabuk, menü, kullanıcı menüsü, yeniden giriş diyaloğu, kabukta anlık bildirim |
@@ -173,16 +173,22 @@ Depo ve işlem geçmişi PR'ları kendi belgelerindedir; sıra Inventory'nin dep
 | ID-04 | `last_seen_at` güncellemesi | En çok dakikada bir | Her istekte yazma yükü olmaz; 12 saatlik sürede bir dakikalık sapma önemsizdir |
 | ID-05 | Yeniden etkinleştirme | Pasif kullanıcı geri açılabilir; yetki pasifleştirmeyle aynıdır | Hatalı pasifleştirme silme olmadığı için düzeltilebilir olmalı; hikayeler yasaklamıyor |
 | ID-06 | Yaygın şifre listesi | SecLists ilk 100.000, gömülü kaynak | Dış servis yok (ADR-0027); MIT lisanslı; 100.000 kayıt bellekte küçük |
+| ID-07 | İlk sistem yöneticisi | Host'ta `create-admin --email … --name …` komutu; geçici şifreyi bir kez yazar. Sistemde aktif sistem yöneticisi varsa reddeder. Demo verisi de bu yolu kullanır. | S1; açık ve tekrarlanabilir, gizli bilgi ayarlarda durmaz |
+| ID-08 | E-posta değişikliği | Sistem yöneticisi değiştirebilir; değişince kullanıcının tüm oturumları sonlanır | S2; kimlik `id`'dir, e-posta değil |
+| ID-09 | Son deposu pasifleşen depo sorumlusu | Kullanıcı aktif kalır; kullanıcı listesinde "depo bekliyor" uyarısıyla görünür; BR-SYS-014 kayıtta uygulanır | Depo pasifleştirmesi, başka modüldeki kullanıcı yüzünden engellenmez |
 
-## 13. Proje sahibine sorular
+## 13. Proje sahibine sorulanlar
 
-| Soru | Seçenekler | Öneri |
+İki soru 2026-10-01'de yanıtlandı; ikisinde de önerilen seçenek seçildi ve kararlar tablosuna işlendi (ID-07, ID-08).
+
+| Soru | Seçenekler | Yanıt |
 |---|---|---|
-| S1 — Yeni kurulan sistemde ilk sistem yöneticisi nasıl oluşsun? | (a) Host'ta `create-admin --email … --name …` komutu; geçici şifreyi bir kez ekrana yazar (yayın betiğindeki `migrate` gibi). (b) İlk açılışta ayarlardaki e-postayla kendiliğinden. (c) Yalnızca demo verisiyle. | **(a)**: açık, tekrarlanabilir, gizli bilgi ayarlarda durmaz; demo verisi de aynı yolu kullanır |
-| S2 — Sistem yöneticisi bir kullanıcının e-postasını sonradan değiştirebilsin mi? | (a) Evet; değişince kullanıcının oturumları sonlanır. (b) Hayır; e-posta değişmez, gerekirse yeni kullanıcı açılır. | **(a)**: evlilik, alan adı değişikliği gibi gerçek durumlar var; kimlik `id`'dir, e-posta değil |
+| S1 — Yeni kurulan sistemde ilk sistem yöneticisi nasıl oluşsun? | Host komutu / ilk açılışta ayardan / yalnızca demo verisi | **Host komutu** |
+| S2 — E-posta sonradan değiştirilebilsin mi? | Evet, oturumlar sonlanır / hayır | **Evet** |
 
 ## 14. Değişiklik kaydı
 
 | Tarih | Versiyon | Değişiklik |
 |---|---|---|
 | 2026-10-01 | v0.1 | İlk taslak |
+| 2026-10-01 | v1.0 | Sorular yanıtlandı (ID-07, ID-08); ID-09 eklendi; onaylandı. |

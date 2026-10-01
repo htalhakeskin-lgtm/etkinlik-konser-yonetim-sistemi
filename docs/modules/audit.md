@@ -1,6 +1,6 @@
 # Modül tasarımı: Audit — İşlem geçmişi
 
-> **Durum:** v0.1 (taslak, proje sahibinin onayını bekliyor) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.0 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 7](#7-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -67,3 +67,4 @@ Bu belgede proje sahibine soru yoktur.
 | Tarih | Versiyon | Değişiklik |
 |---|---|---|
 | 2026-10-01 | v0.1 | İlk taslak |
+| 2026-10-01 | v1.0 | Onaylandı. |
