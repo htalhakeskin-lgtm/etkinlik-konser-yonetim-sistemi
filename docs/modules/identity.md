@@ -1,6 +1,6 @@
 # Modül tasarımı: Identity — Kimlik ve erişim
 
-> **Durum:** v1.9 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.10 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 12](#12-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -115,6 +115,8 @@ Testler: rollerdeki her kod katalogda vardır; katalogdaki her yetki en az bir r
 
 Uygulama (PR 7a): `ListUsers` adın arama anahtarında (`full_name_search`, `pg_trgm` GIN indeksi) ve e-postada "içerir" araması yapar; `q` da aynı anahtara çevrilir. Süzgeçler `role`, `status` (`active` varsayılan, `inactive`, `all`); sıralama `fullName` (Türkçe sıra), `email`, `createdAt`, sonunda kimlik. Sistem kullanıcısı listede ve detayda görünmez (ID-11). `lockedUntil` yalnızca kilit sürerken doludur. `GetUser` gövdede `version`, başlıkta `ETag` döner.
 
+Uygulama (PR 7b): Değiştiren uçlar (`EditUser`, `DeactivateUser`, `ActivateUser`, `ResetUserPassword`) `If-Match` ister ve yanıtta kaydın kaydedilmiş halini yeni `ETag` ile döner. Geçici şifre dönen uçlar (`CreateUser`, `ResetUserPassword`) tekrar güvenliği anahtarından muaftır: saklanan yanıt şifreyi bir gün düz metin tutardı. Tekrarlanan oluşturmayı e-posta tekilliği reddeder, tekrarlanan sıfırlama yalnızca yeni bir şifre üretir. BR-SYS-014 alan kuralıdır (`User.Create`, `User.Edit`); depoların varlığı ve aktifliği 10. PR'da `IWarehouseDirectory` ile denetlenir. BR-SYS-009: kendini pasifleştirme ve son aktif sistem yöneticisinden rolün alınması reddedilir. Son yöneticiyi başka biri pasifleştiremez, çünkü pasifleştiren de aktif bir sistem yöneticisidir. Yine de kural işleyicide ayrıca denetlenir. E-posta değişince, pasifleştirmede ve şifre sıfırlamada kullanıcının bütün oturumları aynı işlemde silinir; rol ya da depo değişince açık oturumların yetkileri güncellenir. Her durumda önbellek kayıtları düşürülür.
+
 Doğrulama: ad soyad zorunlu, en çok 200; e-posta geçerli biçim, en çok 320; en az bir rol; depo sorumlusu rolünde en az bir depo (BR-SYS-014). Atanan depoların var ve aktif olduğu Inventory'nin senkron sözleşmesiyle doğrulanır ([05 §3](../05-module-map.md), `IWarehouseDirectory`).
 
 ## 8. Olaylar
@@ -214,3 +216,4 @@ Depo ve işlem geçmişi PR'ları kendi belgelerindedir; sıra Inventory'nin dep
 | 2026-10-01 | v1.7 | §9: giriş ekranlarının uygulama ayrıntıları (PR 6a); PR 6 ikiye bölündü. |
 | 2026-10-01 | v1.8 | §9: kabuğun uygulama ayrıntıları (PR 6b). |
 | 2026-10-01 | v1.9 | §7: kullanıcı listesi ve detayının uygulama ayrıntıları (PR 7a); PR 7 ikiye bölündü. |
+| 2026-10-01 | v1.10 | §7: kullanıcı yönetimi komutlarının uygulama ayrıntıları (PR 7b). |

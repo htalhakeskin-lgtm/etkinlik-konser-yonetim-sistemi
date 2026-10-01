@@ -17,6 +17,12 @@ internal sealed class UserRepository(IdentityDbContext context) : IUserRepositor
     public Task<User?> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken) =>
         context.Users.SingleOrDefaultAsync(user => user.Email == normalizedEmail, cancellationToken);
 
+    public Task<bool> AnyOtherActiveWithRoleAsync(Role role, UserId except, CancellationToken cancellationToken) =>
+        context.Users.AnyAsync(
+            user => user.Id != except && user.DeactivatedAt == null && user.Roles.Contains(role),
+            cancellationToken
+        );
+
     public Task<bool> AnyActiveWithRoleAsync(Role role, CancellationToken cancellationToken) =>
         context.Users.AnyAsync(user => user.DeactivatedAt == null && user.Roles.Contains(role), cancellationToken);
 }

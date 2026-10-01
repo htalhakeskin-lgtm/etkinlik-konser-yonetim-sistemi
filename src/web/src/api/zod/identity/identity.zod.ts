@@ -96,6 +96,21 @@ export const ListUsersResponse = zod.object({
 })
 
 /**
+ * @summary Creates a user; the answer carries the temporary password, once.
+ */
+export const CreateUserBody = zod.object({
+  "fullName": zod.string(),
+  "email": zod.string(),
+  "roles": zod.array(zod.enum(['systemAdministrator', 'bookingManager', 'technicalManager', 'warehouseManager', 'generalManager'])),
+  "warehouseIds": zod.array(zod.uuid())
+})
+
+export const CreateUserResponse = zod.object({
+  "id": zod.uuid(),
+  "temporaryPassword": zod.string()
+})
+
+/**
  * @summary Gets a user.
  */
 export const GetUserParams = zod.object({
@@ -103,6 +118,119 @@ export const GetUserParams = zod.object({
 })
 
 export const GetUserResponse = zod.object({
+  "id": zod.uuid(),
+  "fullName": zod.string(),
+  "email": zod.string(),
+  "roles": zod.array(zod.enum(['systemAdministrator', 'bookingManager', 'technicalManager', 'warehouseManager', 'generalManager'])),
+  "warehouseIds": zod.array(zod.uuid()),
+  "mustChangePassword": zod.boolean(),
+  "lockedUntil": zod.iso.datetime({"offset":true}).nullable(),
+  "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "version": zod.int()
+})
+
+/**
+ * @summary Changes a user's name, email, roles and warehouses.
+ */
+export const EditUserParams = zod.object({
+  "userId": zod.uuid()
+})
+
+export const EditUserHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const EditUserBody = zod.object({
+  "fullName": zod.string(),
+  "email": zod.string(),
+  "roles": zod.array(zod.enum(['systemAdministrator', 'bookingManager', 'technicalManager', 'warehouseManager', 'generalManager'])),
+  "warehouseIds": zod.array(zod.uuid())
+})
+
+export const EditUserResponse = zod.object({
+  "id": zod.uuid(),
+  "fullName": zod.string(),
+  "email": zod.string(),
+  "roles": zod.array(zod.enum(['systemAdministrator', 'bookingManager', 'technicalManager', 'warehouseManager', 'generalManager'])),
+  "warehouseIds": zod.array(zod.uuid()),
+  "mustChangePassword": zod.boolean(),
+  "lockedUntil": zod.iso.datetime({"offset":true}).nullable(),
+  "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "version": zod.int()
+})
+
+/**
+ * @summary Gives a user a new temporary password, lifts a lock and ends their sessions.
+ */
+export const ResetUserPasswordParams = zod.object({
+  "userId": zod.uuid()
+})
+
+export const ResetUserPasswordHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).')
+})
+
+export const ResetUserPasswordResponse = zod.object({
+  "user": zod.object({
+  "id": zod.uuid(),
+  "fullName": zod.string(),
+  "email": zod.string(),
+  "roles": zod.array(zod.enum(['systemAdministrator', 'bookingManager', 'technicalManager', 'warehouseManager', 'generalManager'])),
+  "warehouseIds": zod.array(zod.uuid()),
+  "mustChangePassword": zod.boolean(),
+  "lockedUntil": zod.iso.datetime({"offset":true}).nullable(),
+  "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "version": zod.int()
+}),
+  "temporaryPassword": zod.string()
+})
+
+/**
+ * @summary Deactivates a user; their sessions end at once.
+ */
+export const DeactivateUserParams = zod.object({
+  "userId": zod.uuid()
+})
+
+export const DeactivateUserHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const DeactivateUserResponse = zod.object({
+  "id": zod.uuid(),
+  "fullName": zod.string(),
+  "email": zod.string(),
+  "roles": zod.array(zod.enum(['systemAdministrator', 'bookingManager', 'technicalManager', 'warehouseManager', 'generalManager'])),
+  "warehouseIds": zod.array(zod.uuid()),
+  "mustChangePassword": zod.boolean(),
+  "lockedUntil": zod.iso.datetime({"offset":true}).nullable(),
+  "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "version": zod.int()
+})
+
+/**
+ * @summary Activates a deactivated user again.
+ */
+export const ActivateUserParams = zod.object({
+  "userId": zod.uuid()
+})
+
+export const ActivateUserHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const ActivateUserResponse = zod.object({
   "id": zod.uuid(),
   "fullName": zod.string(),
   "email": zod.string(),

@@ -131,7 +131,7 @@ public sealed class UserQueryTests(IdentityFixture fixture) : IAsyncLifetime
     public async Task Get_ReturnsTheUserWithTheVersionAsETag()
     {
         await AddUserAsync("Zeynep Ak", "zeynep@example.com", Role.SystemAdministrator);
-        UserId user = await AddUserAsync("Ali Bal", "ali@example.com", Role.WarehouseManager);
+        UserId user = await AddUserAsync("Ali Bal", "ali@example.com", Role.TechnicalManager);
         using HttpClient client = await SignedInAsync("zeynep@example.com");
 
         using HttpResponseMessage response = await client.GetAsync(

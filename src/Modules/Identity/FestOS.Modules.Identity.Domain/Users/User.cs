@@ -1,4 +1,5 @@
 using FestOS.BuildingBlocks.Domain.Entities;
+using FestOS.BuildingBlocks.Domain.Rules;
 using FestOS.BuildingBlocks.Domain.Text;
 
 namespace FestOS.Modules.Identity.Domain.Users;
@@ -95,15 +96,63 @@ public sealed class User : AggregateRoot<UserId>, IDeactivatable
         IEnumerable<Role> roles,
         IEnumerable<Guid> warehouseIds,
         string temporaryPasswordHash
-    ) =>
-        new(UserId.New())
+    )
+    {
+        var user = new User(UserId.New()) { PasswordHash = temporaryPasswordHash, MustChangePassword = true };
+        user.Describe(fullName, email, roles, warehouseIds);
+        return user;
+    }
+
+    /// <summary>Changes the name, email, roles and warehouses (US-SYS-001); the change history keeps the old values.</summary>
+    public void Edit(string fullName, string email, IEnumerable<Role> roles, IEnumerable<Guid> warehouseIds) =>
+        Describe(fullName, email, roles, warehouseIds);
+
+    /// <summary>Closes the user's access; the user stays, so the records that name them keep their name (BR-SYS-001).</summary>
+    public void Deactivate(Guid deactivatedBy, DateTimeOffset at)
+    {
+        if (DeactivatedAt is null)
         {
-            FullName = fullName.Trim(),
-            FullNameSearch = SearchKey.Of(fullName),
-            Email = EmailAddress.Normalize(email),
-            _roles = [.. roles.Distinct().Order()],
-            _warehouseIds = [.. warehouseIds.Distinct().Order()],
-            PasswordHash = temporaryPasswordHash,
-            MustChangePassword = true,
-        };
+            DeactivatedAt = at;
+            DeactivatedBy = deactivatedBy;
+        }
+    }
+
+    /// <summary>Opens the access of a deactivated user again (ID-05).</summary>
+    public void Activate()
+    {
+        DeactivatedAt = null;
+        DeactivatedBy = null;
+    }
+
+    /// <summary>
+    /// Replaces the password with a temporary one the user must change at the next sign-in, and lifts a
+    /// lock (BR-SYS-006).
+    /// </summary>
+    public void ResetPassword(string temporaryPasswordHash)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(temporaryPasswordHash);
+        PasswordHash = temporaryPasswordHash;
+        MustChangePassword = true;
+        FailedLoginCount = 0;
+        LockedUntil = null;
+    }
+
+    private void Describe(string fullName, string email, IEnumerable<Role> roles, IEnumerable<Guid> warehouseIds)
+    {
+        List<Role> distinctRoles = [.. roles.Distinct().Order()];
+        List<Guid> distinctWarehouses = [.. warehouseIds.Distinct().Order()];
+        if (distinctRoles.Contains(Role.WarehouseManager) && distinctWarehouses.Count == 0)
+        {
+            throw new BusinessRuleViolationException(
+                IdentityRuleCodes.WarehouseManagerHasWarehouse,
+                "A warehouse manager needs at least one warehouse."
+            );
+        }
+
+        FullName = fullName.Trim();
+        FullNameSearch = SearchKey.Of(fullName);
+        Email = EmailAddress.Normalize(email);
+        _roles = distinctRoles;
+        _warehouseIds = distinctWarehouses;
+    }
 }
