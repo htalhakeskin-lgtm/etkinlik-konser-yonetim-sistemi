@@ -22,12 +22,11 @@ public static class RealtimeExtensions
         return builder;
     }
 
-    /// <summary>Maps the notification hub at <c>/hubs/notifications</c>.</summary>
+    /// <summary>Maps the notification hub at <c>/hubs/notifications</c>; only a signed-in user connects (AT-09).</summary>
     public static IEndpointRouteBuilder MapRealtime(this IEndpointRouteBuilder endpoints)
     {
         ArgumentNullException.ThrowIfNull(endpoints);
-        // Open until sessions arrive later in step 1.2, which turns this into RequireAuthorization (AT-09).
-        endpoints.MapHub<NotificationsHub>(NotificationsHub.Path).AllowAnonymous();
+        endpoints.MapHub<NotificationsHub>(NotificationsHub.Path).RequireAuthorization();
         return endpoints;
     }
 

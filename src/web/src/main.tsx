@@ -7,11 +7,13 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 import { createQueryClient } from "./lib/query-client";
+import { applyServerValidationTexts } from "./lib/schema-messages";
 import { followSystemTheme } from "./lib/theme";
 import { routeTree } from "./routeTree.gen";
 
 // The saved theme is already applied by public/theme-init.js; from here on, follow device changes.
 followSystemTheme();
+applyServerValidationTexts();
 
 const queryClient = createQueryClient();
 

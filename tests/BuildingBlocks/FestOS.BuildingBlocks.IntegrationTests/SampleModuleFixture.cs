@@ -92,10 +92,13 @@ public sealed class SampleModuleFixture : IAsyncLifetime
         builder.AddHttpPlatform();
         builder.AddRealtime();
         builder.AddModules(new AuditModuleDefinition(), new SampleModuleDefinition());
+        SignedInTestUser.Register(builder.Services);
 
         WebApplication app = builder.Build();
         app.UseHttpPlatform();
+        app.UseAuthentication();
         app.UseCsrfProtection();
+        app.UseAuthorization();
         app.MapAntiforgeryToken();
         app.MapRealtime();
         app.MapModules();
