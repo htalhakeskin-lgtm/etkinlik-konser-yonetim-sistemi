@@ -46,16 +46,16 @@
       "festos.buildingblocks.domain": {
         "type": "Project"
       },
-      "festos.modules.identity.domain": {
-        "type": "Project",
-        "dependencies": {
-          "FestOS.BuildingBlocks.Domain": "[1.0.0, )"
-        }
-      },
       "festos.modules.inventory.contracts": {
         "type": "Project",
         "dependencies": {
           "FestOS.BuildingBlocks.Contracts": "[1.0.0, )"
+        }
+      },
+      "festos.modules.inventory.domain": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Domain": "[1.0.0, )"
         }
       },
       "FluentValidation": {

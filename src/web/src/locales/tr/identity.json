@@ -150,6 +150,14 @@
       "Entries": {
         "View": "İşlem geçmişini görme"
       }
+    },
+    "Inventory": {
+      "Warehouses": {
+        "View": "Depoları görme",
+        "Create": "Depo oluşturma",
+        "Edit": "Depoyu düzenleme",
+        "Deactivate": "Depoyu pasifleştirme ve etkinleştirme"
+      }
     }
   }
 }

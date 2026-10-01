@@ -1,6 +1,6 @@
 # Modül tasarımı: Inventory — Stok ve depo
 
-> **Durum:** v1.0 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.1 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 (depolar); stok 1.5'te, depo işlemleri 1.7'de bu belgeye eklenir ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 8](#8-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -20,6 +20,8 @@ Inventory modülünün fiziksel tasarımıdır. Modül üç adımda yazılır; b
 | `warehouses` | `id`, `name varchar(100)`, `city varchar(100)`, `address varchar(500)`, `is_active bool`, `version` | `ux_warehouses_name` → BR-SYS-016 (pasif depolarda da tekil); ad karşılaştırması büyük-küçük harf duyarsızdır ([database §13](../standards/database.md#13-metin-sıralama-ve-arama)) |
 
 `Warehouse` toplu köktür; işlem geçmişine yazılır.
+
+**Uygulama (PR 1a):** Pasiflik, `is_active` yerine ortak kalıpla tutulur: `deactivated_at`, `deactivated_by` ([database §10.1](../standards/database.md#101-pasifleştirme)); Identity'deki kullanıcılarla aynıdır. Adın tekilliği, adın arama anahtarı olan `name_search` kolonundaki `ux_warehouses_name` indeksiyle sağlanır (BR-SYS-016): büyük-küçük harf ve Türkçe işaret farkı ikinci bir ad yapmaz ("Işıklar Depo" ile "ISIKLAR DEPO" aynıdır). Yetki sabitleri (`InventoryPermissions`) Contracts'tadır, çünkü onları veren rol matrisi Identity'dedir; Identity Inventory'nin Contracts'ına başvurabilir ([08 §3.3](../08-architecture.md#33-modüller-arası-referanslar)).
 
 ## 4. Kurallar
 
@@ -54,7 +56,8 @@ Inventory modülünün fiziksel tasarımıdır. Modül üç adımda yazılır; b
 
 | # | PR | Kapsam |
 |---|---|---|
-| 1 | Inventory iskeleti ve depolar (sunucu) | Projeler, şema, rol, `warehouses`, uç noktalar, BR-SYS-013 (son aktif depo), BR-SYS-016, `WarehouseDeactivated`, `IWarehouseDirectory` |
+| 1a | Inventory iskeleti | Projeler, şema, rol, `warehouses`, yetkiler ve rol matrisi, BR-SYS-016 |
+| 1b | Depolar (sunucu) | Uç noktalar, BR-SYS-013 (son aktif depo), `WarehouseDeactivated`, `IWarehouseDirectory` |
 | 2 | Depolar ekranı | `/admin/warehouses` |
 
 ## 8. Kararlar
@@ -73,3 +76,4 @@ Bu belgede proje sahibine soru yoktur.
 |---|---|---|
 | 2026-10-01 | v0.1 | İlk taslak (depolar) |
 | 2026-10-01 | v1.0 | Onaylandı. |
+| 2026-10-01 | v1.1 | §3: PR 1a'nın uygulama ayrıntıları (ortak pasifleştirme kolonları, ad için arama anahtarı); §7: PR 1 ikiye bölündü. |

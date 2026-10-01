@@ -1,4 +1,5 @@
 using FestOS.Modules.Identity.Domain.Users;
+using FestOS.Modules.Inventory.Contracts;
 
 namespace FestOS.Modules.Identity.Application;
 
@@ -12,11 +13,15 @@ public static class RoleCatalog
     public static IReadOnlyDictionary<Role, IReadOnlySet<string>> Permissions { get; } =
         new Dictionary<Role, IReadOnlySet<string>>
         {
-            [Role.SystemAdministrator] = Set(IdentityPermissions.All),
-            [Role.BookingManager] = Set([]),
-            [Role.TechnicalManager] = Set([]),
-            [Role.WarehouseManager] = Set([]),
-            [Role.GeneralManager] = Set([IdentityPermissions.ViewUsers, IdentityPermissions.ViewRoles]),
+            [Role.SystemAdministrator] = Set([.. IdentityPermissions.All, .. InventoryPermissions.All]),
+            [Role.BookingManager] = Set([InventoryPermissions.ViewWarehouses]),
+            [Role.TechnicalManager] = Set([InventoryPermissions.ViewWarehouses]),
+            [Role.WarehouseManager] = Set([InventoryPermissions.ViewWarehouses]),
+            [Role.GeneralManager] = Set([
+                IdentityPermissions.ViewUsers,
+                IdentityPermissions.ViewRoles,
+                InventoryPermissions.ViewWarehouses,
+            ]),
         };
 
     /// <summary>The permissions of a user with these roles: the union of theirs (BR-SYS-002).</summary>
