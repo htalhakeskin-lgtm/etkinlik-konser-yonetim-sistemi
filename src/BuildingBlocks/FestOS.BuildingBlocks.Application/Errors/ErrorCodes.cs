@@ -33,6 +33,7 @@ public static class ErrorCodes
             ConcurrencyConflictException => ConcurrencyConflict,
             IdempotencyKeyReusedException => IdempotencyKeyReused,
             IdempotencyKeyInProgressException => IdempotencyKeyInProgress,
+            AuthenticationFailedException failed => failed.Code,
             _ => null,
         };
 }

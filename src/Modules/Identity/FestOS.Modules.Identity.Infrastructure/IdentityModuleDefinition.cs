@@ -4,7 +4,9 @@ using FestOS.BuildingBlocks.Infrastructure.Persistence;
 using FestOS.Modules.Identity.Application;
 using FestOS.Modules.Identity.Application.Passwords;
 using FestOS.Modules.Identity.Application.Users;
+using FestOS.Modules.Identity.Infrastructure.Authentication;
 using FestOS.Modules.Identity.Infrastructure.Passwords;
+using FestOS.Modules.Identity.Infrastructure.Sessions;
 using FestOS.Modules.Identity.Infrastructure.Users;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,8 +40,10 @@ public sealed class IdentityModuleDefinition : IModuleDefinition
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
         builder.Services.AddSingleton<ITemporaryPasswordGenerator, TemporaryPasswordGenerator>();
+        builder.Services.AddHandlersFrom(typeof(IdentityModuleDefinition).Assembly);
+        SessionAuthentication.Register(builder);
     }
 
     /// <inheritdoc />
-    public void MapEndpoints(IEndpointRouteBuilder endpoints) { }
+    public void MapEndpoints(IEndpointRouteBuilder endpoints) => AuthenticationEndpoints.Map(endpoints);
 }

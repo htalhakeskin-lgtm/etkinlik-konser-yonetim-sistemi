@@ -41,6 +41,10 @@
 
   <!-- Host and service defaults -->
   <ItemGroup>
+    <PackageVersion
+      Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore"
+      Version="10.0.12"
+    />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
     <PackageVersion Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.12" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.10.0" />

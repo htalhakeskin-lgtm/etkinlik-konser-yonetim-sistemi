@@ -1,3 +1,4 @@
+using System.Text.Json.Nodes;
 using FestOS.BuildingBlocks.Infrastructure.Http;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
@@ -12,6 +13,8 @@ namespace FestOS.BuildingBlocks.Infrastructure.OpenApi;
 internal sealed class ApiOperationTransformer : IOpenApiOperationTransformer
 {
     public const string ProblemSchema = "ApiProblem";
+
+    public const string NoIdempotencyKeyExtension = "x-festos-no-idempotency-key";
 
     public async Task TransformAsync(
         OpenApiOperation operation,
@@ -35,6 +38,7 @@ internal sealed class ApiOperationTransformer : IOpenApiOperationTransformer
 
         if (
             metadata.OfType<RequiresIdempotencyKeyMetadata>().Any()
+            && !metadata.OfType<NoIdempotencyKeyMetadata>().Any()
             && IdempotencyFilter.ChangesData(context.Description.HttpMethod ?? string.Empty)
         )
         {
@@ -44,6 +48,13 @@ internal sealed class ApiOperationTransformer : IOpenApiOperationTransformer
                 "A new UUID for each user action, and the same one when the action is retried (api §10).",
                 "uuid"
             );
+        }
+
+        // Stated in the document, so AT-15 can tell a deliberate exemption from a forgotten header.
+        if (metadata.OfType<NoIdempotencyKeyMetadata>().Any())
+        {
+            operation.Extensions ??= new Dictionary<string, IOpenApiExtension>(StringComparer.Ordinal);
+            operation.Extensions[NoIdempotencyKeyExtension] = new JsonNodeExtension(JsonValue.Create(true));
         }
 
         OpenApiDocument document =

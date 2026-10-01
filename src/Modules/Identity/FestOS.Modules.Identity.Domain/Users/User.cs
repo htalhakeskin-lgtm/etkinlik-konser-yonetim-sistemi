@@ -50,6 +50,9 @@ public sealed class User : AggregateRoot<UserId>, IDeactivatable
     /// <inheritdoc />
     public Guid? DeactivatedBy { get; private set; }
 
+    /// <summary>Replaces the hash with one made with the current settings; the password stays the same.</summary>
+    public void Rehash(string passwordHash) => PasswordHash = passwordHash;
+
     /// <summary>A new user who signs in with a temporary password and must replace it (BR-SYS-006).</summary>
     public static User Create(
         string fullName,

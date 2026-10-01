@@ -82,7 +82,10 @@ public sealed partial class ApiDocumentTests
             }
 
             string[] headers = RequiredHeaders(operation);
-            if (!headers.Contains("Idempotency-Key", StringComparer.Ordinal))
+            // Signing in is exempt on purpose: a stored answer must never be replayed (identity §7).
+            bool isExempt =
+                operation.TryGetProperty("x-festos-no-idempotency-key", out JsonElement exempt) && exempt.GetBoolean();
+            if (!isExempt && !headers.Contains("Idempotency-Key", StringComparer.Ordinal))
             {
                 violations.Add($"{method.ToUpperInvariant()} {path}: Idempotency-Key is not required");
             }

@@ -23,7 +23,10 @@ public sealed class SchemaRuleTests(PostgresDatabase database) : IAsyncLifetime
     };
 
     // Constraints that guard a technical value, not a business rule, with the reason (DT-04).
-    private static readonly Dictionary<string, string> ConstraintsWithoutRule = new(StringComparer.Ordinal);
+    private static readonly Dictionary<string, string> ConstraintsWithoutRule = new(StringComparer.Ordinal)
+    {
+        ["ux_sessions_key_hash"] = "A random key's hash; a clash is impossible in practice and is no user's mistake.",
+    };
 
     private readonly Dictionary<string, string> _passwords = ModuleContexts.NewPasswords();
 

@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.29 (onaylandı) · **Son güncelleme:** 2026-09-30
+> **Durum:** v1.30 (onaylandı) · **Son güncelleme:** 2026-09-30
 
 ## 1. Bu belge ne işe yarar
 
@@ -278,6 +278,7 @@ Anahtar denetimi `If-Match`'ten önce yapılır; filtre sırası bunu garanti ed
 - Anahtar tek bir UUID'dir (ön yüz `crypto.randomUUID()` üretir); başka her biçim `400` (`malformedRequest`) alır.
 - Parmak izi, yöntem, adres (sorgu dahil) ve gövdenin SHA-256 özetinden oluşan metnin SHA-256'sıdır. Gövde bağlama sırasında okunduğu için `UseHttpPlatform`, değiştiren API isteklerinin gövdesini tamponlar (en fazla 1 MB).
 - Temizlik işi her modülde gecelik çalışır (İstanbul saatiyle 04:30) ve 24 saatten eski anahtarları 1000'lik gruplar halinde siler.
+- Yanıtı asla tekrar oynatılmaması gereken değiştiren uç (giriş) `WithoutIdempotencyKey()` ile muaf tutulur; OpenAPI'de `x-festos-no-idempotency-key` olarak görünür ve AT-15 bunu tanır (Faz 1.2).
 
 ### 9.4 CSRF, başlıklar, sürüm
 
@@ -475,3 +476,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-09-30 | v1.27 | §12 ilk ortak bileşenlerin uygulama ayrıntıları (14a); 14. PR ikiye bölündü. |
 | 2026-10-01 | v1.28 | §12 bağlantı göstergesi ve onay diyaloğunun uygulama ayrıntıları (14b). |
 | 2026-10-01 | v1.29 | 15. PR ikiye bölündü (15a izlenebilirlik, 15b DT-03 / DT-04). |
+| 2026-10-01 | v1.30 | Faz 1.2 eklemeleri: `WithoutIdempotencyKey`, `AuthenticationFailedException` (`401`), `ExcludeFromChangeHistory()` (sahiplenilmeyen tipler işlem geçmişinden muaf), tamsayı anahtarlar veritabanında üretilir (yalnızca çatı tipleri). |

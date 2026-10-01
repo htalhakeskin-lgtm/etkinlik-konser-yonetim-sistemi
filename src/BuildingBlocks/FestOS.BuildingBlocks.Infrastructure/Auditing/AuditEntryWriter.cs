@@ -36,6 +36,7 @@ internal static class AuditEntryWriter
                 entry.Entity is AuditEntry
                 || entry.State is not (EntityState.Added or EntityState.Modified or EntityState.Deleted)
                 || entry.Metadata.ClrType.IsDefined(typeof(NotAuditedAttribute), inherit: true)
+                || entry.Metadata.FindAnnotation(ChangeHistoryModelExtensions.NotAuditedAnnotation) is not null
             )
             {
                 continue;

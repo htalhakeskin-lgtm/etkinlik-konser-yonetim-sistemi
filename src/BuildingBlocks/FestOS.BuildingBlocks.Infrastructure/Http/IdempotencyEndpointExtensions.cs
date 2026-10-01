@@ -20,4 +20,12 @@ public static class IdempotencyEndpointExtensions
             .WithMetadata(RequiresIdempotencyKeyMetadata.Instance)
             .AddEndpointFilter<TBuilder, IdempotencyFilter>();
     }
+
+    /// <summary>Exempts a changing endpoint from idempotency keys; its result is never stored or replayed.</summary>
+    public static TBuilder WithoutIdempotencyKey<TBuilder>(this TBuilder builder)
+        where TBuilder : IEndpointConventionBuilder
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        return builder.WithMetadata(NoIdempotencyKeyMetadata.Instance);
+    }
 }
