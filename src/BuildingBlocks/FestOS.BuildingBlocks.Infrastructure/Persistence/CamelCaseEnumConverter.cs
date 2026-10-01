@@ -1,4 +1,5 @@
 using System.Collections.Frozen;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
@@ -6,9 +7,9 @@ namespace FestOS.BuildingBlocks.Infrastructure.Persistence;
 
 /// <summary>
 /// Stores an enum as the same camelCase text the API uses, e.g. <c>holdPlaced</c> (database §6.2,
-/// naming §6).
+/// naming §6). Columns get it by convention; modules use it for enum elements of array columns.
 /// </summary>
-internal sealed class CamelCaseEnumConverter<TEnum>()
+public sealed class CamelCaseEnumConverter<TEnum>()
     : ValueConverter<TEnum, string>(value => ToText(value), text => FromText(text))
     where TEnum : struct, Enum
 {
@@ -22,6 +23,11 @@ internal sealed class CamelCaseEnumConverter<TEnum>()
     );
 
     /// <summary>Every value as stored, for the column's <c>CHECK</c> constraint.</summary>
+    [SuppressMessage(
+        "Design",
+        "CA1000:Do not declare static members on generic types",
+        Justification = "The values belong to the enum type argument; a non-generic helper would only forward here."
+    )]
     public static IEnumerable<string> StoredValues => Texts.Values.Order(StringComparer.Ordinal);
 
     private static string ToText(TEnum value) => Texts[value];
