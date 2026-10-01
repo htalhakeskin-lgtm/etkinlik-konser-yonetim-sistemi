@@ -1,6 +1,6 @@
 import type { LinkProps } from "@tanstack/react-router";
 import type { ParseKeys } from "i18next";
-import { type LucideIcon, UsersRound } from "lucide-react";
+import { type LucideIcon, ShieldCheck, UsersRound } from "lucide-react";
 
 /** One screen in the menu, shown to users who hold its permission (US-SYS-012). */
 export type MenuItem = {
@@ -27,6 +27,12 @@ export const menu: readonly MenuGroup[] = [
         to: "/admin/users",
         permission: "Identity.Users.View",
         icon: UsersRound,
+      },
+      {
+        label: "menu.roles",
+        to: "/admin/roles",
+        permission: "Identity.Roles.View",
+        icon: ShieldCheck,
       },
     ],
   },

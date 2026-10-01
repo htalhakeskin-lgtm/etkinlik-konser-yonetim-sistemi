@@ -13,6 +13,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as SetPasswordRouteImport } from './routes/set-password'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as AppAdminRolesRouteImport } from './routes/_app/admin/roles'
 import { Route as AppAdminUsersRouteImport } from './routes/_app/admin/users'
 
 const AppRoute = AppRouteImport.update({
@@ -34,6 +35,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAdminRolesRoute = AppAdminRolesRouteImport.update({
+  id: '/admin/roles',
+  path: '/admin/roles',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAdminUsersRoute = AppAdminUsersRouteImport.update({
   id: '/admin/users',
   path: '/admin/users',
@@ -44,12 +50,14 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/login': typeof LoginRoute
   '/set-password': typeof SetPasswordRoute
+  '/admin/roles': typeof AppAdminRolesRoute
   '/admin/users': typeof AppAdminUsersRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/set-password': typeof SetPasswordRoute
   '/': typeof AppIndexRoute
+  '/admin/roles': typeof AppAdminRolesRoute
   '/admin/users': typeof AppAdminUsersRoute
 }
 export interface FileRoutesById {
@@ -58,19 +66,21 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/set-password': typeof SetPasswordRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/admin/roles': typeof AppAdminRolesRoute
   '/_app/admin/users': typeof AppAdminUsersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/set-password' | '/admin/users'
+  fullPaths: '/' | '/login' | '/set-password' | '/admin/roles' | '/admin/users'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/set-password' | '/' | '/admin/users'
+  to: '/login' | '/set-password' | '/' | '/admin/roles' | '/admin/users'
   id:
     | '__root__'
     | '/_app'
     | '/login'
     | '/set-password'
     | '/_app/'
+    | '/_app/admin/roles'
     | '/_app/admin/users'
   fileRoutesById: FileRoutesById
 }
@@ -110,6 +120,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/admin/roles': {
+      id: '/_app/admin/roles'
+      path: '/admin/roles'
+      fullPath: '/admin/roles'
+      preLoaderRoute: typeof AppAdminRolesRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/admin/users': {
       id: '/_app/admin/users'
       path: '/admin/users'
@@ -122,11 +139,13 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
+  AppAdminRolesRoute: typeof AppAdminRolesRoute
   AppAdminUsersRoute: typeof AppAdminUsersRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
+  AppAdminRolesRoute: AppAdminRolesRoute,
   AppAdminUsersRoute: AppAdminUsersRoute,
 }
 

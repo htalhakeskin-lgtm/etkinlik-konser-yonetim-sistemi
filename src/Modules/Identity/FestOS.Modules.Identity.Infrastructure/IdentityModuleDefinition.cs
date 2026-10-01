@@ -8,6 +8,7 @@ using FestOS.Modules.Identity.Application.Passwords;
 using FestOS.Modules.Identity.Application.Users;
 using FestOS.Modules.Identity.Infrastructure.Authentication;
 using FestOS.Modules.Identity.Infrastructure.Passwords;
+using FestOS.Modules.Identity.Infrastructure.Roles;
 using FestOS.Modules.Identity.Infrastructure.Sessions;
 using FestOS.Modules.Identity.Infrastructure.Users;
 using Microsoft.AspNetCore.Routing;
@@ -64,5 +65,6 @@ public sealed class IdentityModuleDefinition : IModuleDefinition
     {
         AuthenticationEndpoints.Map(endpoints);
         UserEndpoints.Map(endpoints);
+        RoleEndpoints.Map(endpoints);
     }
 }
