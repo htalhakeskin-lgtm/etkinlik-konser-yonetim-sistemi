@@ -1,7 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- Faz 1.1 skeleton: the change history table and its role (building-blocks §6); reading comes in 1.2. -->
+  <!-- The change history: its table and role (building-blocks §6) and its reading (audit.md). -->
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="FestOS.Modules.Audit.IntegrationTests" />
   </ItemGroup>
 
   <ItemGroup>

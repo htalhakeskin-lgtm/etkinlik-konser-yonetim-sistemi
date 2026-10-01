@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.36 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.37 (onaylandı) · **Son güncelleme:** 2026-10-01
 
 ## 1. Bu belge ne işe yarar
 
@@ -483,3 +483,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-10-01 | v1.34 | Liste sorguları için `SearchKey` (Domain, database §13), `SortKeys<T>`, `ToPagedResultAsync`, `Collations.Turkish` (Infrastructure); sorgu dizesi enum'ları için `EnumQueryValue<T>` ve OpenAPI'de enum şemasına başvuru (api §6.3). |
 | 2026-10-01 | v1.35 | Ön yüz: ortak `DataTable` (TanStack Table 9; sunucu tarafı sıralama ve sayfalama, ui §8); shadcn/ui `table` ve `select` eklendi. |
 | 2026-10-02 | v1.36 | `ICurrentUser.DisplayName`, `SystemUser.Name` ("Sistem"); işlem geçmişi satırına `actor_name` yazılır ve iki indeks eklenir (audit §2). |
+| 2026-10-02 | v1.37 | `TimeAndIdCursor`: zaman ve kimliğe göre sıralı listelerin imleci (api §6.1). |

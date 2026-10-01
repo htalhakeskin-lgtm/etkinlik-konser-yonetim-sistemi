@@ -1,6 +1,6 @@
 # Modül tasarımı: Audit — İşlem geçmişi
 
-> **Durum:** v1.1 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.2 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 7](#7-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -30,6 +30,8 @@
 - Kaydın detay sayfasındaki geçmiş (US-SYS-004 kriter 1) aynı uç noktayı `entityType` ve `entityId` ile çağırır; ayrı bir uç nokta yoktur.
 - Yanıt satırı: zaman, kullanıcı (kimlik ve ad), modül, kayıt türü ve kimliği, işlem, değişen alanların eski ve yeni değerleri (`changes`), iz kimliği.
 - Uç nokta salt okurdur; tabloyu değiştiren bir uç nokta yoktur. Veritabanı rolü de yalnızca okur (DT-02).
+
+**Uygulama (PR 2):** Modül salt okunur ve tek projelidir (Infrastructure); sorgu, sonucu ve işleyicisi oradadır. İmleç, son satırın zamanı ve kimliğidir (`TimeAndIdCursor`, BuildingBlocks); bir sonraki dilim `(occurred_at, id) < (…)` satır değeri karşılaştırmasıyla alınır ve `ix_audit_entries_occurred_at_id` indeksini kullanır. Tanınmayan imleç `400 invalidCursor` döner. `from` / `to` İstanbul günleridir ve aralık yarı açıktır (`to` dahil değil, api §6.3). `changes` alan başına `old` / `new` değerli bir nesnedir. `Audit.Entries.View` yetkisi Audit'in kendi sabitindedir; rol matrisi (Identity) Audit'e başvuramadığı için kodu metin olarak yazar, ikisinin aynı kalmasını mimari test denetler (BR-SYS-010: yalnızca sistem yöneticisi ve genel müdür).
 
 ## 4. Ekranlar
 
@@ -71,3 +73,4 @@ Bu belgede proje sahibine soru yoktur.
 | 2026-10-01 | v0.1 | İlk taslak |
 | 2026-10-01 | v1.0 | Onaylandı. |
 | 2026-10-02 | v1.1 | §2: kullanıcı adı ve indekslerin uygulama ayrıntıları (PR 1). |
+| 2026-10-02 | v1.2 | §3: işlem geçmişi uç noktasının uygulama ayrıntıları (PR 2). |

@@ -2,6 +2,7 @@ using FestOS.BuildingBlocks.Application.Messaging;
 using FestOS.BuildingBlocks.Infrastructure.Auditing;
 using FestOS.BuildingBlocks.Infrastructure.Modules;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
+using FestOS.Modules.Audit.Infrastructure.Entries;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Hosting;
 
@@ -23,7 +24,7 @@ public sealed class AuditModuleDefinition : IModuleDefinition
     public string Schema => SchemaName;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<string> Permissions => [];
+    public IReadOnlyCollection<string> Permissions => AuditPermissions.All;
 
     /// <inheritdoc />
     public void RegisterServices(IHostApplicationBuilder builder)
@@ -33,5 +34,5 @@ public sealed class AuditModuleDefinition : IModuleDefinition
     }
 
     /// <inheritdoc />
-    public void MapEndpoints(IEndpointRouteBuilder endpoints) { }
+    public void MapEndpoints(IEndpointRouteBuilder endpoints) => AuditEntryEndpoints.Map(endpoints);
 }
