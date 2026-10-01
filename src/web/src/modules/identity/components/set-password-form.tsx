@@ -10,20 +10,10 @@ import { ChangeMyPasswordBody } from "@/api/zod/identity/identity.zod";
 import { FormAlert } from "@/components/common/form-alert";
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
-import { ApiError } from "@/lib/api-error";
-import { errorMessage, fieldErrors } from "@/lib/api-error-messages";
+import { errorMessage } from "@/lib/api-error-messages";
 
 import { PasswordInput } from "./password-input";
-
-const passwordProblems = [
-  "tooShort",
-  "tooLong",
-  "whitespace",
-  "containsEmail",
-  "containsProductName",
-  "common",
-  "sameAsCurrent",
-] as const;
+import { newPasswordError } from "./password-problems";
 
 const schema = z.object({ newPassword: ChangeMyPasswordBody.shape.newPassword.min(1) });
 
@@ -48,7 +38,7 @@ export function SetPasswordForm({ onChanged }: SetPasswordFormProps) {
       changeMyPassword({ currentPassword: null, newPassword: values.newPassword }),
     onSuccess: onChanged,
     onError: (error) => {
-      const message = fieldMessage(error, t);
+      const message = newPasswordError(error, t);
       if (message !== undefined) {
         setError("newPassword", { message }, { shouldFocus: true });
       }
@@ -82,7 +72,7 @@ export function SetPasswordForm({ onChanged }: SetPasswordFormProps) {
           </Field>
         )}
       />
-      {change.isError && fieldMessage(change.error, t) === undefined && (
+      {change.isError && newPasswordError(change.error, t) === undefined && (
         <FormAlert>{errorMessage(change.error)}</FormAlert>
       )}
       <Button type="submit" isLoading={change.isPending}>
@@ -90,25 +80,4 @@ export function SetPasswordForm({ onChanged }: SetPasswordFormProps) {
       </Button>
     </form>
   );
-}
-
-// The refusals that belong under the field: the broken password rule, or a validation message.
-function fieldMessage(
-  error: Error,
-  t: ReturnType<typeof useTranslation<"identity">>["t"],
-): string | undefined {
-  if (!(error instanceof ApiError)) {
-    return undefined;
-  }
-
-  if (error.code === "BR-SYS-007") {
-    const reason = passwordProblems.find((problem) => problem === error.params.reason);
-    return reason === undefined
-      ? errorMessage(error)
-      : t(`setPassword.problem.${reason}`, { minLength: error.params.minLength });
-  }
-
-  return error.status === 400
-    ? fieldErrors(error).find((field) => field.path === "newPassword")?.message
-    : undefined;
 }

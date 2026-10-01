@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.32 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.33 (onaylandı) · **Son güncelleme:** 2026-10-01
 
 ## 1. Bu belge ne işe yarar
 
@@ -479,3 +479,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-10-01 | v1.30 | Faz 1.2 eklemeleri: `WithoutIdempotencyKey`, `AuthenticationFailedException` (`401`), `ExcludeFromChangeHistory()` (sahiplenilmeyen tipler işlem geçmişinden muaf), tamsayı anahtarlar veritabanında üretilir (yalnızca çatı tipleri). |
 | 2026-10-01 | v1.31 | `RateLimitedException`: `429`, `rateLimited` ve tam saniyeye yuvarlanmış `Retry-After` (api §11). |
 | 2026-10-01 | v1.32 | Hub oturum ister; `SignedInTestUser` test şeması. Ön yüzde sorgu istemcisi `401`'i yeniden giriş diyaloğuna bildirir (`session-expiry`), Zod hata metinleri sunucunun doğrulama kodlarının metinlerini kullanır (`schema-messages`). |
+| 2026-10-01 | v1.33 | Ön yüz: `Toaster` (Sonner, ui §9.3), `RealtimeClient.stop()`; shadcn/ui `sidebar`, `dropdown-menu`, `sheet`, `tooltip`, `skeleton` eklendi ve tasarım değişkenlerine uyarlandı. |
