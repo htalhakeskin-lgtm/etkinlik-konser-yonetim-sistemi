@@ -40,7 +40,7 @@ internal sealed class SaveChangesPipeline(
         now = now.AddTicks(-(now.Ticks % 10));
 
         StampChangedAggregates(context, now);
-        AuditEntryWriter.AddEntries(context, context.Schema, now, actingUser.UserId);
+        AuditEntryWriter.AddEntries(context, context.Schema, now, actingUser.UserId, actingUser.DisplayName);
         outbox.MoveTo(context);
     }
 

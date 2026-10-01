@@ -14,4 +14,6 @@ internal sealed class HttpCurrentUser(IHttpContextAccessor accessor) : ICurrentU
         Guid.TryParse(accessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid userId)
             ? userId
             : SystemUser.Id;
+
+    public string DisplayName => accessor.HttpContext?.User.FindFirstValue(ClaimTypes.Name) ?? SystemUser.Name;
 }

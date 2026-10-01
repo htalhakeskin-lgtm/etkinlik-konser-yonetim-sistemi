@@ -8,4 +8,7 @@ public static class SystemUser
 {
     /// <summary>The system user's identifier; laid out as a version 7 UUID with a zero timestamp.</summary>
     public static readonly Guid Id = new("00000000-0000-7000-8000-000000000001");
+
+    /// <summary>The system user's name, as Identity seeds it.</summary>
+    public const string Name = "Sistem";
 }

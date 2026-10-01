@@ -10,4 +10,7 @@ public sealed class FakeCurrentUser : ICurrentUser
 
     /// <inheritdoc />
     public Guid UserId { get; set; } = DefaultUserId;
+
+    /// <inheritdoc />
+    public string DisplayName { get; set; } = "Test Kullanıcısı";
 }

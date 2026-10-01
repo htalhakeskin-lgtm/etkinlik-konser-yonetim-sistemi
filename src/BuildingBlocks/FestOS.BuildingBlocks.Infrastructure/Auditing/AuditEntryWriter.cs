@@ -25,7 +25,13 @@ internal static class AuditEntryWriter
         nameof(IAuditable.UpdatedBy),
     };
 
-    public static void AddEntries(DbContext context, string module, DateTimeOffset occurredAt, Guid actorId)
+    public static void AddEntries(
+        DbContext context,
+        string module,
+        DateTimeOffset occurredAt,
+        Guid actorId,
+        string actorName
+    )
     {
         string? traceId = Activity.Current?.TraceId.ToHexString();
         List<AuditEntry> auditEntries = [];
@@ -56,6 +62,7 @@ internal static class AuditEntryWriter
                     Id = Guid.CreateVersion7(),
                     OccurredAt = occurredAt,
                     ActorId = actorId,
+                    ActorName = actorName,
                     Module = module,
                     EntityType = entry.Metadata.ClrType.Name,
                     EntityId = KeyOf(entry),

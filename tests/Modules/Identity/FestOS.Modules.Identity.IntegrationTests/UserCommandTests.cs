@@ -134,6 +134,7 @@ public sealed class UserCommandTests(IdentityFixture fixture) : IAsyncLifetime
         body.GetProperty("roles").GetArrayLength().ShouldBe(2);
         after.StatusCode.ShouldBe(HttpStatusCode.OK);
         (await RoleChangesOfAsync(user)).ShouldBe(1);
+        (await ActorsOfAsync(user)).ShouldBe(["Zeynep Ak"]);
     }
 
     [Fact]
@@ -387,6 +388,18 @@ public sealed class UserCommandTests(IdentityFixture fixture) : IAsyncLifetime
             .Select(entry => entry.Changes)
             .ToListAsync(Cancellation);
         return changes.Count(change => change.Contains("roles", StringComparison.OrdinalIgnoreCase));
+    }
+
+    // The change history keeps who made the change by name, as it was then (audit AU-01).
+    private async Task<List<string>> ActorsOfAsync(UserId user)
+    {
+        await using AsyncServiceScope scope = fixture.Services.CreateAsyncScope();
+        return await scope
+            .ServiceProvider.GetRequiredService<AuditDbContext>()
+            .Set<AuditEntry>()
+            .Where(entry => entry.EntityId == user.Value && entry.Action == AuditAction.Updated)
+            .Select(entry => entry.ActorName)
+            .ToListAsync(Cancellation);
     }
 
     private async Task<UserId> AddUserAsync(string fullName, string email, Role role)

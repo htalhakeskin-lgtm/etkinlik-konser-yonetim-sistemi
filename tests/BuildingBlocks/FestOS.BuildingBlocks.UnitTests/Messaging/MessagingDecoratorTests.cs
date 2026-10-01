@@ -157,5 +157,7 @@ public sealed class MessagingDecoratorTests : IDisposable
     private sealed class FakeCurrentUser : ICurrentUser
     {
         public Guid UserId => SystemUser.Id;
+
+        public string DisplayName => SystemUser.Name;
     }
 }

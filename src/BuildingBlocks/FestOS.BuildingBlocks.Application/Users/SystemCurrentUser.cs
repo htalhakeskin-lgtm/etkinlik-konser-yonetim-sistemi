@@ -5,4 +5,7 @@ public sealed class SystemCurrentUser : ICurrentUser
 {
     /// <inheritdoc />
     public Guid UserId => SystemUser.Id;
+
+    /// <inheritdoc />
+    public string DisplayName => SystemUser.Name;
 }

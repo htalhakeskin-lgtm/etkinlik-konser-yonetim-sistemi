@@ -32,6 +32,7 @@ public sealed class AuditTests(SampleModuleFixture fixture) : IAsyncLifetime
         entry.EntityId.ShouldBe(item.Id.Value);
         entry.Action.ShouldBe(AuditAction.Created);
         entry.ActorId.ShouldBe(fixture.CurrentUser.UserId);
+        entry.ActorName.ShouldBe(fixture.CurrentUser.DisplayName);
         entry.OccurredAt.ShouldBe(fixture.Time.GetUtcNow());
 
         JsonElement changes = Parse(entry);
