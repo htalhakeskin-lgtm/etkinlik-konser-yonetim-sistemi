@@ -2,7 +2,12 @@ using FestOS.BuildingBlocks.Application.Messaging;
 using FestOS.BuildingBlocks.Infrastructure.Modules;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
 using FestOS.Modules.Identity.Application;
+using FestOS.Modules.Identity.Application.Passwords;
+using FestOS.Modules.Identity.Application.Users;
+using FestOS.Modules.Identity.Infrastructure.Passwords;
+using FestOS.Modules.Identity.Infrastructure.Users;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace FestOS.Modules.Identity.Infrastructure;
@@ -30,6 +35,9 @@ public sealed class IdentityModuleDefinition : IModuleDefinition
     {
         builder.AddModuleDbContext<IdentityDbContext>(ModuleName, SchemaName);
         builder.Services.AddHandlersFrom(typeof(IdentityPermissions).Assembly);
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
+        builder.Services.AddSingleton<ITemporaryPasswordGenerator, TemporaryPasswordGenerator>();
     }
 
     /// <inheritdoc />

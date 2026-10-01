@@ -1,4 +1,5 @@
 using System.Reflection;
+using FestOS.BuildingBlocks.Application.Users;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
 using FestOS.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -108,6 +109,17 @@ public sealed class SchemaRuleTests(PostgresDatabase database) : IAsyncLifetime
         }
 
         unmapped.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task IdentityMigrations_SeedTheSystemUserWhoCannotSignIn()
+    {
+        List<string> seeded = await QueryAsync(
+            "SELECT full_name || '|' || password_hash FROM identity.users WHERE id = @id",
+            ("id", SystemUser.Id)
+        );
+
+        seeded.ShouldBe(["Sistem|"]);
     }
 
     // The mapping is the context's own (protected) table of constraint names and rule codes.
