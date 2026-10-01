@@ -182,6 +182,26 @@
           "FestOS.BuildingBlocks.Infrastructure": "[1.0.0, )"
         }
       },
+      "festos.modules.identity.application": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Application": "[1.0.0, )",
+          "FestOS.Modules.Identity.Domain": "[1.0.0, )"
+        }
+      },
+      "festos.modules.identity.domain": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Domain": "[1.0.0, )"
+        }
+      },
+      "festos.modules.identity.infrastructure": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Infrastructure": "[1.0.0, )",
+          "FestOS.Modules.Identity.Application": "[1.0.0, )"
+        }
+      },
       "festos.servicedefaults": {
         "type": "Project",
         "dependencies": {

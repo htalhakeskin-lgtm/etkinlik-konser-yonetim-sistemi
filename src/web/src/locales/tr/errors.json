@@ -12,5 +12,6 @@
   "idempotencyKeyInProgress": "Aynı işlem hâlâ sürüyor. Biraz bekleyip yeniden deneyin.",
   "csrfRejected": "Güvenlik doğrulaması başarısız oldu. Sayfayı yenileyip yeniden deneyin.",
   "internalError": "Beklenmeyen bir hata oluştu. Sorun sürerse iz numarasıyla bildirin.",
-  "network": "Sunucuya ulaşılamadı. Bağlantınızı kontrol edip yeniden deneyin."
+  "network": "Sunucuya ulaşılamadı. Bağlantınızı kontrol edip yeniden deneyin.",
+  "BR-SYS-015": "Bu e-posta adresi başka bir kullanıcıya ait; pasif kullanıcıların adresleri de yeniden kullanılamaz."
 }

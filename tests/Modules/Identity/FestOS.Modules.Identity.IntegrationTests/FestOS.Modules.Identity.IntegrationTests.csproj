@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\Modules\Audit\FestOS.Modules.Audit.Infrastructure\FestOS.Modules.Audit.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Modules\Identity\FestOS.Modules.Identity.Infrastructure\FestOS.Modules.Identity.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\Testing\FestOS.Testing\FestOS.Testing.csproj" />
+  </ItemGroup>
+</Project>

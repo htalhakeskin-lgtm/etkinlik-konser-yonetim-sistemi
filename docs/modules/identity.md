@@ -1,6 +1,6 @@
 # Modül tasarımı: Identity — Kimlik ve erişim
 
-> **Durum:** v1.1 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.2 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 12](#12-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -34,14 +34,12 @@ Aynı adımın diğer belgeleri: [audit.md](audit.md) (işlem geçmişinin okunm
 
 | Tablo | Kolonlar (ortak kolonlar hariç) | Kısıtlar ve indeksler |
 |---|---|---|
-| `users` | `id`, `full_name varchar(200)`, `email varchar(320)` (küçük harf, NFC), `password_hash text`, `must_change_password bool`, `is_active bool`, `failed_login_count int`, `locked_until timestamptz null`, `version` | `ux_users_email` → BR-SYS-015; e-posta pasif kullanıcılarda da tekildir |
-| `user_roles` | `user_id`, `role varchar(64)` | PK `(user_id, role)`; `ck_user_roles_role_enum`; `users` silinmez, FK basamaklıdır (alt varlık) |
-| `user_warehouses` | `user_id`, `warehouse_id` | PK `(user_id, warehouse_id)`; `ix_user_warehouses_warehouse_id` (depo pasifleşince atamalar bununla bulunur, DT-03); depoya FK yoktur (modüller arası, [database §10](../standards/database.md)) |
+| `users` | `id`, `full_name varchar(200)`, `email varchar(320)` (küçük harf, NFC), `password_hash text`, `must_change_password bool`, `failed_login_count int`, `locked_until timestamptz null`, `roles text[]`, `warehouse_ids uuid[]`, `deactivated_at`, `deactivated_by`, `version` | `ux_users_email` → BR-SYS-015 (pasif kullanıcılarda da tekil); `ck_users_roles_enum`; `ix_users_roles` ve `ix_users_warehouse_ids` (GIN: "bu rolde / bu depoda kim var") |
 | `sessions` | `id`, `user_id`, `key_hash char(64)`, `created_at`, `last_seen_at`, `expires_at`, `permissions text[]`, `warehouse_ids uuid[]`, `user_agent varchar(400)` | `ux_sessions_key_hash` (teknik, DT-04 istisnası); FK `users` basamaklı |
 | `login_attempts` | `id`, `email varchar(320)`, `user_id null`, `occurred_at`, `succeeded bool`, `ip_address inet null` | `ix_login_attempts_occurred_at`; 90 gün sonra silinir (kişisel veri, [security §10](../standards/security.md)) |
 | `data_protection_keys` | ASP.NET veri koruma anahtarları (EF sağlayıcısı) | [security §7](../standards/security.md#7-veri-koruma-anahtarları) |
 
-- `User` tek toplu köktür; roller ve depo atamaları alt varlıklarıdır, sürüm kökte artar.
+- `User` tek toplu köktür. Roller ve depo atamaları kullanıcının dizi kolonlarıdır (ID-10); pasifleştirme ortak kalıptır (`deactivated_at`, `deactivated_by`, [database §10.1](../standards/database.md#101-pasifleştirme)).
 - `sessions` ve `login_attempts` teknik tablolardır: işlem geçmişine yazılmaz (`[NotAudited]`), sürüm taşımaz. `users` tablosunda `password_hash`, `failed_login_count` ve `locked_until` işlem geçmişine yazılmaz.
 - Oturum satırı kullanıcının yetkilerini ve depo atamalarını taşır (ADR-0011). Rol ya da depo ataması değişince açık oturumlar **aynı işlemde** güncellenir ([security §3.5](../standards/security.md#35-yetki-değişikliklerinin-etkisi)).
 
@@ -152,7 +150,7 @@ Kabuk oturum açınca `RealtimeClient`'ı başlatır ve `ConnectionIndicator`'ı
 | # | PR | Kapsam |
 |---|---|---|
 | 1 | Yetki altyapısı | BuildingBlocks: `RequirePermission`, dinamik politika sağlayıcısı, yetki kataloğu, AT-09 |
-| 2 | Identity iskeleti | Projeler, şema, `users` / `user_roles` / `user_warehouses`, rol matrisi ve testleri, AppHost rolü |
+| 2 | Identity iskeleti | Projeler, şema, `users`, rol matrisi ve testleri, AppHost rolü |
 | 3 | `create-admin` komutu | İlk sistem yöneticisi (ID-07) |
 | 4 | Giriş ve oturum | `ITicketStore`, oturum tablosu ve önbelleği, kilit, istek sınırı, `ICurrentUser`, geçici şifre kapısı, `Login` / `Logout` / `GetMe` |
 | 5 | Şifre değiştirme | Politika, yaygın şifre listesi, `ChangeMyPassword` |
@@ -176,6 +174,7 @@ Depo ve işlem geçmişi PR'ları kendi belgelerindedir; sıra Inventory'nin dep
 | ID-06 | Yaygın şifre listesi | SecLists ilk 100.000, gömülü kaynak | Dış servis yok (ADR-0027); MIT lisanslı; 100.000 kayıt bellekte küçük |
 | ID-07 | İlk sistem yöneticisi | Host'ta `create-admin --email … --name …` komutu; geçici şifreyi bir kez yazar. Sistemde aktif sistem yöneticisi varsa reddeder. Demo verisi de bu yolu kullanır. | S1; açık ve tekrarlanabilir, gizli bilgi ayarlarda durmaz |
 | ID-08 | E-posta değişikliği | Sistem yöneticisi değiştirebilir; değişince kullanıcının tüm oturumları sonlanır | S2; kimlik `id`'dir, e-posta değil |
+| ID-10 | Roller ve depo atamaları | `users` tablosunda `roles text[]` ve `warehouse_ids uuid[]`; ayrı tablolar yok | Rol kümesi küçük ve sabit, depoya yabancı anahtar zaten yok; alt varlık ve birleşik anahtar gerekmez, işlem geçmişi değişikliği tek alanda eski → yeni gösterir. 06'daki `UserRole` ve `UserWarehouseAssignment` kavramsal varlıklardır. |
 | ID-09 | Son deposu pasifleşen depo sorumlusu | Kullanıcı aktif kalır; kullanıcı listesinde "depo bekliyor" uyarısıyla görünür; BR-SYS-014 kayıtta uygulanır | Depo pasifleştirmesi, başka modüldeki kullanıcı yüzünden engellenmez |
 
 ## 13. Proje sahibine sorulanlar
@@ -194,3 +193,4 @@ Depo ve işlem geçmişi PR'ları kendi belgelerindedir; sıra Inventory'nin dep
 | 2026-10-01 | v0.1 | İlk taslak |
 | 2026-10-01 | v1.0 | Sorular yanıtlandı (ID-07, ID-08); ID-09 eklendi; onaylandı. |
 | 2026-10-01 | v1.1 | §5.3 yetki altyapısının uygulama ayrıntıları (PR 1). |
+| 2026-10-01 | v1.2 | ID-10: roller ve depo atamaları `users` tablosunda dizi kolonları; pasifleştirme ortak kalıpla (PR 2). |

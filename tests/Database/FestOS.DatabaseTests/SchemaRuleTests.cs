@@ -24,12 +24,7 @@ public sealed class SchemaRuleTests(PostgresDatabase database) : IAsyncLifetime
     // Constraints that guard a technical value, not a business rule, with the reason (DT-04).
     private static readonly Dictionary<string, string> ConstraintsWithoutRule = new(StringComparer.Ordinal);
 
-    private readonly Dictionary<string, string> _passwords = new(StringComparer.Ordinal)
-    {
-        [DatabaseRoles.Migrator] = Guid.CreateVersion7().ToString("N"),
-        ["festos_audit"] = Guid.CreateVersion7().ToString("N"),
-        ["festos_sample"] = Guid.CreateVersion7().ToString("N"),
-    };
+    private readonly Dictionary<string, string> _passwords = ModuleContexts.NewPasswords();
 
     private static CancellationToken Cancellation => TestContext.Current.CancellationToken;
 
