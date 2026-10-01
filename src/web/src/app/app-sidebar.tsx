@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useMatchRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -23,6 +23,7 @@ export type AppSidebarProps = {
 // The collapsible side menu (ui §4): grouped by module, only the screens the user may open.
 export function AppSidebar({ permissions }: AppSidebarProps) {
   const { t } = useTranslation();
+  const matchRoute = useMatchRoute();
 
   return (
     <Sidebar collapsible="icon">
@@ -40,8 +41,13 @@ export function AppSidebar({ permissions }: AppSidebarProps) {
                 <SidebarMenu>
                   {group.items.map((item) => (
                     <SidebarMenuItem key={item.to}>
-                      <SidebarMenuButton render={<Link to={item.to} />}>
-                        {t(item.label)}
+                      <SidebarMenuButton
+                        render={<Link to={item.to} />}
+                        isActive={matchRoute({ to: item.to, fuzzy: true }) !== false}
+                        tooltip={t(item.label)}
+                      >
+                        <item.icon aria-hidden="true" />
+                        <span>{t(item.label)}</span>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   ))}

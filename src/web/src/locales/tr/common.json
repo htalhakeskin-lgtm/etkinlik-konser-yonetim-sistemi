@@ -36,5 +36,17 @@
   },
   "ui": {
     "close": "Kapat"
+  },
+  "menu": {
+    "administration": "Yönetim",
+    "users": "Kullanıcılar"
+  },
+  "dataTable": {
+    "range": "{{from}}–{{to}} / {{total}} kayıt",
+    "pageSize": "Sayfa başına",
+    "page": "Sayfa {{page}} / {{pageCount}}",
+    "previous": "Önceki sayfa",
+    "next": "Sonraki sayfa",
+    "refreshFailed": "Liste yenilenemedi; gösterilen bilgiler güncel olmayabilir."
   }
 }

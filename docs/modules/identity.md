@@ -1,6 +1,6 @@
 # Modül tasarımı: Identity — Kimlik ve erişim
 
-> **Durum:** v1.10 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.11 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 12](#12-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -140,6 +140,8 @@ Uygulama (PR 6a): Oturum isteyen ekranlar `_app` yerleşim rotasının altındad
 
 Uygulama (PR 6b): Kabuk; bağlantı şeridi, shadcn/ui kenar menüsü (240/56 px, 1024 px altında panel; renkleri tasarım değişkenlerine bağlandı, tek harfli kısayolu kaldırıldı) ve kullanıcı menülü üst çubuktan oluşur. Menü `app/navigation.ts`'teki gruplardan yetkiye göre süzülür; her ekran menüye kendi rotasıyla aynı değişiklikte eklenir, bu yüzden ilk ekranlar gelene kadar menü boştur. Kullanıcı menüsü ad, roller, salt okunur erişim (yalnızca genel müdür rolünde), şifre değiştirme diyaloğu ve çıkışı içerir. Şifre değişince kısa bildirim gösterilir (Sonner; `next-themes` gerektirmeyen kendi sarmalayıcısıyla). Kabuk açılınca gerçek zamanlı bağlantı kurulur, ilk deneme başarısızsa artan aralıklarla yeniden denenir; çıkışta bağlantı kapanır. Rol başlangıç ekranları (11 §4), hedef ekranlar geldiğinde eklenir.
 
+Uygulama (PR 8a): `/admin/users` listesi aramayı, rol ve durum süzgecini, sıralamayı ve sayfayı adreste tutar; geçersiz adres değeri sayfayı bozmaz, yok sayılır. Arama yazma durunca (300 ms) gönderilir. Ortak `DataTable` (TanStack Table 9) sıralamayı ve sayfalamayı sunucuya bırakır; yapışkan başlık, `aria-sort`, "1–25 / 312 kayıt", 25 / 50 / 100 sayfa boyutu, yükleniyor, boş ve hata durumları içindedir. Ekran yetkiyi yetki koduyla denetler (`hasPermission`); yetkisi olmayana sayfa yerine yetki yok bilgisi gösterilir ve sunucuya istek gitmez. Menünün ilk öğesi "Yönetim › Kullanıcılar"dır. `/` sistem yöneticisini kullanıcılara gönderir; başlangıç ekranı henüz olmayan roller şimdilik ana sayfada kalır (11 §4).
+
 Kabuk oturum açınca `RealtimeClient`'ı başlatır ve `ConnectionIndicator`'ı yerleştirir (building-blocks §12). Menü `/me`'deki yetkilerden üretilir; boş kalan grup gizlenir. `/` rolüne göre yönlendirir ([11 §4](../11-screens.md#4-başlangıç-ekranı)).
 
 ## 10. Hikaye ve kural eşlemesi
@@ -170,7 +172,8 @@ Kabuk oturum açınca `RealtimeClient`'ı başlatır ve `ConnectionIndicator`'ı
 | 6b | Kabuk | Menü, üst çubuk, kullanıcı menüsü, şifre değiştirme diyaloğu, kabukta anlık bildirim, rol başlangıç ekranı |
 | 7a | Kullanıcı listesi ve detayı (sunucu) | `ListUsers`, `GetUser`; arama anahtarı, sayfalama ve sıralama altyapısı |
 | 7b | Kullanıcı yönetimi (sunucu) | Oluşturma, düzenleme, pasifleştirme, etkinleştirme, sıfırlama |
-| 8 | Kullanıcı yönetimi (ekran) | `/admin/users` |
+| 8a | Kullanıcılar listesi (ekran) | `/admin/users` listesi, `DataTable`, menünün ilk öğesi, rol başlangıç ekranı |
+| 8b | Kullanıcı yönetimi (ekran) | Oluşturma ve düzenleme diyaloğu, geçici şifre diyaloğu, pasifleştirme, etkinleştirme, sıfırlama |
 | 9 | Rol matrisi ekranı | `ListRoles`, `/admin/roles` |
 | 10 | Depo atamaları | `IWarehouseDirectory` ile doğrulama, `WarehouseDeactivated` dinleyicisi, temizlik işleri |
 
@@ -217,3 +220,4 @@ Depo ve işlem geçmişi PR'ları kendi belgelerindedir; sıra Inventory'nin dep
 | 2026-10-01 | v1.8 | §9: kabuğun uygulama ayrıntıları (PR 6b). |
 | 2026-10-01 | v1.9 | §7: kullanıcı listesi ve detayının uygulama ayrıntıları (PR 7a); PR 7 ikiye bölündü. |
 | 2026-10-01 | v1.10 | §7: kullanıcı yönetimi komutlarının uygulama ayrıntıları (PR 7b). |
+| 2026-10-01 | v1.11 | §9: kullanıcılar listesinin uygulama ayrıntıları (PR 8a); PR 8 ikiye bölündü. |

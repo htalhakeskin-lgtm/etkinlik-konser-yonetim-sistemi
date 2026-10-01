@@ -49,5 +49,33 @@
     "currentPassword": "Mevcut şifre",
     "cancel": "Vazgeç",
     "done": "Şifreniz değiştirildi."
+  },
+  "users": {
+    "title": "Kullanıcılar",
+    "description": "Çalışanların hesapları, rolleri ve durumları.",
+    "search": "Ad ya da e-posta ara",
+    "empty": "Aramanıza uyan kullanıcı yok.",
+    "forbidden": "Bu ekranı görme yetkiniz yok.",
+    "columns": {
+      "fullName": "Ad soyad",
+      "email": "E-posta",
+      "roles": "Roller",
+      "status": "Durum"
+    },
+    "status": {
+      "active": "Aktif",
+      "inactive": "Pasif",
+      "locked": "Kilitli (bitiş: {{time}})"
+    },
+    "filters": {
+      "role": "Rol",
+      "allRoles": "Tüm roller",
+      "statusLabel": "Durum",
+      "status": {
+        "active": "Aktif",
+        "inactive": "Pasif",
+        "all": "Tümü"
+      }
+    }
   }
 }
