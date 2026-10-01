@@ -39,6 +39,12 @@ namespace FestOS.Modules.Audit.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("actor_id");
 
+                    b.Property<string>("ActorName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("actor_name");
+
                     b.Property<string>("Changes")
                         .IsRequired()
                         .HasColumnType("jsonb")
@@ -71,6 +77,12 @@ namespace FestOS.Modules.Audit.Infrastructure.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_audit_entries");
+
+                    b.HasIndex("ActorId", "OccurredAt")
+                        .HasDatabaseName("ix_audit_entries_actor_id_occurred_at");
+
+                    b.HasIndex("OccurredAt", "Id")
+                        .HasDatabaseName("ix_audit_entries_occurred_at_id");
 
                     b.HasIndex("EntityType", "EntityId", "OccurredAt")
                         .HasDatabaseName("ix_audit_entries_entity_type_entity_id_occurred_at");

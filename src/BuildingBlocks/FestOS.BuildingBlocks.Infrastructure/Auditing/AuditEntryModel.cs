@@ -26,6 +26,7 @@ internal static class AuditEntryModel
             entry.Property(auditEntry => auditEntry.EntityType).HasMaxLength(200);
             entry.Property(auditEntry => auditEntry.Changes).HasColumnType("jsonb");
             entry.Property(auditEntry => auditEntry.TraceId).HasMaxLength(32);
+            entry.Property(auditEntry => auditEntry.ActorName).HasMaxLength(200);
 
             // A record's history is read by this index (database §14.2).
             entry.HasIndex(auditEntry => new
@@ -34,5 +35,9 @@ internal static class AuditEntryModel
                 auditEntry.EntityId,
                 auditEntry.OccurredAt,
             });
+
+            // The history screen filters by user and pages from newest to oldest by (occurred_at, id) (audit §2).
+            entry.HasIndex(auditEntry => new { auditEntry.ActorId, auditEntry.OccurredAt });
+            entry.HasIndex(auditEntry => new { auditEntry.OccurredAt, auditEntry.Id });
         });
 }

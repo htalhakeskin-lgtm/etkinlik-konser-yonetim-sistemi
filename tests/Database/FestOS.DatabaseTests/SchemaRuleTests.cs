@@ -17,8 +17,6 @@ public sealed class SchemaRuleTests(PostgresDatabase database) : IAsyncLifetime
         ["audit.audit_entries.entity_id"] =
             "A record's history is read by entity type and id together; the (entity_type, entity_id, occurred_at) index serves it.",
         ["audit.audit_entries.trace_id"] = "An OpenTelemetry trace id, not a record; it links a change to its log.",
-        ["audit.audit_entries.actor_id"] =
-            "Nothing reads history by user yet; the reading screens of 1.2 add the index if they filter by user.",
         ["sample.sample_usage_records.sample_item_id"] = "The test-only sample module never queries by it.",
     };
 

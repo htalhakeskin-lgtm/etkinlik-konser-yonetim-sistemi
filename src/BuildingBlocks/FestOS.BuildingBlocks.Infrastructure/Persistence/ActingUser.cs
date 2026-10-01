@@ -14,5 +14,8 @@ internal sealed class ActingUser(IServiceProvider services)
     // Background scopes need no ICurrentUser, so it is resolved only when used.
     public Guid UserId => _actsAsSystem ? SystemUser.Id : services.GetRequiredService<ICurrentUser>().UserId;
 
+    public string DisplayName =>
+        _actsAsSystem ? SystemUser.Name : services.GetRequiredService<ICurrentUser>().DisplayName;
+
     public void ActAsSystem() => _actsAsSystem = true;
 }

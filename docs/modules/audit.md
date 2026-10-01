@@ -1,6 +1,6 @@
 # Modül tasarımı: Audit — İşlem geçmişi
 
-> **Durum:** v1.0 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.1 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 7](#7-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -18,6 +18,8 @@
 | `ix_audit_entries_occurred_at_id` | Genel ekran en yeniden eskiye, imleçle sayfalanır. |
 
 `ICurrentUser`'a görünen ad (`DisplayName`) eklenir; Identity'nin uygulaması oturumdaki adı verir.
+
+**Uygulama (PR 1):** `ICurrentUser.DisplayName` ve kayıt adımının `ActingUser`'ı adı verir; istekte oturumdaki ad (`ClaimTypes.Name`), dinleyici ve işlerde `SystemUser.Name` ("Sistem"). Yazıcı adı her satıra `actor_name` olarak yazar. Tablo Audit'in migration'ındadır; diğer modüllerin bağlamları tabloyu eşleyip oluşturmadığı için onların migration'ları yalnızca model anlık görüntüsünü günceller (boş `Up`).
 
 ## 3. Uç noktalar
 
@@ -68,3 +70,4 @@ Bu belgede proje sahibine soru yoktur.
 |---|---|---|
 | 2026-10-01 | v0.1 | İlk taslak |
 | 2026-10-01 | v1.0 | Onaylandı. |
+| 2026-10-02 | v1.1 | §2: kullanıcı adı ve indekslerin uygulama ayrıntıları (PR 1). |

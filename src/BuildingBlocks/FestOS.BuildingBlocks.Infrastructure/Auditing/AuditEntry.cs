@@ -21,6 +21,9 @@ public sealed class AuditEntry
     /// <summary>The user who made the change, or the system user.</summary>
     public Guid ActorId { get; init; }
 
+    /// <summary>The user's name when the change was made; reading never asks Identity (audit AU-01).</summary>
+    public required string ActorName { get; init; }
+
     /// <summary>The schema of the module that owns the record, e.g. <c>booking</c>.</summary>
     public required string Module { get; init; }
 
