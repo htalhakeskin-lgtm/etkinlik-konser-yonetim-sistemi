@@ -15,4 +15,5 @@ export interface UserListItem {
   isActive: boolean;
   /** @nullable */
   lockedUntil: string | null;
+  version: number;
 }

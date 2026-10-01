@@ -88,7 +88,8 @@ export const ListUsersResponse = zod.object({
   "email": zod.string(),
   "roles": zod.array(zod.enum(['systemAdministrator', 'bookingManager', 'technicalManager', 'warehouseManager', 'generalManager'])),
   "isActive": zod.boolean(),
-  "lockedUntil": zod.iso.datetime({"offset":true}).nullable()
+  "lockedUntil": zod.iso.datetime({"offset":true}).nullable(),
+  "version": zod.int()
 })),
   "page": zod.int(),
   "pageSize": zod.int(),

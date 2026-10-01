@@ -60,7 +60,8 @@
       "fullName": "Ad soyad",
       "email": "E-posta",
       "roles": "Roller",
-      "status": "Durum"
+      "status": "Durum",
+      "actions": "İşlemler"
     },
     "status": {
       "active": "Aktif",
@@ -76,6 +77,48 @@
         "inactive": "Pasif",
         "all": "Tümü"
       }
+    },
+    "add": "Kullanıcı ekle",
+    "actions": {
+      "open": "{{name}} için işlemler",
+      "edit": "Düzenle",
+      "resetPassword": "Şifreyi sıfırla",
+      "deactivate": "Pasifleştir",
+      "activate": "Etkinleştir",
+      "cannotDeactivateSelf": "Pasifleştir — kendinizi pasifleştiremezsiniz"
+    },
+    "confirm": {
+      "deactivateTitle": "{{name}} pasifleştirilsin mi?",
+      "deactivateDescription": "Açık oturumları hemen kapanır ve giriş yapamaz. Geçmiş kayıtlarda adı görünmeye devam eder; gerekirse yeniden etkinleştirebilirsiniz.",
+      "resetTitle": "{{name}} için yeni geçici şifre üretilsin mi?",
+      "resetDescription": "Mevcut şifresi geçersiz olur, hesap kilidi kalkar ve açık oturumları kapanır."
+    },
+    "done": {
+      "created": "Kullanıcı oluşturuldu.",
+      "saved": "Kullanıcı kaydedildi.",
+      "deactivated": "Kullanıcı pasifleştirildi.",
+      "activated": "Kullanıcı etkinleştirildi."
     }
+  },
+  "userForm": {
+    "createTitle": "Kullanıcı ekle",
+    "editTitle": "Kullanıcıyı düzenle",
+    "required": "* zorunlu alan",
+    "fullName": "Ad soyad",
+    "email": "E-posta",
+    "emailChange": "E-posta değişirse kullanıcının açık oturumları kapanır.",
+    "roles": "Roller",
+    "warehouseRoleLater": "Depo sorumlusu rolü, depo seçimi eklendiğinde verilebilecek.",
+    "warehouseRoleKept": "Depo sorumlusu rolü ve depoları olduğu gibi kalır; depo seçimi eklendiğinde değiştirilebilecek.",
+    "create": "Kullanıcıyı oluştur",
+    "save": "Kaydet"
+  },
+  "temporaryPassword": {
+    "title": "{{name}} için geçici şifre",
+    "description": "Bu şifre yalnızca şimdi gösterilir. Kullanıcıya iletin; ilk girişte kendi şifresini belirleyecek.",
+    "label": "Geçici şifre",
+    "copy": "Kopyala",
+    "copied": "Kopyalandı",
+    "done": "Tamam"
   }
 }

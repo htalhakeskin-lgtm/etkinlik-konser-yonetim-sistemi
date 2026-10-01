@@ -853,7 +853,8 @@
           "email",
           "roles",
           "isActive",
-          "lockedUntil"
+          "lockedUntil",
+          "version"
         ],
         "type": "object",
         "properties": {
@@ -881,6 +882,10 @@
               "string"
             ],
             "format": "date-time"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false

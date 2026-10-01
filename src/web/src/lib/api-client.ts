@@ -51,6 +51,14 @@ export async function apiClient<T>(url: string, init: RequestInit = {}): Promise
   return (await response.json()) as T;
 }
 
+/**
+ * The request options that send the version a change is based on (api §9). The generated client has no
+ * header parameters, so a change passes these; without them the server answers 428.
+ */
+export function ifMatch(version: number): RequestInit {
+  return { headers: { "If-Match": `"${String(version)}"` } };
+}
+
 async function send(url: string, init: RequestInit, canRetry: boolean): Promise<Response> {
   for (let attempt = 0; ; attempt++) {
     try {

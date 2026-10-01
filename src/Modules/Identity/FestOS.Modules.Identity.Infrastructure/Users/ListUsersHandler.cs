@@ -49,7 +49,8 @@ internal sealed class ListUsersHandler(IdentityDbContext context, TimeProvider t
                 user.Email,
                 user.Roles,
                 user.DeactivatedAt == null,
-                user.LockedUntil > now ? user.LockedUntil : null
+                user.LockedUntil > now ? user.LockedUntil : null,
+                user.Version
             ))
             .ToPagedResultAsync(query.Page, cancellationToken);
     }

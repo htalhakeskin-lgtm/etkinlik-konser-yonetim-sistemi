@@ -17,7 +17,8 @@ export function applyServerValidationTexts(): void {
     customError: (issue) => {
       switch (issue.code) {
         case "too_small":
-          return issue.origin === "string" && Number(issue.minimum) === 1
+          return (issue.origin === "string" || issue.origin === "array") &&
+            Number(issue.minimum) === 1
             ? message("required")
             : message("minLength", { min: Number(issue.minimum) });
         case "too_big":
