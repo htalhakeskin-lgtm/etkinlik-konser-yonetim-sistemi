@@ -1,6 +1,6 @@
 # API Standardı
 
-> **Durum:** v1.13 · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.14 · **Son güncelleme:** 2026-10-01
 > **Kararlar:** [Bölüm 15](#15-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -265,7 +265,7 @@ BR-SYS-011 (sessiz ezme yok) HTTP üzerinde standart koşullu isteklerle uygulan
 - Oluşturma isteklerinde `If-Match` yoktur.
 - `If-Match` tek bir sürüm taşır. `*` ("hangi sürüm olursa"), zayıf etiket (`W/"7"`) ve birden çok etiket kabul edilmez (`400`, `malformedRequest`), çünkü hepsi sürüm kontrolünü atlatmanın yoludur.
 - **Neden başlık, gövde alanı değil:** `If-Match` ve `412` HTTP'nin kendi mekanizmasıdır; durum geçişi gibi gövdesi boş isteklerde de aynı biçimde çalışır ve aradaki katmanlar bu başlıkları tanır ([kaynak](https://sookocheff.com/post/api/optimistic-locking-in-a-rest-api/)). Sürümün gövdede de dönmesi, ön yüzün yanıt başlığını okumadan sürümü bilmesi içindir.
-- Sürüm gerektiren uç noktalar OpenAPI'de `If-Match` başlığını zorunlu parametre olarak gösterir. Üretilen istemci bu yüzden sürümü unutmaya izin vermez.
+- Sürüm gerektiren uç noktalar OpenAPI'de `If-Match` başlığını zorunlu parametre olarak gösterir. Üretilen istemci başlık parametrelerini üretmez (`Idempotency-Key`'i istek sarmalayıcısı kendisi ekler); değiştiren çağrı sürümü `ifMatch(version)` yardımcısıyla verir. Unutulursa sunucu `428 versionRequired` döner.
 
 ## 10. Tekrar güvenliği
 
@@ -413,3 +413,4 @@ Oturum [ADR-0011](../adr/0011-authentication.md)'deki gibi sunucu tarafı oturum
 | 2026-09-30 | v1.11 | §14.1: hata yanıtlarının `default` yanıt olarak yazılışı, açıklamaların kaynağı (Faz 1.1). |
 | 2026-09-30 | v1.12 | §13: `version` alanı `null` olabilir (Faz 1.1). |
 | 2026-10-01 | v1.13 | §6.3: sorgu dizesindeki enum filtreleri camelCase adlarıyla, harf duyarsız (Faz 1.2). |
+| 2026-10-01 | v1.14 | §9: üretilen istemci `If-Match`'i zorlamaz; `ifMatch(version)` yardımcısı (Faz 1.2). |

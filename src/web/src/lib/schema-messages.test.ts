@@ -13,5 +13,8 @@ describe("server validation texts", () => {
       "Geçerli bir e-posta adresi girin.",
     ]);
     expect(tooLong.error?.issues[0]?.message).toBe("En fazla 3 karakter olabilir.");
+    expect(z.array(z.string()).min(1).safeParse([]).error?.issues[0]?.message).toBe(
+      "Bu alan zorunludur.",
+    );
   });
 });

@@ -1,9 +1,10 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { toast } from "sonner";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { listUsers } from "@/api/endpoints/identity/identity";
+import { deactivateUser, listUsers, resetUserPassword } from "@/api/endpoints/identity/identity";
 import type { UserListItem } from "@/api/model";
 import { createQueryClient } from "@/lib/query-client";
 import { aUser } from "@/test/identity-fixtures";
@@ -16,7 +17,15 @@ vi.mock("@/api/endpoints/identity/identity", () => ({
   getListUsersQueryKey: (params: unknown) => ["/api/v1/users", params],
   getMe: vi.fn(),
   getGetMeQueryKey: () => ["/api/v1/me"],
+  getUser: vi.fn(),
+  getGetUserQueryKey: (id: string) => [`/api/v1/users/${id}`],
+  createUser: vi.fn(),
+  editUser: vi.fn(),
+  activateUser: vi.fn(),
+  deactivateUser: vi.fn(),
+  resetUserPassword: vi.fn(),
 }));
+vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 
 const listUsersMock = vi.mocked(listUsers);
 
@@ -28,9 +37,18 @@ function aListedUser(overrides: Partial<UserListItem>): UserListItem {
     roles: ["bookingManager"],
     isActive: true,
     lockedUntil: null,
+    version: 1,
     ...overrides,
   };
 }
+
+const allPermissions = [
+  "Identity.Users.View",
+  "Identity.Users.Create",
+  "Identity.Users.Edit",
+  "Identity.Users.Deactivate",
+  "Identity.Users.ResetPassword",
+];
 
 function renderPage(search: UsersSearch = {}, permissions = ["Identity.Users.View"]) {
   const client = createQueryClient();
@@ -105,5 +123,62 @@ describe("UsersPage", () => {
 
     expect(screen.getByText("Bu ekranı görme yetkiniz yok.")).toBeInTheDocument();
     expect(listUsersMock).not.toHaveBeenCalled();
+  });
+
+  it("deactivates a user after asking, with the version the row showed", async () => {
+    listUsersMock.mockResolvedValue({
+      items: [aListedUser({ id: "u-1", fullName: "Ali Bal", version: 4 })],
+      page: 1,
+      pageSize: 25,
+      totalCount: 1,
+    });
+    vi.mocked(deactivateUser).mockResolvedValue({} as never);
+    renderPage({}, allPermissions);
+    const user = userEvent.setup();
+
+    await user.click(await screen.findByRole("button", { name: "Ali Bal için işlemler" }));
+    await user.click(await screen.findByRole("menuitem", { name: "Pasifleştir" }));
+    await user.click(await screen.findByRole("button", { name: "Pasifleştir" }));
+
+    await vi.waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith("Kullanıcı pasifleştirildi.");
+    });
+    expect(deactivateUser).toHaveBeenCalledWith("u-1", { headers: { "If-Match": '"4"' } });
+  });
+
+  it("shows the new temporary password once after a reset", async () => {
+    listUsersMock.mockResolvedValue({
+      items: [aListedUser({ id: "u-1", fullName: "Ali Bal" })],
+      page: 1,
+      pageSize: 25,
+      totalCount: 1,
+    });
+    vi.mocked(resetUserPassword).mockResolvedValue({
+      user: {} as never,
+      temporaryPassword: "AAAA-BBBB-CCCC-DDDD",
+    });
+    renderPage({}, allPermissions);
+    const user = userEvent.setup();
+
+    await user.click(await screen.findByRole("button", { name: "Ali Bal için işlemler" }));
+    await user.click(await screen.findByRole("menuitem", { name: "Şifreyi sıfırla" }));
+    await user.click(await screen.findByRole("button", { name: "Şifreyi sıfırla" }));
+
+    expect(await screen.findByText("AAAA-BBBB-CCCC-DDDD")).toBeInTheDocument();
+    expect(screen.getByRole("dialog", { name: "Ali Bal için geçici şifre" })).toBeInTheDocument();
+  });
+
+  it("keeps the actions a user may not take out of the row's menu", async () => {
+    listUsersMock.mockResolvedValue({
+      items: [aListedUser({ fullName: "Ali Bal" })],
+      page: 1,
+      pageSize: 25,
+      totalCount: 1,
+    });
+    renderPage({}, ["Identity.Users.View"]);
+
+    expect(await screen.findByText("Ali Bal")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Ali Bal için işlemler" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Kullanıcı ekle" })).not.toBeInTheDocument();
   });
 });

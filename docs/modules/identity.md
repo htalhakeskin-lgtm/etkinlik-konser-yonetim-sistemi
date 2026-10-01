@@ -1,6 +1,6 @@
 # Modül tasarımı: Identity — Kimlik ve erişim
 
-> **Durum:** v1.11 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.12 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 12](#12-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -142,6 +142,8 @@ Uygulama (PR 6b): Kabuk; bağlantı şeridi, shadcn/ui kenar menüsü (240/56 px
 
 Uygulama (PR 8a): `/admin/users` listesi aramayı, rol ve durum süzgecini, sıralamayı ve sayfayı adreste tutar; geçersiz adres değeri sayfayı bozmaz, yok sayılır. Arama yazma durunca (300 ms) gönderilir. Ortak `DataTable` (TanStack Table 9) sıralamayı ve sayfalamayı sunucuya bırakır; yapışkan başlık, `aria-sort`, "1–25 / 312 kayıt", 25 / 50 / 100 sayfa boyutu, yükleniyor, boş ve hata durumları içindedir. Ekran yetkiyi yetki koduyla denetler (`hasPermission`); yetkisi olmayana sayfa yerine yetki yok bilgisi gösterilir ve sunucuya istek gitmez. Menünün ilk öğesi "Yönetim › Kullanıcılar"dır. `/` sistem yöneticisini kullanıcılara gönderir; başlangıç ekranı henüz olmayan roller şimdilik ana sayfada kalır (11 §4).
 
+Uygulama (PR 8b): "Kullanıcı ekle" ve satır sonundaki "⋯" menüsü yalnızca yetkili işlemleri gösterir: Düzenle, Şifreyi sıfırla (aktif kullanıcıda), Pasifleştir / Etkinleştir. Kendi satırında pasifleştirme pasif ve nedeniyle görünür. Pasifleştirme ve şifre sıfırlama onay ister; etkinleştirme istemez. Liste satırı `version` taşır, satır işlemleri bununla `If-Match` gönderir. Düzenleme diyaloğu kaydı `GetUser`'la yükler. Geçici şifre, oluşturma ve sıfırlamadan sonra bir kez, kopyalanabilir biçimde gösterilir. Depo sorumlusu rolü, depo seçimi gelene kadar (PR 10) verilemez: onay kutusu pasiftir ve nedeni altında yazar; rolü zaten olan kullanıcıda rol ve depolar olduğu gibi kalır.
+
 Kabuk oturum açınca `RealtimeClient`'ı başlatır ve `ConnectionIndicator`'ı yerleştirir (building-blocks §12). Menü `/me`'deki yetkilerden üretilir; boş kalan grup gizlenir. `/` rolüne göre yönlendirir ([11 §4](../11-screens.md#4-başlangıç-ekranı)).
 
 ## 10. Hikaye ve kural eşlemesi
@@ -221,3 +223,4 @@ Depo ve işlem geçmişi PR'ları kendi belgelerindedir; sıra Inventory'nin dep
 | 2026-10-01 | v1.9 | §7: kullanıcı listesi ve detayının uygulama ayrıntıları (PR 7a); PR 7 ikiye bölündü. |
 | 2026-10-01 | v1.10 | §7: kullanıcı yönetimi komutlarının uygulama ayrıntıları (PR 7b). |
 | 2026-10-01 | v1.11 | §9: kullanıcılar listesinin uygulama ayrıntıları (PR 8a); PR 8 ikiye bölündü. |
+| 2026-10-01 | v1.12 | §9: kullanıcı yönetimi diyaloglarının uygulama ayrıntıları (PR 8b). |
