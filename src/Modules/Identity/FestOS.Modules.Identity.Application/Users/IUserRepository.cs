@@ -14,6 +14,9 @@ public interface IUserRepository
     /// <summary>The user with the email in its stored form, active or not.</summary>
     Task<User?> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken);
 
+    /// <summary>Whether an active user other than <paramref name="except"/> has the role.</summary>
+    Task<bool> AnyOtherActiveWithRoleAsync(Role role, UserId except, CancellationToken cancellationToken);
+
     /// <summary>Whether an active user has the role.</summary>
     Task<bool> AnyActiveWithRoleAsync(Role role, CancellationToken cancellationToken);
 }
