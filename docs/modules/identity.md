@@ -1,6 +1,6 @@
 # Modül tasarımı: Identity — Kimlik ve erişim
 
-> **Durum:** v1.12 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.13 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 12](#12-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -144,6 +144,8 @@ Uygulama (PR 8a): `/admin/users` listesi aramayı, rol ve durum süzgecini, sır
 
 Uygulama (PR 8b): "Kullanıcı ekle" ve satır sonundaki "⋯" menüsü yalnızca yetkili işlemleri gösterir: Düzenle, Şifreyi sıfırla (aktif kullanıcıda), Pasifleştir / Etkinleştir. Kendi satırında pasifleştirme pasif ve nedeniyle görünür. Pasifleştirme ve şifre sıfırlama onay ister; etkinleştirme istemez. Liste satırı `version` taşır, satır işlemleri bununla `If-Match` gönderir. Düzenleme diyaloğu kaydı `GetUser`'la yükler. Geçici şifre, oluşturma ve sıfırlamadan sonra bir kez, kopyalanabilir biçimde gösterilir. Depo sorumlusu rolü, depo seçimi gelene kadar (PR 10) verilemez: onay kutusu pasiftir ve nedeni altında yazar; rolü zaten olan kullanıcıda rol ve depolar olduğu gibi kalır.
 
+Uygulama (PR 9): `ListRoles` matrisi tek tanımdan, `RoleCatalog`'dan, yetkileri de Host'un çalıştırdığı modüllerin kataloğundan okur; ekran sunucunun denetlediğinden ayrışamaz. Yetkisi olmayan modül listelenmez. `/admin/roles` salt okunur matristir: roller sütunlarda, yetkiler modüle göre gruplu satırlarda; her hücre simgeyle ve ekran okuyucu için "Var / Yok" metniyle gösterilir. Yetki ve modül adları koda göre çevrilir; adı henüz yazılmamış yeni bir kod olduğu gibi görünür. Menüde "Yönetim › Roller ve yetkiler" olarak yer alır.
+
 Kabuk oturum açınca `RealtimeClient`'ı başlatır ve `ConnectionIndicator`'ı yerleştirir (building-blocks §12). Menü `/me`'deki yetkilerden üretilir; boş kalan grup gizlenir. `/` rolüne göre yönlendirir ([11 §4](../11-screens.md#4-başlangıç-ekranı)).
 
 ## 10. Hikaye ve kural eşlemesi
@@ -224,3 +226,4 @@ Depo ve işlem geçmişi PR'ları kendi belgelerindedir; sıra Inventory'nin dep
 | 2026-10-01 | v1.10 | §7: kullanıcı yönetimi komutlarının uygulama ayrıntıları (PR 7b). |
 | 2026-10-01 | v1.11 | §9: kullanıcılar listesinin uygulama ayrıntıları (PR 8a); PR 8 ikiye bölündü. |
 | 2026-10-01 | v1.12 | §9: kullanıcı yönetimi diyaloglarının uygulama ayrıntıları (PR 8b). |
+| 2026-10-01 | v1.13 | §9: rol matrisinin uygulama ayrıntıları (PR 9). |

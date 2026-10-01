@@ -568,6 +568,37 @@
           }
         }
       }
+    },
+    "/api/v1/roles": {
+      "get": {
+        "tags": [
+          "Identity"
+        ],
+        "summary": "Lists the roles and the permissions each holds, grouped by module.",
+        "operationId": "ListRoles",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleMatrix"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -670,6 +701,25 @@
         },
         "additionalProperties": false
       },
+      "ModulePermissions": {
+        "required": [
+          "module",
+          "permissions"
+        ],
+        "type": "object",
+        "properties": {
+          "module": {
+            "type": "string"
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PermissionGrant"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
       "PagedResultOfUserListItem": {
         "required": [
           "items",
@@ -700,6 +750,25 @@
         },
         "additionalProperties": false
       },
+      "PermissionGrant": {
+        "required": [
+          "code",
+          "roles"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Role"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
       "Role": {
         "enum": [
           "systemAdministrator",
@@ -709,6 +778,28 @@
           "generalManager"
         ],
         "type": "string"
+      },
+      "RoleMatrix": {
+        "required": [
+          "roles",
+          "modules"
+        ],
+        "type": "object",
+        "properties": {
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Role"
+            }
+          },
+          "modules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ModulePermissions"
+            }
+          }
+        },
+        "additionalProperties": false
       },
       "SignedInUserDetails": {
         "required": [

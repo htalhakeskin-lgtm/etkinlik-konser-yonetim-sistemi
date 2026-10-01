@@ -63,8 +63,10 @@ describe("UserFormDialog", () => {
     const { onCreated } = renderDialog();
     const user = userEvent.setup();
 
-    await user.type(screen.getByLabelText("Ad soyad *"), "Banu Can");
-    await user.type(screen.getByLabelText("E-posta *"), "banu@example.com");
+    await user.click(screen.getByLabelText("Ad soyad *"));
+    await user.paste("Banu Can");
+    await user.click(screen.getByLabelText("E-posta *"));
+    await user.paste("banu@example.com");
     await user.click(screen.getByRole("checkbox", { name: "Teknik müdür" }));
     await user.click(screen.getByRole("button", { name: "Kullanıcıyı oluştur" }));
 
@@ -86,8 +88,10 @@ describe("UserFormDialog", () => {
     renderDialog();
     const user = userEvent.setup();
 
-    await user.type(screen.getByLabelText("Ad soyad *"), "Banu Can");
-    await user.type(screen.getByLabelText("E-posta *"), "banu@example.com");
+    await user.click(screen.getByLabelText("Ad soyad *"));
+    await user.paste("Banu Can");
+    await user.click(screen.getByLabelText("E-posta *"));
+    await user.paste("banu@example.com");
     await user.click(screen.getByRole("button", { name: "Kullanıcıyı oluştur" }));
 
     expect(await screen.findByText("Bu alan zorunludur.")).toBeInTheDocument();
@@ -109,8 +113,10 @@ describe("UserFormDialog", () => {
     renderDialog();
     const user = userEvent.setup();
 
-    await user.type(screen.getByLabelText("Ad soyad *"), "Banu Can");
-    await user.type(screen.getByLabelText("E-posta *"), "ali@example.com");
+    await user.click(screen.getByLabelText("Ad soyad *"));
+    await user.paste("Banu Can");
+    await user.click(screen.getByLabelText("E-posta *"));
+    await user.paste("ali@example.com");
     await user.click(screen.getByRole("checkbox", { name: "Teknik müdür" }));
     await user.click(screen.getByRole("button", { name: "Kullanıcıyı oluştur" }));
 

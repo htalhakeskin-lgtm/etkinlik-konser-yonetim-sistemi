@@ -120,5 +120,36 @@
     "copy": "Kopyala",
     "copied": "Kopyalandı",
     "done": "Tamam"
+  },
+  "rolesPage": {
+    "title": "Roller ve yetkiler",
+    "description": "Her rolün yapabildikleri. Roller S1'de sabittir; tablo salt okunurdur.",
+    "permission": "Yetki",
+    "granted": "Var",
+    "notGranted": "Yok"
+  },
+  "modules": {
+    "Identity": "Kullanıcılar ve yetkiler",
+    "Audit": "İşlem geçmişi",
+    "Inventory": "Depolar"
+  },
+  "permissions": {
+    "Identity": {
+      "Users": {
+        "View": "Kullanıcıları görme",
+        "Create": "Kullanıcı oluşturma",
+        "Edit": "Kullanıcıyı düzenleme",
+        "Deactivate": "Kullanıcıyı pasifleştirme ve etkinleştirme",
+        "ResetPassword": "Şifre sıfırlama"
+      },
+      "Roles": {
+        "View": "Rol matrisini görme"
+      }
+    },
+    "Audit": {
+      "Entries": {
+        "View": "İşlem geçmişini görme"
+      }
+    }
   }
 }

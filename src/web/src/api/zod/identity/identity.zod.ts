@@ -245,3 +245,17 @@ export const ActivateUserResponse = zod.object({
   "version": zod.int()
 })
 
+/**
+ * @summary Lists the roles and the permissions each holds, grouped by module.
+ */
+export const ListRolesResponse = zod.object({
+  "roles": zod.array(zod.enum(['systemAdministrator', 'bookingManager', 'technicalManager', 'warehouseManager', 'generalManager'])),
+  "modules": zod.array(zod.object({
+  "module": zod.string(),
+  "permissions": zod.array(zod.object({
+  "code": zod.string(),
+  "roles": zod.array(zod.enum(['systemAdministrator', 'bookingManager', 'technicalManager', 'warehouseManager', 'generalManager']))
+}))
+}))
+})
+

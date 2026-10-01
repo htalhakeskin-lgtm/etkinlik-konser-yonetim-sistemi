@@ -39,7 +39,8 @@
   },
   "menu": {
     "administration": "Yönetim",
-    "users": "Kullanıcılar"
+    "users": "Kullanıcılar",
+    "roles": "Roller ve yetkiler"
   },
   "dataTable": {
     "range": "{{from}}–{{to}} / {{total}} kayıt",
