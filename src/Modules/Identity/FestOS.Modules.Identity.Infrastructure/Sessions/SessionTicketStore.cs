@@ -110,7 +110,8 @@ internal sealed class SessionTicketStore(
                 found.FullName,
                 session.Permissions,
                 session.WarehouseIds,
-                session.MustChangePassword
+                session.MustChangePassword,
+                session.Id
             ),
             CookieAuthenticationDefaults.AuthenticationScheme
         );
@@ -126,6 +127,9 @@ internal sealed class SessionTicketStore(
         );
         return ticket;
     }
+
+    /// <summary>Drops the cached copy of a session that changed or ended, so the next request reads the row.</summary>
+    public void Forget(string keyHash) => cache.Remove(keyHash);
 
     // The session's lifetime is kept on the server; the renewed cookie carries the same key.
     public Task RenewAsync(string key, AuthenticationTicket ticket) => Task.CompletedTask;

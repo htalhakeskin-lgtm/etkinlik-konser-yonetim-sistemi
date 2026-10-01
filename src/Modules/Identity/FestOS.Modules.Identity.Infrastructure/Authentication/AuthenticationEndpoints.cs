@@ -3,6 +3,7 @@ using FestOS.BuildingBlocks.Application.Errors;
 using FestOS.BuildingBlocks.Application.Messaging;
 using FestOS.BuildingBlocks.Infrastructure.Http;
 using FestOS.Modules.Identity.Application.Authentication;
+using FestOS.Modules.Identity.Application.Passwords;
 using FestOS.Modules.Identity.Domain;
 using FestOS.Modules.Identity.Domain.Users;
 using FestOS.Modules.Identity.Infrastructure.Sessions;
@@ -39,6 +40,11 @@ internal static class AuthenticationEndpoints
             .RequireAuthorization()
             .WithName("GetMe")
             .WithSummary("Gets the signed-in user.");
+        endpoints
+            .MapPost("/me/password", ChangeMyPasswordAsync)
+            .RequireAuthorization()
+            .WithName("ChangeMyPassword")
+            .WithSummary("Sets a new password for the signed-in user; the user's other sessions end.");
     }
 
     private static async Task<Ok<SignedInUserDetails>> LoginAsync(
@@ -85,6 +91,15 @@ internal static class AuthenticationEndpoints
         await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         return TypedResults.NoContent();
     }
+
+    private static async Task<Ok<SignedInUserDetails>> ChangeMyPasswordAsync(
+        ChangeMyPasswordRequest request,
+        ICommandHandler<ChangeMyPasswordCommand, SignedInUserDetails> changePassword,
+        CancellationToken cancellationToken
+    ) =>
+        TypedResults.Ok(
+            await changePassword.HandleAsync(new(request.CurrentPassword, request.NewPassword), cancellationToken)
+        );
 
     private static async Task<Ok<SignedInUserDetails>> GetMeAsync(
         IQueryHandler<GetSignedInUserQuery, SignedInUserDetails> getUser,

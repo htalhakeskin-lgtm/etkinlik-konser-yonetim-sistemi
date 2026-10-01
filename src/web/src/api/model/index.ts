@@ -9,6 +9,7 @@ export * from './apiProblem';
 export * from './apiProblemErrorsItem';
 export * from './apiProblemErrorsItemParams';
 export * from './apiProblemParams';
+export * from './changeMyPasswordRequest';
 export * from './loginRequest';
 export * from './role';
 export * from './signedInUserDetails';

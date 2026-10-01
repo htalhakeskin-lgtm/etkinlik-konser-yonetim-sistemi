@@ -25,6 +25,7 @@ import type {
 
 import type {
   ApiProblem,
+  ChangeMyPasswordRequest,
   LoginRequest,
   SignedInUserDetails
 } from '../../model';
@@ -311,3 +312,90 @@ export function useGetMe<TData = Awaited<ReturnType<typeof getMe>>, TError = Api
 
 
 
+export const getChangeMyPasswordUrl = () => {
+
+
+
+
+  return `/api/v1/me/password`
+}
+
+/**
+ * @summary Sets a new password for the signed-in user; the user's other sessions end.
+ */
+export const changeMyPassword = async (changeMyPasswordRequest: ChangeMyPasswordRequest, options?: Parameters<typeof apiClient>[1]): Promise<SignedInUserDetails> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiClient<SignedInUserDetails>(getChangeMyPasswordUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(changeMyPasswordRequest)
+  }
+);}
+
+
+
+
+
+export const getChangeMyPasswordMutationKey = () => ['changeMyPassword'] as const;
+
+export const getChangeMyPasswordMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof changeMyPassword>>, TError,ChangeMyPasswordMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof changeMyPassword>>, TError,ChangeMyPasswordMutationVariables, TContext> => {
+
+const mutationKey = getChangeMyPasswordMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof changeMyPassword>>, ChangeMyPasswordMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  changeMyPassword(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ChangeMyPasswordMutationResult = NonNullable<Awaited<ReturnType<typeof changeMyPassword>>>
+    export type ChangeMyPasswordMutationBody = ChangeMyPasswordRequest
+    export type ChangeMyPasswordMutationError = ApiProblem
+    export type ChangeMyPasswordMutationVariables = {data: ChangeMyPasswordRequest}
+
+    /**
+ * @summary Sets a new password for the signed-in user; the user's other sessions end.
+ */
+export const useChangeMyPassword = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof changeMyPassword>>, TError,ChangeMyPasswordMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof changeMyPassword>>,
+        TError,
+        ChangeMyPasswordMutationVariables,
+        TContext
+      > => {
+      return useMutation(getChangeMyPasswordMutationOptions(options), queryClient);
+    }

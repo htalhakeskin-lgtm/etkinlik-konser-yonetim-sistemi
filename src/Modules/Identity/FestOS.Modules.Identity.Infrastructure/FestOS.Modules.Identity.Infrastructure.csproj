@@ -5,6 +5,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource
+      Include="Passwords\common-passwords.txt.gz"
+      LogicalName="common-passwords.txt.gz"
+    />
+  </ItemGroup>
+
+  <ItemGroup>
     <InternalsVisibleTo Include="FestOS.Modules.Identity.UnitTests" />
     <InternalsVisibleTo Include="FestOS.Modules.Identity.IntegrationTests" />
   </ItemGroup>

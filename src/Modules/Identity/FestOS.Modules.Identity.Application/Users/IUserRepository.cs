@@ -5,6 +5,9 @@ namespace FestOS.Modules.Identity.Application.Users;
 /// <summary>Loads and adds users for commands (identity ID-01); the unit of work saves them.</summary>
 public interface IUserRepository
 {
+    /// <summary>The user with the identifier, or <see langword="null"/>.</summary>
+    Task<User?> FindAsync(UserId id, CancellationToken cancellationToken);
+
     /// <summary>Adds a new user.</summary>
     void Add(User user);
 

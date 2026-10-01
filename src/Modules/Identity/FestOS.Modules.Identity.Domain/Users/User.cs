@@ -72,6 +72,14 @@ public sealed class User : AggregateRoot<UserId>, IDeactivatable
         LockedUntil = null;
     }
 
+    /// <summary>Sets a new password, which ends the temporary one (BR-SYS-006); the policy was checked before.</summary>
+    public void ChangePassword(string passwordHash)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(passwordHash);
+        PasswordHash = passwordHash;
+        MustChangePassword = false;
+    }
+
     /// <summary>Replaces the hash with one made with the current settings; the password stays the same.</summary>
     public void Rehash(string passwordHash) => PasswordHash = passwordHash;
 

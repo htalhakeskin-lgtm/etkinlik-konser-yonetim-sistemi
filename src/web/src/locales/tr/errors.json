@@ -16,5 +16,6 @@
   "invalidCredentials": "E-posta ya da şifre hatalı.",
   "rateLimited": "Çok fazla deneme yapıldı. Biraz bekleyip yeniden deneyin.",
   "BR-SYS-005": "Art arda çok sayıda hatalı şifre girildiği için hesap geçici olarak kilitlendi. Biraz sonra yeniden deneyin.",
+  "BR-SYS-007": "Yeni şifre kurallara uymuyor. En az {{minLength}} karakterli, boşluksuz, yaygın olmayan, e-postanızı ve ürün adını içermeyen, mevcut şifrenizden farklı bir şifre seçin.",
   "BR-SYS-015": "Bu e-posta adresi başka bir kullanıcıya ait; pasif kullanıcıların adresleri de yeniden kullanılamaz."
 }
