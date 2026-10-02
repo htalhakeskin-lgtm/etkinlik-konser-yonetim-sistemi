@@ -37,7 +37,7 @@ export type AuditPageProps = {
 };
 
 const allValues = "all";
-const recordTypes = ["User", "Warehouse"];
+const recordTypes = ["User", "Warehouse", "Party"];
 const everyUser: ListUsersParams = { status: "all", pageSize: 100 };
 
 // The screen shows the last day as included; the API's range stops before its `to` day (api §6.3).

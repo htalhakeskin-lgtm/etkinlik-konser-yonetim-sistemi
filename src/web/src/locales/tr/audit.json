@@ -21,7 +21,11 @@
   },
   "entityTypes": {
     "User": "Kullanıcı",
-    "Warehouse": "Depo"
+    "Warehouse": "Depo",
+    "Party": "Taraf",
+    "ContactPoint": "İletişim bilgisi",
+    "OrganizationContact": "İletişim kişisi",
+    "ArtistRepresentation": "Temsil"
   },
   "changes": {
     "show": "Değişiklikleri göster",

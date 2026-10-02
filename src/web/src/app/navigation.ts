@@ -1,6 +1,13 @@
 import type { LinkProps } from "@tanstack/react-router";
 import type { ParseKeys } from "i18next";
-import { History, type LucideIcon, ShieldCheck, UsersRound, Warehouse } from "lucide-react";
+import {
+  BookUser,
+  History,
+  type LucideIcon,
+  ShieldCheck,
+  UsersRound,
+  Warehouse,
+} from "lucide-react";
 
 /** One screen in the menu, shown to users who hold its permission (US-SYS-012). */
 export type MenuItem = {
@@ -19,6 +26,17 @@ export type MenuGroup = {
 
 /** The menu; each screen joins it in the same change that adds its route. */
 export const menu: readonly MenuGroup[] = [
+  {
+    label: "menu.masterData",
+    items: [
+      {
+        label: "menu.parties",
+        to: "/parties",
+        permission: "Parties.Parties.View",
+        icon: BookUser,
+      },
+    ],
+  },
   {
     label: "menu.administration",
     items: [

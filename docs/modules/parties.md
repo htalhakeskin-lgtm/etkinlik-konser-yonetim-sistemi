@@ -1,6 +1,6 @@
 # Modül tasarımı: Parties — Taraflar
 
-> **Durum:** v1.4 (onaylandı) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.5 (onaylandı) · **Son güncelleme:** 2026-10-02
 > **Adım:** Faz 1.3 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 11](#11-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -110,6 +110,8 @@ Doğrulama: tür zorunlu; kişide ad ve soyad zorunlu (en çok 100); görünen a
 | Taraf detayı | `/parties/{id}` | Başlık: ad, tür, roller, durum, işlemler (Düzenle, Pasifleştir / Etkinleştir). Bölümler: İletişim bilgileri; İletişim kişileri (firmada; kişi seçimi ya da aynı diyalogda yeni kişi); Temsil (sanatçıda ajanslar, ajansta temsil ettiği sanatçılar); kişide çalıştığı firmalar. Sekmeler: Genel, Geçmiş. |
 | Sanatçılar | `/artists`, `/artists/{id}` | Sanatçı rolündeki taraflar. Liste `ListParties`'i `role=artist` ile çağırır; "Sanatçı ekle" taraf diyaloğunu Sanatçı rolü seçili açar. Detay; taraf bilgileri, ajanslar ve Riders'ın prodüksiyonlarını bir araya getirir ([riders.md](riders.md)). |
 
+**Uygulama (PR 2a):** `/parties` kullanıcılar ve depolar ekranlarının kalıbını izler: arama, rol, tür ve durum süzgeci, sıralama ve sayfa adreste; satır sonundaki "⋯" menüsü yalnızca yetkili işlemleri gösterir (Düzenle, Pasifleştir / Etkinleştir, Geçmiş). Taraf diyaloğu türü yalnızca oluştururken sorar; kişide ad ve soyad girilince boş kalan görünen ad "Ad Soyad" olarak önerilir. İletişim bilgileri satır satır eklenir; bir satır birincil işaretlenince aynı türdeki diğerleri bırakılır, hiçbiri işaretlenmezse sunucu türün ilkini birincil yapar. Rol süzgeci seçiliyken açılan diyalogda o rol işaretli gelir. Rolsüz kayıt reddi (BR-PTY-001) roller alanının altında gösterilir. Satırın "Geçmiş"i tarafın ve iletişim bilgilerinin değişikliklerini birlikte gösterir (MD-01). Menüde "Ana veriler › Taraflar" yer alır; booking müdürü geçici olarak bu ekrandan başlar (MD-07). Ön yüz kodu `modules/parties`, metinler `locales/tr/parties.json`'dadır.
+
 | Hikaye | Uç noktalar ve ekranlar | Kurallar |
 |---|---|---|
 | US-PTY-001 Taraf oluşturma | `CreateParty`, `AddContactPerson`; taraf diyaloğu, detay | BR-PTY-001, 002, 003 |
@@ -157,3 +159,4 @@ Soru 2026-10-02'de yanıtlandı; önerilen seçenek seçildi.
 | 2026-10-02 | v1.2 | §5, §6: PR 1a'nın uygulama ayrıntıları; birincil iletişim bilgisi için veritabanı indeksi yerine toplu kök (PT-08). |
 | 2026-10-02 | v1.3 | §8: taraf uçlarının uygulama ayrıntıları (PR 1b). |
 | 2026-10-02 | v1.4 | §9: iletişim kişileri, temsil ve `IPartyDirectory`'nin uygulama ayrıntıları (PR 1c). |
+| 2026-10-02 | v1.5 | §10: taraflar ekranının uygulama ayrıntıları (PR 2a). |
