@@ -32,7 +32,8 @@
     "KitLine": "Kit satırı",
     "Venue": "Mekan",
     "VenueEquipment": "Mekan ekipmanı",
-    "VenueEquipmentUnavailability": "Kullanılamayan dönem"
+    "VenueEquipmentUnavailability": "Kullanılamayan dönem",
+    "Production": "Prodüksiyon"
   },
   "changes": {
     "show": "Değişiklikleri göster",

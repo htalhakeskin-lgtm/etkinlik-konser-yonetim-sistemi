@@ -8,13 +8,14 @@ import errors from "@/locales/tr/errors.json";
 import identity from "@/locales/tr/identity.json";
 import inventory from "@/locales/tr/inventory.json";
 import parties from "@/locales/tr/parties.json";
+import riders from "@/locales/tr/riders.json";
 import validation from "@/locales/tr/validation.json";
 import venues from "@/locales/tr/venues.json";
 
 export const defaultNS = "common";
 
 export const resources = {
-  tr: { common, errors, validation, identity, inventory, audit, parties, catalog, venues },
+  tr: { common, errors, validation, identity, inventory, audit, parties, catalog, venues, riders },
 } as const;
 
 // S1 ships Turkish only; the setup keeps adding languages possible (docs/standards/naming.md §7.1).
@@ -32,6 +33,7 @@ export const i18n = createInstance({
     "parties",
     "catalog",
     "venues",
+    "riders",
   ],
   resources,
   // Resources are bundled, so initialization completes synchronously.
