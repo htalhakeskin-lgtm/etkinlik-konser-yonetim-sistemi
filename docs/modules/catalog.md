@@ -1,6 +1,6 @@
 # Modül tasarımı: Catalog — Ekipman kataloğu
 
-> **Durum:** v1.5 (onaylandı) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.6 (onaylandı) · **Son güncelleme:** 2026-10-02
 > **Adım:** Faz 1.3 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 9](#9-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -108,6 +108,8 @@ Doğrulama: ad zorunlu (en çok 200), marka zorunlu (en çok 100), takip tipi zo
 
 **Uygulama (PR 2b):** `/catalog/models` listesi arama, kategori (yolla seçilir, alt ağaç dahil), takip tipi ve durum süzgecini adreste tutar; satırda model adı detay sayfasına gider, kategori yolu, takip tipi, ağırlık ve güç Türkçe biçimle yazılır. Ondalıklar API'den metin gelir ve `formatDecimal` ile metinden biçimlenir (`lib/format.ts`). Form ayrı sayfadır (`/catalog/models/new`, `/catalog/models/{id}/edit`, CT-05): marka, model adı, kategori (aktif kategoriler ve modelin kendi kategorisi, yollarıyla), takip tipi (stoğu olan modelde pasif ve nedeni yazılı, BR-EQP-001), ölçüler. Ondalık alan virgül ya da noktayla, en çok üç basamak kabul eder ve sunucuya noktalı metin olarak gider. Alınmış marka ve ad (BR-EQP-012) ad alanının, pasif kategori reddi (BR-EQP-002) kategori alanının altında gösterilir. Detay sayfasının sekmeleri Genel ve Geçmiş'tir (`/catalog/models/{id}/history`); modeli içeren kitler kitlerle (3b) eklenir. Menüde "Katalog › Modeller" kategorilerin önündedir; teknik müdür geçici olarak bu ekrandan başlar (MD-07).
 
+**Uygulama (PR 3b):** `/catalog/kits` listesi her kitin satır sayısını ve toplamlarını gösterir; değeri eksik model içeren toplam "eksik veri" rozeti taşır. "Kit ekle" yalnızca adı sorar ve yeni kitin sayfasını açar; satırlar orada eklenir. `/catalog/kits/{id}` sayfasında satır düzenleyici vardır: her satırda tür (model ya da kit), arayarak seçim (aktif modeller kategori yoluyla, aktif kitler kendisi hariç; MD-03), adet, yukarı / aşağı taşıma ve kaldırma. Değişiklikler kitin tamamı olarak, kitin sürümüyle kaydedilir (CT-04); hedefsiz ya da 1–9999 dışındaki adetli satır gönderilmez ve işaretlenir. Yanda açılmış içerik (modellere bağlantıyla) ve toplamlar durur. Adı değiştirme diyalogdadır; sekmeler Genel ve Geçmiş'tir. Model detayı modeli içeren kitleri listeler. Menüde "Katalog › Kitler" yer alır.
+
 | # | PR | Kapsam |
 |---|---|---|
 | 1a | Catalog iskeleti ve kategoriler (sunucu) | Projeler, şema, rol, yetkiler ve rol matrisi; kategori tablosu ve uçları, BR-EQP-002, BR-EQP-011 |
@@ -147,3 +149,4 @@ Soru 2026-10-02'de yanıtlandı; önerilen seçenek seçildi. US-EQP-001'in 3. k
 | 2026-10-02 | v1.3 | §4: modellerin ve `ICatalogDirectory`'nin uygulama ayrıntıları (PR 2a). |
 | 2026-10-02 | v1.4 | §8: modeller ekranlarının uygulama ayrıntıları (PR 2b). |
 | 2026-10-02 | v1.5 | §4: kitlerin uygulama ayrıntıları (PR 3a). |
+| 2026-10-02 | v1.6 | §8: kitler ekranlarının uygulama ayrıntıları (PR 3b); Catalog adımı tamam. |
