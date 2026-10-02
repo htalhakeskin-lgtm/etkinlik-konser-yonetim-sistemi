@@ -1,6 +1,8 @@
 using FestOS.BuildingBlocks.Application.Concurrency;
 using FestOS.BuildingBlocks.Application.Errors;
 using FestOS.BuildingBlocks.Application.Messaging;
+using FestOS.BuildingBlocks.Domain.Rules;
+using FestOS.Modules.Parties.Domain;
 using FestOS.Modules.Parties.Domain.Parties;
 
 namespace FestOS.Modules.Parties.Application.Parties;
@@ -14,6 +16,20 @@ internal sealed class EditPartyHandler(IPartyRepository parties, ExpectedVersion
         if (party.Kind == PartyKind.Person)
         {
             EnsurePersonNames(command);
+        }
+
+        // The artists an agency represents hold the representations; while there are any, it stays an agency.
+        if (
+            party.Roles.Contains(PartyRole.Agency)
+            && !command.Roles.Contains(PartyRole.Agency)
+            && await parties.RepresentsAnyArtistAsync(party.Id, cancellationToken)
+        )
+        {
+            throw new BusinessRuleViolationException(
+                PartiesRuleCodes.RoleRequiredSelection,
+                "An agency that represents artists keeps the agency role.",
+                parameters: new Dictionary<string, object?>(StringComparer.Ordinal) { ["role"] = "agency" }
+            );
         }
 
         party.Edit(

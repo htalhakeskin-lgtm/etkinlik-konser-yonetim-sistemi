@@ -5,18 +5,24 @@
  * OpenAPI spec version: v1
  */
 
+export * from './addContactPersonRequest';
+export * from './addRepresentationRequest';
 export * from './apiProblem';
 export * from './apiProblemErrorsItem';
 export * from './apiProblemErrorsItemParams';
 export * from './apiProblemParams';
+export * from './artistRepresentationId';
 export * from './auditAction';
 export * from './auditEntryItem';
 export * from './changeMyPasswordRequest';
+export * from './contactPersonItem';
+export * from './contactPersonTitleRequest';
 export * from './contactPointId';
 export * from './contactPointItem';
 export * from './contactPointKind';
 export * from './contactPointRequest';
 export * from './cursorResultOfAuditEntryItem';
+export * from './employerItem';
 export * from './jsonElement';
 export * from './listAuditEntriesParams';
 export * from './listPartiesParams';
@@ -24,6 +30,7 @@ export * from './listUsersParams';
 export * from './listWarehousesParams';
 export * from './loginRequest';
 export * from './modulePermissions';
+export * from './organizationContactId';
 export * from './pagedResultOfPartyListItem';
 export * from './pagedResultOfUserListItem';
 export * from './pagedResultOfWarehouseListItem';
@@ -35,6 +42,9 @@ export * from './partyRequest';
 export * from './partyRole';
 export * from './partyStatusFilter';
 export * from './permissionGrant';
+export * from './representationDescriptionRequest';
+export * from './representationItem';
+export * from './representedArtistItem';
 export * from './role';
 export * from './roleMatrix';
 export * from './signedInUserDetails';
