@@ -60,5 +60,107 @@
       "deactivatedAt": "Pasifleştirildiği zaman",
       "deactivatedBy": "Pasifleştiren"
     }
+  },
+  "trackingTypes": {
+    "serialized": "Seri no'lu",
+    "bulk": "Adetli"
+  },
+  "models": {
+    "title": "Modeller",
+    "description": "Ekipman kataloğu; stok, rider'lar ve mekan ekipmanı modellere bağlanır.",
+    "add": "Model ekle",
+    "search": "Marka ya da model ara",
+    "empty": "Bu süzgeçlere uyan model yok.",
+    "forbidden": "Bu ekranı görme yetkiniz yok.",
+    "columns": {
+      "model": "Model",
+      "category": "Kategori",
+      "trackingType": "Takip tipi",
+      "weight": "Ağırlık (kg)",
+      "power": "Güç (W)",
+      "status": "Durum",
+      "actions": "İşlemler"
+    },
+    "status": {
+      "active": "Aktif",
+      "inactive": "Pasif"
+    },
+    "filters": {
+      "categoryLabel": "Kategori",
+      "allCategories": "Tüm kategoriler",
+      "trackingTypeLabel": "Takip tipi",
+      "allTrackingTypes": "Tüm takip tipleri",
+      "statusLabel": "Durum",
+      "status": {
+        "active": "Aktif",
+        "inactive": "Pasif",
+        "all": "Tümü"
+      }
+    },
+    "actions": {
+      "open": "{{name}} için işlemler",
+      "edit": "Düzenle",
+      "deactivate": "Pasifleştir",
+      "activate": "Etkinleştir",
+      "history": "Geçmiş"
+    },
+    "confirm": {
+      "deactivateTitle": "{{name}} pasifleştirilsin mi?",
+      "deactivateDescription": "Model yeni kayıtlarda seçilemez; bağlı olduğu mevcut kayıtlarda görünmeye devam eder. Gerekirse yeniden etkinleştirebilirsiniz."
+    },
+    "done": {
+      "deactivated": "Model pasifleştirildi.",
+      "activated": "Model etkinleştirildi."
+    }
+  },
+  "modelForm": {
+    "createTitle": "Yeni model",
+    "editTitle": "Modeli düzenle",
+    "required": "* zorunlu alan",
+    "general": "Genel bilgiler",
+    "brand": "Marka",
+    "name": "Model adı",
+    "category": "Kategori",
+    "chooseCategory": "Kategori seçin",
+    "trackingType": "Takip tipi",
+    "trackingTypeHelp": "Seri no'lu birimler tek tek etiketlenir; adetli kalemler sayıyla izlenir.",
+    "trackingTypeFixed": "Bu modelin stoğu oluştuğu için takip tipi değiştirilemez.",
+    "measures": "Teknik değerler",
+    "weightKilograms": "Ağırlık (kg)",
+    "powerWatts": "Güç tüketimi (W)",
+    "transportVolumeCubicMeters": "Taşıma hacmi (m³)",
+    "invalidDecimal": "Sayı girin; en fazla üç ondalık basamak (ör. 12,5).",
+    "positive": "Değer sıfırdan büyük olmalıdır.",
+    "positiveWhole": "Sıfırdan büyük bir tam sayı girin.",
+    "cancel": "Vazgeç",
+    "create": "Oluştur",
+    "save": "Kaydet"
+  },
+  "modelDetail": {
+    "notFound": "Bu model bulunamadı.",
+    "tabs": "Model sekmeleri",
+    "general": "Genel",
+    "history": "Geçmiş",
+    "hasStock": "stoğu var"
+  },
+  "EquipmentModel": {
+    "fields": {
+      "brand": "Marka",
+      "name": "Model adı",
+      "categoryId": "Kategori",
+      "trackingType": "Takip tipi",
+      "weightKilograms": "Ağırlık (kg)",
+      "powerWatts": "Güç tüketimi (W)",
+      "transportVolumeCubicMeters": "Taşıma hacmi (m³)",
+      "hasStock": "Stoğu var",
+      "deactivatedAt": "Pasifleştirildiği zaman",
+      "deactivatedBy": "Pasifleştiren"
+    },
+    "values": {
+      "trackingType": {
+        "serialized": "Seri no'lu",
+        "bulk": "Adetli"
+      }
+    }
   }
 }

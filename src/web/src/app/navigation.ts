@@ -6,6 +6,7 @@ import {
   History,
   type LucideIcon,
   Mic,
+  Package,
   ShieldCheck,
   UsersRound,
   Warehouse,
@@ -48,6 +49,12 @@ export const menu: readonly MenuGroup[] = [
   {
     label: "menu.catalog",
     items: [
+      {
+        label: "menu.models",
+        to: "/catalog/models",
+        permission: "Catalog.Models.View",
+        icon: Package,
+      },
       {
         label: "menu.categories",
         to: "/catalog/categories",
