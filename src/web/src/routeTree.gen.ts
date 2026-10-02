@@ -29,6 +29,7 @@ import { Route as AppCatalogModelsNewRouteImport } from './routes/_app/catalog/m
 import { Route as AppPartiesPartyIdIndexRouteImport } from './routes/_app/parties/$partyId/index'
 import { Route as AppPartiesPartyIdHistoryRouteImport } from './routes/_app/parties/$partyId/history'
 import { Route as AppVenuesVenueIdIndexRouteImport } from './routes/_app/venues/$venueId/index'
+import { Route as AppVenuesVenueIdEquipmentRouteImport } from './routes/_app/venues/$venueId/equipment'
 import { Route as AppVenuesVenueIdHistoryRouteImport } from './routes/_app/venues/$venueId/history'
 import { Route as AppCatalogKitsKitIdIndexRouteImport } from './routes/_app/catalog/kits/$kitId/index'
 import { Route as AppCatalogKitsKitIdHistoryRouteImport } from './routes/_app/catalog/kits/$kitId/history'
@@ -137,6 +138,12 @@ const AppVenuesVenueIdIndexRoute = AppVenuesVenueIdIndexRouteImport.update({
   path: '/venues/$venueId/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppVenuesVenueIdEquipmentRoute =
+  AppVenuesVenueIdEquipmentRouteImport.update({
+    id: '/venues/$venueId/equipment',
+    path: '/venues/$venueId/equipment',
+    getParentRoute: () => AppRoute,
+  } as any)
 const AppVenuesVenueIdHistoryRoute = AppVenuesVenueIdHistoryRouteImport.update({
   id: '/venues/$venueId/history',
   path: '/venues/$venueId/history',
@@ -188,6 +195,7 @@ export interface FileRoutesByFullPath {
   '/artists/$partyId/history': typeof AppArtistsPartyIdHistoryRoute
   '/catalog/models/new': typeof AppCatalogModelsNewRoute
   '/parties/$partyId/history': typeof AppPartiesPartyIdHistoryRoute
+  '/venues/$venueId/equipment': typeof AppVenuesVenueIdEquipmentRoute
   '/venues/$venueId/history': typeof AppVenuesVenueIdHistoryRoute
   '/artists/$partyId/': typeof AppArtistsPartyIdIndexRoute
   '/catalog/kits/': typeof AppCatalogKitsIndexRoute
@@ -215,6 +223,7 @@ export interface FileRoutesByTo {
   '/artists/$partyId/history': typeof AppArtistsPartyIdHistoryRoute
   '/catalog/models/new': typeof AppCatalogModelsNewRoute
   '/parties/$partyId/history': typeof AppPartiesPartyIdHistoryRoute
+  '/venues/$venueId/equipment': typeof AppVenuesVenueIdEquipmentRoute
   '/venues/$venueId/history': typeof AppVenuesVenueIdHistoryRoute
   '/artists/$partyId': typeof AppArtistsPartyIdIndexRoute
   '/catalog/kits': typeof AppCatalogKitsIndexRoute
@@ -244,6 +253,7 @@ export interface FileRoutesById {
   '/_app/artists/$partyId/history': typeof AppArtistsPartyIdHistoryRoute
   '/_app/catalog/models/new': typeof AppCatalogModelsNewRoute
   '/_app/parties/$partyId/history': typeof AppPartiesPartyIdHistoryRoute
+  '/_app/venues/$venueId/equipment': typeof AppVenuesVenueIdEquipmentRoute
   '/_app/venues/$venueId/history': typeof AppVenuesVenueIdHistoryRoute
   '/_app/artists/$partyId/': typeof AppArtistsPartyIdIndexRoute
   '/_app/catalog/kits/': typeof AppCatalogKitsIndexRoute
@@ -273,6 +283,7 @@ export interface FileRouteTypes {
     | '/artists/$partyId/history'
     | '/catalog/models/new'
     | '/parties/$partyId/history'
+    | '/venues/$venueId/equipment'
     | '/venues/$venueId/history'
     | '/artists/$partyId/'
     | '/catalog/kits/'
@@ -300,6 +311,7 @@ export interface FileRouteTypes {
     | '/artists/$partyId/history'
     | '/catalog/models/new'
     | '/parties/$partyId/history'
+    | '/venues/$venueId/equipment'
     | '/venues/$venueId/history'
     | '/artists/$partyId'
     | '/catalog/kits'
@@ -328,6 +340,7 @@ export interface FileRouteTypes {
     | '/_app/artists/$partyId/history'
     | '/_app/catalog/models/new'
     | '/_app/parties/$partyId/history'
+    | '/_app/venues/$venueId/equipment'
     | '/_app/venues/$venueId/history'
     | '/_app/artists/$partyId/'
     | '/_app/catalog/kits/'
@@ -489,6 +502,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppVenuesVenueIdIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/venues/$venueId/equipment': {
+      id: '/_app/venues/$venueId/equipment'
+      path: '/venues/$venueId/equipment'
+      fullPath: '/venues/$venueId/equipment'
+      preLoaderRoute: typeof AppVenuesVenueIdEquipmentRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/venues/$venueId/history': {
       id: '/_app/venues/$venueId/history'
       path: '/venues/$venueId/history'
@@ -547,6 +567,7 @@ interface AppRouteChildren {
   AppArtistsPartyIdHistoryRoute: typeof AppArtistsPartyIdHistoryRoute
   AppCatalogModelsNewRoute: typeof AppCatalogModelsNewRoute
   AppPartiesPartyIdHistoryRoute: typeof AppPartiesPartyIdHistoryRoute
+  AppVenuesVenueIdEquipmentRoute: typeof AppVenuesVenueIdEquipmentRoute
   AppVenuesVenueIdHistoryRoute: typeof AppVenuesVenueIdHistoryRoute
   AppArtistsPartyIdIndexRoute: typeof AppArtistsPartyIdIndexRoute
   AppCatalogKitsIndexRoute: typeof AppCatalogKitsIndexRoute
@@ -573,6 +594,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppArtistsPartyIdHistoryRoute: AppArtistsPartyIdHistoryRoute,
   AppCatalogModelsNewRoute: AppCatalogModelsNewRoute,
   AppPartiesPartyIdHistoryRoute: AppPartiesPartyIdHistoryRoute,
+  AppVenuesVenueIdEquipmentRoute: AppVenuesVenueIdEquipmentRoute,
   AppVenuesVenueIdHistoryRoute: AppVenuesVenueIdHistoryRoute,
   AppArtistsPartyIdIndexRoute: AppArtistsPartyIdIndexRoute,
   AppCatalogKitsIndexRoute: AppCatalogKitsIndexRoute,

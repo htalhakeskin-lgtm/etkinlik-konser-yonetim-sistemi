@@ -30,7 +30,9 @@
     "EquipmentModel": "Ekipman modeli",
     "Kit": "Kit",
     "KitLine": "Kit satırı",
-    "Venue": "Mekan"
+    "Venue": "Mekan",
+    "VenueEquipment": "Mekan ekipmanı",
+    "VenueEquipmentUnavailability": "Kullanılamayan dönem"
   },
   "changes": {
     "show": "Değişiklikleri göster",

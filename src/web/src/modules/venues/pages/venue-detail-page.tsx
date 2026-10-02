@@ -24,21 +24,23 @@ import { ifMatch } from "@/lib/api-client";
 import { ApiError } from "@/lib/api-error";
 import { errorMessage } from "@/lib/api-error-messages";
 import { formatDecimal } from "@/lib/format";
+import { useRealtimeGroup } from "@/lib/realtime-context";
 import { auditPermissions, HistoryTab } from "@/modules/audit";
 import { hasPermission, useSignedInUser } from "@/modules/identity";
 
+import { VenueEquipmentTab } from "../components/venue-equipment-tab";
 import { VenueFormDialog } from "../components/venue-form-dialog";
 import { venuesPermissions } from "../permissions";
 
-export type VenueDetailTab = "general" | "history";
+export type VenueDetailTab = "general" | "equipment" | "history";
 
 export type VenueDetailPageProps = {
   venueId: string;
   tab: VenueDetailTab;
 };
 
-// A venue's page (11 §3): its details with tabs in the address; the equipment tab joins with the venue
-// equipment.
+// A venue's page (11 §3): its details, its own equipment and its history, with tabs in the address; the
+// page stays in the venue's notification group, so another user's change shows here (venues §7).
 export function VenueDetailPage({ venueId, tab }: VenueDetailPageProps) {
   const { t } = useTranslation("venues");
   const user = useSignedInUser();
@@ -95,6 +97,7 @@ function VenueDetail({ venue, tab }: { venue: VenueDetails; tab: VenueDetailTab 
   const [isEditing, setIsEditing] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
   const isActive = venue.deactivatedAt === null;
+  useRealtimeGroup(`venues:${venue.id}`);
 
   const show = (saved: VenueDetails) => {
     queryClient.setQueryData(getGetVenueQueryKey(saved.id), saved);
@@ -159,6 +162,9 @@ function VenueDetail({ venue, tab }: { venue: VenueDetails; tab: VenueDetailTab 
         <TabLink to="/venues/$venueId" venueId={venue.id} isCurrent={tab === "general"}>
           {t("venueDetail.general")}
         </TabLink>
+        <TabLink to="/venues/$venueId/equipment" venueId={venue.id} isCurrent={tab === "equipment"}>
+          {t("venueDetail.equipment")}
+        </TabLink>
         {canViewHistory && (
           <TabLink to="/venues/$venueId/history" venueId={venue.id} isCurrent={tab === "history"}>
             {t("venueDetail.history")}
@@ -167,6 +173,8 @@ function VenueDetail({ venue, tab }: { venue: VenueDetails; tab: VenueDetailTab 
       </nav>
       {tab === "history" ? (
         <HistoryTab rootType="Venue" rootId={venue.id} />
+      ) : tab === "equipment" ? (
+        <VenueEquipmentTab venueId={venue.id} />
       ) : (
         <section className="max-w-3xl rounded-lg border p-4">
           <dl className="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-[14rem_1fr]">
@@ -241,7 +249,7 @@ function Row({ label, children }: { label: string; children: ReactNode }) {
 }
 
 type TabLinkProps = {
-  to: "/venues/$venueId" | "/venues/$venueId/history";
+  to: "/venues/$venueId" | "/venues/$venueId/equipment" | "/venues/$venueId/history";
   venueId: string;
   isCurrent: boolean;
   children: ReactNode;
