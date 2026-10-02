@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.3.0](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/compare/v0.2.0...v0.3.0) (2026-10-02)
+
+
+### Features
+
+* **audit:** tie each history row to its root record ([#128](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/128)) ([191e2bc](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/191e2bc68629b07e35dffd3c5e3c45144cf7d7d2))
+* **catalog:** add equipment models and the catalog directory ([#138](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/138)) ([6d92d84](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/6d92d847269381db0311291e6b1e6ce9ca1e087f))
+* **catalog:** add kits with their totals ([#140](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/140)) ([cd8f16a](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/cd8f16a64807f3cb9ed4511ea05767b040253715))
+* **catalog:** add the catalog module with the category tree ([#136](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/136)) ([e0ac0b0](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/e0ac0b06d43c249d58e1021e6667ed58f903a737))
+* **catalog:** add the categories screen ([#137](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/137)) ([58015eb](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/58015eb5191cc77465f7a2cc40752b91893b4306))
+* **catalog:** add the kits screens ([#141](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/141)) ([9f0eb09](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/9f0eb090770473933347fbaaea144fd037780791))
+* **catalog:** add the models screens ([#139](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/139)) ([8de5038](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/8de5038cab263deae4b88d8517a4b826815ae6c0))
+* **parties:** add the artists screen ([#135](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/135)) ([7690d6f](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/7690d6f8130c2a0193283ea75325744f779a617e))
+* **parties:** add the parties module with parties and contact points ([#130](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/130)) ([2b8618d](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/2b8618dcf360bd847f75e00f4700818cd8f8759c))
+* **parties:** add the parties screen ([#133](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/133)) ([4c4c4c0](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/4c4c4c045731f0ff751741a9d18cafd187e79de6))
+* **parties:** add the party page with its ties ([#134](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/134)) ([1cc3d4f](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/1cc3d4f0224fb0426a455af628fd0ac5c79316ef))
+* **parties:** list, open, create and change parties ([#131](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/131)) ([1b30569](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/1b305693d92d7bb9d85034b13566b0fa41a61edd))
+* **parties:** tie contact persons and agencies to parties ([#132](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/132)) ([fbd78a0](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/fbd78a0e52b3f322a859f510b75dd6ff1ddcb415))
+* **riders:** add the productions screens ([#147](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/147)) ([ae7d6ce](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/ae7d6ce6f323a6ee7e1c961f0672a67eabdf3a37))
+* **riders:** add the riders module with productions ([#146](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/146)) ([ac1d255](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/ac1d2551af4f365ce4c1d17968c3a28cad0100b6))
+* **venues:** add the venue equipment screen ([#145](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/145)) ([32f36fa](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/32f36fababbe780bad41065c212397776028fe94))
+* **venues:** add the venues module with venues ([#142](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/142)) ([0fe5431](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/0fe5431d0fdbe92eff366b9552f8bdda8da45276))
+* **venues:** add the venues screens ([#143](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/143)) ([ca36bd8](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/ca36bd835977c74ed102152577cade2c7fb0d938))
+* **venues:** add venue equipment and its unavailability periods ([#144](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/144)) ([9d87282](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/9d8728271c495bbdcf135c34e2070d5b6f25f797))
+
 ## [0.2.0](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/compare/v0.1.0...v0.2.0) (2026-10-02)
 
 
