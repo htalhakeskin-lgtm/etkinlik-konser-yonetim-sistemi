@@ -1,6 +1,6 @@
 # Modül tasarımı: Parties — Taraflar
 
-> **Durum:** v1.1 (onaylandı) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.2 (onaylandı) · **Son güncelleme:** 2026-10-02
 > **Adım:** Faz 1.3 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 11](#11-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -42,8 +42,8 @@ Dört modül de Identity ve Inventory'nin kalıbını izler: komutlar Applicatio
 
 | Tablo | Kolonlar (ortak kolonlar hariç) | Kısıtlar ve indeksler |
 |---|---|---|
-| `parties` | `id`, `kind` (`person` / `organization`), `name varchar(200)`, `first_name varchar(100) null`, `last_name varchar(100) null`, `legal_name varchar(200) null`, `roles text[]`, `search text`, `deactivated_at`, `deactivated_by`, `version` | `ck_parties_kind_names`: kişide ad ve soyad dolu, unvan boş; firmada ad ve soyad boş (BR-PTY-001'e eşlenir). `ix_parties_roles` (GIN, rol süzgeci), `ix_parties_search` (`pg_trgm` GIN) |
-| `contact_points` | `id`, `party_id`, `kind` (`phone` / `email` / `address`), `value varchar(500)`, `label varchar(100) null`, `is_primary bool`, `sort_order int` | FK `parties` `CASCADE`; `ux_contact_points_primary` (`party_id, kind`) `WHERE is_primary` → BR-PTY-002 |
+| `parties` | `id`, `kind` (`person` / `organization`), `name varchar(200)`, `first_name varchar(100) null`, `last_name varchar(100) null`, `legal_name varchar(200) null`, `roles text[]`, `search text`, `deactivated_at`, `deactivated_by`, `version` | `ck_parties_kind_names`: kişide ad ve soyad dolu, unvan boş; firmada ad ve soyad boş; `ck_parties_roles_present`: en az bir rol (ikisi de BR-PTY-001'e eşlenir). `ix_parties_roles` (GIN, rol süzgeci), `ix_parties_search` (`pg_trgm` GIN) |
+| `contact_points` | `id`, `party_id`, `kind` (`phone` / `email` / `address`), `value varchar(500)`, `label varchar(100) null`, `is_primary bool`, `sort_order int` | FK `parties` `CASCADE`; tek birincil toplu kökte korunur (BR-PTY-002, PT-08) |
 | `organization_contacts` | `id`, `organization_id`, `person_id`, `title varchar(100) null`, `sort_order int` | FK `organization_id` → `parties` `CASCADE` (firmanın parçası), FK `person_id` → `parties` `RESTRICT` |
 | `artist_representations` | `id`, `artist_id`, `agency_id`, `description varchar(200) null` | FK `artist_id` → `parties` `CASCADE` (sanatçının parçası), FK `agency_id` → `parties` `RESTRICT` |
 
@@ -59,7 +59,7 @@ Dört modül de Identity ve Inventory'nin kalıbını izler: komutlar Applicatio
 |---|---|
 | BR-SYS-001 Silme yerine pasifleştirme | Taraf silinmez; pasifleştirilir ve yeniden etkinleştirilebilir. Pasif taraf yeni iletişim kişisi, temsil ve başka modüllerdeki seçimlerde seçilemez; bağlı kayıtlarda "Pasif" rozetiyle görünmeye devam eder. İletişim bilgisi, iletişim kişisi bağı ve temsil modül içi kayıtlardır, kaldırılabilir. |
 | BR-PTY-001 Taraf rolleri | En az bir rol; aynı rol bir kez (alan kuralı). Tür oluşturulduktan sonra değişmez: düzenleme ucu türü almaz. Başka rolü olmayan iletişim kişisi **İletişim kişisi** rolündedir (PT-07); iletişim kişisi diyaloğunda açılan yeni kişi bu rolle gelir. |
-| BR-PTY-002 Birincil iletişim bilgisi | Kaydı olan her türde tam olarak bir birincil kayıt bulunur: türün ilk kaydı kendiliğinden birincil olur; birincil kaldırılınca aynı türün sıradaki kaydı birincil olur; başka bir kayıt birincil yapılınca önceki birincil bırakılır. Veritabanında koşullu benzersiz indeksle de korunur. |
+| BR-PTY-002 Birincil iletişim bilgisi | Kaydı olan her türde tam olarak bir birincil kayıt bulunur: türün ilk kaydı kendiliğinden birincil olur; birincil kaldırılınca aynı türün sıradaki kaydı birincil olur; aynı türde iki birincil gönderilirse istek reddedilir. Kural toplu kökün içindedir; tarafın sürümü eşzamanlı iki düzenlemeyi ayırır (PT-08). |
 | BR-PTY-003 İletişim kişisi | Yalnızca firma türündeki tarafa, yalnızca kişi türündeki ve aktif bir taraf bağlanır; aynı kişi bir firmaya bir kez bağlanır. Komut iki tarafı da yükler (aynı modül). |
 | BR-PTY-004 Rol gerektiren seçimler | Temsilde sanatçı **Sanatçı**, ajans **Ajans** rolünde ve aktif olmalıdır; aynı ajans bir sanatçıya bir kez bağlanır. Temsili olan sanatçıdan Sanatçı, temsil ettiği sanatçısı olan ajanstan Ajans rolü kaldırılamaz (kurala eklenir). Diğer modüllerdeki seçimler (mekan işletmecisi, prodüksiyonun sanatçısı) `IPartyDirectory` ile aynı kuralı uygular; o modüldeki kayıt, rol sonradan kaldırılsa da değişmez. |
 
@@ -133,6 +133,7 @@ Doğrulama: tür zorunlu; kişide ad ve soyad zorunlu (en çok 100); görünen a
 | PT-05 | Telefon biçimi | Serbest yazım, izin verilen karakterler ve rakam sayısıyla doğrulanır; uluslararası numara kütüphanesi kullanılmaz | S1'de arama ve görüntüleme yeterli; bağımlılık eklemeye değmez. |
 | PT-06 | Taraf ve iletişim bilgileri tek formda | İletişim bilgileri tarafın oluşturma ve düzenleme isteğinin parçasıdır; iletişim kişileri ve temsiller ayrı uçlardır | İletişim bilgileri tarafın kendi verisidir ve hikayede birlikte girilir. İletişim kişisi ve temsil başka bir tarafa bağdır; detay sayfasında tek tek eklenir. |
 | PT-07 | İletişim kişisinin rolü | Yeni rol: **İletişim kişisi** (`contact`) | S1; BR-PTY-001 değişmez, iletişim kişileri rol süzgeciyle bulunur. Kişi başka bir rol de alabilir (ör. hem iletişim kişisi hem tedarikçi). |
+| PT-08 | Birincil iletişim bilgisinin veritabanı kısıtı | Yok; kural toplu kökte | Birincili bir kayıttan diğerine taşımak aynı kayıtta iki satırı günceller; koşullu benzersiz indeks ara durumda ihlal verir ve ertelenemez ([database §12.1](../standards/database.md#121-kısıtlar)). Taraf her zaman bütün olarak ve sürümüyle kaydedildiği için kural tek yerde güvenle korunur. |
 
 ## 12. Proje sahibine sorulanlar
 
@@ -149,3 +150,4 @@ Soru 2026-10-02'de yanıtlandı; önerilen seçenek seçildi.
 | 2026-10-02 | v0.1 | İlk taslak; adımın ortak kararları (MD-01…07). |
 | 2026-10-02 | v1.0 | S1 yanıtlandı (PT-07, İletişim kişisi rolü); onaylandı. |
 | 2026-10-02 | v1.1 | MD-01 uygulandı (PR 0); ayrıntılar [audit §2](audit.md#2-yazma-tarafına-eklenenler). API süzgeçleri `rootType`, `rootId`. |
+| 2026-10-02 | v1.2 | §5, §6: PR 1a'nın uygulama ayrıntıları; birincil iletişim bilgisi için veritabanı indeksi yerine toplu kök (PT-08). |

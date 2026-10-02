@@ -21,6 +21,7 @@
     <ProjectReference Include="..\Modules\Identity\FestOS.Modules.Identity.Infrastructure\FestOS.Modules.Identity.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Inventory\FestOS.Modules.Inventory.Infrastructure\FestOS.Modules.Inventory.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Inventory\FestOS.Modules.Inventory.IntegrationEvents\FestOS.Modules.Inventory.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\Modules\Parties\FestOS.Modules.Parties.Infrastructure\FestOS.Modules.Parties.Infrastructure.csproj" />
     <ProjectReference Include="..\ServiceDefaults\FestOS.ServiceDefaults.csproj" />
   </ItemGroup>
 </Project>
