@@ -26,7 +26,8 @@
     "ContactPoint": "İletişim bilgisi",
     "OrganizationContact": "İletişim kişisi",
     "ArtistRepresentation": "Temsil",
-    "EquipmentCategory": "Ekipman kategorisi"
+    "EquipmentCategory": "Ekipman kategorisi",
+    "EquipmentModel": "Ekipman modeli"
   },
   "changes": {
     "show": "Değişiklikleri göster",

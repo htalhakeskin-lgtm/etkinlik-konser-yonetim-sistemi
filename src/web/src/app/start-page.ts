@@ -9,7 +9,7 @@ import type { Role } from "@/api/model";
 const startPages: readonly (readonly [Role, NonNullable<LinkProps["to"]>])[] = [
   ["systemAdministrator", "/admin/users"],
   ["bookingManager", "/parties"],
-  ["technicalManager", "/catalog/categories"],
+  ["technicalManager", "/catalog/models"],
 ];
 
 /** The screen `/` sends the user to, if their role has one. */

@@ -1,6 +1,6 @@
 # Modül tasarımı: Catalog — Ekipman kataloğu
 
-> **Durum:** v1.3 (onaylandı) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.4 (onaylandı) · **Son güncelleme:** 2026-10-02
 > **Adım:** Faz 1.3 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 9](#9-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -104,6 +104,8 @@ Doğrulama: ad zorunlu (en çok 200), marka zorunlu (en çok 100), takip tipi zo
 
 **Uygulama (PR 1b):** `/catalog/categories` bütün kategorileri bir kez okur (küçük ağaç, CT-02) ve durum süzgecini (adreste) ekranda uygular. Satırlar ağaç sırasıyla, derinliğe göre girintili gösterilir; üst kategorisi süzgece takılan kategori yoluyla görünür. Satır menüsü yetkiye göre: Alt kategori ekle (aktif kategoride), Düzenle, Pasifleştir (onaylı) / Etkinleştir, Geçmiş. Kategori diyaloğu adı ve üst kategoriyi sorar; üst kategori seçiminde yalnızca aktif kategoriler, düzenlemede kategorinin kendisi ve altındakiler hariç, yollarıyla listelenir. Alınmış ad (BR-EQP-011) ad alanının altında, ağaç kuralı reddi (BR-EQP-002) bildirimle gösterilir. Menüde yeni "Katalog" grubunun ilk öğesi "Kategoriler"dir; teknik müdür modeller ekranı gelene kadar bu ekrandan başlar (MD-07).
 
+**Uygulama (PR 2b):** `/catalog/models` listesi arama, kategori (yolla seçilir, alt ağaç dahil), takip tipi ve durum süzgecini adreste tutar; satırda model adı detay sayfasına gider, kategori yolu, takip tipi, ağırlık ve güç Türkçe biçimle yazılır. Ondalıklar API'den metin gelir ve `formatDecimal` ile metinden biçimlenir (`lib/format.ts`). Form ayrı sayfadır (`/catalog/models/new`, `/catalog/models/{id}/edit`, CT-05): marka, model adı, kategori (aktif kategoriler ve modelin kendi kategorisi, yollarıyla), takip tipi (stoğu olan modelde pasif ve nedeni yazılı, BR-EQP-001), ölçüler. Ondalık alan virgül ya da noktayla, en çok üç basamak kabul eder ve sunucuya noktalı metin olarak gider. Alınmış marka ve ad (BR-EQP-012) ad alanının, pasif kategori reddi (BR-EQP-002) kategori alanının altında gösterilir. Detay sayfasının sekmeleri Genel ve Geçmiş'tir (`/catalog/models/{id}/history`); modeli içeren kitler kitlerle (3b) eklenir. Menüde "Katalog › Modeller" kategorilerin önündedir; teknik müdür geçici olarak bu ekrandan başlar (MD-07).
+
 | # | PR | Kapsam |
 |---|---|---|
 | 1a | Catalog iskeleti ve kategoriler (sunucu) | Projeler, şema, rol, yetkiler ve rol matrisi; kategori tablosu ve uçları, BR-EQP-002, BR-EQP-011 |
@@ -141,3 +143,4 @@ Soru 2026-10-02'de yanıtlandı; önerilen seçenek seçildi. US-EQP-001'in 3. k
 | 2026-10-02 | v1.1 | §4: Catalog iskeleti ve kategorilerin uygulama ayrıntıları (PR 1a). |
 | 2026-10-02 | v1.2 | §8: kategoriler ekranının uygulama ayrıntıları (PR 1b). |
 | 2026-10-02 | v1.3 | §4: modellerin ve `ICatalogDirectory`'nin uygulama ayrıntıları (PR 2a). |
+| 2026-10-02 | v1.4 | §8: modeller ekranlarının uygulama ayrıntıları (PR 2b). |
