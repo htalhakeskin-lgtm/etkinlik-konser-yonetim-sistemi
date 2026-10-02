@@ -8,7 +8,7 @@ internal sealed class ListAuditEntriesValidator : AbstractValidator<ListAuditEnt
     public ListAuditEntriesValidator()
     {
         RuleFor(query => query.Module).MaximumLength(ListAuditEntriesQuery.MaxNameLength);
-        RuleFor(query => query.EntityType).MaximumLength(ListAuditEntriesQuery.MaxNameLength);
+        RuleFor(query => query.RootType).MaximumLength(ListAuditEntriesQuery.MaxNameLength);
         RuleFor(query => query.To)
             .GreaterThan(query => query.From)
             .When(query => query.From is not null && query.To is not null);

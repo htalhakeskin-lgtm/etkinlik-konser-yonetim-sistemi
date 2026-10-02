@@ -30,6 +30,8 @@ public sealed class AuditTests(SampleModuleFixture fixture) : IAsyncLifetime
         entry.Module.ShouldBe("sample");
         entry.EntityType.ShouldBe(nameof(SampleItem));
         entry.EntityId.ShouldBe(item.Id.Value);
+        entry.RootType.ShouldBe(nameof(SampleItem), "a root is its own root");
+        entry.RootId.ShouldBe(item.Id.Value);
         entry.Action.ShouldBe(AuditAction.Created);
         entry.ActorId.ShouldBe(fixture.CurrentUser.UserId);
         entry.ActorName.ShouldBe(fixture.CurrentUser.DisplayName);
@@ -85,6 +87,33 @@ public sealed class AuditTests(SampleModuleFixture fixture) : IAsyncLifetime
         AuditEntry entry = (await EntriesAsync()).Skip(1).ShouldHaveSingleItem();
         entry.EntityType.ShouldBe(nameof(SampleItemPart));
         Parse(entry).GetProperty("sampleItemId").GetProperty("new").GetGuid().ShouldBe(item.Id.Value);
+    }
+
+    [Fact]
+    public async Task Save_ForAChildAddedOrRemoved_RecordsTheRootItBelongsTo()
+    {
+        SampleItem item = await CreateItemAsync("Stage", 1m);
+        await ChangeAsync(item.Id, loaded => loaded.AddPart("Leg"));
+        fixture.Time.Advance(TimeSpan.FromMinutes(1));
+
+        await using (AsyncServiceScope scope = fixture.Services.CreateAsyncScope())
+        {
+            SampleDbContext context = scope.ServiceProvider.GetRequiredService<SampleDbContext>();
+            SampleItem loaded = await context
+                .SampleItems.Include(sample => sample.Parts)
+                .SingleAsync(sample => sample.Id == item.Id, Cancellation);
+            context.Remove(loaded.Parts.Single());
+            await context.SaveChangesAsync(Cancellation);
+        }
+
+        List<AuditEntry> partEntries =
+        [
+            .. (await EntriesAsync()).Where(entry =>
+                string.Equals(entry.EntityType, nameof(SampleItemPart), StringComparison.Ordinal)
+            ),
+        ];
+        partEntries.Select(entry => entry.Action).ShouldBe([AuditAction.Created, AuditAction.Deleted]);
+        partEntries.ShouldAllBe(entry => entry.RootType == nameof(SampleItem) && entry.RootId == item.Id.Value);
     }
 
     [Fact]

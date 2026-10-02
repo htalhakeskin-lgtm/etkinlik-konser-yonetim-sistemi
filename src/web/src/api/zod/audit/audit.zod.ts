@@ -15,8 +15,8 @@ export const ListAuditEntriesQueryParams = zod.object({
   "from": zod.iso.date().optional(),
   "to": zod.iso.date().optional(),
   "module": zod.string().optional(),
-  "entityType": zod.string().optional(),
-  "entityId": zod.uuid().optional(),
+  "rootType": zod.string().optional(),
+  "rootId": zod.uuid().optional(),
   "after": zod.string().optional(),
   "limit": zod.int().optional()
 })
@@ -30,6 +30,8 @@ export const ListAuditEntriesResponse = zod.object({
   "module": zod.string(),
   "entityType": zod.string(),
   "entityId": zod.uuid(),
+  "rootType": zod.string(),
+  "rootId": zod.uuid(),
   "action": zod.enum(['created', 'updated', 'deleted', 'statusChanged']),
   "changes": zod.unknown(),
   "traceId": zod.string().nullable()

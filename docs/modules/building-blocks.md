@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.37 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.38 (onaylandı) · **Son güncelleme:** 2026-10-02
 
 ## 1. Bu belge ne işe yarar
 
@@ -169,6 +169,7 @@ Roller ve yetkiler [database §4](../standards/database.md#4-roller-ve-yetkiler)
 - Sürüm ve oluşturan / güncelleyen alanları yazılmaz; bunlar geçmiş satırının kendi zamanı ve kullanıcısıdır. Yalnızca bir alt varlığı değiştiği için sürümü artan kökün satırı yazılmaz; alt varlığın satırı yazılır.
 - `[NotAudited]` alanda ya da varlıkta kullanılabilir; alan tiplerinde kullanıldığı için `BuildingBlocks.Domain`'dedir.
 - `occurred_at` ve `actor_id` o kaydın damgalarıyla aynıdır; `module` modülün şemasıdır.
+- `root_type` ve `root_id` satırın ait olduğu toplu köktür (1.3, [parties MD-01](parties.md#2-adımın-ortak-kararları)): kökte kendisi, alt varlıkta `CASCADE` yabancı anahtar zincirinin vardığı kök; ara varlığın üst kaydı izleyicide yüklü olmalıdır.
 
 ## 7. Olaylar: outbox, dağıtıcı, olay yolu, inbox
 
@@ -484,3 +485,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-10-01 | v1.35 | Ön yüz: ortak `DataTable` (TanStack Table 9; sunucu tarafı sıralama ve sayfalama, ui §8); shadcn/ui `table` ve `select` eklendi. |
 | 2026-10-02 | v1.36 | `ICurrentUser.DisplayName`, `SystemUser.Name` ("Sistem"); işlem geçmişi satırına `actor_name` yazılır ve iki indeks eklenir (audit §2). |
 | 2026-10-02 | v1.37 | `TimeAndIdCursor`: zaman ve kimliğe göre sıralı listelerin imleci (api §6.1). |
+| 2026-10-02 | v1.38 | §6: işlem geçmişi satırı kök kaydı taşır (Faz 1.3, audit §2). |

@@ -33,6 +33,15 @@ public sealed class AuditEntry
     /// <summary>The record's identifier.</summary>
     public Guid EntityId { get; init; }
 
+    /// <summary>
+    /// The kind of the aggregate root the record belongs to, e.g. <c>Party</c> for a contact point; a root's
+    /// own rows name the root itself (parties MD-01).
+    /// </summary>
+    public required string RootType { get; init; }
+
+    /// <summary>The aggregate root's identifier; a record's history is read by it.</summary>
+    public Guid RootId { get; init; }
+
     /// <summary>What happened.</summary>
     public AuditAction Action { get; init; }
 

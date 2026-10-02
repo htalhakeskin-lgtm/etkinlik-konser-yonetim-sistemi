@@ -10,7 +10,7 @@ const searchSchema = z.object({
   actorId: z.uuid().optional().catch(undefined),
   from: day.optional().catch(undefined),
   to: day.optional().catch(undefined),
-  entityType: z.string().max(200).optional().catch(undefined),
+  rootType: z.string().max(200).optional().catch(undefined),
 });
 
 export const Route = createFileRoute("/_app/audit")({

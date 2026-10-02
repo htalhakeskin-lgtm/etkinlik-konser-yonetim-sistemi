@@ -15,6 +15,8 @@ export interface AuditEntryItem {
   module: string;
   entityType: string;
   entityId: string;
+  rootType: string;
+  rootId: string;
   action: AuditAction;
   changes: JsonElement;
   /** @nullable */

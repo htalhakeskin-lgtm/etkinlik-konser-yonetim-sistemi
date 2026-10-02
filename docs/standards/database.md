@@ -1,6 +1,6 @@
 # Veritabanı Standardı
 
-> **Durum:** v1.11 · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.12 · **Son güncelleme:** 2026-10-02
 > **Kararlar:** [Bölüm 18](#18-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -354,6 +354,7 @@ Taahhüt yazılırken alınan (model, depo) kilidi ([ADR-0004](../adr/0004-commi
 | `occurred_at` | İşlem zamanı (UTC) |
 | `actor_id` | İşlemi yapan kullanıcı ya da sistem kullanıcısı |
 | `module`, `entity_type`, `entity_id` | Değişen kayıt |
+| `root_type`, `root_id` | Değişen kaydın ait olduğu toplu kök; kökün kendi satırında kendisi ([parties MD-01](../modules/parties.md#2-adımın-ortak-kararları)) |
 | `action` | `created`, `updated`, `deleted`, `statusChanged` |
 | `changes` | `jsonb`: değişen her alanın eski ve yeni değeri |
 | `trace_id` | OpenTelemetry iz kimliği; aynı isteğin loglarıyla bağlantı kurar |
@@ -362,7 +363,7 @@ Taahhüt yazılırken alınan (model, depo) kilidi ([ADR-0004](../adr/0004-commi
 - Gizli alanlar (parola özeti, oturum anahtarı) işlem geçmişine yazılmaz; `[NotAudited]` özniteliğiyle işaretlenir.
 - **Toplu güncelleme yasağı:** EF'in `ExecuteUpdate` / `ExecuteDelete` metotları ve ham SQL ile yazma, değişiklik takibini atladığı için işlem geçmişini de atlar ([kaynak](https://milanjovanovic.tech/blog/audit-logging-ef-core)). Bu yöntemler yalnızca işlem geçmişi gerekmeyen teknik tablolarda (outbox, inbox, yerel kopyalar) kullanılır. Domain ve Application projelerinde yasak API listesiyle engellenir.
 - İşlem geçmişi hiç silinmez. Tablo büyürse zamana göre bölümleme (partitioning) değerlendirilir; S1 hacminde gerekmez.
-- `(entity_type, entity_id, occurred_at)` üzerinde indeks bulunur; bir kaydın geçmişi bu indeksle okunur.
+- `(root_id, occurred_at, id)` üzerinde indeks bulunur; bir kaydın geçmişi, alt varlıklarının değişiklikleriyle birlikte bu indeksle okunur.
 
 ## 15. Outbox ve inbox tabloları
 
@@ -492,3 +493,4 @@ DT-03 ve DT-04, `FestOS.DatabaseTests`'teki `SchemaRuleTests`'tir; tüm modülle
 | 2026-09-30 | v1.9 | §15: `idempotency_keys` yanıtı değil komutun sonucunu saklar ([building-blocks §9.3](../modules/building-blocks.md#93-tekrar-güvenliği)). |
 | 2026-10-01 | v1.10 | §17.1: DT-03 ve DT-04'ün uygulanışı (Faz 1.1). |
 | 2026-10-02 | v1.11 | §6: sabit enum kümelerinden seçimler için dizi istisnası (Faz 1.3). |
+| 2026-10-02 | v1.12 | §14.2: işlem geçmişi satırı kök kaydı taşır, kayıt geçmişi indeksi köke göre (Faz 1.3). |

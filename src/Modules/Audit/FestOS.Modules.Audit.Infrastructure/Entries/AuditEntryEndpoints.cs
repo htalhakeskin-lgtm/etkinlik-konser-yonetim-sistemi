@@ -30,8 +30,8 @@ internal static class AuditEntryEndpoints
                     request.From,
                     request.To,
                     request.Module,
-                    request.EntityType,
-                    request.EntityId,
+                    request.RootType,
+                    request.RootId,
                     new CursorRequest(request.After, request.Limit ?? CursorRequest.DefaultLimit)
                 ),
                 cancellationToken

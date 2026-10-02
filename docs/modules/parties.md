@@ -1,6 +1,6 @@
 # Modül tasarımı: Parties — Taraflar
 
-> **Durum:** v1.0 (onaylandı) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.1 (onaylandı) · **Son güncelleme:** 2026-10-02
 > **Adım:** Faz 1.3 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 11](#11-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -148,3 +148,4 @@ Soru 2026-10-02'de yanıtlandı; önerilen seçenek seçildi.
 |---|---|---|
 | 2026-10-02 | v0.1 | İlk taslak; adımın ortak kararları (MD-01…07). |
 | 2026-10-02 | v1.0 | S1 yanıtlandı (PT-07, İletişim kişisi rolü); onaylandı. |
+| 2026-10-02 | v1.1 | MD-01 uygulandı (PR 0); ayrıntılar [audit §2](audit.md#2-yazma-tarafına-eklenenler). API süzgeçleri `rootType`, `rootId`. |

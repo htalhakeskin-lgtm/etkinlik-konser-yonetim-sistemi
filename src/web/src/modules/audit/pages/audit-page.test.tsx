@@ -33,6 +33,8 @@ function anEntry(overrides: Partial<AuditEntryItem>): AuditEntryItem {
     module: "inventory",
     entityType: "Warehouse",
     entityId: "w-1",
+    rootType: "Warehouse",
+    rootId: "w-1",
     action: "updated",
     changes: { name: { old: "Merkez Depo", new: "Kuzey Depo" } },
     traceId: null,
@@ -71,14 +73,26 @@ describe("AuditPage", () => {
     expect(screen.getByRole("cell", { name: "Kuzey Depo" })).toBeInTheDocument();
   });
 
+  it("names the record a part belongs to, and the part that changed", async () => {
+    listMock.mockResolvedValue({
+      items: [anEntry({ entityType: "WarehouseShelf", entityId: "s-1", rootId: "w-1" })],
+      nextCursor: null,
+    });
+
+    renderPage();
+
+    expect(await screen.findByText("w-1")).toBeInTheDocument();
+    expect(screen.getByText("WarehouseShelf")).toBeInTheDocument();
+  });
+
   it("asks for the last day included, as the server stops before its end day", async () => {
     listMock.mockResolvedValue({ items: [], nextCursor: null });
 
-    renderPage({ from: "2027-01-04", to: "2027-01-05", entityType: "Warehouse" });
+    renderPage({ from: "2027-01-04", to: "2027-01-05", rootType: "Warehouse" });
 
     expect(await screen.findByText("Bu süzgeçlere uyan değişiklik yok.")).toBeInTheDocument();
     expect(listMock).toHaveBeenCalledWith(
-      { actorId: undefined, from: "2027-01-04", to: "2027-01-06", entityType: "Warehouse" },
+      { actorId: undefined, from: "2027-01-04", to: "2027-01-06", rootType: "Warehouse" },
       expect.anything(),
     );
   });

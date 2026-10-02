@@ -61,15 +61,16 @@ public sealed class AuditEntryApiTests(AuditFixture fixture) : IAsyncLifetime
     }
 
     [Fact]
-    public async Task History_OfOneRecord_IsTheSameListFilteredByTypeAndId()
+    public async Task History_OfOneRecord_IsTheSameListFilteredByItsRoot()
     {
         string warehouse = await CreateWarehouseAsync("Merkez Depo");
         await CreateWarehouseAsync("Kuzey Depo");
 
-        JsonElement history = await GetJsonAsync($"/api/v1/audit-entries?entityType=Warehouse&entityId={warehouse}");
+        JsonElement history = await GetJsonAsync($"/api/v1/audit-entries?rootType=Warehouse&rootId={warehouse}");
 
         history.GetProperty("items").GetArrayLength().ShouldBe(1);
         history.GetProperty("items")[0].GetProperty("entityId").GetString().ShouldBe(warehouse);
+        history.GetProperty("items")[0].GetProperty("rootId").GetString().ShouldBe(warehouse);
     }
 
     [Fact]

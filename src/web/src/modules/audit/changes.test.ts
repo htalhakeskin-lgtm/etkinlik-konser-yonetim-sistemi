@@ -13,6 +13,8 @@ function anEntry(changes: unknown, overrides: Partial<AuditEntryItem> = {}): Aud
     module: "identity",
     entityType: "User",
     entityId: "u-1",
+    rootType: "User",
+    rootId: "u-1",
     action: "updated",
     changes: changes as AuditEntryItem["changes"],
     traceId: null,
