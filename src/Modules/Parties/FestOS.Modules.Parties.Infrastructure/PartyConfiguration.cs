@@ -57,5 +57,21 @@ internal sealed class PartyConfiguration : IEntityTypeConfiguration<Party>
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
         builder.Navigation(party => party.ContactPoints).UsePropertyAccessMode(PropertyAccessMode.Field);
+
+        // Contact persons belong to the organization, representations to the artist (06 §7).
+        builder
+            .HasMany(party => party.ContactPersons)
+            .WithOne()
+            .HasForeignKey("OrganizationId")
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+        builder.Navigation(party => party.ContactPersons).UsePropertyAccessMode(PropertyAccessMode.Field);
+        builder
+            .HasMany(party => party.Representations)
+            .WithOne()
+            .HasForeignKey("ArtistId")
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+        builder.Navigation(party => party.Representations).UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

@@ -24,11 +24,15 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AddContactPersonRequest,
+  AddRepresentationRequest,
   ApiProblem,
+  ContactPersonTitleRequest,
   ListPartiesParams,
   PagedResultOfPartyListItem,
   PartyDetails,
-  PartyRequest
+  PartyRequest,
+  RepresentationDescriptionRequest
 } from '../../model';
 
 import { apiClient } from '../../../lib/api-client';
@@ -580,4 +584,510 @@ export const useActivateParty = <TError = ApiProblem,
         TContext
       > => {
       return useMutation(getActivatePartyMutationOptions(options), queryClient);
+    }
+    export const getAddContactPersonUrl = (partyId: string,) => {
+
+
+
+
+  return `/api/v1/parties/${partyId}/contact-persons`
+}
+
+/**
+ * @summary Ties a person to an organization as its contact person.
+ */
+export const addContactPerson = async (partyId: string,
+    addContactPersonRequest: AddContactPersonRequest, options?: Parameters<typeof apiClient>[1]): Promise<PartyDetails> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiClient<PartyDetails>(getAddContactPersonUrl(partyId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(addContactPersonRequest)
+  }
+);}
+
+
+
+
+
+export const getAddContactPersonMutationKey = () => ['addContactPerson'] as const;
+
+export const getAddContactPersonMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addContactPerson>>, TError,AddContactPersonMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof addContactPerson>>, TError,AddContactPersonMutationVariables, TContext> => {
+
+const mutationKey = getAddContactPersonMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof addContactPerson>>, AddContactPersonMutationVariables> = (props) => {
+          const {partyId,data} = props ?? {};
+
+          return  addContactPerson(partyId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AddContactPersonMutationResult = NonNullable<Awaited<ReturnType<typeof addContactPerson>>>
+    export type AddContactPersonMutationBody = AddContactPersonRequest
+    export type AddContactPersonMutationError = ApiProblem
+    export type AddContactPersonMutationVariables = {partyId: string;data: AddContactPersonRequest}
+
+    /**
+ * @summary Ties a person to an organization as its contact person.
+ */
+export const useAddContactPerson = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addContactPerson>>, TError,AddContactPersonMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof addContactPerson>>,
+        TError,
+        AddContactPersonMutationVariables,
+        TContext
+      > => {
+      return useMutation(getAddContactPersonMutationOptions(options), queryClient);
+    }
+    export const getEditContactPersonUrl = (partyId: string,
+    contactId: string,) => {
+
+
+
+
+  return `/api/v1/parties/${partyId}/contact-persons/${contactId}`
+}
+
+/**
+ * @summary Changes a contact person's job title.
+ */
+export const editContactPerson = async (partyId: string,
+    contactId: string,
+    contactPersonTitleRequest: ContactPersonTitleRequest, options?: Parameters<typeof apiClient>[1]): Promise<PartyDetails> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiClient<PartyDetails>(getEditContactPersonUrl(partyId,contactId),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(contactPersonTitleRequest)
+  }
+);}
+
+
+
+
+
+export const getEditContactPersonMutationKey = () => ['editContactPerson'] as const;
+
+export const getEditContactPersonMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editContactPerson>>, TError,EditContactPersonMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof editContactPerson>>, TError,EditContactPersonMutationVariables, TContext> => {
+
+const mutationKey = getEditContactPersonMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof editContactPerson>>, EditContactPersonMutationVariables> = (props) => {
+          const {partyId,contactId,data} = props ?? {};
+
+          return  editContactPerson(partyId,contactId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type EditContactPersonMutationResult = NonNullable<Awaited<ReturnType<typeof editContactPerson>>>
+    export type EditContactPersonMutationBody = ContactPersonTitleRequest
+    export type EditContactPersonMutationError = ApiProblem
+    export type EditContactPersonMutationVariables = {partyId: string;contactId: string;data: ContactPersonTitleRequest}
+
+    /**
+ * @summary Changes a contact person's job title.
+ */
+export const useEditContactPerson = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editContactPerson>>, TError,EditContactPersonMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof editContactPerson>>,
+        TError,
+        EditContactPersonMutationVariables,
+        TContext
+      > => {
+      return useMutation(getEditContactPersonMutationOptions(options), queryClient);
+    }
+    export const getRemoveContactPersonUrl = (partyId: string,
+    contactId: string,) => {
+
+
+
+
+  return `/api/v1/parties/${partyId}/contact-persons/${contactId}`
+}
+
+/**
+ * @summary Unties a contact person from an organization; the person stays.
+ */
+export const removeContactPerson = async (partyId: string,
+    contactId: string, options?: Parameters<typeof apiClient>[1]): Promise<PartyDetails> => {
+
+  return apiClient<PartyDetails>(getRemoveContactPersonUrl(partyId,contactId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getRemoveContactPersonMutationKey = () => ['removeContactPerson'] as const;
+
+export const getRemoveContactPersonMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeContactPerson>>, TError,RemoveContactPersonMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof removeContactPerson>>, TError,RemoveContactPersonMutationVariables, TContext> => {
+
+const mutationKey = getRemoveContactPersonMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof removeContactPerson>>, RemoveContactPersonMutationVariables> = (props) => {
+          const {partyId,contactId} = props ?? {};
+
+          return  removeContactPerson(partyId,contactId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RemoveContactPersonMutationResult = NonNullable<Awaited<ReturnType<typeof removeContactPerson>>>
+
+    export type RemoveContactPersonMutationError = ApiProblem
+    export type RemoveContactPersonMutationVariables = {partyId: string;contactId: string}
+
+    /**
+ * @summary Unties a contact person from an organization; the person stays.
+ */
+export const useRemoveContactPerson = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeContactPerson>>, TError,RemoveContactPersonMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof removeContactPerson>>,
+        TError,
+        RemoveContactPersonMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRemoveContactPersonMutationOptions(options), queryClient);
+    }
+    export const getAddRepresentationUrl = (partyId: string,) => {
+
+
+
+
+  return `/api/v1/parties/${partyId}/representations`
+}
+
+/**
+ * @summary Records that an agency represents an artist.
+ */
+export const addRepresentation = async (partyId: string,
+    addRepresentationRequest: AddRepresentationRequest, options?: Parameters<typeof apiClient>[1]): Promise<PartyDetails> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiClient<PartyDetails>(getAddRepresentationUrl(partyId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(addRepresentationRequest)
+  }
+);}
+
+
+
+
+
+export const getAddRepresentationMutationKey = () => ['addRepresentation'] as const;
+
+export const getAddRepresentationMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addRepresentation>>, TError,AddRepresentationMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof addRepresentation>>, TError,AddRepresentationMutationVariables, TContext> => {
+
+const mutationKey = getAddRepresentationMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof addRepresentation>>, AddRepresentationMutationVariables> = (props) => {
+          const {partyId,data} = props ?? {};
+
+          return  addRepresentation(partyId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AddRepresentationMutationResult = NonNullable<Awaited<ReturnType<typeof addRepresentation>>>
+    export type AddRepresentationMutationBody = AddRepresentationRequest
+    export type AddRepresentationMutationError = ApiProblem
+    export type AddRepresentationMutationVariables = {partyId: string;data: AddRepresentationRequest}
+
+    /**
+ * @summary Records that an agency represents an artist.
+ */
+export const useAddRepresentation = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addRepresentation>>, TError,AddRepresentationMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof addRepresentation>>,
+        TError,
+        AddRepresentationMutationVariables,
+        TContext
+      > => {
+      return useMutation(getAddRepresentationMutationOptions(options), queryClient);
+    }
+    export const getEditRepresentationUrl = (partyId: string,
+    representationId: string,) => {
+
+
+
+
+  return `/api/v1/parties/${partyId}/representations/${representationId}`
+}
+
+/**
+ * @summary Changes what a representation covers.
+ */
+export const editRepresentation = async (partyId: string,
+    representationId: string,
+    representationDescriptionRequest: RepresentationDescriptionRequest, options?: Parameters<typeof apiClient>[1]): Promise<PartyDetails> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiClient<PartyDetails>(getEditRepresentationUrl(partyId,representationId),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(representationDescriptionRequest)
+  }
+);}
+
+
+
+
+
+export const getEditRepresentationMutationKey = () => ['editRepresentation'] as const;
+
+export const getEditRepresentationMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editRepresentation>>, TError,EditRepresentationMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof editRepresentation>>, TError,EditRepresentationMutationVariables, TContext> => {
+
+const mutationKey = getEditRepresentationMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof editRepresentation>>, EditRepresentationMutationVariables> = (props) => {
+          const {partyId,representationId,data} = props ?? {};
+
+          return  editRepresentation(partyId,representationId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type EditRepresentationMutationResult = NonNullable<Awaited<ReturnType<typeof editRepresentation>>>
+    export type EditRepresentationMutationBody = RepresentationDescriptionRequest
+    export type EditRepresentationMutationError = ApiProblem
+    export type EditRepresentationMutationVariables = {partyId: string;representationId: string;data: RepresentationDescriptionRequest}
+
+    /**
+ * @summary Changes what a representation covers.
+ */
+export const useEditRepresentation = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editRepresentation>>, TError,EditRepresentationMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof editRepresentation>>,
+        TError,
+        EditRepresentationMutationVariables,
+        TContext
+      > => {
+      return useMutation(getEditRepresentationMutationOptions(options), queryClient);
+    }
+    export const getRemoveRepresentationUrl = (partyId: string,
+    representationId: string,) => {
+
+
+
+
+  return `/api/v1/parties/${partyId}/representations/${representationId}`
+}
+
+/**
+ * @summary Ends a representation.
+ */
+export const removeRepresentation = async (partyId: string,
+    representationId: string, options?: Parameters<typeof apiClient>[1]): Promise<PartyDetails> => {
+
+  return apiClient<PartyDetails>(getRemoveRepresentationUrl(partyId,representationId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getRemoveRepresentationMutationKey = () => ['removeRepresentation'] as const;
+
+export const getRemoveRepresentationMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeRepresentation>>, TError,RemoveRepresentationMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof removeRepresentation>>, TError,RemoveRepresentationMutationVariables, TContext> => {
+
+const mutationKey = getRemoveRepresentationMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof removeRepresentation>>, RemoveRepresentationMutationVariables> = (props) => {
+          const {partyId,representationId} = props ?? {};
+
+          return  removeRepresentation(partyId,representationId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RemoveRepresentationMutationResult = NonNullable<Awaited<ReturnType<typeof removeRepresentation>>>
+
+    export type RemoveRepresentationMutationError = ApiProblem
+    export type RemoveRepresentationMutationVariables = {partyId: string;representationId: string}
+
+    /**
+ * @summary Ends a representation.
+ */
+export const useRemoveRepresentation = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeRepresentation>>, TError,RemoveRepresentationMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof removeRepresentation>>,
+        TError,
+        RemoveRepresentationMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRemoveRepresentationMutationOptions(options), queryClient);
     }

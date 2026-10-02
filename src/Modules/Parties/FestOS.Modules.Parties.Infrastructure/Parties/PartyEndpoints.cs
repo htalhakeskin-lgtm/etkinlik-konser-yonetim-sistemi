@@ -51,6 +51,7 @@ internal static class PartyEndpoints
             .RequiresVersion()
             .WithName("ActivateParty")
             .WithSummary("Activates a deactivated party again.");
+        PartyLinkEndpoints.Map(endpoints);
     }
 
     private static async Task<Ok<PagedResult<PartyListItem>>> ListPartiesAsync(
@@ -150,7 +151,7 @@ internal static class PartyEndpoints
     }
 
     // After a change the answer is the party as saved, with the new version (api §9).
-    private static async Task<VersionedResult<Ok<PartyDetails>>> CurrentAsync(
+    internal static async Task<VersionedResult<Ok<PartyDetails>>> CurrentAsync(
         PartyId id,
         IQueryHandler<GetPartyQuery, PartyDetails> getParty,
         CancellationToken cancellationToken

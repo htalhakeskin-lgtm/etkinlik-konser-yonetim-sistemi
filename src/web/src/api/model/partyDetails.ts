@@ -4,10 +4,14 @@
  * FestOS API
  * OpenAPI spec version: v1
  */
+import type { ContactPersonItem } from './contactPersonItem';
 import type { ContactPointItem } from './contactPointItem';
+import type { EmployerItem } from './employerItem';
 import type { PartyId } from './partyId';
 import type { PartyKind } from './partyKind';
 import type { PartyRole } from './partyRole';
+import type { RepresentationItem } from './representationItem';
+import type { RepresentedArtistItem } from './representedArtistItem';
 
 export interface PartyDetails {
   id: PartyId;
@@ -21,6 +25,10 @@ export interface PartyDetails {
   legalName: string | null;
   roles: PartyRole[];
   contactPoints: ContactPointItem[];
+  contactPersons: ContactPersonItem[];
+  representations: RepresentationItem[];
+  representedArtists: RepresentedArtistItem[];
+  employers: EmployerItem[];
   /** @nullable */
   deactivatedAt: string | null;
   createdAt: string;

@@ -23,5 +23,7 @@
   "BR-SYS-015": "Bu e-posta adresi başka bir kullanıcıya ait; pasif kullanıcıların adresleri de yeniden kullanılamaz.",
   "BR-SYS-016": "Bu adda bir depo zaten var; pasif depoların adları da yeniden kullanılamaz.",
   "BR-PTY-001": "Tarafın en az bir rolü olmalıdır; türü (kişi ya da firma) sonradan değiştirilemez.",
-  "BR-PTY-002": "Her iletişim türünde yalnızca bir kayıt birincil olabilir."
+  "BR-PTY-002": "Her iletişim türünde yalnızca bir kayıt birincil olabilir.",
+  "BR-PTY-003": "İletişim kişisi yalnızca bir firmaya bağlanır ve aktif bir kişi olmalıdır; aynı kişi bir firmaya bir kez bağlanır.",
+  "BR-PTY-004": "Seçilen taraf aktif olmalı ve bu alan için gereken role sahip olmalıdır. Temsil sürerken sanatçının Sanatçı, ajansın Ajans rolü kaldırılamaz."
 }

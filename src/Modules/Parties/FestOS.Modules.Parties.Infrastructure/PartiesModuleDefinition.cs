@@ -35,6 +35,7 @@ public sealed class PartiesModuleDefinition : IModuleDefinition
         builder.Services.AddHandlersFrom(typeof(IPartyRepository).Assembly);
         builder.Services.AddHandlersFrom(typeof(PartiesModuleDefinition).Assembly);
         builder.Services.AddScoped<IPartyRepository, PartyRepository>();
+        builder.Services.AddScoped<IPartyDirectory, PartyDirectory>();
     }
 
     /// <inheritdoc />

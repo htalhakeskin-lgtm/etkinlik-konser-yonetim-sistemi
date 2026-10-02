@@ -4,7 +4,9 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using FestOS.Modules.Identity.Domain.Users;
+using FestOS.Modules.Parties.Contracts;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FestOS.Modules.Parties.IntegrationTests;
 
@@ -181,6 +183,103 @@ public sealed class PartyApiTests(PartiesFixture fixture) : IAsyncLifetime
         created.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
     }
 
+    [Fact]
+    [Trait("Rule", "BR-PTY-003")]
+    public async Task ContactPersons_AreTiedToTheOrganization_AndShownOnBothSides()
+    {
+        string organization = await IdOfAsync(
+            await CreateAsync(Organization("Açıkhava İşletme", roles: ["venueOperator"]))
+        );
+        string person = await IdOfAsync(
+            await CreateAsync(Person("Şebnem Ilgaz", roles: ["contact"], contactPoints: [Phone("0532 111 22 33")]))
+        );
+
+        using HttpResponseMessage added = await SendAsync(
+            HttpMethod.Post,
+            $"/api/v1/parties/{organization}/contact-persons",
+            new { personId = person, title = "Teknik sorumlu" },
+            version: 1
+        );
+        using HttpResponseMessage refused = await SendAsync(
+            HttpMethod.Post,
+            $"/api/v1/parties/{person}/contact-persons",
+            new { personId = organization },
+            version: 1
+        );
+        JsonElement personDetails = await GetJsonAsync($"/api/v1/parties/{person}");
+
+        added.StatusCode.ShouldBe(HttpStatusCode.OK, await added.Content.ReadAsStringAsync(Cancellation));
+        JsonElement contact = (await added.Content.ReadFromJsonAsync<JsonElement>(Cancellation))
+            .GetProperty("contactPersons")
+            .EnumerateArray()
+            .ShouldHaveSingleItem();
+        contact.GetProperty("name").GetString().ShouldBe("Şebnem Ilgaz");
+        contact.GetProperty("title").GetString().ShouldBe("Teknik sorumlu");
+        contact.GetProperty("primaryPhone").GetString().ShouldBe("0532 111 22 33");
+        refused.StatusCode.ShouldBe(HttpStatusCode.UnprocessableEntity);
+        (await CodeOfAsync(refused)).ShouldBe("BR-PTY-003");
+        personDetails.GetProperty("employers")[0].GetProperty("name").GetString().ShouldBe("Açıkhava İşletme");
+    }
+
+    [Fact]
+    [Trait("Rule", "BR-PTY-004")]
+    public async Task Representation_NeedsAnAgency_AndKeepsTheAgencyRoleWhileItLasts()
+    {
+        string artist = await IdOfAsync(await CreateAsync(Person("Tarkan", roles: ["artist"])));
+        string agency = await IdOfAsync(await CreateAsync(Organization("Sahne Ajans", roles: ["agency"])));
+        string supplier = await IdOfAsync(await CreateAsync(Organization("Işık Ses", roles: ["supplier"])));
+
+        using HttpResponseMessage refused = await SendAsync(
+            HttpMethod.Post,
+            $"/api/v1/parties/{artist}/representations",
+            new { agencyId = supplier },
+            version: 1
+        );
+        using HttpResponseMessage added = await SendAsync(
+            HttpMethod.Post,
+            $"/api/v1/parties/{artist}/representations",
+            new { agencyId = agency, description = "Avrupa" },
+            version: 1
+        );
+        using HttpResponseMessage keepsRole = await EditAsync(
+            agency,
+            Organization("Sahne Ajans", roles: ["supplier"]),
+            version: 1
+        );
+        JsonElement agencyDetails = await GetJsonAsync($"/api/v1/parties/{agency}");
+
+        refused.StatusCode.ShouldBe(HttpStatusCode.UnprocessableEntity);
+        (await CodeOfAsync(refused)).ShouldBe("BR-PTY-004");
+        added.StatusCode.ShouldBe(HttpStatusCode.OK, await added.Content.ReadAsStringAsync(Cancellation));
+        (await added.Content.ReadFromJsonAsync<JsonElement>(Cancellation))
+            .GetProperty("representations")[0]
+            .GetProperty("agencyName")
+            .GetString()
+            .ShouldBe("Sahne Ajans");
+        keepsRole.StatusCode.ShouldBe(HttpStatusCode.UnprocessableEntity);
+        (await CodeOfAsync(keepsRole)).ShouldBe("BR-PTY-004");
+        agencyDetails.GetProperty("representedArtists")[0].GetProperty("description").GetString().ShouldBe("Avrupa");
+    }
+
+    [Fact]
+    public async Task Directory_TellsOtherModulesTheNameRolesAndStatus()
+    {
+        string artist = await IdOfAsync(await CreateAsync(Person("Tarkan", roles: ["artist", "customer"])));
+        string inactive = await IdOfAsync(await CreateAsync(Organization("Işık Ses", roles: ["venueOperator"])));
+        (await PostAsync(inactive, "deactivate", version: 1)).Dispose();
+
+        await using AsyncServiceScope scope = fixture.Services.CreateAsyncScope();
+        IReadOnlyDictionary<Guid, PartySummary> found = await scope
+            .ServiceProvider.GetRequiredService<IPartyDirectory>()
+            .FindAsync([Guid.Parse(artist), Guid.Parse(inactive), Guid.CreateVersion7()], Cancellation);
+
+        found.Count.ShouldBe(2);
+        found[Guid.Parse(artist)].Name.ShouldBe("Tarkan");
+        found[Guid.Parse(artist)].IsSelectableAs(PartyRoles.Artist).ShouldBeTrue();
+        found[Guid.Parse(artist)].IsSelectableAs(PartyRoles.Agency).ShouldBeFalse();
+        found[Guid.Parse(inactive)].IsSelectableAs(PartyRoles.VenueOperator).ShouldBeFalse();
+    }
+
     private static object Person(string name, string[] roles, object[]? contactPoints = null) =>
         new
         {
@@ -236,6 +335,19 @@ public sealed class PartyApiTests(PartiesFixture fixture) : IAsyncLifetime
         request.Headers.IfMatch.Add(new EntityTagHeaderValue(Tag(version)));
         return await Booking.SendAsync(request, Cancellation);
     }
+
+    private async Task<HttpResponseMessage> SendAsync(HttpMethod method, string address, object body, int version)
+    {
+        using var request = new HttpRequestMessage(method, new Uri(address, UriKind.Relative))
+        {
+            Content = JsonContent.Create(body),
+        };
+        request.Headers.IfMatch.Add(new EntityTagHeaderValue(Tag(version)));
+        return await Booking.SendAsync(request, Cancellation);
+    }
+
+    private static async Task<string> IdOfAsync(HttpResponseMessage created) =>
+        (await BodyOfAsync(created)).GetProperty("id").GetString()!;
 
     private async Task<HttpResponseMessage> PostAsync(string id, string action, int version)
     {

@@ -22,6 +22,8 @@ public sealed class Party : AggregateRoot<PartyId>, IDeactivatable
     public const int MaxContactPoints = 20;
 
     private readonly List<ContactPoint> _contactPoints = [];
+    private readonly List<OrganizationContact> _contactPersons = [];
+    private readonly List<ArtistRepresentation> _representations = [];
     private List<PartyRole> _roles = [];
 
     private Party(PartyId id)
@@ -47,6 +49,12 @@ public sealed class Party : AggregateRoot<PartyId>, IDeactivatable
 
     /// <summary>The contact points in their order.</summary>
     public IReadOnlyList<ContactPoint> ContactPoints => _contactPoints;
+
+    /// <summary>The people who speak for an organization, in their order (BR-PTY-003).</summary>
+    public IReadOnlyList<OrganizationContact> ContactPersons => _contactPersons;
+
+    /// <summary>The agencies that represent an artist (BR-PTY-004).</summary>
+    public IReadOnlyList<ArtistRepresentation> Representations => _representations;
 
     /// <summary>
     /// The search key of the names and contact points, phones also as bare digits (database §13, PT-04).
@@ -101,6 +109,88 @@ public sealed class Party : AggregateRoot<PartyId>, IDeactivatable
         IReadOnlyList<ContactPointDetails> contactPoints
     ) => Describe(name, firstName, lastName, legalName, roles, contactPoints);
 
+    /// <summary>
+    /// Ties a person to this organization (BR-PTY-003): only an organization takes contact persons, only an
+    /// active person can be one, and each once.
+    /// </summary>
+    public OrganizationContact AddContactPerson(Party person, string? title)
+    {
+        if (Kind != PartyKind.Organization || person.Kind != PartyKind.Person || person.DeactivatedAt is not null)
+        {
+            throw new BusinessRuleViolationException(
+                PartiesRuleCodes.ContactPerson,
+                "A contact person is an active person tied to an organization."
+            );
+        }
+
+        if (_contactPersons.Exists(contact => contact.PersonId == person.Id))
+        {
+            throw new BusinessRuleViolationException(
+                PartiesRuleCodes.ContactPerson,
+                "The person is already a contact of this organization."
+            );
+        }
+
+        var contact = new OrganizationContact(
+            OrganizationContactId.New(),
+            person.Id,
+            title,
+            _contactPersons.Count == 0 ? 0 : _contactPersons.Max(existing => existing.SortOrder) + 1
+        );
+        _contactPersons.Add(contact);
+        return contact;
+    }
+
+    /// <summary>Changes a contact person's job title.</summary>
+    public void RetitleContactPerson(OrganizationContactId id, string? title) => ContactPerson(id).Retitle(title);
+
+    /// <summary>Unties a contact person; the person stays a party.</summary>
+    public void RemoveContactPerson(OrganizationContactId id) => _contactPersons.Remove(ContactPerson(id));
+
+    /// <summary>
+    /// Records that an agency represents this artist (BR-PTY-004): both active, this one an artist, the other an
+    /// agency, and each agency once.
+    /// </summary>
+    public ArtistRepresentation AddRepresentation(Party agency, string? description)
+    {
+        if (
+            DeactivatedAt is not null
+            || !_roles.Contains(PartyRole.Artist)
+            || agency.DeactivatedAt is not null
+            || !agency.Roles.Contains(PartyRole.Agency)
+        )
+        {
+            throw new BusinessRuleViolationException(
+                PartiesRuleCodes.RoleRequiredSelection,
+                "A representation ties an active artist to an active agency.",
+                parameters: new Dictionary<string, object?>(StringComparer.Ordinal)
+                {
+                    ["field"] = "agencyId",
+                    ["role"] = "agency",
+                }
+            );
+        }
+
+        if (_representations.Exists(representation => representation.AgencyId == agency.Id))
+        {
+            throw new BusinessRuleViolationException(
+                PartiesRuleCodes.RoleRequiredSelection,
+                "The agency already represents this artist."
+            );
+        }
+
+        var representation = new ArtistRepresentation(ArtistRepresentationId.New(), agency.Id, description);
+        _representations.Add(representation);
+        return representation;
+    }
+
+    /// <summary>Changes what a representation covers.</summary>
+    public void DescribeRepresentation(ArtistRepresentationId id, string? description) =>
+        Representation(id).Describe(description);
+
+    /// <summary>Ends a representation.</summary>
+    public void RemoveRepresentation(ArtistRepresentationId id) => _representations.Remove(Representation(id));
+
     /// <summary>Takes the party out of new selections; what already refers to it keeps it (BR-SYS-001).</summary>
     public void Deactivate(Guid deactivatedBy, DateTimeOffset at)
     {
@@ -131,6 +221,16 @@ public sealed class Party : AggregateRoot<PartyId>, IDeactivatable
         if (distinctRoles.Count == 0)
         {
             throw new BusinessRuleViolationException(PartiesRuleCodes.PartyRoles, "A party needs at least one role.");
+        }
+
+        // An artist's representations need the artist role (BR-PTY-004); the agency side is the command's check.
+        if (_representations.Count > 0 && !distinctRoles.Contains(PartyRole.Artist))
+        {
+            throw new BusinessRuleViolationException(
+                PartiesRuleCodes.RoleRequiredSelection,
+                "An artist with representations keeps the artist role.",
+                parameters: new Dictionary<string, object?>(StringComparer.Ordinal) { ["role"] = "artist" }
+            );
         }
 
         Name = name.Trim();
@@ -190,6 +290,13 @@ public sealed class Party : AggregateRoot<PartyId>, IDeactivatable
             }
         }
     }
+
+    private OrganizationContact ContactPerson(OrganizationContactId id) =>
+        _contactPersons.Find(contact => contact.Id == id) ?? throw new KeyNotFoundException("No such contact person.");
+
+    private ArtistRepresentation Representation(ArtistRepresentationId id) =>
+        _representations.Find(representation => representation.Id == id)
+        ?? throw new KeyNotFoundException("No such representation.");
 
     private string SearchText()
     {

@@ -74,6 +74,34 @@ export const CreatePartyResponse = zod.object({
   "label": zod.string().nullable(),
   "isPrimary": zod.boolean()
 })),
+  "contactPersons": zod.array(zod.object({
+  "id": zod.uuid(),
+  "personId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "primaryPhone": zod.string().nullable(),
+  "primaryEmail": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representations": zod.array(zod.object({
+  "id": zod.uuid(),
+  "agencyId": zod.uuid(),
+  "agencyName": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representedArtists": zod.array(zod.object({
+  "artistId": zod.uuid(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "employers": zod.array(zod.object({
+  "organizationId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
   "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
   "createdAt": zod.iso.datetime({"offset":true}),
   "updatedAt": zod.iso.datetime({"offset":true}),
@@ -101,6 +129,34 @@ export const GetPartyResponse = zod.object({
   "value": zod.string(),
   "label": zod.string().nullable(),
   "isPrimary": zod.boolean()
+})),
+  "contactPersons": zod.array(zod.object({
+  "id": zod.uuid(),
+  "personId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "primaryPhone": zod.string().nullable(),
+  "primaryEmail": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representations": zod.array(zod.object({
+  "id": zod.uuid(),
+  "agencyId": zod.uuid(),
+  "agencyName": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representedArtists": zod.array(zod.object({
+  "artistId": zod.uuid(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "employers": zod.array(zod.object({
+  "organizationId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "isActive": zod.boolean()
 })),
   "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
   "createdAt": zod.iso.datetime({"offset":true}),
@@ -151,6 +207,34 @@ export const EditPartyResponse = zod.object({
   "label": zod.string().nullable(),
   "isPrimary": zod.boolean()
 })),
+  "contactPersons": zod.array(zod.object({
+  "id": zod.uuid(),
+  "personId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "primaryPhone": zod.string().nullable(),
+  "primaryEmail": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representations": zod.array(zod.object({
+  "id": zod.uuid(),
+  "agencyId": zod.uuid(),
+  "agencyName": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representedArtists": zod.array(zod.object({
+  "artistId": zod.uuid(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "employers": zod.array(zod.object({
+  "organizationId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
   "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
   "createdAt": zod.iso.datetime({"offset":true}),
   "updatedAt": zod.iso.datetime({"offset":true}),
@@ -184,6 +268,34 @@ export const DeactivatePartyResponse = zod.object({
   "label": zod.string().nullable(),
   "isPrimary": zod.boolean()
 })),
+  "contactPersons": zod.array(zod.object({
+  "id": zod.uuid(),
+  "personId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "primaryPhone": zod.string().nullable(),
+  "primaryEmail": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representations": zod.array(zod.object({
+  "id": zod.uuid(),
+  "agencyId": zod.uuid(),
+  "agencyName": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representedArtists": zod.array(zod.object({
+  "artistId": zod.uuid(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "employers": zod.array(zod.object({
+  "organizationId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
   "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
   "createdAt": zod.iso.datetime({"offset":true}),
   "updatedAt": zod.iso.datetime({"offset":true}),
@@ -216,6 +328,422 @@ export const ActivatePartyResponse = zod.object({
   "value": zod.string(),
   "label": zod.string().nullable(),
   "isPrimary": zod.boolean()
+})),
+  "contactPersons": zod.array(zod.object({
+  "id": zod.uuid(),
+  "personId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "primaryPhone": zod.string().nullable(),
+  "primaryEmail": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representations": zod.array(zod.object({
+  "id": zod.uuid(),
+  "agencyId": zod.uuid(),
+  "agencyName": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representedArtists": zod.array(zod.object({
+  "artistId": zod.uuid(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "employers": zod.array(zod.object({
+  "organizationId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "version": zod.int()
+})
+
+/**
+ * @summary Ties a person to an organization as its contact person.
+ */
+export const AddContactPersonParams = zod.object({
+  "partyId": zod.uuid()
+})
+
+export const AddContactPersonHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const AddContactPersonBody = zod.object({
+  "personId": zod.uuid(),
+  "title": zod.string().nullish()
+})
+
+export const AddContactPersonResponse = zod.object({
+  "id": zod.uuid(),
+  "kind": zod.enum(['person', 'organization']),
+  "name": zod.string(),
+  "firstName": zod.string().nullable(),
+  "lastName": zod.string().nullable(),
+  "legalName": zod.string().nullable(),
+  "roles": zod.array(zod.enum(['customer', 'supplier', 'artist', 'agency', 'venueOperator', 'contact'])),
+  "contactPoints": zod.array(zod.object({
+  "id": zod.uuid(),
+  "kind": zod.enum(['phone', 'email', 'address']),
+  "value": zod.string(),
+  "label": zod.string().nullable(),
+  "isPrimary": zod.boolean()
+})),
+  "contactPersons": zod.array(zod.object({
+  "id": zod.uuid(),
+  "personId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "primaryPhone": zod.string().nullable(),
+  "primaryEmail": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representations": zod.array(zod.object({
+  "id": zod.uuid(),
+  "agencyId": zod.uuid(),
+  "agencyName": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representedArtists": zod.array(zod.object({
+  "artistId": zod.uuid(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "employers": zod.array(zod.object({
+  "organizationId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "version": zod.int()
+})
+
+/**
+ * @summary Changes a contact person's job title.
+ */
+export const EditContactPersonParams = zod.object({
+  "partyId": zod.uuid(),
+  "contactId": zod.uuid()
+})
+
+export const EditContactPersonHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const EditContactPersonBody = zod.object({
+  "title": zod.string().nullish()
+})
+
+export const EditContactPersonResponse = zod.object({
+  "id": zod.uuid(),
+  "kind": zod.enum(['person', 'organization']),
+  "name": zod.string(),
+  "firstName": zod.string().nullable(),
+  "lastName": zod.string().nullable(),
+  "legalName": zod.string().nullable(),
+  "roles": zod.array(zod.enum(['customer', 'supplier', 'artist', 'agency', 'venueOperator', 'contact'])),
+  "contactPoints": zod.array(zod.object({
+  "id": zod.uuid(),
+  "kind": zod.enum(['phone', 'email', 'address']),
+  "value": zod.string(),
+  "label": zod.string().nullable(),
+  "isPrimary": zod.boolean()
+})),
+  "contactPersons": zod.array(zod.object({
+  "id": zod.uuid(),
+  "personId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "primaryPhone": zod.string().nullable(),
+  "primaryEmail": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representations": zod.array(zod.object({
+  "id": zod.uuid(),
+  "agencyId": zod.uuid(),
+  "agencyName": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representedArtists": zod.array(zod.object({
+  "artistId": zod.uuid(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "employers": zod.array(zod.object({
+  "organizationId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "version": zod.int()
+})
+
+/**
+ * @summary Unties a contact person from an organization; the person stays.
+ */
+export const RemoveContactPersonParams = zod.object({
+  "partyId": zod.uuid(),
+  "contactId": zod.uuid()
+})
+
+export const RemoveContactPersonHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const RemoveContactPersonResponse = zod.object({
+  "id": zod.uuid(),
+  "kind": zod.enum(['person', 'organization']),
+  "name": zod.string(),
+  "firstName": zod.string().nullable(),
+  "lastName": zod.string().nullable(),
+  "legalName": zod.string().nullable(),
+  "roles": zod.array(zod.enum(['customer', 'supplier', 'artist', 'agency', 'venueOperator', 'contact'])),
+  "contactPoints": zod.array(zod.object({
+  "id": zod.uuid(),
+  "kind": zod.enum(['phone', 'email', 'address']),
+  "value": zod.string(),
+  "label": zod.string().nullable(),
+  "isPrimary": zod.boolean()
+})),
+  "contactPersons": zod.array(zod.object({
+  "id": zod.uuid(),
+  "personId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "primaryPhone": zod.string().nullable(),
+  "primaryEmail": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representations": zod.array(zod.object({
+  "id": zod.uuid(),
+  "agencyId": zod.uuid(),
+  "agencyName": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representedArtists": zod.array(zod.object({
+  "artistId": zod.uuid(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "employers": zod.array(zod.object({
+  "organizationId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "version": zod.int()
+})
+
+/**
+ * @summary Records that an agency represents an artist.
+ */
+export const AddRepresentationParams = zod.object({
+  "partyId": zod.uuid()
+})
+
+export const AddRepresentationHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const AddRepresentationBody = zod.object({
+  "agencyId": zod.uuid(),
+  "description": zod.string().nullish()
+})
+
+export const AddRepresentationResponse = zod.object({
+  "id": zod.uuid(),
+  "kind": zod.enum(['person', 'organization']),
+  "name": zod.string(),
+  "firstName": zod.string().nullable(),
+  "lastName": zod.string().nullable(),
+  "legalName": zod.string().nullable(),
+  "roles": zod.array(zod.enum(['customer', 'supplier', 'artist', 'agency', 'venueOperator', 'contact'])),
+  "contactPoints": zod.array(zod.object({
+  "id": zod.uuid(),
+  "kind": zod.enum(['phone', 'email', 'address']),
+  "value": zod.string(),
+  "label": zod.string().nullable(),
+  "isPrimary": zod.boolean()
+})),
+  "contactPersons": zod.array(zod.object({
+  "id": zod.uuid(),
+  "personId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "primaryPhone": zod.string().nullable(),
+  "primaryEmail": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representations": zod.array(zod.object({
+  "id": zod.uuid(),
+  "agencyId": zod.uuid(),
+  "agencyName": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representedArtists": zod.array(zod.object({
+  "artistId": zod.uuid(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "employers": zod.array(zod.object({
+  "organizationId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "version": zod.int()
+})
+
+/**
+ * @summary Changes what a representation covers.
+ */
+export const EditRepresentationParams = zod.object({
+  "partyId": zod.uuid(),
+  "representationId": zod.uuid()
+})
+
+export const EditRepresentationHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const EditRepresentationBody = zod.object({
+  "description": zod.string().nullish()
+})
+
+export const EditRepresentationResponse = zod.object({
+  "id": zod.uuid(),
+  "kind": zod.enum(['person', 'organization']),
+  "name": zod.string(),
+  "firstName": zod.string().nullable(),
+  "lastName": zod.string().nullable(),
+  "legalName": zod.string().nullable(),
+  "roles": zod.array(zod.enum(['customer', 'supplier', 'artist', 'agency', 'venueOperator', 'contact'])),
+  "contactPoints": zod.array(zod.object({
+  "id": zod.uuid(),
+  "kind": zod.enum(['phone', 'email', 'address']),
+  "value": zod.string(),
+  "label": zod.string().nullable(),
+  "isPrimary": zod.boolean()
+})),
+  "contactPersons": zod.array(zod.object({
+  "id": zod.uuid(),
+  "personId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "primaryPhone": zod.string().nullable(),
+  "primaryEmail": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representations": zod.array(zod.object({
+  "id": zod.uuid(),
+  "agencyId": zod.uuid(),
+  "agencyName": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representedArtists": zod.array(zod.object({
+  "artistId": zod.uuid(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "employers": zod.array(zod.object({
+  "organizationId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "version": zod.int()
+})
+
+/**
+ * @summary Ends a representation.
+ */
+export const RemoveRepresentationParams = zod.object({
+  "partyId": zod.uuid(),
+  "representationId": zod.uuid()
+})
+
+export const RemoveRepresentationHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const RemoveRepresentationResponse = zod.object({
+  "id": zod.uuid(),
+  "kind": zod.enum(['person', 'organization']),
+  "name": zod.string(),
+  "firstName": zod.string().nullable(),
+  "lastName": zod.string().nullable(),
+  "legalName": zod.string().nullable(),
+  "roles": zod.array(zod.enum(['customer', 'supplier', 'artist', 'agency', 'venueOperator', 'contact'])),
+  "contactPoints": zod.array(zod.object({
+  "id": zod.uuid(),
+  "kind": zod.enum(['phone', 'email', 'address']),
+  "value": zod.string(),
+  "label": zod.string().nullable(),
+  "isPrimary": zod.boolean()
+})),
+  "contactPersons": zod.array(zod.object({
+  "id": zod.uuid(),
+  "personId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "primaryPhone": zod.string().nullable(),
+  "primaryEmail": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representations": zod.array(zod.object({
+  "id": zod.uuid(),
+  "agencyId": zod.uuid(),
+  "agencyName": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "representedArtists": zod.array(zod.object({
+  "artistId": zod.uuid(),
+  "name": zod.string(),
+  "description": zod.string().nullable(),
+  "isActive": zod.boolean()
+})),
+  "employers": zod.array(zod.object({
+  "organizationId": zod.uuid(),
+  "name": zod.string(),
+  "title": zod.string().nullable(),
+  "isActive": zod.boolean()
 })),
   "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
   "createdAt": zod.iso.datetime({"offset":true}),

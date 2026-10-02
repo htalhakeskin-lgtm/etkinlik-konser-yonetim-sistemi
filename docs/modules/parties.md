@@ -1,6 +1,6 @@
 # Modül tasarımı: Parties — Taraflar
 
-> **Durum:** v1.3 (onaylandı) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.4 (onaylandı) · **Son güncelleme:** 2026-10-02
 > **Adım:** Faz 1.3 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 11](#11-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -100,6 +100,8 @@ Doğrulama: tür zorunlu; kişide ad ve soyad zorunlu (en çok 100); görünen a
 - **Senkron sözleşme (Contracts):** `IPartyDirectory.FindAsync(ids)` → `PartySummary(Id, Name, Kind, Roles, IsActive)`. `PartySelection.Ensure(summary, role, field)` kaydı yoksa, pasifse ya da rolü yoksa `422 BR-PTY-004` fırlatır; `params` alanı ve beklenen rolü söyler. Venues ve Riders bu adımda kullanır; Booking ve Procurement sonraki adımlarda.
 - **Olaylar:** S1'de yayınladığı ve dinlediği olay yoktur ([05 §5.3](../05-module-map.md#53-parties--taraflar)).
 
+**Uygulama (PR 1c):** İletişim kişisi firmanın, temsil sanatçının toplu kökündedir; bağ uçları bu tarafın sürümüyle (`If-Match`) çalışır ve yanıtta tarafın kaydedilmiş halini döner. Karşı taraf (kişi, ajans) aynı modülde yüklenir; yoksa `404`. Kişi ve firma türleri, kişinin aktifliği ve aynı kişinin ikinci kez bağlanması `422 BR-PTY-003`; ajans rolü, iki tarafın aktifliği, sanatçı rolü ve aynı ajansın ikinci kez bağlanması `422 BR-PTY-004` döner. Temsili olan sanatçıdan Sanatçı rolünü toplu kök, temsil ettiği sanatçısı olan ajanstan Ajans rolünü düzenleme komutu korur. Detay; firmada iletişim kişilerini (adı, görevi, birincil telefon ve e-postası), sanatçıda ajanslarını, ajansta temsil ettiği sanatçıları, kişide çalıştığı firmaları döner. `IPartyDirectory.FindAsync` adı, rolleri (`PartyRoles` adlarıyla) ve aktifliği verir; `PartySummary.IsSelectableAs(rol)` seçim kuralını uygular, kuralın kodu `PartyRoles.SelectionRuleCode`'dur. Bağ tablolarında modül rolü silebilir; karşı tarafa yabancı anahtar `RESTRICT`'tir.
+
 ## 10. Ekranlar, hikayeler ve PR planı
 
 | Ekran | Adres | Not |
@@ -154,3 +156,4 @@ Soru 2026-10-02'de yanıtlandı; önerilen seçenek seçildi.
 | 2026-10-02 | v1.1 | MD-01 uygulandı (PR 0); ayrıntılar [audit §2](audit.md#2-yazma-tarafına-eklenenler). API süzgeçleri `rootType`, `rootId`. |
 | 2026-10-02 | v1.2 | §5, §6: PR 1a'nın uygulama ayrıntıları; birincil iletişim bilgisi için veritabanı indeksi yerine toplu kök (PT-08). |
 | 2026-10-02 | v1.3 | §8: taraf uçlarının uygulama ayrıntıları (PR 1b). |
+| 2026-10-02 | v1.4 | §9: iletişim kişileri, temsil ve `IPartyDirectory`'nin uygulama ayrıntıları (PR 1c). |
