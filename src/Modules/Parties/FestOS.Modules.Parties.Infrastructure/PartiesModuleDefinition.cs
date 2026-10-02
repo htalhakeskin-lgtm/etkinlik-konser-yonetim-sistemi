@@ -38,5 +38,5 @@ public sealed class PartiesModuleDefinition : IModuleDefinition
     }
 
     /// <inheritdoc />
-    public void MapEndpoints(IEndpointRouteBuilder endpoints) { }
+    public void MapEndpoints(IEndpointRouteBuilder endpoints) => PartyEndpoints.Map(endpoints);
 }
