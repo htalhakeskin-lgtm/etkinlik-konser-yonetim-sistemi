@@ -41,7 +41,8 @@
     "administration": "Yönetim",
     "users": "Kullanıcılar",
     "roles": "Roller ve yetkiler",
-    "warehouses": "Depolar"
+    "warehouses": "Depolar",
+    "audit": "İşlem geçmişi"
   },
   "dataTable": {
     "range": "{{from}}–{{to}} / {{total}} kayıt",
