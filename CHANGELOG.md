@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.2.0](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/compare/v0.1.0...v0.2.0) (2026-10-02)
+
+
+### Features
+
+* **audit:** add the change history screens ([#126](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/126)) ([671904e](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/671904e29e67f16f8139fe7576f61d641d0b6b43))
+* **audit:** list the change history ([#125](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/125)) ([8c16dcf](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/8c16dcff1c991ecf256c1c11fb7715ebec38a23f))
+* **audit:** record the actor's name and index the history ([#124](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/124)) ([c710cd2](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/c710cd299909cc31d3b4b4ba7213d05c66fb7c9d))
+* **building-blocks:** require permissions on endpoints ([#106](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/106)) ([de974be](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/de974be90a17cea606dda0ab4a11b73da594e85d))
+* **identity:** add the application shell ([#114](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/114)) ([1d2c605](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/1d2c605dfb9227d7d4488ca8cf800462d6eff022))
+* **identity:** add the identity module and its user table ([#108](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/108)) ([8a80464](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/8a80464b60f7d6d30fda74081ea029244900a025))
+* **identity:** add the sign-in screens and the session guard ([#113](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/113)) ([a189be9](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/a189be9cc163f1ad2229790779a9eb9273458c7c))
+* **identity:** add the users list screen ([#117](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/117)) ([2c4a1b9](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/2c4a1b9330177ebf7a2092bb00a0efab8986b30c))
+* **identity:** assign warehouses to warehouse managers ([#123](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/123)) ([51b0933](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/51b0933611550b19c329a497ab06c88fc1aaef9b))
+* **identity:** create the first system administrator from the Host ([#109](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/109)) ([92f2584](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/92f2584fc4d8c71243b361ef4f6c00d03c995be4))
+* **identity:** create, edit, deactivate and reset users ([#116](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/116)) ([ae2ceb3](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/ae2ceb3845c69c38057c95c24979b2f43e16471f))
+* **identity:** let users set a new password ([#112](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/112)) ([fd99f1b](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/fd99f1bae3fda645ee8ba396f4effa699834bd9b))
+* **identity:** list and open users ([#115](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/115)) ([1b852d8](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/1b852d8ae760a1c4289a0b11927d82e6c97445ca))
+* **identity:** lock accounts, limit and record sign-in attempts ([#111](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/111)) ([6ecc92c](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/6ecc92ced6854a7e732087adfc566142e70d061c))
+* **identity:** manage users from the users screen ([#118](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/118)) ([301b254](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/301b25477f079ac5b06adfdef205410045e38efc))
+* **identity:** show the role and permission matrix ([#119](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/119)) ([330b902](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/330b90202cb03c8ef1caef67d7652a9dbedbf69a))
+* **identity:** sign in and out with server-side sessions ([#110](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/110)) ([70c18fc](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/70c18fc4b37b8309c3f84858dd5b94e4bbf8ae06))
+* **inventory:** add the inventory module and its warehouse table ([#120](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/120)) ([3e04796](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/3e047969c246a05e95b034980d2bb39bae33a4d4))
+* **inventory:** add the warehouses screen ([#122](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/122)) ([2a1bbf7](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/2a1bbf798aaed9af23f75a7f19d841aadab37ccf))
+* **inventory:** list, create, edit and deactivate warehouses ([#121](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/issues/121)) ([4769f85](https://github.com/htalhakeskin-lgtm/etkinlik-konser-yonetim-sistemi/commit/4769f85579dcf6a4fe96eb70b87139e172777544))
+
 ## 0.1.0 (2026-09-30)
 
 
