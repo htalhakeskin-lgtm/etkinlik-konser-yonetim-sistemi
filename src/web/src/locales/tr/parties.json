@@ -183,5 +183,12 @@
     "removeDescription": "Yalnızca iki taraf arasındaki bağ kaldırılır; taraf kaydı silinmez.",
     "saved": "Bağ kaydedildi.",
     "removed": "Bağ kaldırıldı."
+  },
+  "artists": {
+    "title": "Sanatçılar",
+    "description": "Sanatçı rolündeki kişi ve gruplar; ajansları sanatçının sayfasından bağlanır.",
+    "add": "Sanatçı ekle",
+    "search": "Sanatçı adı, telefon ya da e-posta ara",
+    "empty": "Aramanıza uyan sanatçı yok."
   }
 }

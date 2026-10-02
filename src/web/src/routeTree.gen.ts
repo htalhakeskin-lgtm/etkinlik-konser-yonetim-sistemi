@@ -17,7 +17,10 @@ import { Route as AppAuditRouteImport } from './routes/_app/audit'
 import { Route as AppAdminRolesRouteImport } from './routes/_app/admin/roles'
 import { Route as AppAdminUsersRouteImport } from './routes/_app/admin/users'
 import { Route as AppAdminWarehousesRouteImport } from './routes/_app/admin/warehouses'
+import { Route as AppArtistsIndexRouteImport } from './routes/_app/artists/index'
 import { Route as AppPartiesIndexRouteImport } from './routes/_app/parties/index'
+import { Route as AppArtistsPartyIdIndexRouteImport } from './routes/_app/artists/$partyId/index'
+import { Route as AppArtistsPartyIdHistoryRouteImport } from './routes/_app/artists/$partyId/history'
 import { Route as AppPartiesPartyIdIndexRouteImport } from './routes/_app/parties/$partyId/index'
 import { Route as AppPartiesPartyIdHistoryRouteImport } from './routes/_app/parties/$partyId/history'
 
@@ -60,11 +63,27 @@ const AppAdminWarehousesRoute = AppAdminWarehousesRouteImport.update({
   path: '/admin/warehouses',
   getParentRoute: () => AppRoute,
 } as any)
+const AppArtistsIndexRoute = AppArtistsIndexRouteImport.update({
+  id: '/artists/',
+  path: '/artists/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppPartiesIndexRoute = AppPartiesIndexRouteImport.update({
   id: '/parties/',
   path: '/parties/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppArtistsPartyIdIndexRoute = AppArtistsPartyIdIndexRouteImport.update({
+  id: '/artists/$partyId/',
+  path: '/artists/$partyId/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppArtistsPartyIdHistoryRoute =
+  AppArtistsPartyIdHistoryRouteImport.update({
+    id: '/artists/$partyId/history',
+    path: '/artists/$partyId/history',
+    getParentRoute: () => AppRoute,
+  } as any)
 const AppPartiesPartyIdIndexRoute = AppPartiesPartyIdIndexRouteImport.update({
   id: '/parties/$partyId/',
   path: '/parties/$partyId/',
@@ -85,8 +104,11 @@ export interface FileRoutesByFullPath {
   '/admin/roles': typeof AppAdminRolesRoute
   '/admin/users': typeof AppAdminUsersRoute
   '/admin/warehouses': typeof AppAdminWarehousesRoute
+  '/artists/': typeof AppArtistsIndexRoute
   '/parties/': typeof AppPartiesIndexRoute
+  '/artists/$partyId/history': typeof AppArtistsPartyIdHistoryRoute
   '/parties/$partyId/history': typeof AppPartiesPartyIdHistoryRoute
+  '/artists/$partyId/': typeof AppArtistsPartyIdIndexRoute
   '/parties/$partyId/': typeof AppPartiesPartyIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -97,8 +119,11 @@ export interface FileRoutesByTo {
   '/admin/roles': typeof AppAdminRolesRoute
   '/admin/users': typeof AppAdminUsersRoute
   '/admin/warehouses': typeof AppAdminWarehousesRoute
+  '/artists': typeof AppArtistsIndexRoute
   '/parties': typeof AppPartiesIndexRoute
+  '/artists/$partyId/history': typeof AppArtistsPartyIdHistoryRoute
   '/parties/$partyId/history': typeof AppPartiesPartyIdHistoryRoute
+  '/artists/$partyId': typeof AppArtistsPartyIdIndexRoute
   '/parties/$partyId': typeof AppPartiesPartyIdIndexRoute
 }
 export interface FileRoutesById {
@@ -111,8 +136,11 @@ export interface FileRoutesById {
   '/_app/admin/roles': typeof AppAdminRolesRoute
   '/_app/admin/users': typeof AppAdminUsersRoute
   '/_app/admin/warehouses': typeof AppAdminWarehousesRoute
+  '/_app/artists/': typeof AppArtistsIndexRoute
   '/_app/parties/': typeof AppPartiesIndexRoute
+  '/_app/artists/$partyId/history': typeof AppArtistsPartyIdHistoryRoute
   '/_app/parties/$partyId/history': typeof AppPartiesPartyIdHistoryRoute
+  '/_app/artists/$partyId/': typeof AppArtistsPartyIdIndexRoute
   '/_app/parties/$partyId/': typeof AppPartiesPartyIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -125,8 +153,11 @@ export interface FileRouteTypes {
     | '/admin/roles'
     | '/admin/users'
     | '/admin/warehouses'
+    | '/artists/'
     | '/parties/'
+    | '/artists/$partyId/history'
     | '/parties/$partyId/history'
+    | '/artists/$partyId/'
     | '/parties/$partyId/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -137,8 +168,11 @@ export interface FileRouteTypes {
     | '/admin/roles'
     | '/admin/users'
     | '/admin/warehouses'
+    | '/artists'
     | '/parties'
+    | '/artists/$partyId/history'
     | '/parties/$partyId/history'
+    | '/artists/$partyId'
     | '/parties/$partyId'
   id:
     | '__root__'
@@ -150,8 +184,11 @@ export interface FileRouteTypes {
     | '/_app/admin/roles'
     | '/_app/admin/users'
     | '/_app/admin/warehouses'
+    | '/_app/artists/'
     | '/_app/parties/'
+    | '/_app/artists/$partyId/history'
     | '/_app/parties/$partyId/history'
+    | '/_app/artists/$partyId/'
     | '/_app/parties/$partyId/'
   fileRoutesById: FileRoutesById
 }
@@ -219,11 +256,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAdminWarehousesRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/artists/': {
+      id: '/_app/artists/'
+      path: '/artists'
+      fullPath: '/artists/'
+      preLoaderRoute: typeof AppArtistsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/parties/': {
       id: '/_app/parties/'
       path: '/parties'
       fullPath: '/parties/'
       preLoaderRoute: typeof AppPartiesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/artists/$partyId/': {
+      id: '/_app/artists/$partyId/'
+      path: '/artists/$partyId'
+      fullPath: '/artists/$partyId/'
+      preLoaderRoute: typeof AppArtistsPartyIdIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/artists/$partyId/history': {
+      id: '/_app/artists/$partyId/history'
+      path: '/artists/$partyId/history'
+      fullPath: '/artists/$partyId/history'
+      preLoaderRoute: typeof AppArtistsPartyIdHistoryRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/parties/$partyId/': {
@@ -249,8 +307,11 @@ interface AppRouteChildren {
   AppAdminRolesRoute: typeof AppAdminRolesRoute
   AppAdminUsersRoute: typeof AppAdminUsersRoute
   AppAdminWarehousesRoute: typeof AppAdminWarehousesRoute
+  AppArtistsIndexRoute: typeof AppArtistsIndexRoute
   AppPartiesIndexRoute: typeof AppPartiesIndexRoute
+  AppArtistsPartyIdHistoryRoute: typeof AppArtistsPartyIdHistoryRoute
   AppPartiesPartyIdHistoryRoute: typeof AppPartiesPartyIdHistoryRoute
+  AppArtistsPartyIdIndexRoute: typeof AppArtistsPartyIdIndexRoute
   AppPartiesPartyIdIndexRoute: typeof AppPartiesPartyIdIndexRoute
 }
 
@@ -260,8 +321,11 @@ const AppRouteChildren: AppRouteChildren = {
   AppAdminRolesRoute: AppAdminRolesRoute,
   AppAdminUsersRoute: AppAdminUsersRoute,
   AppAdminWarehousesRoute: AppAdminWarehousesRoute,
+  AppArtistsIndexRoute: AppArtistsIndexRoute,
   AppPartiesIndexRoute: AppPartiesIndexRoute,
+  AppArtistsPartyIdHistoryRoute: AppArtistsPartyIdHistoryRoute,
   AppPartiesPartyIdHistoryRoute: AppPartiesPartyIdHistoryRoute,
+  AppArtistsPartyIdIndexRoute: AppArtistsPartyIdIndexRoute,
   AppPartiesPartyIdIndexRoute: AppPartiesPartyIdIndexRoute,
 }
 
