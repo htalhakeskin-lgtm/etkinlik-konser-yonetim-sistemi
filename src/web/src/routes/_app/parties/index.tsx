@@ -1,0 +1,35 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { z } from "zod";
+
+import { PartyKind, PartyRole, PartyStatusFilter } from "@/api/model";
+import { PartiesPage } from "@/modules/parties";
+
+// A value the screen cannot use is dropped rather than failing the page (ui §5.1).
+const searchSchema = z.object({
+  q: z.string().optional().catch(undefined),
+  role: z.enum(PartyRole).optional().catch(undefined),
+  kind: z.enum(PartyKind).optional().catch(undefined),
+  status: z.enum(PartyStatusFilter).optional().catch(undefined),
+  sort: z.string().optional().catch(undefined),
+  page: z.number().int().min(1).optional().catch(undefined),
+  pageSize: z
+    .union([z.literal(25), z.literal(50), z.literal(100)])
+    .optional()
+    .catch(undefined),
+});
+
+export const Route = createFileRoute("/_app/parties/")({
+  validateSearch: searchSchema,
+  component: function PartiesRoute() {
+    const search = Route.useSearch();
+    const navigate = Route.useNavigate();
+    return (
+      <PartiesPage
+        search={search}
+        onSearchChange={(next) => {
+          void navigate({ search: next, replace: true });
+        }}
+      />
+    );
+  },
+});

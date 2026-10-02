@@ -7,7 +7,11 @@ describe("startPage", () => {
     expect(startPage(["bookingManager", "systemAdministrator"])).toBe("/admin/users");
   });
 
+  it("sends a booking manager to the parties until the events screen arrives", () => {
+    expect(startPage(["bookingManager"])).toBe("/parties");
+  });
+
   it("keeps roles whose start screen has not arrived on the start page", () => {
-    expect(startPage(["bookingManager"])).toBeUndefined();
+    expect(startPage(["technicalManager"])).toBeUndefined();
   });
 });

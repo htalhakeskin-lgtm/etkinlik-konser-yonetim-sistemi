@@ -38,6 +38,8 @@
     "close": "Kapat"
   },
   "menu": {
+    "masterData": "Ana veriler",
+    "parties": "Taraflar",
     "administration": "Yönetim",
     "users": "Kullanıcılar",
     "roles": "Roller ve yetkiler",

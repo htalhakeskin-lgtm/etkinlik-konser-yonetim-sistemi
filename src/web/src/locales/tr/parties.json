@@ -1,0 +1,153 @@
+{
+  "roles": {
+    "customer": "Müşteri",
+    "supplier": "Tedarikçi",
+    "artist": "Sanatçı",
+    "agency": "Ajans",
+    "venueOperator": "Mekan işletmecisi",
+    "contact": "İletişim kişisi"
+  },
+  "kinds": {
+    "person": "Kişi",
+    "organization": "Firma"
+  },
+  "contactKinds": {
+    "phone": "Telefon",
+    "email": "E-posta",
+    "address": "Adres"
+  },
+  "parties": {
+    "title": "Taraflar",
+    "description": "Sanatçılar, ajanslar, mekan işletmecileri, tedarikçiler, müşteriler ve iletişim kişileri tek listede.",
+    "add": "Taraf ekle",
+    "search": "Ad, telefon ya da e-posta ara",
+    "empty": "Aramanıza uyan taraf yok.",
+    "forbidden": "Bu ekranı görme yetkiniz yok.",
+    "columns": {
+      "name": "Ad",
+      "kind": "Tür",
+      "roles": "Roller",
+      "phone": "Telefon",
+      "email": "E-posta",
+      "status": "Durum",
+      "actions": "İşlemler"
+    },
+    "status": {
+      "active": "Aktif",
+      "inactive": "Pasif"
+    },
+    "filters": {
+      "roleLabel": "Rol",
+      "allRoles": "Tüm roller",
+      "kindLabel": "Tür",
+      "allKinds": "Kişi ve firma",
+      "statusLabel": "Durum",
+      "status": {
+        "active": "Aktif",
+        "inactive": "Pasif",
+        "all": "Tümü"
+      }
+    },
+    "actions": {
+      "open": "{{name}} için işlemler",
+      "edit": "Düzenle",
+      "deactivate": "Pasifleştir",
+      "activate": "Etkinleştir",
+      "history": "Geçmiş"
+    },
+    "confirm": {
+      "deactivateTitle": "{{name}} pasifleştirilsin mi?",
+      "deactivateDescription": "Taraf yeni kayıtlarda seçilemez; bağlı olduğu mevcut kayıtlarda görünmeye devam eder. Gerekirse yeniden etkinleştirebilirsiniz."
+    },
+    "done": {
+      "created": "Taraf oluşturuldu.",
+      "saved": "Taraf kaydedildi.",
+      "deactivated": "Taraf pasifleştirildi.",
+      "activated": "Taraf etkinleştirildi."
+    }
+  },
+  "partyForm": {
+    "createTitle": "Taraf ekle",
+    "editTitle": "Tarafı düzenle",
+    "required": "* zorunlu alan",
+    "kind": "Tür",
+    "firstName": "Ad",
+    "lastName": "Soyad",
+    "shownName": "Görünen ad (ör. sahne adı)",
+    "name": "Ad",
+    "legalName": "Ticari unvan",
+    "roles": "Roller",
+    "contactPoints": "İletişim bilgileri",
+    "noContactPoints": "Henüz iletişim bilgisi yok.",
+    "contactKind": "{{number}}. iletişim bilgisinin türü",
+    "contactValue": "{{number}}. iletişim bilgisi",
+    "contactLabel": "{{number}}. iletişim bilgisinin etiketi",
+    "contactLabelHint": "Etiket (ör. Muhasebe)",
+    "primary": "Birincil",
+    "removeContact": "{{number}}. iletişim bilgisini kaldır",
+    "addContact": "İletişim bilgisi ekle",
+    "invalidPhone": "Geçerli bir telefon numarası girin (7–15 rakam; +, boşluk, tire ve parantez kullanılabilir).",
+    "invalidEmail": "Geçerli bir e-posta adresi girin.",
+    "cancel": "Vazgeç",
+    "create": "Oluştur",
+    "save": "Kaydet"
+  },
+  "Party": {
+    "fields": {
+      "kind": "Tür",
+      "name": "Ad",
+      "firstName": "Ad (kişi)",
+      "lastName": "Soyad",
+      "legalName": "Ticari unvan",
+      "roles": "Roller",
+      "deactivatedAt": "Pasifleştirildiği zaman",
+      "deactivatedBy": "Pasifleştiren"
+    },
+    "values": {
+      "kind": {
+        "person": "Kişi",
+        "organization": "Firma"
+      },
+      "roles": {
+        "customer": "Müşteri",
+        "supplier": "Tedarikçi",
+        "artist": "Sanatçı",
+        "agency": "Ajans",
+        "venueOperator": "Mekan işletmecisi",
+        "contact": "İletişim kişisi"
+      }
+    }
+  },
+  "ContactPoint": {
+    "fields": {
+      "kind": "Tür",
+      "value": "Değer",
+      "label": "Etiket",
+      "isPrimary": "Birincil",
+      "sortOrder": "Sıra",
+      "partyId": "Taraf"
+    },
+    "values": {
+      "kind": {
+        "phone": "Telefon",
+        "email": "E-posta",
+        "address": "Adres"
+      }
+    }
+  },
+  "OrganizationContact": {
+    "fields": {
+      "personId": "Kişi",
+      "title": "Görevi",
+      "sortOrder": "Sıra",
+      "organizationId": "Firma"
+    }
+  },
+  "ArtistRepresentation": {
+    "fields": {
+      "agencyId": "Ajans",
+      "description": "Açıklama",
+      "artistId": "Sanatçı"
+    }
+  }
+}
