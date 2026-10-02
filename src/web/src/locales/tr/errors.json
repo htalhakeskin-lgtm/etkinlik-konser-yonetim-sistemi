@@ -34,5 +34,7 @@
   "BR-EQP-013": "Bu adda bir kit zaten var; pasif kitlerin adları da yeniden kullanılamaz.",
   "BR-VEN-003": "Bu şehirde aynı adlı bir mekan zaten var; pasif mekanların adları da yeniden kullanılamaz.",
   "BR-VEN-001": "Mekan ekipmanı satırı tam olarak bir hedef ister: bir model, bir kategori ya da serbest açıklama.",
-  "BR-VEN-002": "Geçerlilik bitişi başlangıçtan sonra olmalı; kullanılamama dönemi satırın geçerlilik aralığında kalmalı, satırın adedini aşmamalı ve aynı satırın başka bir dönemiyle çakışmamalıdır."
+  "BR-VEN-002": "Geçerlilik bitişi başlangıçtan sonra olmalı; kullanılamama dönemi satırın geçerlilik aralığında kalmalı, satırın adedini aşmamalı ve aynı satırın başka bir dönemiyle çakışmamalıdır.",
+  "BR-RDR-007": "Rider'ın kaynağı bağlı olduğu kayda uymuyor: prodüksiyonun rider'ı prodüksiyondan gelir.",
+  "BR-RDR-009": "Bu sanatçının aynı adlı bir prodüksiyonu zaten var; pasif prodüksiyonların adları da yeniden kullanılamaz."
 }

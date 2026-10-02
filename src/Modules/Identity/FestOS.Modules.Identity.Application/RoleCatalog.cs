@@ -46,6 +46,19 @@ public static class RoleCatalog
         "Venues.Venues.Deactivate",
     ];
 
+    private const string ViewProductions = "Riders.Productions.View";
+
+    private const string ViewRiders = "Riders.Riders.View";
+
+    private static readonly string[] ManageProductions =
+    [
+        ViewProductions,
+        "Riders.Productions.Create",
+        "Riders.Productions.Edit",
+        "Riders.Productions.Deactivate",
+        ViewRiders,
+    ];
+
     private static readonly string[] ManageParties =
     [
         ViewParties,
@@ -68,6 +81,7 @@ public static class RoleCatalog
                 .. ManageParties,
                 .. ViewCatalog,
                 .. ManageVenues,
+                .. ManageProductions,
             ]),
             [Role.TechnicalManager] = Set([
                 InventoryPermissions.ViewWarehouses,
@@ -75,6 +89,9 @@ public static class RoleCatalog
                 .. ManageCatalog,
                 ViewVenues,
                 "Venues.Equipment.Edit",
+                ViewProductions,
+                ViewRiders,
+                "Riders.Riders.Edit",
             ]),
             [Role.WarehouseManager] = Set([InventoryPermissions.ViewWarehouses, .. ViewCatalog]),
             [Role.GeneralManager] = Set([
@@ -84,6 +101,8 @@ public static class RoleCatalog
                 ViewParties,
                 .. ViewCatalog,
                 ViewVenues,
+                ViewProductions,
+                ViewRiders,
                 ViewAuditEntries,
             ]),
         };

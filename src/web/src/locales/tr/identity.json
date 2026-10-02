@@ -137,7 +137,8 @@
     "Inventory": "Depolar",
     "Parties": "Taraflar",
     "Catalog": "Ekipman kataloğu",
-    "Venues": "Mekanlar"
+    "Venues": "Mekanlar",
+    "Riders": "Prodüksiyon ve rider"
   },
   "permissions": {
     "Identity": {
@@ -202,6 +203,18 @@
       },
       "Equipment": {
         "Edit": "Mekan ekipmanını ve kullanılamama dönemlerini girme"
+      }
+    },
+    "Riders": {
+      "Productions": {
+        "View": "Prodüksiyonları görme",
+        "Create": "Prodüksiyon oluşturma",
+        "Edit": "Prodüksiyonu düzenleme",
+        "Deactivate": "Prodüksiyonu pasifleştirme ve etkinleştirme"
+      },
+      "Riders": {
+        "View": "Rider'ları ve versiyonlarını görme",
+        "Edit": "Yeni rider versiyonu kaydetme"
       }
     }
   },
