@@ -29,7 +29,8 @@
     "EquipmentCategory": "Ekipman kategorisi",
     "EquipmentModel": "Ekipman modeli",
     "Kit": "Kit",
-    "KitLine": "Kit satırı"
+    "KitLine": "Kit satırı",
+    "Venue": "Mekan"
   },
   "changes": {
     "show": "Değişiklikleri göster",

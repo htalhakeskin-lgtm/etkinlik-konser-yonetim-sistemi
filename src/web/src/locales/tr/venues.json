@@ -1,0 +1,97 @@
+{
+  "venues": {
+    "title": "Mekanlar",
+    "description": "Etkinliklerin yapıldığı yerler, teknik bilgileri ve kendi ekipmanlarıyla.",
+    "add": "Mekan ekle",
+    "search": "Mekan adı ya da şehir ara",
+    "empty": "Bu süzgeçlere uyan mekan yok.",
+    "forbidden": "Bu ekranı görme yetkiniz yok.",
+    "columns": {
+      "name": "Ad",
+      "city": "Şehir",
+      "capacity": "Kapasite",
+      "operator": "İşletmeci",
+      "status": "Durum",
+      "actions": "İşlemler"
+    },
+    "status": {
+      "active": "Aktif",
+      "inactive": "Pasif"
+    },
+    "filters": {
+      "statusLabel": "Durum",
+      "status": {
+        "active": "Aktif",
+        "inactive": "Pasif",
+        "all": "Tümü"
+      }
+    },
+    "actions": {
+      "open": "{{name}} için işlemler",
+      "edit": "Düzenle",
+      "deactivate": "Pasifleştir",
+      "activate": "Etkinleştir",
+      "history": "Geçmiş"
+    },
+    "confirm": {
+      "deactivateTitle": "{{name}} pasifleştirilsin mi?",
+      "deactivateDescription": "Mekan yeni opsiyon ve etkinliklerde seçilemez; bağlı olduğu mevcut kayıtlarda görünmeye devam eder."
+    },
+    "done": {
+      "created": "Mekan oluşturuldu.",
+      "saved": "Mekan kaydedildi.",
+      "deactivated": "Mekan pasifleştirildi.",
+      "activated": "Mekan etkinleştirildi."
+    }
+  },
+  "venueForm": {
+    "createTitle": "Mekan ekle",
+    "editTitle": "Mekanı düzenle",
+    "required": "* zorunlu alan",
+    "name": "Ad",
+    "city": "Şehir",
+    "address": "Adres",
+    "capacity": "Kapasite",
+    "operator": "Mekan işletmecisi",
+    "operatorHint": "İşletmeci adı yazın",
+    "technical": "Teknik bilgiler",
+    "technicalHelp": "İsteğe bağlıdır; ölçüler metre, güç amperdir. Güç kapasitesi şimdilik yalnızca kaydedilir.",
+    "stageWidthMeters": "Sahne genişliği (m)",
+    "stageDepthMeters": "Sahne derinliği (m)",
+    "stageHeightMeters": "Sahne yüksekliği (m)",
+    "powerCapacityAmperes": "Güç kapasitesi (A)",
+    "curfew": "Sessizlik saati",
+    "timeZone": "Saat dilimi",
+    "loadingDock": "Yükleme kapısı",
+    "cancel": "Vazgeç",
+    "create": "Oluştur",
+    "save": "Kaydet"
+  },
+  "venueDetail": {
+    "notFound": "Bu mekan bulunamadı.",
+    "tabs": "Mekan sekmeleri",
+    "general": "Genel",
+    "history": "Geçmiş",
+    "stage": "Sahne (genişlik × derinlik × yükseklik)",
+    "capacity_one": "{{count}} kişi",
+    "capacity_other": "{{count}} kişi"
+  },
+  "Venue": {
+    "fields": {
+      "name": "Ad",
+      "city": "Şehir",
+      "address": "Adres",
+      "operatorPartyId": "İşletmeci",
+      "capacity": "Kapasite",
+      "stageWidthMeters": "Sahne genişliği (m)",
+      "stageDepthMeters": "Sahne derinliği (m)",
+      "stageHeightMeters": "Sahne yüksekliği (m)",
+      "loadingDock": "Yükleme kapısı",
+      "powerCapacityAmperes": "Güç kapasitesi (A)",
+      "curfew": "Sessizlik saati",
+      "timeZone": "Saat dilimi",
+      "deactivatedAt": "Pasifleştirildiği zaman",
+      "deactivatedBy": "Pasifleştiren"
+    }
+  }
+}

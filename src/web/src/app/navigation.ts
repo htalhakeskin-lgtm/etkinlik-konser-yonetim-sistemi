@@ -3,6 +3,7 @@ import type { ParseKeys } from "i18next";
 import {
   BookUser,
   Boxes,
+  Building2,
   FolderTree,
   History,
   type LucideIcon,
@@ -44,6 +45,12 @@ export const menu: readonly MenuGroup[] = [
         to: "/artists",
         permission: "Parties.Parties.View",
         icon: Mic,
+      },
+      {
+        label: "menu.venues",
+        to: "/venues",
+        permission: "Venues.Venues.View",
+        icon: Building2,
       },
     ],
   },
