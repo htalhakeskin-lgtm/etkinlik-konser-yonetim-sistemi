@@ -149,5 +149,39 @@
       "description": "Açıklama",
       "artistId": "Sanatçı"
     }
+  },
+  "detail": {
+    "notFound": "Bu taraf bulunamadı.",
+    "tabs": "Taraf sekmeleri",
+    "general": "Genel",
+    "history": "Geçmiş",
+    "contactPoints": "İletişim bilgileri",
+    "contactPersons": "İletişim kişileri",
+    "noContactPersons": "Bu firmaya bağlı iletişim kişisi yok.",
+    "agencies": "Ajanslar",
+    "noAgencies": "Bu sanatçıyı temsil eden ajans yok.",
+    "representedArtists": "Temsil ettiği sanatçılar",
+    "noRepresentedArtists": "Bu ajansın temsil ettiği sanatçı yok.",
+    "employers": "Çalıştığı firmalar",
+    "name": "Ad",
+    "title": "Görevi",
+    "phone": "Telefon",
+    "email": "E-posta",
+    "description": "Açıklama (ör. bölge)"
+  },
+  "link": {
+    "searchHint": "Ad, telefon ya da e-posta yazın",
+    "person": "Kişi",
+    "agency": "Ajans",
+    "add": "Ekle",
+    "addContactPerson": "İletişim kişisi ekle",
+    "editContactPerson": "İletişim kişisini düzenle",
+    "addAgency": "Ajans ekle",
+    "editAgency": "Temsili düzenle",
+    "remove": "Kaldır",
+    "removeTitle": "{{name}} bağı kaldırılsın mı?",
+    "removeDescription": "Yalnızca iki taraf arasındaki bağ kaldırılır; taraf kaydı silinmez.",
+    "saved": "Bağ kaydedildi.",
+    "removed": "Bağ kaldırıldı."
   }
 }

@@ -1,4 +1,5 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
 import { createColumnHelper } from "@tanstack/react-table";
 import { BookUser, Ellipsis, Lock, Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -133,7 +134,15 @@ export function PartiesPage({ search, onSearchChange }: PartiesPageProps) {
   const columns: DataTableColumns<PartyListItem> = helper.columns([
     helper.accessor("name", {
       header: t("parties.columns.name"),
-      cell: (info) => <span className="font-medium">{info.getValue()}</span>,
+      cell: ({ row }) => (
+        <Link
+          to="/parties/$partyId"
+          params={{ partyId: row.original.id }}
+          className="font-medium hover:underline"
+        >
+          {row.original.name}
+        </Link>
+      ),
     }),
     helper.display({
       id: "kind",

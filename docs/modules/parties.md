@@ -1,6 +1,6 @@
 # Modül tasarımı: Parties — Taraflar
 
-> **Durum:** v1.5 (onaylandı) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.6 (onaylandı) · **Son güncelleme:** 2026-10-02
 > **Adım:** Faz 1.3 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 11](#11-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -112,6 +112,8 @@ Doğrulama: tür zorunlu; kişide ad ve soyad zorunlu (en çok 100); görünen a
 
 **Uygulama (PR 2a):** `/parties` kullanıcılar ve depolar ekranlarının kalıbını izler: arama, rol, tür ve durum süzgeci, sıralama ve sayfa adreste; satır sonundaki "⋯" menüsü yalnızca yetkili işlemleri gösterir (Düzenle, Pasifleştir / Etkinleştir, Geçmiş). Taraf diyaloğu türü yalnızca oluştururken sorar; kişide ad ve soyad girilince boş kalan görünen ad "Ad Soyad" olarak önerilir. İletişim bilgileri satır satır eklenir; bir satır birincil işaretlenince aynı türdeki diğerleri bırakılır, hiçbiri işaretlenmezse sunucu türün ilkini birincil yapar. Rol süzgeci seçiliyken açılan diyalogda o rol işaretli gelir. Rolsüz kayıt reddi (BR-PTY-001) roller alanının altında gösterilir. Satırın "Geçmiş"i tarafın ve iletişim bilgilerinin değişikliklerini birlikte gösterir (MD-01). Menüde "Ana veriler › Taraflar" yer alır; booking müdürü geçici olarak bu ekrandan başlar (MD-07). Ön yüz kodu `modules/parties`, metinler `locales/tr/parties.json`'dadır.
 
+**Uygulama (PR 2b):** Listede ad, `/parties/{id}` detayına gider. Detayın başlığında tür ve roller, işlemler (Düzenle, Pasifleştir / Etkinleştir) vardır; sekmeler adreste ayrı yollardır: Genel (`/parties/{id}`) ve Geçmiş (`/parties/{id}/history`, işlem geçmişini görme yetkisi olana). Genel sekmede iletişim bilgileri; firmada iletişim kişileri; sanatçıda (ya da temsili olan tarafta) ajanslar; ajansta temsil ettiği sanatçılar; kişide çalıştığı firmalar bulunur. Bağ eklerken karşı taraf ortak `EntityPicker` ile aranır (MD-03; Base UI `Combobox`, sunucu süzer, yazma durunca 300 ms sonra istek gider): iletişim kişisinde aktif kişiler, ajansta aktif ajanslar listelenir. Bağın görevi ya da açıklaması düzenlenebilir; kaldırma onay ister ve yalnızca bağı kaldırır. Her bağ işlemi tarafın sürümüyle gider ve yanıttaki taraf ekranı günceller. Bağlı tarafın adı onun detayına gider; pasif olan "Pasif" rozetiyle görünür. Testlerde yönlendirici bağlantısı `test/router-fakes.tsx`'teki sahte bağlantıyla değiştirilir.
+
 | Hikaye | Uç noktalar ve ekranlar | Kurallar |
 |---|---|---|
 | US-PTY-001 Taraf oluşturma | `CreateParty`, `AddContactPerson`; taraf diyaloğu, detay | BR-PTY-001, 002, 003 |
@@ -160,3 +162,4 @@ Soru 2026-10-02'de yanıtlandı; önerilen seçenek seçildi.
 | 2026-10-02 | v1.3 | §8: taraf uçlarının uygulama ayrıntıları (PR 1b). |
 | 2026-10-02 | v1.4 | §9: iletişim kişileri, temsil ve `IPartyDirectory`'nin uygulama ayrıntıları (PR 1c). |
 | 2026-10-02 | v1.5 | §10: taraflar ekranının uygulama ayrıntıları (PR 2a). |
+| 2026-10-02 | v1.6 | §10: taraf detayının ve arayarak seçim kutusunun uygulama ayrıntıları (PR 2b). |
