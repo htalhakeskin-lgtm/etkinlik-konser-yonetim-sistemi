@@ -184,6 +184,12 @@
         "Create": "Model oluşturma",
         "Edit": "Modeli düzenleme",
         "Deactivate": "Modeli pasifleştirme ve etkinleştirme"
+      },
+      "Kits": {
+        "View": "Kitleri görme",
+        "Create": "Kit oluşturma",
+        "Edit": "Kiti düzenleme",
+        "Deactivate": "Kiti pasifleştirme ve etkinleştirme"
       }
     }
   },

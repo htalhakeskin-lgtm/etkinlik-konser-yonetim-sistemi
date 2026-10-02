@@ -2,9 +2,11 @@ using FestOS.BuildingBlocks.Application.Messaging;
 using FestOS.BuildingBlocks.Infrastructure.Modules;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
 using FestOS.Modules.Catalog.Application.Categories;
+using FestOS.Modules.Catalog.Application.Kits;
 using FestOS.Modules.Catalog.Application.Models;
 using FestOS.Modules.Catalog.Contracts;
 using FestOS.Modules.Catalog.Infrastructure.Categories;
+using FestOS.Modules.Catalog.Infrastructure.Kits;
 using FestOS.Modules.Catalog.Infrastructure.Models;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,6 +40,7 @@ public sealed class CatalogModuleDefinition : IModuleDefinition
         builder.Services.AddHandlersFrom(typeof(CatalogModuleDefinition).Assembly);
         builder.Services.AddScoped<IEquipmentCategoryRepository, EquipmentCategoryRepository>();
         builder.Services.AddScoped<IEquipmentModelRepository, EquipmentModelRepository>();
+        builder.Services.AddScoped<IKitRepository, KitRepository>();
         builder.Services.AddScoped<ICatalogDirectory, CatalogDirectory>();
     }
 
@@ -46,5 +49,6 @@ public sealed class CatalogModuleDefinition : IModuleDefinition
     {
         EquipmentCategoryEndpoints.Map(endpoints);
         EquipmentModelEndpoints.Map(endpoints);
+        KitEndpoints.Map(endpoints);
     }
 }

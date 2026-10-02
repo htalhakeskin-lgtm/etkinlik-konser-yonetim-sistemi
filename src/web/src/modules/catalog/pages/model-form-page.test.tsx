@@ -112,6 +112,7 @@ describe("ModelFormPage", () => {
       powerWatts: null,
       transportVolumeCubicMeters: null,
       hasStock: true,
+      kits: [],
       deactivatedAt: null,
       createdAt: "2027-01-04T06:00:00+00:00",
       updatedAt: "2027-01-04T06:00:00+00:00",

@@ -6,6 +6,7 @@
  */
 import type { EquipmentCategoryId } from './equipmentCategoryId';
 import type { EquipmentModelId } from './equipmentModelId';
+import type { KitReference } from './kitReference';
 import type { TrackingType } from './trackingType';
 
 export interface EquipmentModelDetails {
@@ -22,6 +23,7 @@ export interface EquipmentModelDetails {
   /** @nullable */
   transportVolumeCubicMeters: string | null;
   hasStock: boolean;
+  kits: KitReference[];
   /** @nullable */
   deactivatedAt: string | null;
   createdAt: string;

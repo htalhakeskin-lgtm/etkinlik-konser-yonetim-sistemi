@@ -1,5 +1,7 @@
 using FestOS.BuildingBlocks.Application.Errors;
 using FestOS.BuildingBlocks.Application.Messaging;
+using FestOS.BuildingBlocks.Infrastructure.Persistence;
+using FestOS.Modules.Catalog.Application.Kits;
 using FestOS.Modules.Catalog.Application.Models;
 using FestOS.Modules.Catalog.Infrastructure.Categories;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +31,7 @@ internal sealed class GetEquipmentModelHandler(CatalogDbContext context)
                     found.PowerWatts,
                     found.TransportVolumeCubicMeters,
                     found.HasStock,
+                    Array.Empty<KitReference>(),
                     found.DeactivatedAt,
                     found.CreatedAt,
                     found.UpdatedAt,
@@ -37,6 +40,12 @@ internal sealed class GetEquipmentModelHandler(CatalogDbContext context)
                 .SingleOrDefaultAsync(cancellationToken)
             ?? throw new NotFoundException("EquipmentModel", query.Id.Value);
         CategoryPaths paths = await CategoryPaths.ReadAsync(context, cancellationToken);
-        return model with { CategoryPath = paths.PathOf(model.CategoryId) };
+        List<KitReference> kits = await context
+            .Kits.AsNoTracking()
+            .Where(kit => kit.Lines.Any(line => line.ModelId == query.Id))
+            .OrderBy(kit => EF.Functions.Collate(kit.Name, Collations.Turkish))
+            .Select(kit => new KitReference(kit.Id, kit.Name, kit.DeactivatedAt == null))
+            .ToListAsync(cancellationToken);
+        return model with { CategoryPath = paths.PathOf(model.CategoryId), Kits = kits };
     }
 }

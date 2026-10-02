@@ -295,6 +295,109 @@ namespace FestOS.Modules.Catalog.Infrastructure.Migrations
                     b.ToTable("equipment_categories", "catalog");
                 });
 
+            modelBuilder.Entity("FestOS.Modules.Catalog.Domain.Kits.Kit", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset?>("DeactivatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deactivated_at");
+
+                    b.Property<Guid?>("DeactivatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("deactivated_by");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("NameSearch")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("name_search");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid>("UpdatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
+
+                    b.Property<int>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("integer")
+                        .HasColumnName("version");
+
+                    b.HasKey("Id")
+                        .HasName("pk_kits");
+
+                    b.HasIndex("NameSearch")
+                        .IsUnique()
+                        .HasDatabaseName("ux_kits_name");
+
+                    b.ToTable("kits", "catalog");
+                });
+
+            modelBuilder.Entity("FestOS.Modules.Catalog.Domain.Kits.KitLine", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("KitId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("kit_id");
+
+                    b.Property<Guid?>("ModelId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("model_id");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer")
+                        .HasColumnName("quantity");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("sort_order");
+
+                    b.Property<Guid?>("SubKitId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("sub_kit_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_kit_lines");
+
+                    b.HasIndex("KitId")
+                        .HasDatabaseName("ix_kit_lines_kit_id");
+
+                    b.HasIndex("ModelId")
+                        .HasDatabaseName("ix_kit_lines_model_id");
+
+                    b.HasIndex("SubKitId")
+                        .HasDatabaseName("ix_kit_lines_sub_kit_id");
+
+                    b.ToTable("kit_lines", "catalog", t =>
+                        {
+                            t.HasCheckConstraint("ck_kit_lines_quantity", "quantity >= 1");
+
+                            t.HasCheckConstraint("ck_kit_lines_target", "num_nonnulls(model_id, sub_kit_id) = 1");
+                        });
+                });
+
             modelBuilder.Entity("FestOS.Modules.Catalog.Domain.Models.EquipmentModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -413,6 +516,28 @@ namespace FestOS.Modules.Catalog.Infrastructure.Migrations
                         .HasConstraintName("fk_equipment_categories_equipment_categories_parent_id");
                 });
 
+            modelBuilder.Entity("FestOS.Modules.Catalog.Domain.Kits.KitLine", b =>
+                {
+                    b.HasOne("FestOS.Modules.Catalog.Domain.Kits.Kit", null)
+                        .WithMany("Lines")
+                        .HasForeignKey("KitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_kit_lines_kits_kit_id");
+
+                    b.HasOne("FestOS.Modules.Catalog.Domain.Models.EquipmentModel", null)
+                        .WithMany()
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_kit_lines_equipment_models_model_id");
+
+                    b.HasOne("FestOS.Modules.Catalog.Domain.Kits.Kit", null)
+                        .WithMany()
+                        .HasForeignKey("SubKitId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_kit_lines_kits_sub_kit_id");
+                });
+
             modelBuilder.Entity("FestOS.Modules.Catalog.Domain.Models.EquipmentModel", b =>
                 {
                     b.HasOne("FestOS.Modules.Catalog.Domain.Categories.EquipmentCategory", null)
@@ -421,6 +546,11 @@ namespace FestOS.Modules.Catalog.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("fk_equipment_models_equipment_categories_category_id");
+                });
+
+            modelBuilder.Entity("FestOS.Modules.Catalog.Domain.Kits.Kit", b =>
+                {
+                    b.Navigation("Lines");
                 });
 #pragma warning restore 612, 618
         }

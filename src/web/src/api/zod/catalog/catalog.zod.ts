@@ -177,6 +177,11 @@ export const CreateEquipmentModelResponse = zod.object({
   "powerWatts": zod.int().nullable(),
   "transportVolumeCubicMeters": zod.string().nullable(),
   "hasStock": zod.boolean(),
+  "kits": zod.array(zod.object({
+  "id": zod.uuid(),
+  "name": zod.string(),
+  "isActive": zod.boolean()
+})),
   "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
   "createdAt": zod.iso.datetime({"offset":true}),
   "updatedAt": zod.iso.datetime({"offset":true}),
@@ -201,6 +206,11 @@ export const GetEquipmentModelResponse = zod.object({
   "powerWatts": zod.int().nullable(),
   "transportVolumeCubicMeters": zod.string().nullable(),
   "hasStock": zod.boolean(),
+  "kits": zod.array(zod.object({
+  "id": zod.uuid(),
+  "name": zod.string(),
+  "isActive": zod.boolean()
+})),
   "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
   "createdAt": zod.iso.datetime({"offset":true}),
   "updatedAt": zod.iso.datetime({"offset":true}),
@@ -240,6 +250,11 @@ export const EditEquipmentModelResponse = zod.object({
   "powerWatts": zod.int().nullable(),
   "transportVolumeCubicMeters": zod.string().nullable(),
   "hasStock": zod.boolean(),
+  "kits": zod.array(zod.object({
+  "id": zod.uuid(),
+  "name": zod.string(),
+  "isActive": zod.boolean()
+})),
   "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
   "createdAt": zod.iso.datetime({"offset":true}),
   "updatedAt": zod.iso.datetime({"offset":true}),
@@ -269,6 +284,11 @@ export const DeactivateEquipmentModelResponse = zod.object({
   "powerWatts": zod.int().nullable(),
   "transportVolumeCubicMeters": zod.string().nullable(),
   "hasStock": zod.boolean(),
+  "kits": zod.array(zod.object({
+  "id": zod.uuid(),
+  "name": zod.string(),
+  "isActive": zod.boolean()
+})),
   "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
   "createdAt": zod.iso.datetime({"offset":true}),
   "updatedAt": zod.iso.datetime({"offset":true}),
@@ -298,6 +318,248 @@ export const ActivateEquipmentModelResponse = zod.object({
   "powerWatts": zod.int().nullable(),
   "transportVolumeCubicMeters": zod.string().nullable(),
   "hasStock": zod.boolean(),
+  "kits": zod.array(zod.object({
+  "id": zod.uuid(),
+  "name": zod.string(),
+  "isActive": zod.boolean()
+})),
+  "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "version": zod.int()
+})
+
+/**
+ * @summary Lists the kits with their totals, one page at a time.
+ */
+export const ListKitsQueryParams = zod.object({
+  "q": zod.string().optional(),
+  "status": zod.enum(['active', 'inactive', 'all']).optional(),
+  "page": zod.int().optional(),
+  "pageSize": zod.int().optional()
+})
+
+export const ListKitsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.uuid(),
+  "name": zod.string(),
+  "lineCount": zod.int(),
+  "totals": zod.object({
+  "weightKilograms": zod.string(),
+  "isWeightComplete": zod.boolean(),
+  "powerWatts": zod.int(),
+  "isPowerComplete": zod.boolean()
+}),
+  "isActive": zod.boolean(),
+  "version": zod.int()
+})),
+  "page": zod.int(),
+  "pageSize": zod.int(),
+  "totalCount": zod.int()
+})
+
+/**
+ * @summary Defines a kit.
+ */
+export const CreateKitHeader = zod.object({
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const CreateKitBody = zod.object({
+  "name": zod.string(),
+  "lines": zod.array(zod.object({
+  "quantity": zod.int(),
+  "modelId": zod.uuid().nullish(),
+  "subKitId": zod.uuid().nullish()
+}))
+})
+
+export const CreateKitResponse = zod.object({
+  "id": zod.uuid(),
+  "name": zod.string(),
+  "lines": zod.array(zod.object({
+  "id": zod.uuid(),
+  "modelId": zod.union([zod.null(),zod.uuid()]),
+  "subKitId": zod.union([zod.null(),zod.uuid()]),
+  "name": zod.string(),
+  "quantity": zod.int(),
+  "isActive": zod.boolean()
+})),
+  "contents": zod.array(zod.object({
+  "modelId": zod.uuid(),
+  "name": zod.string(),
+  "quantity": zod.int()
+})),
+  "totals": zod.object({
+  "weightKilograms": zod.string(),
+  "isWeightComplete": zod.boolean(),
+  "powerWatts": zod.int(),
+  "isPowerComplete": zod.boolean()
+}),
+  "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "version": zod.int()
+})
+
+/**
+ * @summary Gets a kit with its lines, contents and totals.
+ */
+export const GetKitParams = zod.object({
+  "kitId": zod.uuid()
+})
+
+export const GetKitResponse = zod.object({
+  "id": zod.uuid(),
+  "name": zod.string(),
+  "lines": zod.array(zod.object({
+  "id": zod.uuid(),
+  "modelId": zod.union([zod.null(),zod.uuid()]),
+  "subKitId": zod.union([zod.null(),zod.uuid()]),
+  "name": zod.string(),
+  "quantity": zod.int(),
+  "isActive": zod.boolean()
+})),
+  "contents": zod.array(zod.object({
+  "modelId": zod.uuid(),
+  "name": zod.string(),
+  "quantity": zod.int()
+})),
+  "totals": zod.object({
+  "weightKilograms": zod.string(),
+  "isWeightComplete": zod.boolean(),
+  "powerWatts": zod.int(),
+  "isPowerComplete": zod.boolean()
+}),
+  "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "version": zod.int()
+})
+
+/**
+ * @summary Renames a kit and sets its lines.
+ */
+export const EditKitParams = zod.object({
+  "kitId": zod.uuid()
+})
+
+export const EditKitHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const EditKitBody = zod.object({
+  "name": zod.string(),
+  "lines": zod.array(zod.object({
+  "quantity": zod.int(),
+  "modelId": zod.uuid().nullish(),
+  "subKitId": zod.uuid().nullish()
+}))
+})
+
+export const EditKitResponse = zod.object({
+  "id": zod.uuid(),
+  "name": zod.string(),
+  "lines": zod.array(zod.object({
+  "id": zod.uuid(),
+  "modelId": zod.union([zod.null(),zod.uuid()]),
+  "subKitId": zod.union([zod.null(),zod.uuid()]),
+  "name": zod.string(),
+  "quantity": zod.int(),
+  "isActive": zod.boolean()
+})),
+  "contents": zod.array(zod.object({
+  "modelId": zod.uuid(),
+  "name": zod.string(),
+  "quantity": zod.int()
+})),
+  "totals": zod.object({
+  "weightKilograms": zod.string(),
+  "isWeightComplete": zod.boolean(),
+  "powerWatts": zod.int(),
+  "isPowerComplete": zod.boolean()
+}),
+  "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "version": zod.int()
+})
+
+/**
+ * @summary Takes a kit out of new selections.
+ */
+export const DeactivateKitParams = zod.object({
+  "kitId": zod.uuid()
+})
+
+export const DeactivateKitHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const DeactivateKitResponse = zod.object({
+  "id": zod.uuid(),
+  "name": zod.string(),
+  "lines": zod.array(zod.object({
+  "id": zod.uuid(),
+  "modelId": zod.union([zod.null(),zod.uuid()]),
+  "subKitId": zod.union([zod.null(),zod.uuid()]),
+  "name": zod.string(),
+  "quantity": zod.int(),
+  "isActive": zod.boolean()
+})),
+  "contents": zod.array(zod.object({
+  "modelId": zod.uuid(),
+  "name": zod.string(),
+  "quantity": zod.int()
+})),
+  "totals": zod.object({
+  "weightKilograms": zod.string(),
+  "isWeightComplete": zod.boolean(),
+  "powerWatts": zod.int(),
+  "isPowerComplete": zod.boolean()
+}),
+  "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "version": zod.int()
+})
+
+/**
+ * @summary Activates a deactivated kit again.
+ */
+export const ActivateKitParams = zod.object({
+  "kitId": zod.uuid()
+})
+
+export const ActivateKitHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const ActivateKitResponse = zod.object({
+  "id": zod.uuid(),
+  "name": zod.string(),
+  "lines": zod.array(zod.object({
+  "id": zod.uuid(),
+  "modelId": zod.union([zod.null(),zod.uuid()]),
+  "subKitId": zod.union([zod.null(),zod.uuid()]),
+  "name": zod.string(),
+  "quantity": zod.int(),
+  "isActive": zod.boolean()
+})),
+  "contents": zod.array(zod.object({
+  "modelId": zod.uuid(),
+  "name": zod.string(),
+  "quantity": zod.int()
+})),
+  "totals": zod.object({
+  "weightKilograms": zod.string(),
+  "isWeightComplete": zod.boolean(),
+  "powerWatts": zod.int(),
+  "isPowerComplete": zod.boolean()
+}),
   "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
   "createdAt": zod.iso.datetime({"offset":true}),
   "updatedAt": zod.iso.datetime({"offset":true}),

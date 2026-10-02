@@ -2509,6 +2509,353 @@
           }
         }
       }
+    },
+    "/api/v1/kits": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Lists the kits with their totals, one page at a time.",
+        "operationId": "ListKits",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/KitStatusFilter"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfKitListItem"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Defines a kit.",
+        "operationId": "CreateKit",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "A new UUID for each user action, and the same one when the action is retried (api §10).",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KitRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KitDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/kits/{kitId}": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Gets a kit with its lines, contents and totals.",
+        "operationId": "GetKit",
+        "parameters": [
+          {
+            "name": "kitId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KitDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Renames a kit and sets its lines.",
+        "operationId": "EditKit",
+        "parameters": [
+          {
+            "name": "kitId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "description": "The version the change is based on, as a strong entity tag, e.g. \"7\" (api §9).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "A new UUID for each user action, and the same one when the action is retried (api §10).",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KitRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KitDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/kits/{kitId}/deactivate": {
+      "post": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Takes a kit out of new selections.",
+        "operationId": "DeactivateKit",
+        "parameters": [
+          {
+            "name": "kitId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "description": "The version the change is based on, as a strong entity tag, e.g. \"7\" (api §9).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "A new UUID for each user action, and the same one when the action is retried (api §10).",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KitDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/kits/{kitId}/activate": {
+      "post": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Activates a deactivated kit again.",
+        "operationId": "ActivateKit",
+        "parameters": [
+          {
+            "name": "kitId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "description": "The version the change is based on, as a strong entity tag, e.g. \"7\" (api §9).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "A new UUID for each user action, and the same one when the action is retried (api §10).",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KitDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2982,6 +3329,7 @@
           "powerWatts",
           "transportVolumeCubicMeters",
           "hasStock",
+          "kits",
           "deactivatedAt",
           "createdAt",
           "updatedAt",
@@ -3033,6 +3381,12 @@
           },
           "hasStock": {
             "type": "boolean"
+          },
+          "kits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KitReference"
+            }
           },
           "deactivatedAt": {
             "type": [
@@ -3167,6 +3521,272 @@
         "additionalProperties": false
       },
       "JsonElement": { },
+      "KitContentItem": {
+        "required": [
+          "modelId",
+          "name",
+          "quantity"
+        ],
+        "type": "object",
+        "properties": {
+          "modelId": {
+            "$ref": "#/components/schemas/EquipmentModelId"
+          },
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "KitDetails": {
+        "required": [
+          "id",
+          "name",
+          "lines",
+          "contents",
+          "totals",
+          "deactivatedAt",
+          "createdAt",
+          "updatedAt",
+          "version"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/KitId"
+          },
+          "name": {
+            "type": "string"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KitLineItem"
+            }
+          },
+          "contents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KitContentItem"
+            }
+          },
+          "totals": {
+            "$ref": "#/components/schemas/KitTotals"
+          },
+          "deactivatedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "KitId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "KitLineId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "KitLineItem": {
+        "required": [
+          "id",
+          "modelId",
+          "subKitId",
+          "name",
+          "quantity",
+          "isActive"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/KitLineId"
+          },
+          "modelId": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/EquipmentModelId"
+              }
+            ]
+          },
+          "subKitId": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/KitId"
+              }
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "KitLineRequest": {
+        "required": [
+          "quantity"
+        ],
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "modelId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "subKitId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "KitListItem": {
+        "required": [
+          "id",
+          "name",
+          "lineCount",
+          "totals",
+          "isActive",
+          "version"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/KitId"
+          },
+          "name": {
+            "type": "string"
+          },
+          "lineCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totals": {
+            "$ref": "#/components/schemas/KitTotals"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "KitReference": {
+        "required": [
+          "id",
+          "name",
+          "isActive"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/KitId"
+          },
+          "name": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "KitRequest": {
+        "required": [
+          "name",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KitLineRequest"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "KitStatusFilter": {
+        "enum": [
+          "active",
+          "inactive",
+          "all"
+        ]
+      },
+      "KitTotals": {
+        "required": [
+          "weightKilograms",
+          "isWeightComplete",
+          "powerWatts",
+          "isPowerComplete"
+        ],
+        "type": "object",
+        "properties": {
+          "weightKilograms": {
+            "type": "string",
+            "format": "decimal"
+          },
+          "isWeightComplete": {
+            "type": "boolean"
+          },
+          "powerWatts": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isPowerComplete": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
       "LoginRequest": {
         "required": [
           "email",
@@ -3226,6 +3846,36 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/EquipmentModelListItem"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PagedResultOfKitListItem": {
+        "required": [
+          "items",
+          "page",
+          "pageSize",
+          "totalCount"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KitListItem"
             }
           },
           "page": {
