@@ -1,6 +1,7 @@
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
 using FestOS.Modules.Catalog.Domain;
 using FestOS.Modules.Catalog.Domain.Categories;
+using FestOS.Modules.Catalog.Domain.Kits;
 using FestOS.Modules.Catalog.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,11 +17,16 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options)
     /// <summary>The equipment models.</summary>
     public DbSet<EquipmentModel> Models => Set<EquipmentModel>();
 
+    /// <summary>The kits.</summary>
+    public DbSet<Kit> Kits => Set<Kit>();
+
     /// <inheritdoc />
     protected override IReadOnlyDictionary<string, string> ConstraintRules { get; } =
         new Dictionary<string, string>(StringComparer.Ordinal)
         {
             ["ux_equipment_categories_name"] = CatalogRuleCodes.UniqueCategoryName,
             ["ux_equipment_models_brand_name"] = CatalogRuleCodes.UniqueModel,
+            ["ux_kits_name"] = CatalogRuleCodes.UniqueKitName,
+            ["ck_kit_lines_target"] = CatalogRuleCodes.KitStructure,
         };
 }

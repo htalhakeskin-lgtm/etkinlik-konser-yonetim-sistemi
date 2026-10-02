@@ -1,6 +1,7 @@
 using System.Text.Json;
 using FestOS.Modules.Catalog.Contracts;
 using FestOS.Modules.Catalog.Domain.Categories;
+using FestOS.Modules.Catalog.Domain.Kits;
 using FestOS.Modules.Catalog.Domain.Models;
 using FestOS.Modules.Catalog.Infrastructure.Categories;
 using Microsoft.EntityFrameworkCore;
@@ -42,6 +43,22 @@ internal sealed class CatalogDirectory(CatalogDbContext context) : ICatalogDirec
                 model.IsActive
             )
         );
+    }
+
+    public async Task<IReadOnlyDictionary<Guid, KitSummary>> FindKitsAsync(
+        IReadOnlyCollection<Guid> ids,
+        CancellationToken cancellationToken
+    )
+    {
+        List<KitId> kitIds = [.. ids.Distinct().Select(KitId.From)];
+        return await context
+            .Kits.AsNoTracking()
+            .Where(kit => kitIds.Contains(kit.Id))
+            .ToDictionaryAsync(
+                kit => kit.Id.Value,
+                kit => new KitSummary(kit.Id.Value, kit.Name, kit.DeactivatedAt == null),
+                cancellationToken
+            );
     }
 
     public async Task<IReadOnlyDictionary<Guid, CategorySummary>> FindCategoriesAsync(

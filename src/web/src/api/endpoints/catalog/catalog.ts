@@ -29,9 +29,13 @@ import type {
   EquipmentCategoryRequest,
   EquipmentModelDetails,
   EquipmentModelRequest,
+  KitDetails,
+  KitRequest,
   ListEquipmentCategoriesParams,
   ListEquipmentModelsParams,
-  PagedResultOfEquipmentModelListItem
+  ListKitsParams,
+  PagedResultOfEquipmentModelListItem,
+  PagedResultOfKitListItem
 } from '../../model';
 
 import { apiClient } from '../../../lib/api-client';
@@ -1011,4 +1015,532 @@ export const useActivateEquipmentModel = <TError = ApiProblem,
         TContext
       > => {
       return useMutation(getActivateEquipmentModelMutationOptions(options), queryClient);
+    }
+    export const getListKitsUrl = (params?: ListKitsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/kits?${stringifiedParams}` : `/api/v1/kits`
+}
+
+/**
+ * @summary Lists the kits with their totals, one page at a time.
+ */
+export const listKits = async (params?: ListKitsParams, options?: Parameters<typeof apiClient>[1]): Promise<PagedResultOfKitListItem> => {
+
+  return apiClient<PagedResultOfKitListItem>(getListKitsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListKitsQueryKey = (params?: ListKitsParams,) => {
+    return [
+    `/api/v1/kits`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListKitsQueryOptions = <TData = Awaited<ReturnType<typeof listKits>>, TError = ApiProblem>(params?: ListKitsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listKits>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListKitsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listKits>>> = ({ signal }) => listKits(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listKits>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ListKitsQueryResult = NonNullable<Awaited<ReturnType<typeof listKits>>>
+export type ListKitsQueryError = ApiProblem
+
+
+export function useListKits<TData = Awaited<ReturnType<typeof listKits>>, TError = ApiProblem>(
+ params: undefined |  ListKitsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listKits>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listKits>>,
+          TError,
+          Awaited<ReturnType<typeof listKits>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListKits<TData = Awaited<ReturnType<typeof listKits>>, TError = ApiProblem>(
+ params?: ListKitsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listKits>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listKits>>,
+          TError,
+          Awaited<ReturnType<typeof listKits>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListKits<TData = Awaited<ReturnType<typeof listKits>>, TError = ApiProblem>(
+ params?: ListKitsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listKits>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Lists the kits with their totals, one page at a time.
+ */
+
+export function useListKits<TData = Awaited<ReturnType<typeof listKits>>, TError = ApiProblem>(
+ params?: ListKitsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listKits>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getListKitsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getCreateKitUrl = () => {
+
+
+
+
+  return `/api/v1/kits`
+}
+
+/**
+ * @summary Defines a kit.
+ */
+export const createKit = async (kitRequest: KitRequest, options?: Parameters<typeof apiClient>[1]): Promise<KitDetails> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiClient<KitDetails>(getCreateKitUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(kitRequest)
+  }
+);}
+
+
+
+
+
+export const getCreateKitMutationKey = () => ['createKit'] as const;
+
+export const getCreateKitMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createKit>>, TError,CreateKitMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof createKit>>, TError,CreateKitMutationVariables, TContext> => {
+
+const mutationKey = getCreateKitMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createKit>>, CreateKitMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createKit(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateKitMutationResult = NonNullable<Awaited<ReturnType<typeof createKit>>>
+    export type CreateKitMutationBody = KitRequest
+    export type CreateKitMutationError = ApiProblem
+    export type CreateKitMutationVariables = {data: KitRequest}
+
+    /**
+ * @summary Defines a kit.
+ */
+export const useCreateKit = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createKit>>, TError,CreateKitMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createKit>>,
+        TError,
+        CreateKitMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateKitMutationOptions(options), queryClient);
+    }
+    export const getGetKitUrl = (kitId: string,) => {
+
+
+
+
+  return `/api/v1/kits/${kitId}`
+}
+
+/**
+ * @summary Gets a kit with its lines, contents and totals.
+ */
+export const getKit = async (kitId: string, options?: Parameters<typeof apiClient>[1]): Promise<KitDetails> => {
+
+  return apiClient<KitDetails>(getGetKitUrl(kitId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetKitQueryKey = (kitId: string,) => {
+    return [
+    `/api/v1/kits/${kitId}`
+    ] as const;
+    }
+
+
+export const getGetKitQueryOptions = <TData = Awaited<ReturnType<typeof getKit>>, TError = ApiProblem>(kitId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getKit>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetKitQueryKey(kitId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getKit>>> = ({ signal }) => getKit(kitId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: kitId !== null && kitId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getKit>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetKitQueryResult = NonNullable<Awaited<ReturnType<typeof getKit>>>
+export type GetKitQueryError = ApiProblem
+
+
+export function useGetKit<TData = Awaited<ReturnType<typeof getKit>>, TError = ApiProblem>(
+ kitId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getKit>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getKit>>,
+          TError,
+          Awaited<ReturnType<typeof getKit>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetKit<TData = Awaited<ReturnType<typeof getKit>>, TError = ApiProblem>(
+ kitId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getKit>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getKit>>,
+          TError,
+          Awaited<ReturnType<typeof getKit>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetKit<TData = Awaited<ReturnType<typeof getKit>>, TError = ApiProblem>(
+ kitId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getKit>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Gets a kit with its lines, contents and totals.
+ */
+
+export function useGetKit<TData = Awaited<ReturnType<typeof getKit>>, TError = ApiProblem>(
+ kitId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getKit>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetKitQueryOptions(kitId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getEditKitUrl = (kitId: string,) => {
+
+
+
+
+  return `/api/v1/kits/${kitId}`
+}
+
+/**
+ * @summary Renames a kit and sets its lines.
+ */
+export const editKit = async (kitId: string,
+    kitRequest: KitRequest, options?: Parameters<typeof apiClient>[1]): Promise<KitDetails> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiClient<KitDetails>(getEditKitUrl(kitId),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(kitRequest)
+  }
+);}
+
+
+
+
+
+export const getEditKitMutationKey = () => ['editKit'] as const;
+
+export const getEditKitMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editKit>>, TError,EditKitMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof editKit>>, TError,EditKitMutationVariables, TContext> => {
+
+const mutationKey = getEditKitMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof editKit>>, EditKitMutationVariables> = (props) => {
+          const {kitId,data} = props ?? {};
+
+          return  editKit(kitId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type EditKitMutationResult = NonNullable<Awaited<ReturnType<typeof editKit>>>
+    export type EditKitMutationBody = KitRequest
+    export type EditKitMutationError = ApiProblem
+    export type EditKitMutationVariables = {kitId: string;data: KitRequest}
+
+    /**
+ * @summary Renames a kit and sets its lines.
+ */
+export const useEditKit = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editKit>>, TError,EditKitMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof editKit>>,
+        TError,
+        EditKitMutationVariables,
+        TContext
+      > => {
+      return useMutation(getEditKitMutationOptions(options), queryClient);
+    }
+    export const getDeactivateKitUrl = (kitId: string,) => {
+
+
+
+
+  return `/api/v1/kits/${kitId}/deactivate`
+}
+
+/**
+ * @summary Takes a kit out of new selections.
+ */
+export const deactivateKit = async (kitId: string, options?: Parameters<typeof apiClient>[1]): Promise<KitDetails> => {
+
+  return apiClient<KitDetails>(getDeactivateKitUrl(kitId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeactivateKitMutationKey = () => ['deactivateKit'] as const;
+
+export const getDeactivateKitMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deactivateKit>>, TError,DeactivateKitMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof deactivateKit>>, TError,DeactivateKitMutationVariables, TContext> => {
+
+const mutationKey = getDeactivateKitMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deactivateKit>>, DeactivateKitMutationVariables> = (props) => {
+          const {kitId} = props ?? {};
+
+          return  deactivateKit(kitId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeactivateKitMutationResult = NonNullable<Awaited<ReturnType<typeof deactivateKit>>>
+
+    export type DeactivateKitMutationError = ApiProblem
+    export type DeactivateKitMutationVariables = {kitId: string}
+
+    /**
+ * @summary Takes a kit out of new selections.
+ */
+export const useDeactivateKit = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deactivateKit>>, TError,DeactivateKitMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deactivateKit>>,
+        TError,
+        DeactivateKitMutationVariables,
+        TContext
+      > => {
+      return useMutation(getDeactivateKitMutationOptions(options), queryClient);
+    }
+    export const getActivateKitUrl = (kitId: string,) => {
+
+
+
+
+  return `/api/v1/kits/${kitId}/activate`
+}
+
+/**
+ * @summary Activates a deactivated kit again.
+ */
+export const activateKit = async (kitId: string, options?: Parameters<typeof apiClient>[1]): Promise<KitDetails> => {
+
+  return apiClient<KitDetails>(getActivateKitUrl(kitId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getActivateKitMutationKey = () => ['activateKit'] as const;
+
+export const getActivateKitMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof activateKit>>, TError,ActivateKitMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof activateKit>>, TError,ActivateKitMutationVariables, TContext> => {
+
+const mutationKey = getActivateKitMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof activateKit>>, ActivateKitMutationVariables> = (props) => {
+          const {kitId} = props ?? {};
+
+          return  activateKit(kitId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ActivateKitMutationResult = NonNullable<Awaited<ReturnType<typeof activateKit>>>
+
+    export type ActivateKitMutationError = ApiProblem
+    export type ActivateKitMutationVariables = {kitId: string}
+
+    /**
+ * @summary Activates a deactivated kit again.
+ */
+export const useActivateKit = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof activateKit>>, TError,ActivateKitMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof activateKit>>,
+        TError,
+        ActivateKitMutationVariables,
+        TContext
+      > => {
+      return useMutation(getActivateKitMutationOptions(options), queryClient);
     }

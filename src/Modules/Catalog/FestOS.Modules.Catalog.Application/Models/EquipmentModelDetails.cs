@@ -1,3 +1,4 @@
+using FestOS.Modules.Catalog.Application.Kits;
 using FestOS.Modules.Catalog.Domain.Categories;
 using FestOS.Modules.Catalog.Domain.Models;
 
@@ -15,6 +16,7 @@ public sealed record EquipmentModelDetails(
     int? PowerWatts,
     decimal? TransportVolumeCubicMeters,
     bool HasStock,
+    IReadOnlyList<KitReference> Kits,
     DateTimeOffset? DeactivatedAt,
     DateTimeOffset CreatedAt,
     DateTimeOffset UpdatedAt,

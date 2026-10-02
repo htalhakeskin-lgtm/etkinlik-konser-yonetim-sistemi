@@ -20,7 +20,7 @@ public static class RoleCatalog
 
     private const string ViewModels = "Catalog.Models.View";
 
-    private static readonly string[] ViewCatalog = [ViewCategories, ViewModels];
+    private static readonly string[] ViewCatalog = [ViewCategories, ViewModels, "Catalog.Kits.View"];
 
     private static readonly string[] ManageCatalog =
     [
@@ -31,6 +31,9 @@ public static class RoleCatalog
         "Catalog.Models.Create",
         "Catalog.Models.Edit",
         "Catalog.Models.Deactivate",
+        "Catalog.Kits.Create",
+        "Catalog.Kits.Edit",
+        "Catalog.Kits.Deactivate",
     ];
 
     private static readonly string[] ManageParties =

@@ -29,5 +29,7 @@
   "BR-EQP-002": "Kategori ağacında döngü olamaz; altında aktif kategori ya da model bulunan kategori pasifleştirilemez ve pasif bir kategorinin altına aktif kategori konamaz.",
   "BR-EQP-011": "Bu üst kategoride aynı adlı bir kategori zaten var; pasif kategorilerin adları da yeniden kullanılamaz.",
   "BR-EQP-001": "Bu modelin stoğu oluştuğu için takip tipi değiştirilemez.",
-  "BR-EQP-012": "Bu marka ve model adıyla bir model zaten var; pasif modellerin adları da yeniden kullanılamaz."
+  "BR-EQP-012": "Bu marka ve model adıyla bir model zaten var; pasif modellerin adları da yeniden kullanılamaz.",
+  "BR-EQP-003": "Bir kit kendini doğrudan ya da başka bir kit üzerinden içeremez.",
+  "BR-EQP-013": "Bu adda bir kit zaten var; pasif kitlerin adları da yeniden kullanılamaz."
 }
