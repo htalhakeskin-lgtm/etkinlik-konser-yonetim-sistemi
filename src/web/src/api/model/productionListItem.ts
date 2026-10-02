@@ -13,6 +13,8 @@ export interface ProductionListItem {
   artistName: string | null;
   name: string;
   latestVersionNumber: number;
+  /** @nullable */
+  latestVersionAt: string | null;
   isActive: boolean;
   version: number;
 }

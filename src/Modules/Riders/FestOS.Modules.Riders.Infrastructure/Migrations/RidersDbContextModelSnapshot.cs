@@ -298,6 +298,150 @@ namespace FestOS.Modules.Riders.Infrastructure.Migrations
                     b.ToTable("productions", "riders");
                 });
 
+            modelBuilder.Entity("FestOS.Modules.Riders.Domain.RiderVersions.RiderEquivalentModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("ModelId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("model_id");
+
+                    b.Property<Guid>("RiderLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("rider_line_id");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("sort_order");
+
+                    b.HasKey("Id")
+                        .HasName("pk_rider_equivalent_models");
+
+                    b.HasIndex("ModelId")
+                        .HasDatabaseName("ix_rider_equivalent_models_model_id");
+
+                    b.HasIndex("RiderLineId", "ModelId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_rider_equivalent_models_model");
+
+                    b.ToTable("rider_equivalent_models", "riders");
+                });
+
+            modelBuilder.Entity("FestOS.Modules.Riders.Domain.RiderVersions.RiderLine", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid?>("CategoryId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("category_id");
+
+                    b.Property<string>("Flexibility")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("flexibility");
+
+                    b.Property<Guid?>("KitId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("kit_id");
+
+                    b.Property<Guid>("LineKey")
+                        .HasColumnType("uuid")
+                        .HasColumnName("line_key");
+
+                    b.Property<Guid?>("ModelId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("model_id");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer")
+                        .HasColumnName("quantity");
+
+                    b.Property<Guid>("RiderVersionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("rider_version_id");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("sort_order");
+
+                    b.HasKey("Id")
+                        .HasName("pk_rider_lines");
+
+                    b.HasIndex("CategoryId")
+                        .HasDatabaseName("ix_rider_lines_category_id");
+
+                    b.HasIndex("KitId")
+                        .HasDatabaseName("ix_rider_lines_kit_id");
+
+                    b.HasIndex("ModelId")
+                        .HasDatabaseName("ix_rider_lines_model_id");
+
+                    b.HasIndex("RiderVersionId")
+                        .HasDatabaseName("ix_rider_lines_rider_version_id");
+
+                    b.ToTable("rider_lines", "riders", t =>
+                        {
+                            t.HasCheckConstraint("ck_rider_lines_flexibility", "(model_id IS NULL) = (flexibility IS NULL)");
+
+                            t.HasCheckConstraint("ck_rider_lines_flexibility_enum", "flexibility IN ('flexible', 'required')");
+
+                            t.HasCheckConstraint("ck_rider_lines_quantity", "quantity >= 1");
+
+                            t.HasCheckConstraint("ck_rider_lines_target", "num_nonnulls(model_id, category_id, kit_id) = 1");
+                        });
+                });
+
+            modelBuilder.Entity("FestOS.Modules.Riders.Domain.RiderVersions.RiderVersion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<string>("CreatedByName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("created_by_name");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("note");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("integer")
+                        .HasColumnName("number");
+
+                    b.Property<Guid>("RiderId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("rider_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_rider_versions");
+
+                    b.HasIndex("RiderId", "Number")
+                        .IsUnique()
+                        .HasDatabaseName("ux_rider_versions_number");
+
+                    b.ToTable("rider_versions", "riders");
+                });
+
             modelBuilder.Entity("FestOS.Modules.Riders.Domain.Riders.Rider", b =>
                 {
                     b.Property<Guid>("Id")
@@ -354,6 +498,36 @@ namespace FestOS.Modules.Riders.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("FestOS.Modules.Riders.Domain.RiderVersions.RiderEquivalentModel", b =>
+                {
+                    b.HasOne("FestOS.Modules.Riders.Domain.RiderVersions.RiderLine", null)
+                        .WithMany("Equivalents")
+                        .HasForeignKey("RiderLineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_rider_equivalent_models_rider_lines_rider_line_id");
+                });
+
+            modelBuilder.Entity("FestOS.Modules.Riders.Domain.RiderVersions.RiderLine", b =>
+                {
+                    b.HasOne("FestOS.Modules.Riders.Domain.RiderVersions.RiderVersion", null)
+                        .WithMany("Lines")
+                        .HasForeignKey("RiderVersionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_rider_lines_rider_versions_rider_version_id");
+                });
+
+            modelBuilder.Entity("FestOS.Modules.Riders.Domain.RiderVersions.RiderVersion", b =>
+                {
+                    b.HasOne("FestOS.Modules.Riders.Domain.Riders.Rider", null)
+                        .WithMany()
+                        .HasForeignKey("RiderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_rider_versions_riders_rider_id");
+                });
+
             modelBuilder.Entity("FestOS.Modules.Riders.Domain.Riders.Rider", b =>
                 {
                     b.HasOne("FestOS.Modules.Riders.Domain.Productions.Production", null)
@@ -361,6 +535,16 @@ namespace FestOS.Modules.Riders.Infrastructure.Migrations
                         .HasForeignKey("ProductionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("fk_riders_productions_production_id");
+                });
+
+            modelBuilder.Entity("FestOS.Modules.Riders.Domain.RiderVersions.RiderLine", b =>
+                {
+                    b.Navigation("Equivalents");
+                });
+
+            modelBuilder.Entity("FestOS.Modules.Riders.Domain.RiderVersions.RiderVersion", b =>
+                {
+                    b.Navigation("Lines");
                 });
 #pragma warning restore 612, 618
         }

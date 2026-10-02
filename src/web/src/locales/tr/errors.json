@@ -36,5 +36,8 @@
   "BR-VEN-001": "Mekan ekipmanı satırı tam olarak bir hedef ister: bir model, bir kategori ya da serbest açıklama.",
   "BR-VEN-002": "Geçerlilik bitişi başlangıçtan sonra olmalı; kullanılamama dönemi satırın geçerlilik aralığında kalmalı, satırın adedini aşmamalı ve aynı satırın başka bir dönemiyle çakışmamalıdır.",
   "BR-RDR-007": "Rider'ın kaynağı bağlı olduğu kayda uymuyor: prodüksiyonun rider'ı prodüksiyondan gelir.",
-  "BR-RDR-009": "Bu sanatçının aynı adlı bir prodüksiyonu zaten var; pasif prodüksiyonların adları da yeniden kullanılamaz."
+  "BR-RDR-009": "Bu sanatçının aynı adlı bir prodüksiyonu zaten var; pasif prodüksiyonların adları da yeniden kullanılamaz.",
+  "BR-RDR-001": "Rider satırının tek bir hedefi (model ya da kategori) ve en az bir adedi olmalı; esneklik yalnızca model satırında seçilir.",
+  "BR-RDR-002": "Muadil model yalnızca esnek model satırına eklenir; satırın modelinden ve birbirinden farklı olmalıdır.",
+  "BR-RDR-003": "Rider versiyonları sırayla numaralanır ve değiştirilemez; sayfayı yenileyip yeniden deneyin."
 }

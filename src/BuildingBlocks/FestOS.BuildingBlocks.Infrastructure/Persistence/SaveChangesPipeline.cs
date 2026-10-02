@@ -40,6 +40,7 @@ internal sealed class SaveChangesPipeline(
         now = now.AddTicks(-(now.Ticks % 10));
 
         StampChangedAggregates(context, now);
+        StampImmutableRecords(context, now);
         AuditEntryWriter.AddEntries(context, context.Schema, now, actingUser.UserId, actingUser.DisplayName);
         outbox.MoveTo(context);
     }
@@ -123,6 +124,26 @@ internal sealed class SaveChangesPipeline(
 
             root.Property(nameof(IAuditable.UpdatedAt)).CurrentValue = now;
             root.Property(nameof(IAuditable.UpdatedBy)).CurrentValue = actingUser.UserId;
+        }
+    }
+
+    // Step 3 for records only ever added (database §14.1): they get who created them and when, and a change
+    // or a deletion is a programming error; the module role has no UPDATE or DELETE on them either.
+    private void StampImmutableRecords(ModuleDbContext context, DateTimeOffset now)
+    {
+        foreach (EntityEntry<IImmutableRecord> entry in context.ChangeTracker.Entries<IImmutableRecord>())
+        {
+            switch (entry.State)
+            {
+                case EntityState.Added:
+                    entry.Property(nameof(IImmutableRecord.CreatedAt)).CurrentValue = now;
+                    entry.Property(nameof(IImmutableRecord.CreatedBy)).CurrentValue = actingUser.UserId;
+                    break;
+                case EntityState.Modified or EntityState.Deleted:
+                    throw new InvalidOperationException(
+                        $"{entry.Metadata.DisplayName()} is only ever added; it cannot be changed or deleted."
+                    );
+            }
         }
     }
 

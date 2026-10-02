@@ -26,10 +26,13 @@ import type {
 import type {
   ApiProblem,
   CreateProductionRequest,
+  CreateRiderVersionRequest,
   EditProductionRequest,
   ListProductionsParams,
   PagedResultOfProductionListItem,
-  ProductionDetails
+  ProductionDetails,
+  RiderVersionDetails,
+  RiderVersionList
 } from '../../model';
 
 import { apiClient } from '../../../lib/api-client';
@@ -582,3 +585,291 @@ export const useActivateProduction = <TError = ApiProblem,
       > => {
       return useMutation(getActivateProductionMutationOptions(options), queryClient);
     }
+    export const getListRiderVersionsUrl = (riderId: string,) => {
+
+
+
+
+  return `/api/v1/riders/${riderId}/versions`
+}
+
+/**
+ * @summary Lists a rider's versions, newest first, with the rider's version.
+ */
+export const listRiderVersions = async (riderId: string, options?: Parameters<typeof apiClient>[1]): Promise<RiderVersionList> => {
+
+  return apiClient<RiderVersionList>(getListRiderVersionsUrl(riderId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListRiderVersionsQueryKey = (riderId: string,) => {
+    return [
+    `/api/v1/riders/${riderId}/versions`
+    ] as const;
+    }
+
+
+export const getListRiderVersionsQueryOptions = <TData = Awaited<ReturnType<typeof listRiderVersions>>, TError = ApiProblem>(riderId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listRiderVersions>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListRiderVersionsQueryKey(riderId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listRiderVersions>>> = ({ signal }) => listRiderVersions(riderId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: riderId !== null && riderId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listRiderVersions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ListRiderVersionsQueryResult = NonNullable<Awaited<ReturnType<typeof listRiderVersions>>>
+export type ListRiderVersionsQueryError = ApiProblem
+
+
+export function useListRiderVersions<TData = Awaited<ReturnType<typeof listRiderVersions>>, TError = ApiProblem>(
+ riderId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listRiderVersions>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listRiderVersions>>,
+          TError,
+          Awaited<ReturnType<typeof listRiderVersions>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListRiderVersions<TData = Awaited<ReturnType<typeof listRiderVersions>>, TError = ApiProblem>(
+ riderId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listRiderVersions>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listRiderVersions>>,
+          TError,
+          Awaited<ReturnType<typeof listRiderVersions>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListRiderVersions<TData = Awaited<ReturnType<typeof listRiderVersions>>, TError = ApiProblem>(
+ riderId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listRiderVersions>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Lists a rider's versions, newest first, with the rider's version.
+ */
+
+export function useListRiderVersions<TData = Awaited<ReturnType<typeof listRiderVersions>>, TError = ApiProblem>(
+ riderId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listRiderVersions>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getListRiderVersionsQueryOptions(riderId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getCreateRiderVersionUrl = (riderId: string,) => {
+
+
+
+
+  return `/api/v1/riders/${riderId}/versions`
+}
+
+/**
+ * @summary Saves a rider's lines as its next version.
+ */
+export const createRiderVersion = async (riderId: string,
+    createRiderVersionRequest: CreateRiderVersionRequest, options?: Parameters<typeof apiClient>[1]): Promise<RiderVersionDetails> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiClient<RiderVersionDetails>(getCreateRiderVersionUrl(riderId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(createRiderVersionRequest)
+  }
+);}
+
+
+
+
+
+export const getCreateRiderVersionMutationKey = () => ['createRiderVersion'] as const;
+
+export const getCreateRiderVersionMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createRiderVersion>>, TError,CreateRiderVersionMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof createRiderVersion>>, TError,CreateRiderVersionMutationVariables, TContext> => {
+
+const mutationKey = getCreateRiderVersionMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createRiderVersion>>, CreateRiderVersionMutationVariables> = (props) => {
+          const {riderId,data} = props ?? {};
+
+          return  createRiderVersion(riderId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateRiderVersionMutationResult = NonNullable<Awaited<ReturnType<typeof createRiderVersion>>>
+    export type CreateRiderVersionMutationBody = CreateRiderVersionRequest
+    export type CreateRiderVersionMutationError = ApiProblem
+    export type CreateRiderVersionMutationVariables = {riderId: string;data: CreateRiderVersionRequest}
+
+    /**
+ * @summary Saves a rider's lines as its next version.
+ */
+export const useCreateRiderVersion = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createRiderVersion>>, TError,CreateRiderVersionMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createRiderVersion>>,
+        TError,
+        CreateRiderVersionMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateRiderVersionMutationOptions(options), queryClient);
+    }
+    export const getGetRiderVersionUrl = (versionId: string,) => {
+
+
+
+
+  return `/api/v1/rider-versions/${versionId}`
+}
+
+/**
+ * @summary Gets a rider version with its lines.
+ */
+export const getRiderVersion = async (versionId: string, options?: Parameters<typeof apiClient>[1]): Promise<RiderVersionDetails> => {
+
+  return apiClient<RiderVersionDetails>(getGetRiderVersionUrl(versionId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetRiderVersionQueryKey = (versionId: string,) => {
+    return [
+    `/api/v1/rider-versions/${versionId}`
+    ] as const;
+    }
+
+
+export const getGetRiderVersionQueryOptions = <TData = Awaited<ReturnType<typeof getRiderVersion>>, TError = ApiProblem>(versionId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRiderVersion>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetRiderVersionQueryKey(versionId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getRiderVersion>>> = ({ signal }) => getRiderVersion(versionId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: versionId !== null && versionId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getRiderVersion>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetRiderVersionQueryResult = NonNullable<Awaited<ReturnType<typeof getRiderVersion>>>
+export type GetRiderVersionQueryError = ApiProblem
+
+
+export function useGetRiderVersion<TData = Awaited<ReturnType<typeof getRiderVersion>>, TError = ApiProblem>(
+ versionId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRiderVersion>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getRiderVersion>>,
+          TError,
+          Awaited<ReturnType<typeof getRiderVersion>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetRiderVersion<TData = Awaited<ReturnType<typeof getRiderVersion>>, TError = ApiProblem>(
+ versionId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRiderVersion>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getRiderVersion>>,
+          TError,
+          Awaited<ReturnType<typeof getRiderVersion>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetRiderVersion<TData = Awaited<ReturnType<typeof getRiderVersion>>, TError = ApiProblem>(
+ versionId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRiderVersion>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Gets a rider version with its lines.
+ */
+
+export function useGetRiderVersion<TData = Awaited<ReturnType<typeof getRiderVersion>>, TError = ApiProblem>(
+ versionId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getRiderVersion>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetRiderVersionQueryOptions(versionId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+

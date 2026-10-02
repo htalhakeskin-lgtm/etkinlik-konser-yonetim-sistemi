@@ -26,6 +26,7 @@ export const ListProductionsResponse = zod.object({
   "artistName": zod.string().nullable(),
   "name": zod.string(),
   "latestVersionNumber": zod.int(),
+  "latestVersionAt": zod.iso.datetime({"offset":true}).nullable(),
   "isActive": zod.boolean(),
   "version": zod.int()
 })),
@@ -173,5 +174,108 @@ export const ActivateProductionResponse = zod.object({
   "createdAt": zod.iso.datetime({"offset":true}),
   "updatedAt": zod.iso.datetime({"offset":true}),
   "version": zod.int()
+})
+
+/**
+ * @summary Lists a rider's versions, newest first, with the rider's version.
+ */
+export const ListRiderVersionsParams = zod.object({
+  "riderId": zod.uuid()
+})
+
+export const ListRiderVersionsResponse = zod.object({
+  "versions": zod.array(zod.object({
+  "id": zod.uuid(),
+  "number": zod.int(),
+  "note": zod.string().nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "createdByName": zod.string(),
+  "lineCount": zod.int()
+})),
+  "version": zod.int()
+})
+
+/**
+ * @summary Saves a rider's lines as its next version.
+ */
+export const CreateRiderVersionParams = zod.object({
+  "riderId": zod.uuid()
+})
+
+export const CreateRiderVersionHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const CreateRiderVersionBody = zod.object({
+  "lines": zod.array(zod.object({
+  "quantity": zod.int(),
+  "lineKey": zod.uuid().nullish(),
+  "modelId": zod.uuid().nullish(),
+  "categoryId": zod.uuid().nullish(),
+  "flexibility": zod.union([zod.null(),zod.union([zod.literal('required'),zod.literal('flexible'),zod.literal(null)]).nullable()]).optional(),
+  "equivalentModelIds": zod.array(zod.uuid()).nullish(),
+  "note": zod.string().nullish()
+})),
+  "note": zod.string().nullish()
+})
+
+export const CreateRiderVersionResponse = zod.object({
+  "id": zod.uuid(),
+  "riderId": zod.uuid(),
+  "number": zod.int(),
+  "note": zod.string().nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "createdByName": zod.string(),
+  "lines": zod.array(zod.object({
+  "id": zod.uuid(),
+  "lineKey": zod.uuid(),
+  "modelId": zod.uuid().nullable(),
+  "categoryId": zod.uuid().nullable(),
+  "name": zod.string(),
+  "categoryPath": zod.array(zod.string()),
+  "isTargetActive": zod.boolean(),
+  "quantity": zod.int(),
+  "flexibility": zod.union([zod.null(),zod.union([zod.literal('required'),zod.literal('flexible'),zod.literal(null)]).nullable()]),
+  "equivalents": zod.array(zod.object({
+  "modelId": zod.uuid(),
+  "name": zod.string(),
+  "isActive": zod.boolean()
+})),
+  "note": zod.string().nullable()
+}))
+})
+
+/**
+ * @summary Gets a rider version with its lines.
+ */
+export const GetRiderVersionParams = zod.object({
+  "versionId": zod.uuid()
+})
+
+export const GetRiderVersionResponse = zod.object({
+  "id": zod.uuid(),
+  "riderId": zod.uuid(),
+  "number": zod.int(),
+  "note": zod.string().nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "createdByName": zod.string(),
+  "lines": zod.array(zod.object({
+  "id": zod.uuid(),
+  "lineKey": zod.uuid(),
+  "modelId": zod.uuid().nullable(),
+  "categoryId": zod.uuid().nullable(),
+  "name": zod.string(),
+  "categoryPath": zod.array(zod.string()),
+  "isTargetActive": zod.boolean(),
+  "quantity": zod.int(),
+  "flexibility": zod.union([zod.null(),zod.union([zod.literal('required'),zod.literal('flexible'),zod.literal(null)]).nullable()]),
+  "equivalents": zod.array(zod.object({
+  "modelId": zod.uuid(),
+  "name": zod.string(),
+  "isActive": zod.boolean()
+})),
+  "note": zod.string().nullable()
+}))
 })
 

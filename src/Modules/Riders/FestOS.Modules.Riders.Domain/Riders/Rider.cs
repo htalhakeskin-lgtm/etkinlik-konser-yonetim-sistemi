@@ -1,5 +1,6 @@
 using FestOS.BuildingBlocks.Domain.Entities;
 using FestOS.Modules.Riders.Domain.Productions;
+using FestOS.Modules.Riders.Domain.RiderVersions;
 
 namespace FestOS.Modules.Riders.Domain.Riders;
 
@@ -24,4 +25,17 @@ public sealed class Rider : AggregateRoot<RiderId>
     /// <summary>The empty rider of a new production (BR-RDR-007).</summary>
     public static Rider ForProduction(ProductionId productionId) =>
         new(RiderId.New()) { Source = RiderSource.Production, ProductionId = productionId };
+
+    /// <summary>
+    /// Saves the lines as the next version (BR-RDR-003); the rider's own version moves, so a second save started
+    /// from the same version is refused rather than lost.
+    /// </summary>
+    public RiderVersion AddVersion(IReadOnlyList<RiderLineDetails> lines, string? note, string createdByName)
+    {
+        RiderLineRules.EnsureValid(lines);
+        LatestVersionNumber++;
+        var version = new RiderVersion(Id, LatestVersionNumber, lines, note, createdByName);
+        Raise(new RiderVersionCreatedDomainEvent(Id, version.Id, version.Number, ProductionId));
+        return version;
+    }
 }

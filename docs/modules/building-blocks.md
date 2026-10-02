@@ -1,6 +1,6 @@
 # Ortak Yapı Taşları (BuildingBlocks) — Fiziksel Tasarım
 
-> **Durum:** v1.38 (onaylandı) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.39 (onaylandı) · **Son güncelleme:** 2026-10-02
 
 ## 1. Bu belge ne işe yarar
 
@@ -39,7 +39,7 @@ Tasarım değişkenleri, temalar, düğme ve durum rozeti Faz 1.0'da tamamlandı
 
 | Proje | Klasör | Temel tipler |
 |---|---|---|
-| `BuildingBlocks.Domain` | `Entities/` | `Entity<TId>`, `AggregateRoot<TId>` (modül içi olay listesi, `Version`), `IAggregateRoot` (işlem biriminin kimlik tipinden bağımsız eriştiği yüz), `IAuditable` (`Created…`/`Updated…`), `IDeactivatable` |
+| `BuildingBlocks.Domain` | `Entities/` | `Entity<TId>`, `AggregateRoot<TId>` (modül içi olay listesi, `Version`), `IAggregateRoot` (işlem biriminin kimlik tipinden bağımsız eriştiği yüz), `IAuditable` (`Created…`/`Updated…`), `IDeactivatable`, `ImmutableRecord<TId>` / `IImmutableRecord` (yalnızca eklenen kayıt: `Created…`, sürüm ve `Updated…` yok; [database §9](../standards/database.md#9-ortak-kolonlar)) |
 | | `Rules/` | `BusinessRuleViolationException(ruleCode, message, kind, parameters)`; kural numarası ilk parametredir. `RuleKind`: Kısıt ve Geçiş 422, Yetki 403 döner ([api §8.3](../standards/api.md#83-i̇stisnaların-eşlenmesi)); Tetikleyici ve Hesaplama kuralları fırlatılmaz |
 | | `Events/` | `IDomainEvent` |
 | | `Time/` | `TimeRange` (yarı açık `[başlangıç, bitiş)`, çakışma ve kapsama), `IstanbulCalendar` (takvim günü dönüşümleri) |
@@ -82,7 +82,7 @@ Sıra [08 §6](../08-architecture.md#6-bir-isteğin-yolculuğu)'dakidir; burada 
 **`SaveChanges` adımları** (`ModuleDbContext`, tek işlem içinde):
 1. Toplu köklerin modül içi olayları toplanır ve `IDomainEventHandler` dinleyicileri çalıştırılır; dinleyicilerin ürettiği yeni olaylar bitene kadar döngü sürer (en fazla 5 tur, sonsuz döngüye karşı).
 2. Değişen toplu köklerin sürümü bir artırılır; kendisi değişmeyip alt varlığı değişen kök de dahil ([database §11.1](../standards/database.md#111-sürüm-numarasıyla-iyimser-kilit)).
-3. `created_*` / `updated_*` alanları `ICurrentUser` ve `TimeProvider`'dan doldurulur.
+3. `created_*` / `updated_*` alanları `ICurrentUser` ve `TimeProvider`'dan doldurulur. Değişmez kayıtlar (`IImmutableRecord`) yalnızca `created_*` alır; değiştirilmiş ya da silinmiş değişmez kayıt programlama hatası olarak reddedilir ([database §14.1](../standards/database.md#141-değişmez-kayıtlar)).
 4. İşlem geçmişi kayıtları üretilir (§6).
 5. Entegrasyon olayları outbox'a yazılır (§7).
 6. Veritabanına yazılır. Sürüm çakışması `ConcurrencyConflictException`'a, kurala eşlenmiş kısıt ihlali kural numaralı hataya çevrilir.
@@ -486,3 +486,4 @@ Paket sürümleri (FluentValidation, Scrutor, Cronos, EFCore.NamingConventions, 
 | 2026-10-02 | v1.36 | `ICurrentUser.DisplayName`, `SystemUser.Name` ("Sistem"); işlem geçmişi satırına `actor_name` yazılır ve iki indeks eklenir (audit §2). |
 | 2026-10-02 | v1.37 | `TimeAndIdCursor`: zaman ve kimliğe göre sıralı listelerin imleci (api §6.1). |
 | 2026-10-02 | v1.38 | §6: işlem geçmişi satırı kök kaydı taşır (Faz 1.3, audit §2). |
+| 2026-10-02 | v1.39 | §3, §4: değişmez kayıtlar için `ImmutableRecord<TId>` ve kaydetme adımı (riders §4). |
