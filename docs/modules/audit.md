@@ -1,6 +1,6 @@
 # Modül tasarımı: Audit — İşlem geçmişi
 
-> **Durum:** v1.2 (onaylandı) · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.3 (onaylandı) · **Son güncelleme:** 2026-10-01
 > **Adım:** Faz 1.2 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 7](#7-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -40,7 +40,9 @@
 | İşlem geçmişi | `/audit` | İmleçli liste ("Daha fazla yükle"); kullanıcı, tarih aralığı ve kayıt türü süzgeci; satır açılınca alan alan eski → yeni değer |
 | Kayıt geçmişi sekmesi | Detay sayfalarında | Ortak `HistoryTab` bileşeni; her modül kendi detay sayfasına ekler. 1.2'de kullanıcı detayında görünür. |
 
-**Değerlerin gösterimi:** Alan adları modülün çeviri dosyasından gelir (`{modül}:{varlık}.{alan}`); çevirisi olmayan alan ham adıyla görünür. Enum değerleri de çevrilir; kimlikler (ör. depo kimliği) S1'de kimlik olarak kalır.
+**Değerlerin gösterimi:** Alan adları modülün çeviri dosyasından gelir (`{modül}:{varlık}.fields.{alan}`, ör. `identity:User.fields.roles`); çevirisi olmayan alan ham adıyla görünür. Enum değerleri de çevrilir (`{modül}:{varlık}.values.{alan}.{değer}`); kimlikler (ör. depo kimliği) S1'de kimlik olarak kalır. Doğru / yanlış "Evet / Hayır", boş değer "—", zaman damgası İstanbul saatiyle yazılır.
+
+**Uygulama (PR 3):** Ortak `HistoryList` imleçli listeyi `useInfiniteQuery` ile yükler; "Daha fazla yükle" bir sonraki dilimi ister, kaydırınca kendiliğinden yüklemez (ui §8). Satırda zaman, kullanıcı, işlem rozeti ve (genel ekranda) kayıt türü ile kimliği vardır; "Değişiklikleri göster" alan alan eski → yeni tablosunu açar. `/audit` süzgeçleri adreste tutar; bitiş günü ekranda dahildir, sunucuya bir sonraki gün olarak gider. Kullanıcı süzgeci, kullanıcıları görme yetkisi olana görünür. 1.2'de kullanıcı ve depo için ayrı detay sayfası olmadığından kayıt geçmişi satır menüsündeki "Geçmiş" ile `HistoryDialog`'da açılır; detay sayfaları geldiğinde aynı içerik `HistoryTab` olarak sekmeye girer. Menüde "Yönetim › İşlem geçmişi" yer alır.
 
 ## 5. Hikaye ve kural eşlemesi
 
@@ -74,3 +76,4 @@ Bu belgede proje sahibine soru yoktur.
 | 2026-10-01 | v1.0 | Onaylandı. |
 | 2026-10-02 | v1.1 | §2: kullanıcı adı ve indekslerin uygulama ayrıntıları (PR 1). |
 | 2026-10-02 | v1.2 | §3: işlem geçmişi uç noktasının uygulama ayrıntıları (PR 2). |
+| 2026-10-02 | v1.3 | §4: işlem geçmişi ekranlarının uygulama ayrıntıları (PR 3); çeviri anahtarlarının biçimi. |

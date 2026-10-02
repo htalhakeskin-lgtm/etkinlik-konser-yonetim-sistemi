@@ -148,7 +148,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | [12 — Uygulama planı (Faz 1: S1)](docs/12-implementation-plan.md) | v1.0 |
 | [Modül tasarımı: Ortak yapı taşları](docs/modules/building-blocks.md) | v1.37 |
 | [Modül tasarımı: Identity](docs/modules/identity.md) | v1.14 |
-| [Modül tasarımı: Audit](docs/modules/audit.md) | v1.2 |
+| [Modül tasarımı: Audit](docs/modules/audit.md) | v1.3 |
 | [Modül tasarımı: Inventory](docs/modules/inventory.md) | v1.3 |
 
 ### Teknoloji

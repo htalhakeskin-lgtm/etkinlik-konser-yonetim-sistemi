@@ -35,6 +35,7 @@ import {
 import { ifMatch } from "@/lib/api-client";
 import { errorMessage } from "@/lib/api-error-messages";
 import { formatTime } from "@/lib/format";
+import { HistoryDialog, type HistoryRecord } from "@/modules/audit";
 
 import {
   type IssuedPassword,
@@ -82,6 +83,7 @@ export function UsersPage({ search, onSearchChange }: UsersPageProps) {
   const [editing, setEditing] = useState<UserListItem | undefined>(undefined);
   const [confirming, setConfirming] = useState<Confirmation | undefined>(undefined);
   const [issued, setIssued] = useState<IssuedPassword | undefined>(undefined);
+  const [history, setHistory] = useState<HistoryRecord | undefined>(undefined);
   const refreshList = () => queryClient.invalidateQueries({ queryKey: getListUsersQueryKey() });
   const change = useMutation({
     mutationFn: async ({ action, user: target }: Change): Promise<string | undefined> => {
@@ -115,6 +117,8 @@ export function UsersPage({ search, onSearchChange }: UsersPageProps) {
   function act(action: UserAction, target: UserListItem) {
     if (action === "edit") {
       setEditing(target);
+    } else if (action === "history") {
+      setHistory({ entityType: "User", entityId: target.id, name: target.fullName });
     } else if (action === "activate") {
       change.mutate({ action, user: target });
     } else {
@@ -347,6 +351,12 @@ export function UsersPage({ search, onSearchChange }: UsersPageProps) {
           if (confirming !== undefined) {
             change.mutate(confirming);
           }
+        }}
+      />
+      <HistoryDialog
+        record={history}
+        onClose={() => {
+          setHistory(undefined);
         }}
       />
       <TemporaryPasswordDialog

@@ -12,7 +12,7 @@ import {
 
 import { hasPermission, identityPermissions, useSignedInUser } from "../permissions";
 
-export type UserAction = "edit" | "resetPassword" | "deactivate" | "activate";
+export type UserAction = "edit" | "resetPassword" | "deactivate" | "activate" | "history";
 
 export type UserRowActionsProps = {
   user: UserListItem;
@@ -27,8 +27,10 @@ export function UserRowActions({ user, onAction }: UserRowActionsProps) {
   const canReset = hasPermission(me, identityPermissions.resetUserPasswords);
   const canDeactivate = hasPermission(me, identityPermissions.deactivateUsers);
   const isSelf = user.id === me.id;
+  // The change history is Audit's; its code is written out, as the role matrix does (identity §5.2).
+  const canViewHistory = hasPermission(me, "Audit.Entries.View");
 
-  if (!canEdit && !canReset && !canDeactivate) {
+  if (!canEdit && !canReset && !canDeactivate && !canViewHistory) {
     return null;
   }
 
@@ -83,6 +85,15 @@ export function UserRowActions({ user, onAction }: UserRowActionsProps) {
               {t("users.actions.activate")}
             </DropdownMenuItem>
           ))}
+        {canViewHistory && (
+          <DropdownMenuItem
+            onClick={() => {
+              onAction("history", user);
+            }}
+          >
+            {t("users.actions.history")}
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

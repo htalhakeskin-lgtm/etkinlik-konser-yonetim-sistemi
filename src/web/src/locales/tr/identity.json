@@ -86,7 +86,8 @@
       "resetPassword": "Şifreyi sıfırla",
       "deactivate": "Pasifleştir",
       "activate": "Etkinleştir",
-      "cannotDeactivateSelf": "Pasifleştir — kendinizi pasifleştiremezsiniz"
+      "cannotDeactivateSelf": "Pasifleştir — kendinizi pasifleştiremezsiniz",
+      "history": "Geçmiş"
     },
     "confirm": {
       "deactivateTitle": "{{name}} pasifleştirilsin mi?",
@@ -159,6 +160,26 @@
         "Create": "Depo oluşturma",
         "Edit": "Depoyu düzenleme",
         "Deactivate": "Depoyu pasifleştirme ve etkinleştirme"
+      }
+    }
+  },
+  "User": {
+    "fields": {
+      "fullName": "Ad soyad",
+      "email": "E-posta",
+      "roles": "Roller",
+      "warehouseIds": "Depolar",
+      "mustChangePassword": "Yeni şifre bekleniyor",
+      "deactivatedAt": "Pasifleştirildiği zaman",
+      "deactivatedBy": "Pasifleştiren"
+    },
+    "values": {
+      "roles": {
+        "systemAdministrator": "Sistem yöneticisi",
+        "bookingManager": "Booking müdürü",
+        "technicalManager": "Teknik müdür",
+        "warehouseManager": "Depo sorumlusu",
+        "generalManager": "Genel müdür"
       }
     }
   }

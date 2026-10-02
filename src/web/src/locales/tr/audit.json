@@ -1,0 +1,39 @@
+{
+  "title": "İşlem geçmişi",
+  "description": "Kaydı kimin, ne zaman, nasıl değiştirdiği. Geçmiş değiştirilemez ve silinemez.",
+  "forbidden": "Bu ekranı görme yetkiniz yok.",
+  "empty": "Bu süzgeçlere uyan değişiklik yok.",
+  "loadMore": "Daha fazla yükle",
+  "filters": {
+    "actor": "Kullanıcı",
+    "allActors": "Tüm kullanıcılar",
+    "from": "Başlangıç günü",
+    "to": "Bitiş günü",
+    "entityType": "Kayıt türü",
+    "allEntityTypes": "Tüm kayıt türleri",
+    "clear": "Süzgeçleri temizle"
+  },
+  "actions": {
+    "created": "Oluşturuldu",
+    "updated": "Güncellendi",
+    "deleted": "Silindi",
+    "statusChanged": "Durumu değişti"
+  },
+  "entityTypes": {
+    "User": "Kullanıcı",
+    "Warehouse": "Depo"
+  },
+  "changes": {
+    "show": "Değişiklikleri göster",
+    "field": "Alan",
+    "old": "Önceki",
+    "new": "Yeni",
+    "none": "—",
+    "yes": "Evet",
+    "no": "Hayır"
+  },
+  "dialog": {
+    "title": "{{name}}: değişiklik geçmişi"
+  },
+  "open": "Geçmiş"
+}

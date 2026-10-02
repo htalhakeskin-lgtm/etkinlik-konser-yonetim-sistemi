@@ -13,16 +13,24 @@
       "status": "Durum",
       "actions": "İşlemler"
     },
-    "status": { "active": "Aktif", "inactive": "Pasif" },
+    "status": {
+      "active": "Aktif",
+      "inactive": "Pasif"
+    },
     "filters": {
       "statusLabel": "Durum",
-      "status": { "active": "Aktif", "inactive": "Pasif", "all": "Tümü" }
+      "status": {
+        "active": "Aktif",
+        "inactive": "Pasif",
+        "all": "Tümü"
+      }
     },
     "actions": {
       "open": "{{name}} için işlemler",
       "edit": "Düzenle",
       "deactivate": "Pasifleştir",
-      "activate": "Etkinleştir"
+      "activate": "Etkinleştir",
+      "history": "Geçmiş"
     },
     "confirm": {
       "deactivateTitle": "{{name}} pasifleştirilsin mi?",
@@ -45,5 +53,14 @@
     "cancel": "Vazgeç",
     "create": "Depoyu oluştur",
     "save": "Kaydet"
+  },
+  "Warehouse": {
+    "fields": {
+      "name": "Ad",
+      "city": "Şehir",
+      "address": "Adres",
+      "deactivatedAt": "Pasifleştirildiği zaman",
+      "deactivatedBy": "Pasifleştiren"
+    }
   }
 }

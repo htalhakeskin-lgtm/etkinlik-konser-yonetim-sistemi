@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/select";
 import { ifMatch } from "@/lib/api-client";
 import { errorMessage } from "@/lib/api-error-messages";
+import { auditPermissions, HistoryDialog, type HistoryRecord } from "@/modules/audit";
 import { hasPermission, useSignedInUser } from "@/modules/identity";
 
 import { WarehouseFormDialog } from "../components/warehouse-form-dialog";
@@ -71,10 +72,12 @@ export function WarehousesPage({ search, onSearchChange }: WarehousesPageProps) 
   const canCreate = hasPermission(user, inventoryPermissions.createWarehouses);
   const canEdit = hasPermission(user, inventoryPermissions.editWarehouses);
   const canDeactivate = hasPermission(user, inventoryPermissions.deactivateWarehouses);
+  const canViewHistory = hasPermission(user, auditPermissions.viewEntries);
   const [text, setText] = useState(search.q ?? "");
   const [isCreating, setIsCreating] = useState(false);
   const [editing, setEditing] = useState<WarehouseListItem | undefined>(undefined);
   const [confirming, setConfirming] = useState<WarehouseListItem | undefined>(undefined);
+  const [history, setHistory] = useState<HistoryRecord | undefined>(undefined);
   const page = search.page ?? 1;
   const pageSize = search.pageSize ?? 25;
   const params: ListWarehousesParams = { ...search, page, pageSize };
@@ -152,7 +155,7 @@ export function WarehousesPage({ search, onSearchChange }: WarehousesPageProps) 
       id: "actions",
       header: () => <span className="sr-only">{t("warehouses.columns.actions")}</span>,
       cell: ({ row }) =>
-        canEdit || canDeactivate ? (
+        canEdit || canDeactivate || canViewHistory ? (
           <DropdownMenu>
             <DropdownMenuTrigger
               render={
@@ -193,6 +196,19 @@ export function WarehousesPage({ search, onSearchChange }: WarehousesPageProps) 
                     {t("warehouses.actions.activate")}
                   </DropdownMenuItem>
                 ))}
+              {canViewHistory && (
+                <DropdownMenuItem
+                  onClick={() => {
+                    setHistory({
+                      entityType: "Warehouse",
+                      entityId: row.original.id,
+                      name: row.original.name,
+                    });
+                  }}
+                >
+                  {t("warehouses.actions.history")}
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         ) : null,
@@ -304,6 +320,12 @@ export function WarehousesPage({ search, onSearchChange }: WarehousesPageProps) 
           setEditing(undefined);
           void refreshList();
           toast.success(t(isNew ? "warehouses.done.created" : "warehouses.done.saved"));
+        }}
+      />
+      <HistoryDialog
+        record={history}
+        onClose={() => {
+          setHistory(undefined);
         }}
       />
       <ConfirmDialog
