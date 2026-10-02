@@ -1,6 +1,6 @@
 # Modül tasarımı: Parties — Taraflar
 
-> **Durum:** v1.2 (onaylandı) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.3 (onaylandı) · **Son güncelleme:** 2026-10-02
 > **Adım:** Faz 1.3 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 11](#11-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -93,6 +93,8 @@ Teknik müdür, mekan ve sanatçı ekranlarında tarafların adını ve iletişi
 
 Doğrulama: tür zorunlu; kişide ad ve soyad zorunlu (en çok 100); görünen ad zorunlu (en çok 200); en az bir rol; iletişim bilgisi en çok 20; değer türüne göre (§5).
 
+**Uygulama (PR 1b):** Taraf uçları §8'deki gibidir; değiştirenler `If-Match` ister ve yanıtta tarafın kaydedilmiş halini yeni `ETag` ile döner, oluşturma `201` ve `Location` ile döner. Gövdede türün kullanmadığı adlar ve iletişim bilgisinin etiketi gönderilmeyebilir. Tür yalnızca oluştururken okunur; düzenlemede kişinin ad ve soyadı kayıtlı türe göre işleyicide denetlenir. Rolsüz taraf `422 BR-PTY-001`, aynı türde iki birincil `422 BR-PTY-002` döner; bu kurallar alan doğrulamasına değil tarafa aittir. Liste `q`'yu tarafın arama anahtarında arar (ad, unvan, iletişim bilgisi, telefonun rakamları); `role`, `kind`, `status` (`active` varsayılan) ile süzer; `name` (Türkçe sıra) ve `createdAt`'e göre sıralar; satırda birincil telefon ve e-posta vardır. Detay iletişim bilgilerini sırasıyla ve kimlikleriyle döner; düzenleme diyaloğu kimlikleri geri gönderir.
+
 ## 9. Sözleşme ve olaylar
 
 - **Senkron sözleşme (Contracts):** `IPartyDirectory.FindAsync(ids)` → `PartySummary(Id, Name, Kind, Roles, IsActive)`. `PartySelection.Ensure(summary, role, field)` kaydı yoksa, pasifse ya da rolü yoksa `422 BR-PTY-004` fırlatır; `params` alanı ve beklenen rolü söyler. Venues ve Riders bu adımda kullanır; Booking ve Procurement sonraki adımlarda.
@@ -151,3 +153,4 @@ Soru 2026-10-02'de yanıtlandı; önerilen seçenek seçildi.
 | 2026-10-02 | v1.0 | S1 yanıtlandı (PT-07, İletişim kişisi rolü); onaylandı. |
 | 2026-10-02 | v1.1 | MD-01 uygulandı (PR 0); ayrıntılar [audit §2](audit.md#2-yazma-tarafına-eklenenler). API süzgeçleri `rootType`, `rootId`. |
 | 2026-10-02 | v1.2 | §5, §6: PR 1a'nın uygulama ayrıntıları; birincil iletişim bilgisi için veritabanı indeksi yerine toplu kök (PT-08). |
+| 2026-10-02 | v1.3 | §8: taraf uçlarının uygulama ayrıntıları (PR 1b). |
