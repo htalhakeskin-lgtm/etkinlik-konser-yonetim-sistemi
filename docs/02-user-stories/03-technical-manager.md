@@ -13,7 +13,7 @@ Kurallar: BR-SYS-001, BR-EQP-002, BR-EQP-011
 **Kabul kriterleri**
 1. Kategori bir üst kategoriye bağlanabilir (ör. Ses › Mikrofon › Dinamik vokal).
 2. Kategori adı aynı üst kategori içinde tekildir.
-3. Altında model veya kategori bulunan kategori silinemez, pasifleştirilir.
+3. Kategori silinmez, pasifleştirilir. Altında aktif kategori ya da model varsa önce onlar taşınır ya da pasifleştirilir.
 
 ### US-EQP-002 · Ekipman modeli oluşturma
 **Teknik müdür olarak** ekipman kataloğunu gerçek teknik değerleriyle tutmak **istiyorum**, **çünkü** ihtiyaç hesabı, ileride güç ve yükleme hesapları bu değerlere dayanır.

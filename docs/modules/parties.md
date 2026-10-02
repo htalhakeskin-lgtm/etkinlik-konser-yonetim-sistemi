@@ -1,6 +1,6 @@
 # Modül tasarımı: Parties — Taraflar
 
-> **Durum:** v0.1 (taslak) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.0 (onaylandı) · **Son güncelleme:** 2026-10-02
 > **Adım:** Faz 1.3 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 11](#11-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -49,7 +49,7 @@ Dört modül de Identity ve Inventory'nin kalıbını izler: komutlar Applicatio
 
 - `Party` tek toplu köktür ([06 §7](../06-erd-conceptual.md#7-toplu-kökler-ve-eşzamanlılık)). Kişi ve firma ayrı tablolar değil, aynı tablonun türe göre dolan kolonlarıdır (PT-01). İletişim kişileri firmanın, temsiller sanatçının toplu köküne aittir.
 - **Ad:** `name` listede ve seçim kutularında görünen addır. Kişide formda ad ve soyaddan önerilir, değiştirilebilir (sahne adı: "Tarkan"); firmada kısa addır, ticari unvan `legal_name`'dedir (PT-02).
-- **Roller** `text[]` dizisidir (`customer`, `supplier`, `artist`, `agency`, `venueOperator`; S1 sözcüğü 01 §3.2'dedir). Identity'deki roller gibi küçük ve sabit bir kümedir; işlem geçmişi değişikliği tek alanda eski → yeni gösterir ([identity ID-10](identity.md#12-kararlar), PT-03). database §6'daki "iş verisinde dizi kullanılmaz" kuralına bu iki kullanım istisna olarak eklenir.
+- **Roller** `text[]` dizisidir (`customer`, `supplier`, `artist`, `agency`, `venueOperator`, `contact`; sözcük [01 §3.2](../01-glossary.md#32-kişi-ve-firma)'dedir). Identity'deki roller gibi küçük ve sabit bir kümedir; işlem geçmişi değişikliği tek alanda eski → yeni gösterir ([identity ID-10](identity.md#12-kararlar), PT-03). database §6'daki "iş verisinde dizi kullanılmaz" kuralına bu iki kullanım istisna olarak eklenir.
 - **Arama anahtarı** (`search`): ad, unvan ve iletişim bilgilerinin değerlerinden üretilir; telefonların yalnızca rakamlardan oluşan biçimi de eklenir ("5321112233" yazan "+90 532 111 22 33"ü bulur). Alan katmanı her değişiklikte yeniden üretir; işlem geçmişine yazılmaz (PT-04).
 - İletişim bilgisinin değeri türüne göre doğrulanır: telefon en çok 32 karakter, rakam, boşluk, `+`, `-`, `(`, `)` ve 7–15 rakam; e-posta geçerli biçim, en çok 254 karakter, küçük harfe çevrilir; adres en çok 500 karakter.
 
@@ -58,7 +58,7 @@ Dört modül de Identity ve Inventory'nin kalıbını izler: komutlar Applicatio
 | Kural | Uygulama |
 |---|---|
 | BR-SYS-001 Silme yerine pasifleştirme | Taraf silinmez; pasifleştirilir ve yeniden etkinleştirilebilir. Pasif taraf yeni iletişim kişisi, temsil ve başka modüllerdeki seçimlerde seçilemez; bağlı kayıtlarda "Pasif" rozetiyle görünmeye devam eder. İletişim bilgisi, iletişim kişisi bağı ve temsil modül içi kayıtlardır, kaldırılabilir. |
-| BR-PTY-001 Taraf rolleri | En az bir rol; aynı rol bir kez (alan kuralı). Tür oluşturulduktan sonra değişmez: düzenleme ucu türü almaz. İletişim kişisinin rolü S1'in sorusudur. |
+| BR-PTY-001 Taraf rolleri | En az bir rol; aynı rol bir kez (alan kuralı). Tür oluşturulduktan sonra değişmez: düzenleme ucu türü almaz. Başka rolü olmayan iletişim kişisi **İletişim kişisi** rolündedir (PT-07); iletişim kişisi diyaloğunda açılan yeni kişi bu rolle gelir. |
 | BR-PTY-002 Birincil iletişim bilgisi | Kaydı olan her türde tam olarak bir birincil kayıt bulunur: türün ilk kaydı kendiliğinden birincil olur; birincil kaldırılınca aynı türün sıradaki kaydı birincil olur; başka bir kayıt birincil yapılınca önceki birincil bırakılır. Veritabanında koşullu benzersiz indeksle de korunur. |
 | BR-PTY-003 İletişim kişisi | Yalnızca firma türündeki tarafa, yalnızca kişi türündeki ve aktif bir taraf bağlanır; aynı kişi bir firmaya bir kez bağlanır. Komut iki tarafı da yükler (aynı modül). |
 | BR-PTY-004 Rol gerektiren seçimler | Temsilde sanatçı **Sanatçı**, ajans **Ajans** rolünde ve aktif olmalıdır; aynı ajans bir sanatçıya bir kez bağlanır. Temsili olan sanatçıdan Sanatçı, temsil ettiği sanatçısı olan ajanstan Ajans rolü kaldırılamaz (kurala eklenir). Diğer modüllerdeki seçimler (mekan işletmecisi, prodüksiyonun sanatçısı) `IPartyDirectory` ile aynı kuralı uygular; o modüldeki kayıt, rol sonradan kaldırılsa da değişmez. |
@@ -132,15 +132,19 @@ Doğrulama: tür zorunlu; kişide ad ve soyad zorunlu (en çok 100); görünen a
 | PT-04 | İletişim bilgisine göre arama | Tarafta, ad ve iletişim bilgilerinden üretilen tek arama anahtarı | US-PTY-002 iletişim bilgisiyle arama istiyor; tek kolon tek `pg_trgm` indeksiyle aranır, alt tabloya birleştirme gerekmez. |
 | PT-05 | Telefon biçimi | Serbest yazım, izin verilen karakterler ve rakam sayısıyla doğrulanır; uluslararası numara kütüphanesi kullanılmaz | S1'de arama ve görüntüleme yeterli; bağımlılık eklemeye değmez. |
 | PT-06 | Taraf ve iletişim bilgileri tek formda | İletişim bilgileri tarafın oluşturma ve düzenleme isteğinin parçasıdır; iletişim kişileri ve temsiller ayrı uçlardır | İletişim bilgileri tarafın kendi verisidir ve hikayede birlikte girilir. İletişim kişisi ve temsil başka bir tarafa bağdır; detay sayfasında tek tek eklenir. |
+| PT-07 | İletişim kişisinin rolü | Yeni rol: **İletişim kişisi** (`contact`) | S1; BR-PTY-001 değişmez, iletişim kişileri rol süzgeciyle bulunur. Kişi başka bir rol de alabilir (ör. hem iletişim kişisi hem tedarikçi). |
 
 ## 12. Proje sahibine sorulanlar
 
+Soru 2026-10-02'de yanıtlandı; önerilen seçenek seçildi.
+
 | Soru | Seçenekler | Yanıt |
 |---|---|---|
-| S1 — Firmanın iletişim kişisi (ör. mekan işletmecisinin teknik sorumlusu) hiçbir taraf rolüne uymuyor; BR-PTY-001 ise en az bir rol istiyor. Ne yapalım? | **Yeni "İletişim kişisi" rolü** (önerilen; kural değişmez, kişiler bu rolle süzülür, iletişim kişisi diyaloğunda yeni kişi bu rolle açılır) / Firmaya bağlı kişide rol şartı kalksın (BR-PTY-001 değişir) / İletişim kişisi taraf olmasın, firmada ad ve telefon olarak dursun (06 değişir) | — |
+| S1 — Firmanın iletişim kişisi (ör. mekan işletmecisinin teknik sorumlusu) hiçbir taraf rolüne uymuyor; BR-PTY-001 ise en az bir rol istiyor. Ne yapalım? | Yeni "İletişim kişisi" rolü / firmaya bağlı kişide rol şartı kalksın / iletişim kişisi taraf olmasın | **Yeni rol** (PT-07) |
 
 ## 13. Değişiklik kaydı
 
 | Tarih | Versiyon | Değişiklik |
 |---|---|---|
 | 2026-10-02 | v0.1 | İlk taslak; adımın ortak kararları (MD-01…07). |
+| 2026-10-02 | v1.0 | S1 yanıtlandı (PT-07, İletişim kişisi rolü); onaylandı. |

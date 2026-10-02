@@ -1,6 +1,6 @@
 # Modül tasarımı: Venues — Mekanlar
 
-> **Durum:** v0.1 (taslak) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.0 (onaylandı) · **Son güncelleme:** 2026-10-02
 > **Adım:** Faz 1.3 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 9](#9-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -31,7 +31,7 @@ Venues modülünün fiziksel tasarımıdır: mekanlar, mekan ekipmanı ve kullan
 | `venue_equipment_unavailabilities` | `id`, `venue_equipment_id`, `period_start date`, `period_end date`, `quantity int`, `reason varchar(500)` | FK `CASCADE`; `ck_…_period` (`period_start < period_end`) → BR-VEN-002; `ex_venue_equipment_unavailabilities_overlap` (`EXCLUDE USING gist (venue_equipment_id WITH =, daterange(period_start, period_end, '[)') WITH &&)`) → BR-VEN-002; `quantity >= 1` (MD-05) |
 
 - `Venue` toplu köktür; ekipman satırları ve dönemleri ona aittir ([06 §7](../06-erd-conceptual.md#7-toplu-kökler-ve-eşzamanlılık)). Dışlama kısıtı migration'da SQL ile yazılır ([database §12.1](../standards/database.md#121-kısıtlar)); `btree_gist` eklentisi hazırlık adımında zaten kuruludur.
-- **Günler ve aralıklar (VN-01):** Geçerlilik ve kullanılamama dönemleri takvim günüdür ve yarı açıktır: `…_end` hariçtir ([database §7.3](../standards/database.md#73-zaman-aralıkları)). Arayüz son günü dahil gösterir ve gönderir; dönüşüm ön yüzdedir (işlem geçmişi ekranındaki tarih süzgeci gibi). Hesapta gün, mekanın saat diliminde `[başlangıç günü 00:00, bitiş günü 00:00)` anlarına çevrilir. Saat hassasiyeti S3'ün sorusudur.
+- **Günler ve aralıklar (VN-01):** Geçerlilik ve kullanılamama dönemleri takvim günüdür ve yarı açıktır: `…_end` hariçtir ([database §7.3](../standards/database.md#73-zaman-aralıkları)). Arayüz son günü dahil gösterir ve gönderir; dönüşüm ön yüzdedir (işlem geçmişi ekranındaki tarih süzgeci gibi). Hesapta gün, mekanın saat diliminde `[başlangıç günü 00:00, bitiş günü 00:00)` anlarına çevrilir.
 - **Saat dilimi:** `time_zone` IANA kimliğidir, varsayılanı `Europe/Istanbul`'dur ([database §7.2](../standards/database.md#72-gelecekteki-duvar-saati-zamanları)). Etkinlik zamanları 1.4'te bu dilimden hesaplanır. Sessizlik saati mekanın yerel saatidir (`time`).
 - Güç kapasitesi S1'de yalnızca kaydedilir (US-VEN-001).
 
@@ -103,7 +103,7 @@ Doğrulama: ad, şehir, adres zorunlu (200 / 100 / 500); kapasite 1 ve üstü ta
 
 | No | Konu | Karar | Gerekçe |
 |---|---|---|---|
-| VN-01 | Gün hassasiyeti | Geçerlilik ve dönemler `date`, yarı açık; arayüzde son gün dahil | Mekanlar ekipman değişikliğini ve ödünç vermeyi gün olarak bildirir; S3'ün yanıtına bağlıdır. |
+| VN-01 | Gün hassasiyeti | Geçerlilik ve dönemler `date`, yarı açık; arayüzde son gün dahil | S3; mekanlar ekipman değişikliğini ve ödünç vermeyi gün olarak bildirir, form ve hesap sade kalır. |
 | VN-02 | Mekan adının tekilliği | Şehir içinde tekil | Aynı adlı şubeler farklı şehirlerdedir; aynı şehirde iki aynı ad, seçim kutusunda karışırdı. |
 | VN-03 | Ekipman satırının silinmesi | Silinebilir; asıl yol geçerlilik bitişidir ve formda önerilir | Satır modül içi kayıttır (BR-SYS-001); yanlış girişi düzeltmenin yolu olmalı. Geçmiş hesaplar Planning'de kendi sonuçlarıyla saklanır (BR-MRP-011), silme onları değiştirmez; silme işlem geçmişinde kalır. |
 | VN-04 | Satırların toplu kökü | Ekipman değişiklikleri mekanın sürümüyle (`If-Match`) korunur | 06 §7'deki toplu kök sınırı; eşzamanlı iki düzenleme birbirini sessizce ezmez. Booking müdürünün genel bilgi düzenlemesiyle çakışırsa ikincisi `412` alır; bu kabul edildi. |
@@ -111,12 +111,15 @@ Doğrulama: ad, şehir, adres zorunlu (200 / 100 / 500); kapasite 1 ve üstü ta
 
 ## 10. Proje sahibine sorulanlar
 
+Soru 2026-10-02'de yanıtlandı; önerilen seçenek seçildi.
+
 | Soru | Seçenekler | Yanıt |
 |---|---|---|
-| S3 — Mekan ekipmanının geçerlilik aralığı ve kullanılamama dönemi gün olarak mı, saatle mi girilsin? | **Gün** (önerilen; "10–12 Mart'ta konsolu başka etkinliğe verdi" diye girilir, form ve hesap sade kalır) / Tarih ve saat (aynı gün içinde öğleden sonra ödünç verme gibi durumlar da girilir; her alan saat de ister) | — |
+| S3 — Mekan ekipmanının geçerlilik aralığı ve kullanılamama dönemi gün olarak mı, saatle mi girilsin? | Gün / tarih ve saat | **Gün** (VN-01) |
 
 ## 11. Değişiklik kaydı
 
 | Tarih | Versiyon | Değişiklik |
 |---|---|---|
 | 2026-10-02 | v0.1 | İlk taslak |
+| 2026-10-02 | v1.0 | S3 yanıtlandı (VN-01, gün); onaylandı. |

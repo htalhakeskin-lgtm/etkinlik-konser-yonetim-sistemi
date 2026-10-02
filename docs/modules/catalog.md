@@ -1,6 +1,6 @@
 # Modül tasarımı: Catalog — Ekipman kataloğu
 
-> **Durum:** v0.1 (taslak) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.0 (onaylandı) · **Son güncelleme:** 2026-10-02
 > **Adım:** Faz 1.3 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 9](#9-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -41,7 +41,7 @@ Catalog modülünün fiziksel tasarımıdır: kategoriler, modeller, kitler. Ad�
 |---|---|
 | BR-SYS-001 Silme yerine pasifleştirme | Kategori, model ve kit silinmez; pasifleştirilir ve yeniden etkinleştirilebilir. Pasif kategoriye model ya da alt kategori, kite pasif model ya da kit eklenemez; var olan bağlar görünmeye devam eder ve "Pasif" rozeti taşır. Kit satırı modül içi kayıttır, kaldırılabilir. |
 | BR-EQP-001 Takip tipinin değişmezliği | `has_stock` doluysa takip tipi değişikliği reddedilir (alan kuralı). Kolonu 1.5'te `StockCreatedForModel` dinleyicisi doldurur; bu adımda alan kuralı birim testiyle sınanır. |
-| BR-EQP-002 Kategori hiyerarşisi | Kategori kendisinin ya da alt kategorisinin altına taşınamaz. Taşıma ve oluşturma `catalog:categories:tree` danışma kilidi altında yapılır, iki eşzamanlı taşıma döngü kuramaz (CT-03). Pasifleştirmenin alt kayıtlarla ilişkisi S2'nin sorusudur. "Alt kategorileri de kapsar" kısmı kategoriyi hedefleyen hesaplarındır (Planning, 1.6). |
+| BR-EQP-002 Kategori hiyerarşisi | Kategori kendisinin ya da alt kategorisinin altına taşınamaz. Taşıma ve oluşturma `catalog:categories:tree` danışma kilidi altında yapılır, iki eşzamanlı taşıma döngü kuramaz (CT-03). Aktif alt kategorisi ya da aktif modeli olan kategori pasifleştirilemez; ret `params` ile alttaki aktif kategori ve model sayısını söyler (CT-06). Pasif kategorinin altında kategori ya da model oluşturulamaz, etkinleştirilemez ve oraya taşınamaz. "Alt kategorileri de kapsar" kısmı kategoriyi hedefleyen hesaplarındır (Planning, 1.6). |
 | BR-EQP-003 Kit yapısı | Kayıtta alt kitlerin kapanışı hesaplanır, kit kendini içeriyorsa reddedilir; kit satırı kaydı `catalog:kits:structure` danışma kilidi altındadır (iki kit aynı anda birbirini eklerse ikincisi döngüyü görür). Aynı model ya da alt kit bir kitte bir kez geçer (doğrulama). Toplam ağırlık ve güç, içerik modellere açılarak hesaplanır; değeri boş bir model varsa toplam "eksik veri" işaretlidir. |
 | BR-EQP-011 Tekil kategori adı (yeni) | Kategori adı aynı üst kategori içinde, büyük-küçük harf ve Türkçe işaret farkı gözetmeden tekildir. US-EQP-001'in kabul kriteriydi. |
 | BR-EQP-012 Tekil model (yeni) | Marka ve model adı birlikte, aynı biçimde tekildir. US-EQP-002'nin kabul kriteriydi. |
@@ -116,17 +116,19 @@ Doğrulama: ad zorunlu (en çok 200), marka zorunlu (en çok 100), takip tipi zo
 | CT-03 | Döngü denetimi | Alan kuralı + danışma kilidi (kategori taşıma, kit satırları) | Döngü iki toplu kökü birlikte ilgilendirir; iyimser kilit tek kökü korur, eşzamanlı iki değişikliği yakalamaz. |
 | CT-04 | Kit satırları | Kitin tamamı tek istekle kaydedilir | Kit küçük bir toplu köktür; sıralama ve döngü denetimi bütün üzerinde yapılır. |
 | CT-05 | Model formu | 11'deki gibi ayrı sayfa | Form ileride (S2 güç, S5 hacim) büyüyecek; 11 §3 onaylı envanterdir. |
+| CT-06 | Alt kaydı olan kategorinin pasifleştirilmesi | Reddedilir; önce alttakiler taşınır ya da pasifleştirilir | S2; kazara toplu pasifleştirme olmaz. Kural BR-EQP-002'ye eklendi. |
 
 ## 10. Proje sahibine sorulanlar
 
 | Soru | Seçenekler | Yanıt |
 |---|---|---|
-| S2 — Altında aktif alt kategori ya da aktif model bulunan bir kategori pasifleştirilmek istenirse ne olsun? | **Reddedilsin; önce alttakiler taşınır ya da pasifleştirilir** (önerilen; kazara toplu pasifleştirme olmaz, ret mesajı alttaki sayıları söyler) / Alttaki kategori ve modellerle birlikte pasifleşsin (onay diyaloğu sayıları gösterir) | — |
+| S2 — Altında aktif alt kategori ya da aktif model bulunan bir kategori pasifleştirilmek istenirse ne olsun? | Reddedilsin, önce alttakiler taşınır ya da pasifleştirilir / alttakilerle birlikte pasifleşsin | **Reddedilsin** (CT-06) |
 
-US-EQP-001'in 3. kabul kriteri ("silinemez, pasifleştirilir") BR-SYS-001'le uyumlu hale getirilecek: kategori hiç silinmez. Yanıta göre kural BR-EQP-002'ye eklenir.
+Soru 2026-10-02'de yanıtlandı; önerilen seçenek seçildi. US-EQP-001'in 3. kabul kriteri BR-SYS-001 ve yanıtla uyumlu hale getirildi: kategori hiç silinmez.
 
 ## 11. Değişiklik kaydı
 
 | Tarih | Versiyon | Değişiklik |
 |---|---|---|
 | 2026-10-02 | v0.1 | İlk taslak |
+| 2026-10-02 | v1.0 | S2 yanıtlandı (CT-06); onaylandı. |

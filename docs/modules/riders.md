@@ -1,6 +1,6 @@
 # Modül tasarımı: Riders — Prodüksiyon ve rider
 
-> **Durum:** v0.1 (taslak) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.0 (onaylandı) · **Son güncelleme:** 2026-10-02
 > **Adım:** Faz 1.3 (prodüksiyonlar ve rider versiyonları); etkinliğe bağlama, etkinliğe özel versiyon ve ihtiyaç listesi 1.4'te bu belgeye eklenir ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 9](#9-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -121,3 +121,4 @@ Bu belgede proje sahibine soru yoktur.
 | Tarih | Versiyon | Değişiklik |
 |---|---|---|
 | 2026-10-02 | v0.1 | İlk taslak (prodüksiyonlar ve rider versiyonları) |
+| 2026-10-02 | v1.0 | Onaylandı. |

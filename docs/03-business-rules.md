@@ -342,7 +342,7 @@ Bir modelin birimi ya da adetli stok kaydı oluştuktan sonra takip tipi değiş
 *Tür:* Kısıt · *Hikayeler:* US-EQP-002
 
 #### BR-EQP-002 · Kategori hiyerarşisi
-Kategori hiyerarşisinde döngü olamaz. Bir kategoriyi hedefleyen her kural o kategorinin tüm alt kategorilerini de kapsar.
+Kategori hiyerarşisinde döngü olamaz. Bir kategoriyi hedefleyen her kural o kategorinin tüm alt kategorilerini de kapsar. Aktif alt kategorisi ya da aktif modeli olan kategori pasifleştirilemez; pasif kategorinin altında aktif kategori ya da model bulunamaz.
 *Tür:* Kısıt · *Hikayeler:* US-EQP-001
 
 #### BR-EQP-003 · Kit yapısı
@@ -611,4 +611,4 @@ Rider karşılama raporu, son ihtiyaç hesabından ve güncel onaylı rezervasyo
 | 2026-09-25 | v1.6 | Mekan ekipmanı tarihe göre değişebilir: BR-VEN-001 genişletildi, BR-VEN-002 eklendi, BR-MRP-010 güncellendi. |
 | 2026-09-25 | v1.7 | Güvenlik standardıyla uyum: P-04 15 karaktere çıktı; BR-SYS-007'ye boşluk yasağı ve yaygın şifre kontrolü, BR-SYS-008'e mutlak oturum süresi (yeni P-16) eklendi. |
 | 2026-10-01 | v1.8 | BR-SYS-015 (tekil e-posta) ve BR-SYS-016 (tekil depo adı) eklendi; ikisi de hikayelerin kabul kriteriydi, veritabanı kısıtına bağlanabilmek için numaralı kural oldu (Faz 1.2). |
-| 2026-10-02 | v1.9 | Faz 1.3 modül tasarımlarıyla: BR-EQP-011 (tekil kategori adı), BR-EQP-012 (tekil model), BR-EQP-013 (tekil kit adı), BR-VEN-003 (tekil mekan adı), BR-RDR-009 (tekil prodüksiyon adı) eklendi; BR-PTY-004'e temsil sürerken rolün kaldırılamaması, BR-VEN-002'ye dönemlerin örtüşmemesi eklendi. |
+| 2026-10-02 | v1.9 | Faz 1.3 modül tasarımlarıyla: BR-EQP-011 (tekil kategori adı), BR-EQP-012 (tekil model), BR-EQP-013 (tekil kit adı), BR-VEN-003 (tekil mekan adı), BR-RDR-009 (tekil prodüksiyon adı) eklendi; BR-PTY-004'e temsil sürerken rolün kaldırılamaması, BR-VEN-002'ye dönemlerin örtüşmemesi, BR-EQP-002'ye alt kaydı olan kategorinin pasifleştirilememesi eklendi. |

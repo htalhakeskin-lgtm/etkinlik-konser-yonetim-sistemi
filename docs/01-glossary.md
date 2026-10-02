@@ -1,6 +1,6 @@
 # 01 — Terimler Sözlüğü
 
-> **Durum:** v1.9 · **Son güncelleme:** 2026-09-24
+> **Durum:** v1.10 · **Son güncelleme:** 2026-10-02
 > **Kararlar:** [Bölüm 5](#5-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -51,6 +51,7 @@ Sözlük tüm sistemi kapsar; her terimin hangi sürümde devreye girdiği [00-s
 | Mekan işletmecisi | `PartyRole.VenueOperator` | Bir veya daha fazla mekanı işleten taraf. | S1 |
 | Tedarikçi | `PartyRole.Supplier` | Şirkete ekipman kiralayan ya da hizmet satan taraf. | S1 |
 | Müşteri | `PartyRole.Customer` | Teknik hizmet kolunda şirketten hizmet satın alan taraf. Sanatçı müşteri değildir. | S1 |
+| İletişim kişisi (rol) | `PartyRole.Contact` | Başka bir rolü olmayan, bir firma adına muhatap olunan kişi. Bkz. iletişim kişisi bağı (`OrganizationContact`). | S1 |
 | Crew | `PartyRole.Crew` | Şirket için sahada çalışan sabit veya freelance kişi. | S2 |
 | Sponsor | `PartyRole.Sponsor` | Bir etkinliğe sponsorluk paketi alan taraf. | S3 |
 | İletişim bilgisi | `ContactPoint` | Bir tarafın telefon, e-posta veya adres kaydı. | S1 |
@@ -340,3 +341,4 @@ Bu kelimeler arayüzde, belgelerde ve kodda kullanılmaz; yerine sağ sütundaki
 | 2026-09-25 | v1.7 | Kavramsal modelle uyum: temsil, opsiyon kuyruğu, etkinlik varsayılanları, kasa içeriği, ihtiyaç satırı, oturum ve giriş denemesi (S1); belge bağlantısı, input kanalı, hospitality kalemi, müsait olmama dönemi (S2); sanatçı ücret şartları, bonus eşiği (S3); muhasebe aktarımı (S4); araç ataması, güzergah tahmini (S5) eklendi. İşlem geçmişinin kod adı `AuditEntry` olarak düzeltildi; depo ataması eklendi. Turne tarihi turneye bağlı etkinlik olarak düzeltildi; karşılama tanımı netleştirildi; satır varlıkları için kural 7 eklendi. |
 | 2026-09-25 | v1.8 | Mekan ekipmanının geçerlilik aralığı ve kullanılamama dönemi eklendi. |
 | 2026-09-25 | v1.9 | Kural 2, isimlendirme standardına bağlandı. |
+| 2026-10-02 | v1.10 | İletişim kişisi taraf rolü eklendi ([parties PT-07](modules/parties.md#11-kararlar)). |

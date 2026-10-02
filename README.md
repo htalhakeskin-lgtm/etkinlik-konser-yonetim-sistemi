@@ -105,7 +105,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | Belge | Sürüm |
 |---|---|
 | [00 — Kapsam ve MVP sınırları](docs/00-scope.md) | v1.7 |
-| [01 — Terimler sözlüğü](docs/01-glossary.md) | v1.9 |
+| [01 — Terimler sözlüğü](docs/01-glossary.md) | v1.10 |
 | [02 — Kullanıcı hikayeleri](docs/02-user-stories/README.md) (52 hikaye) | v1.7 |
 | [03 — İş kuralları](docs/03-business-rules.md) (98 kural) | v1.9 |
 | [04 — Durum makineleri](docs/04-state-machines.md) (62 geçiş) | v1.1 |
@@ -150,10 +150,10 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | [Modül tasarımı: Identity](docs/modules/identity.md) | v1.14 |
 | [Modül tasarımı: Audit](docs/modules/audit.md) | v1.3 |
 | [Modül tasarımı: Inventory](docs/modules/inventory.md) | v1.3 |
-| [Modül tasarımı: Parties](docs/modules/parties.md) | v0.1 |
-| [Modül tasarımı: Catalog](docs/modules/catalog.md) | v0.1 |
-| [Modül tasarımı: Venues](docs/modules/venues.md) | v0.1 |
-| [Modül tasarımı: Riders](docs/modules/riders.md) | v0.1 |
+| [Modül tasarımı: Parties](docs/modules/parties.md) | v1.0 |
+| [Modül tasarımı: Catalog](docs/modules/catalog.md) | v1.0 |
+| [Modül tasarımı: Venues](docs/modules/venues.md) | v1.0 |
+| [Modül tasarımı: Riders](docs/modules/riders.md) | v1.0 |
 
 ### Teknoloji
 
