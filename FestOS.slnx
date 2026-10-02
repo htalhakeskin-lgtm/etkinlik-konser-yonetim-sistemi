@@ -42,6 +42,9 @@
   <Folder Name="/tests/Database/">
     <Project Path="tests/Database/FestOS.DatabaseTests/FestOS.DatabaseTests.csproj" />
   </Folder>
+  <Folder Name="/tests/Modules/Audit/">
+    <Project Path="tests/Modules/Audit/FestOS.Modules.Audit.IntegrationTests/FestOS.Modules.Audit.IntegrationTests.csproj" />
+  </Folder>
   <Folder Name="/tests/Modules/Identity/">
     <Project Path="tests/Modules/Identity/FestOS.Modules.Identity.IntegrationTests/FestOS.Modules.Identity.IntegrationTests.csproj" />
     <Project Path="tests/Modules/Identity/FestOS.Modules.Identity.UnitTests/FestOS.Modules.Identity.UnitTests.csproj" />

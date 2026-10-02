@@ -9,11 +9,19 @@ namespace FestOS.Modules.Identity.Application;
 /// </summary>
 public static class RoleCatalog
 {
+    // Audit's code, written out: Identity references no Audit project (08 §3.3). The architecture test that
+    // every granted code is in the catalog keeps the two in step.
+    private const string ViewAuditEntries = "Audit.Entries.View";
+
     /// <summary>The permissions of each role.</summary>
     public static IReadOnlyDictionary<Role, IReadOnlySet<string>> Permissions { get; } =
         new Dictionary<Role, IReadOnlySet<string>>
         {
-            [Role.SystemAdministrator] = Set([.. IdentityPermissions.All, .. InventoryPermissions.All]),
+            [Role.SystemAdministrator] = Set([
+                .. IdentityPermissions.All,
+                .. InventoryPermissions.All,
+                ViewAuditEntries,
+            ]),
             [Role.BookingManager] = Set([InventoryPermissions.ViewWarehouses]),
             [Role.TechnicalManager] = Set([InventoryPermissions.ViewWarehouses]),
             [Role.WarehouseManager] = Set([InventoryPermissions.ViewWarehouses]),
@@ -21,6 +29,7 @@ public static class RoleCatalog
                 IdentityPermissions.ViewUsers,
                 IdentityPermissions.ViewRoles,
                 InventoryPermissions.ViewWarehouses,
+                ViewAuditEntries,
             ]),
         };
 

@@ -162,6 +162,7 @@ jobs:
         project:
           - tests/BuildingBlocks/FestOS.BuildingBlocks.IntegrationTests
           - tests/Database/FestOS.DatabaseTests
+          - tests/Modules/Audit/FestOS.Modules.Audit.IntegrationTests
           - tests/Modules/Identity/FestOS.Modules.Identity.IntegrationTests
           - tests/Modules/Inventory/FestOS.Modules.Inventory.IntegrationTests
     steps:

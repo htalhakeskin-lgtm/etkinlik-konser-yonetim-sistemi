@@ -35,4 +35,13 @@ public sealed class RoleCatalogTests
     [Fact]
     public void SystemAdministrator_ManagesUsers() =>
         RoleCatalog.Permissions[Role.SystemAdministrator].IsSupersetOf(IdentityPermissions.All).ShouldBeTrue();
+
+    [Fact]
+    [Trait("Rule", "BR-SYS-010")]
+    public void ChangeHistory_IsReadByTheSystemAdministratorAndTheGeneralManagerOnly() =>
+        RoleCatalog
+            .Permissions.Where(pair => pair.Value.Contains("Audit.Entries.View"))
+            .Select(pair => pair.Key)
+            .Order()
+            .ShouldBe([Role.SystemAdministrator, Role.GeneralManager]);
 }
