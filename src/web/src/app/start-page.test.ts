@@ -11,7 +11,11 @@ describe("startPage", () => {
     expect(startPage(["bookingManager"])).toBe("/parties");
   });
 
+  it("sends a technical manager to the catalog until the conflicts screen arrives", () => {
+    expect(startPage(["technicalManager"])).toBe("/catalog/categories");
+  });
+
   it("keeps roles whose start screen has not arrived on the start page", () => {
-    expect(startPage(["technicalManager"])).toBeUndefined();
+    expect(startPage(["warehouseManager"])).toBeUndefined();
   });
 });
