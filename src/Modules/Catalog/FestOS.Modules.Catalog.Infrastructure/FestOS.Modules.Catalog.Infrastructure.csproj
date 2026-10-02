@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="FestOS.Modules.Catalog.UnitTests" />
+    <InternalsVisibleTo Include="FestOS.Modules.Catalog.IntegrationTests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\FestOS.BuildingBlocks.Infrastructure\FestOS.BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\FestOS.Modules.Catalog.Application\FestOS.Modules.Catalog.Application.csproj" />
+  </ItemGroup>
+</Project>

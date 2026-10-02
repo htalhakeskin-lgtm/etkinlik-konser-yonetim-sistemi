@@ -1853,6 +1853,293 @@
           }
         }
       }
+    },
+    "/api/v1/equipment-categories": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Lists the category tree as a flat list with each category's path.",
+        "operationId": "ListEquipmentCategories",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/CategoryStatusFilter"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EquipmentCategoryItem"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Adds a category under a parent or at the top.",
+        "operationId": "CreateEquipmentCategory",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "A new UUID for each user action, and the same one when the action is retried (api §10).",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EquipmentCategoryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EquipmentCategoryItem"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/equipment-categories/{categoryId}": {
+      "put": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Renames a category or moves it under another parent.",
+        "operationId": "EditEquipmentCategory",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "description": "The version the change is based on, as a strong entity tag, e.g. \"7\" (api §9).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "A new UUID for each user action, and the same one when the action is retried (api §10).",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EquipmentCategoryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EquipmentCategoryItem"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/equipment-categories/{categoryId}/deactivate": {
+      "post": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Deactivates a category with nothing active under it.",
+        "operationId": "DeactivateEquipmentCategory",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "description": "The version the change is based on, as a strong entity tag, e.g. \"7\" (api §9).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "A new UUID for each user action, and the same one when the action is retried (api §10).",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EquipmentCategoryItem"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/equipment-categories/{categoryId}/activate": {
+      "post": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Activates a deactivated category under an active parent.",
+        "operationId": "ActivateEquipmentCategory",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "description": "The version the change is based on, as a strong entity tag, e.g. \"7\" (api §9).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "A new UUID for each user action, and the same one when the action is retried (api §10).",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EquipmentCategoryItem"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2034,6 +2321,13 @@
           }
         },
         "additionalProperties": false
+      },
+      "CategoryStatusFilter": {
+        "enum": [
+          "active",
+          "inactive",
+          "all"
+        ]
       },
       "ChangeMyPasswordRequest": {
         "required": [
@@ -2232,6 +2526,77 @@
           },
           "isActive": {
             "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EquipmentCategoryId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "EquipmentCategoryItem": {
+        "required": [
+          "id",
+          "name",
+          "parentId",
+          "path",
+          "activeModelCount",
+          "isActive",
+          "version"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/EquipmentCategoryId"
+          },
+          "name": {
+            "type": "string"
+          },
+          "parentId": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/EquipmentCategoryId"
+              }
+            ]
+          },
+          "path": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "activeModelCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EquipmentCategoryRequest": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
           }
         },
         "additionalProperties": false
@@ -3089,6 +3454,9 @@
     },
     {
       "name": "Parties"
+    },
+    {
+      "name": "Catalog"
     }
   ]
 }

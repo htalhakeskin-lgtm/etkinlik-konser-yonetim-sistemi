@@ -182,6 +182,33 @@
           "FestOS.BuildingBlocks.Infrastructure": "[1.0.0, )"
         }
       },
+      "festos.modules.catalog.application": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Application": "[1.0.0, )",
+          "FestOS.Modules.Catalog.Contracts": "[1.0.0, )",
+          "FestOS.Modules.Catalog.Domain": "[1.0.0, )"
+        }
+      },
+      "festos.modules.catalog.contracts": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Contracts": "[1.0.0, )"
+        }
+      },
+      "festos.modules.catalog.domain": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Domain": "[1.0.0, )"
+        }
+      },
+      "festos.modules.catalog.infrastructure": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Infrastructure": "[1.0.0, )",
+          "FestOS.Modules.Catalog.Application": "[1.0.0, )"
+        }
+      },
       "festos.modules.identity.application": {
         "type": "Project",
         "dependencies": {

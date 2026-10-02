@@ -1,6 +1,6 @@
 # Modül tasarımı: Catalog — Ekipman kataloğu
 
-> **Durum:** v1.0 (onaylandı) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.1 (onaylandı) · **Son güncelleme:** 2026-10-02
 > **Adım:** Faz 1.3 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 9](#9-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -34,6 +34,8 @@ Catalog modülünün fiziksel tasarımıdır: kategoriler, modeller, kitler. Ad�
 - Benzersizlikler pasif kayıtları da kapsar: pasif bir modelin adıyla yeni model açılamaz, gerekirse eskisi etkinleştirilir (depolardaki BR-SYS-016 ile aynı).
 - Modelin görünen adı "marka + model adı"dır (ör. "Shure SM58"). Arama anahtarı ikisinden birlikte üretilir.
 - Kategori yolu ("Ses › Mikrofon › Dinamik vokal") saklanmaz, okurken üretilir; ağaç küçüktür (CT-02).
+
+**Uygulama (PR 1a):** Modül projeleri, `catalog` şeması ve `festos_catalog` rolü açıldı; yetkiler rol matrisine yazıyla eklendi (MD-04): kategorileri booking müdürü, teknik müdür, depo sorumlusu ve genel müdür görür, yalnızca teknik müdür yönetir. Ad tekilliği `(parent_id, name_search)` üzerinde `NULLS NOT DISTINCT` benzersiz indekstir; üst düzeydeki kategoriler de tek bir üst altında sayılır (BR-EQP-011). Kategori ağacının kuralları komutlardadır (BR-EQP-002): oluşturma, taşıma, pasifleştirme ve etkinleştirme `catalog:categories:tree` kilidini alıp ağacı okur; üst kategori var ve aktif olmalı, kategori kendisinin ya da altındakinin altına taşınamaz, aktif alt kategorisi olan kategori pasifleşmez (ret `params.activeCategories` ve `params.activeModels` taşır; modeller 2a'da sayılır), pasif üst kategorinin altındaki kategori etkinleşmez. Ret nedeni `params.reason`'dadır (`inactiveParent`, `cycle`, `activeChildren`); var olmayan üst kategori `400` ve `parentId` alanında `invalidValue` döner. Liste sayfasızdır, Türkçe ada göre sıralıdır ve her kategorinin yolunu verir; değiştiren uçlar kategorinin kaydedilmiş halini yeni `ETag` ile döner.
 
 ## 5. Kurallar
 
@@ -132,3 +134,4 @@ Soru 2026-10-02'de yanıtlandı; önerilen seçenek seçildi. US-EQP-001'in 3. k
 |---|---|---|
 | 2026-10-02 | v0.1 | İlk taslak |
 | 2026-10-02 | v1.0 | S2 yanıtlandı (CT-06); onaylandı. |
+| 2026-10-02 | v1.1 | §4: Catalog iskeleti ve kategorilerin uygulama ayrıntıları (PR 1a). |

@@ -6,6 +6,7 @@ using FestOS.BuildingBlocks.Infrastructure.OpenApi;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
 using FestOS.BuildingBlocks.Infrastructure.Realtime;
 using FestOS.Modules.Audit.Infrastructure;
+using FestOS.Modules.Catalog.Infrastructure;
 using FestOS.Modules.Identity.Infrastructure;
 using FestOS.Modules.Identity.Infrastructure.Users;
 using FestOS.Modules.Inventory.Infrastructure;
@@ -85,6 +86,7 @@ static IModuleDefinition[] Modules() =>
         new IdentityModuleDefinition(),
         new InventoryModuleDefinition(),
         new PartiesModuleDefinition(),
+        new CatalogModuleDefinition(),
     ];
 
 /// <summary>The Host's entry point; public so the architecture tests can start it in memory (AT-09).</summary>
