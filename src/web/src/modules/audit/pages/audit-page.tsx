@@ -27,7 +27,8 @@ export type AuditSearch = {
   actorId?: string | undefined;
   from?: string | undefined;
   to?: string | undefined;
-  entityType?: string | undefined;
+  /** The record type; a type's parts (a party's contact points) come with it. */
+  rootType?: string | undefined;
 };
 
 export type AuditPageProps = {
@@ -36,7 +37,7 @@ export type AuditPageProps = {
 };
 
 const allValues = "all";
-const entityTypes = ["User", "Warehouse"];
+const recordTypes = ["User", "Warehouse"];
 const everyUser: ListUsersParams = { status: "all", pageSize: 100 };
 
 // The screen shows the last day as included; the API's range stops before its `to` day (api §6.3).
@@ -72,9 +73,9 @@ export function AuditPage({ search, onSearchChange }: AuditPageProps) {
   ];
   const types = [
     { value: allValues, label: t("filters.allEntityTypes") },
-    ...entityTypes.map((type) => ({ value: type, label: entityTypeName(type) })),
+    ...recordTypes.map((type) => ({ value: type, label: entityTypeName(type) })),
   ];
-  const isFiltered = [search.actorId, search.from, search.to, search.entityType].some(
+  const isFiltered = [search.actorId, search.from, search.to, search.rootType].some(
     (value) => value !== undefined,
   );
 
@@ -135,11 +136,11 @@ export function AuditPage({ search, onSearchChange }: AuditPageProps) {
         </Field>
         <Select
           items={types}
-          value={search.entityType ?? allValues}
+          value={search.rootType ?? allValues}
           onValueChange={(value) => {
             onSearchChange({
               ...search,
-              entityType: value === null || value === allValues ? undefined : value,
+              rootType: value === null || value === allValues ? undefined : value,
             });
           }}
         >
@@ -170,7 +171,7 @@ export function AuditPage({ search, onSearchChange }: AuditPageProps) {
           actorId: search.actorId,
           from: search.from,
           to: search.to === undefined ? undefined : dayAfter(search.to),
-          entityType: search.entityType,
+          rootType: search.rootType,
         }}
       />
     </div>

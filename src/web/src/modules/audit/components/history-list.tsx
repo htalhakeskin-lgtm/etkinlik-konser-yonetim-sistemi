@@ -89,9 +89,12 @@ export function HistoryList({ filter, showRecord = true }: HistoryListProps) {
                 />
                 {showRecord && (
                   <span className="text-muted-foreground">
-                    {entityTypeName(entry.entityType)} ·{" "}
-                    <code className="text-xs">{entry.entityId}</code>
+                    {entityTypeName(entry.rootType)} ·{" "}
+                    <code className="text-xs">{entry.rootId}</code>
                   </span>
+                )}
+                {entry.entityType !== entry.rootType && (
+                  <span className="text-muted-foreground">{entityTypeName(entry.entityType)}</span>
                 )}
               </div>
               {changes.length > 0 && (

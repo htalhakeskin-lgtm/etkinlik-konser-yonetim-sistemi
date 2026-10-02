@@ -200,8 +200,8 @@ export function WarehousesPage({ search, onSearchChange }: WarehousesPageProps) 
                 <DropdownMenuItem
                   onClick={() => {
                     setHistory({
-                      entityType: "Warehouse",
-                      entityId: row.original.id,
+                      rootType: "Warehouse",
+                      rootId: row.original.id,
                       name: row.original.name,
                     });
                   }}

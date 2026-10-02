@@ -56,6 +56,7 @@ internal static class AuditEntryWriter
                 continue;
             }
 
+            (string rootType, Guid rootId) = RootOf(context, entry);
             auditEntries.Add(
                 new AuditEntry
                 {
@@ -66,6 +67,8 @@ internal static class AuditEntryWriter
                     Module = module,
                     EntityType = entry.Metadata.ClrType.Name,
                     EntityId = KeyOf(entry),
+                    RootType = rootType,
+                    RootId = rootId,
                     Action = entry.State switch
                     {
                         EntityState.Added => AuditAction.Created,
@@ -121,6 +124,54 @@ internal static class AuditEntryWriter
         value is null
             ? null
             : (property.GetValueConverter() ?? property.GetTypeMapping().Converter)?.ConvertToProvider(value) ?? value;
+
+    // A child belongs to the root its cascading foreign key leads to (database §10.2): a contact point to its
+    // party, a period to its venue through the equipment line. A record outside any aggregate is its own root.
+    private static (string Type, Guid Id) RootOf(DbContext context, EntityEntry entry)
+    {
+        EntityEntry current = entry;
+        while (current.Entity is not IAggregateRoot)
+        {
+            IForeignKey? parent = current
+                .Metadata.GetForeignKeys()
+                .SingleOrDefault(foreignKey => foreignKey.DeleteBehavior == DeleteBehavior.Cascade);
+            if (parent is null)
+            {
+                break;
+            }
+
+            IProperty property = parent.Properties.Single();
+            object? value =
+                current.State == EntityState.Deleted
+                    ? current.Property(property.Name).OriginalValue
+                    : current.Property(property.Name).CurrentValue;
+            if (typeof(IAggregateRoot).IsAssignableFrom(parent.PrincipalEntityType.ClrType))
+            {
+                return (parent.PrincipalEntityType.ClrType.Name, AsGuid(property, value, current));
+            }
+
+            IProperty principalKey = parent.PrincipalKey.Properties.Single();
+            current =
+                context
+                    .ChangeTracker.Entries()
+                    .FirstOrDefault(candidate =>
+                        candidate.Metadata == parent.PrincipalEntityType
+                        && Equals(candidate.Property(principalKey.Name).CurrentValue, value)
+                    )
+                ?? throw new InvalidOperationException(
+                    $"{current.Metadata.DisplayName()}'s parent must be loaded to find its root for the change history."
+                );
+        }
+
+        return (current.Metadata.ClrType.Name, KeyOf(current));
+    }
+
+    private static Guid AsGuid(IProperty property, object? value, EntityEntry entry) =>
+        Stored(property, value) is Guid id
+            ? id
+            : throw new InvalidOperationException(
+                $"{entry.Metadata.DisplayName()} needs a UUID foreign key to its root for the change history."
+            );
 
     private static Guid KeyOf(EntityEntry entry)
     {

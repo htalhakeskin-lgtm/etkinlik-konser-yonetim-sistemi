@@ -11,8 +11,9 @@ import {
 import { HistoryList } from "./history-list";
 
 export type HistoryRecord = {
-  entityType: string;
-  entityId: string;
+  /** The record's type, e.g. `Party`; its parts' changes (contact points) show with it. */
+  rootType: string;
+  rootId: string;
   name: string;
 };
 
@@ -41,9 +42,7 @@ export function HistoryDialog({ record, onClose }: HistoryDialogProps) {
           <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
         <div className="max-h-[60vh] overflow-auto">
-          {record !== undefined && (
-            <HistoryTab entityType={record.entityType} entityId={record.entityId} />
-          )}
+          {record !== undefined && <HistoryTab rootType={record.rootType} rootId={record.rootId} />}
         </div>
       </DialogContent>
     </Dialog>
@@ -51,11 +50,11 @@ export function HistoryDialog({ record, onClose }: HistoryDialogProps) {
 }
 
 export type HistoryTabProps = {
-  entityType: string;
-  entityId: string;
+  rootType: string;
+  rootId: string;
 };
 
-/** The history tab of a detail page (audit §4): the record's changes, newest first. */
-export function HistoryTab({ entityType, entityId }: HistoryTabProps) {
-  return <HistoryList filter={{ entityType, entityId }} showRecord={false} />;
+/** The history tab of a detail page (audit §4): the record's and its parts' changes, newest first. */
+export function HistoryTab({ rootType, rootId }: HistoryTabProps) {
+  return <HistoryList filter={{ rootType, rootId }} showRecord={false} />;
 }

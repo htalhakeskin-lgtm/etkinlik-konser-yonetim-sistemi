@@ -15,7 +15,7 @@ public sealed class SchemaRuleTests(PostgresDatabase database) : IAsyncLifetime
     private static readonly Dictionary<string, string> UnindexedReferences = new(StringComparer.Ordinal)
     {
         ["audit.audit_entries.entity_id"] =
-            "A record's history is read by entity type and id together; the (entity_type, entity_id, occurred_at) index serves it.",
+            "A record's history is read by its root (root_id index); the changed part's id only labels the row.",
         ["audit.audit_entries.trace_id"] = "An OpenTelemetry trace id, not a record; it links a change to its log.",
         ["sample.sample_usage_records.sample_item_id"] = "The test-only sample module never queries by it.",
     };

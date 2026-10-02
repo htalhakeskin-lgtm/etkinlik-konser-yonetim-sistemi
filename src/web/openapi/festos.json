@@ -45,14 +45,14 @@
             }
           },
           {
-            "name": "entityType",
+            "name": "rootType",
             "in": "query",
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "entityId",
+            "name": "rootId",
             "in": "query",
             "schema": {
               "type": "string",
@@ -1132,6 +1132,8 @@
           "module",
           "entityType",
           "entityId",
+          "rootType",
+          "rootId",
           "action",
           "changes",
           "traceId"
@@ -1160,6 +1162,13 @@
             "type": "string"
           },
           "entityId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "rootType": {
+            "type": "string"
+          },
+          "rootId": {
             "type": "string",
             "format": "uuid"
           },

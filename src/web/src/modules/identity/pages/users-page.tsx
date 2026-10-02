@@ -118,7 +118,7 @@ export function UsersPage({ search, onSearchChange }: UsersPageProps) {
     if (action === "edit") {
       setEditing(target);
     } else if (action === "history") {
-      setHistory({ entityType: "User", entityId: target.id, name: target.fullName });
+      setHistory({ rootType: "User", rootId: target.id, name: target.fullName });
     } else if (action === "activate") {
       change.mutate({ action, user: target });
     } else {

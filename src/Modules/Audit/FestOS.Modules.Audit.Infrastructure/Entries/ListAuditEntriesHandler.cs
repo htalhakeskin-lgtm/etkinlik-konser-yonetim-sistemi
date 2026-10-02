@@ -45,14 +45,14 @@ internal sealed class ListAuditEntriesHandler(AuditDbContext context)
             entries = entries.Where(entry => entry.Module == query.Module);
         }
 
-        if (!string.IsNullOrWhiteSpace(query.EntityType))
+        if (!string.IsNullOrWhiteSpace(query.RootType))
         {
-            entries = entries.Where(entry => entry.EntityType == query.EntityType);
+            entries = entries.Where(entry => entry.RootType == query.RootType);
         }
 
-        if (query.EntityId is { } entityId)
+        if (query.RootId is { } rootId)
         {
-            entries = entries.Where(entry => entry.EntityId == entityId);
+            entries = entries.Where(entry => entry.RootId == rootId);
         }
 
         if (query.Cursor.After is { } after)
@@ -93,6 +93,8 @@ internal sealed class ListAuditEntriesHandler(AuditDbContext context)
                     entry.Module,
                     entry.EntityType,
                     entry.EntityId,
+                    entry.RootType,
+                    entry.RootId,
                     entry.Action,
                     JsonDocument.Parse(entry.Changes).RootElement.Clone(),
                     entry.TraceId
