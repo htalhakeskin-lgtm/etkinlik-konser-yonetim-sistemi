@@ -3,4 +3,5 @@ export * from './catalog/catalog';
 export * from './identity/identity';
 export * from './inventory/inventory';
 export * from './parties/parties';
+export * from './riders/riders';
 export * from './venues/venues';

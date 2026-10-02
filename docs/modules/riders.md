@@ -1,6 +1,6 @@
 # Modül tasarımı: Riders — Prodüksiyon ve rider
 
-> **Durum:** v1.0 (onaylandı) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.1 (onaylandı) · **Son güncelleme:** 2026-10-02
 > **Adım:** Faz 1.3 (prodüksiyonlar ve rider versiyonları); etkinliğe bağlama, etkinliğe özel versiyon ve ihtiyaç listesi 1.4'te bu belgeye eklenir ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 9](#9-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -37,6 +37,8 @@ Riders modülünün fiziksel tasarımıdır. Bu sürüm prodüksiyonları, prod�
 - `created_by_name` versiyonu kaydedenin o anki adıdır; versiyon listesi Identity'ye sormadan "kim" sorusunu yanıtlar ([audit AU-01](audit.md#7-kararlar) ile aynı gerekçe).
 - `line_key`, satırın versiyonlar boyunca kimliğidir: formda var olan satır anahtarını korur, yeni satır yeni anahtar alır. Karşılaştırma satırları bununla eşler (RD-03).
 - `kit_id` kolonu ve kit kuralı 1.4'ün ihtiyaç listesi içindir; bu adımda prodüksiyon rider'ında kit satırı reddedilir (BR-RDR-001).
+
+**Uygulama (PR 1a):** Modül projeleri (`IntegrationEvents` 2a'da, olayıyla birlikte açılır), `riders` şeması ve `festos_riders` rolü açıldı; Application, Parties'in ve Catalog'un Contracts'ına başvurur. `Production` ve `Rider` iki toplu köktür; prodüksiyon oluşturulurken boş rider aynı kayıtta eklenir (RD-01). `ux_productions_artist_name` (`artist_party_id, name_search`) BR-RDR-009'dur ve sanatçıyla başladığı için sanatçı aramalarına da hizmet eder (DT-03). `ck_riders_source` şimdilik yalnızca prodüksiyon kaynağını (`source = 'production'` ve `production_id` dolu) kabul eder ve BR-RDR-007'ye eşlenir; müşteri kaynağı 1.4'te bu kısıtı genişletir. `ux_riders_production_id` DT-04 istisnasıdır. Sanatçı oluştururken `IPartyDirectory` ile aktif ve Sanatçı rolünde olduğu denetlenir; değilse `422 BR-PTY-004` (`params.field = artistPartyId`, `params.role = artist`). Düzenleme yalnızca ad ve açıklamayı alır. Liste `artistId`, `q` (ad), `status` ile süzer, `name` ve `createdAt`'e göre sıralar; satırda sanatçı adı (Parties'ten tek çağrı, MD-02) ve son versiyon numarası vardır; son versiyonun tarihi versiyonlarla (2a) eklenir. Detay rider'ın kimliğini, sürümünü (`riderVersion`, versiyon kaydında `If-Match`) ve son versiyon numarasını da döner. Rol matrisi §6'daki gibidir: prodüksiyonları booking müdürü yönetir; teknik ve genel müdür görür; rider'ı herkes görür, yalnızca teknik müdür değiştirir (BR-RDR-008, uçları 2a'da).
 
 ## 5. Kurallar
 
@@ -122,3 +124,4 @@ Bu belgede proje sahibine soru yoktur.
 |---|---|---|
 | 2026-10-02 | v0.1 | İlk taslak (prodüksiyonlar ve rider versiyonları) |
 | 2026-10-02 | v1.0 | Onaylandı. |
+| 2026-10-02 | v1.1 | §4: Riders iskeleti ve prodüksiyonların uygulama ayrıntıları (PR 1a). |

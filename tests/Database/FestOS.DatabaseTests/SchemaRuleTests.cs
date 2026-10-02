@@ -39,6 +39,7 @@ public sealed class SchemaRuleTests(PostgresDatabase database) : IAsyncLifetime
         ["ck_venues_power_capacity_amperes"] = FieldCheck,
         ["ck_venue_equipment_quantity"] = FieldCheck,
         ["ck_venue_equipment_unavailabilities_quantity"] = FieldCheck,
+        ["ux_riders_production_id"] = "The system opens a production's one rider; a clash is no user's mistake.",
     };
 
     private readonly Dictionary<string, string> _passwords = ModuleContexts.NewPasswords();

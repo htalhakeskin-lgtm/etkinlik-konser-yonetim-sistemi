@@ -556,6 +556,35 @@
           "FestOS.Modules.Parties.Application": "[1.0.0, )"
         }
       },
+      "festos.modules.riders.application": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Application": "[1.0.0, )",
+          "FestOS.Modules.Catalog.Contracts": "[1.0.0, )",
+          "FestOS.Modules.Parties.Contracts": "[1.0.0, )",
+          "FestOS.Modules.Riders.Contracts": "[1.0.0, )",
+          "FestOS.Modules.Riders.Domain": "[1.0.0, )"
+        }
+      },
+      "festos.modules.riders.contracts": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Contracts": "[1.0.0, )"
+        }
+      },
+      "festos.modules.riders.domain": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Domain": "[1.0.0, )"
+        }
+      },
+      "festos.modules.riders.infrastructure": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Infrastructure": "[1.0.0, )",
+          "FestOS.Modules.Riders.Application": "[1.0.0, )"
+        }
+      },
       "festos.modules.sample": {
         "type": "Project",
         "dependencies": {

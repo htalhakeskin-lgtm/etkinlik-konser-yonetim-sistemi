@@ -168,6 +168,7 @@ jobs:
           - tests/Modules/Parties/FestOS.Modules.Parties.IntegrationTests
           - tests/Modules/Catalog/FestOS.Modules.Catalog.IntegrationTests
           - tests/Modules/Venues/FestOS.Modules.Venues.IntegrationTests
+          - tests/Modules/Riders/FestOS.Modules.Riders.IntegrationTests
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

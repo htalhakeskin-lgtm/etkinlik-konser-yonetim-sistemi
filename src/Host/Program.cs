@@ -11,6 +11,7 @@ using FestOS.Modules.Identity.Infrastructure;
 using FestOS.Modules.Identity.Infrastructure.Users;
 using FestOS.Modules.Inventory.Infrastructure;
 using FestOS.Modules.Parties.Infrastructure;
+using FestOS.Modules.Riders.Infrastructure;
 using FestOS.Modules.Venues.Infrastructure;
 using FestOS.ServiceDefaults;
 
@@ -89,6 +90,7 @@ static IModuleDefinition[] Modules() =>
         new PartiesModuleDefinition(),
         new CatalogModuleDefinition(),
         new VenuesModuleDefinition(),
+        new RidersModuleDefinition(),
     ];
 
 /// <summary>The Host's entry point; public so the architecture tests can start it in memory (AT-09).</summary>

@@ -30,6 +30,7 @@ string[] databaseRoles =
     "festos_parties",
     "festos_catalog",
     "festos_venues",
+    "festos_riders",
 ];
 foreach (string role in databaseRoles)
 {
