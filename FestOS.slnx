@@ -21,6 +21,12 @@
     <Project Path="src/Modules/Identity/FestOS.Modules.Identity.Domain/FestOS.Modules.Identity.Domain.csproj" />
     <Project Path="src/Modules/Identity/FestOS.Modules.Identity.Infrastructure/FestOS.Modules.Identity.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/src/Modules/Catalog/">
+    <Project Path="src/Modules/Catalog/FestOS.Modules.Catalog.Application/FestOS.Modules.Catalog.Application.csproj" />
+    <Project Path="src/Modules/Catalog/FestOS.Modules.Catalog.Contracts/FestOS.Modules.Catalog.Contracts.csproj" />
+    <Project Path="src/Modules/Catalog/FestOS.Modules.Catalog.Domain/FestOS.Modules.Catalog.Domain.csproj" />
+    <Project Path="src/Modules/Catalog/FestOS.Modules.Catalog.Infrastructure/FestOS.Modules.Catalog.Infrastructure.csproj" />
+  </Folder>
   <Folder Name="/src/Modules/Parties/">
     <Project Path="src/Modules/Parties/FestOS.Modules.Parties.Application/FestOS.Modules.Parties.Application.csproj" />
     <Project Path="src/Modules/Parties/FestOS.Modules.Parties.Contracts/FestOS.Modules.Parties.Contracts.csproj" />
@@ -54,6 +60,10 @@
   <Folder Name="/tests/Modules/Identity/">
     <Project Path="tests/Modules/Identity/FestOS.Modules.Identity.IntegrationTests/FestOS.Modules.Identity.IntegrationTests.csproj" />
     <Project Path="tests/Modules/Identity/FestOS.Modules.Identity.UnitTests/FestOS.Modules.Identity.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Modules/Catalog/">
+    <Project Path="tests/Modules/Catalog/FestOS.Modules.Catalog.IntegrationTests/FestOS.Modules.Catalog.IntegrationTests.csproj" />
+    <Project Path="tests/Modules/Catalog/FestOS.Modules.Catalog.UnitTests/FestOS.Modules.Catalog.UnitTests.csproj" />
   </Folder>
   <Folder Name="/tests/Modules/Parties/">
     <Project Path="tests/Modules/Parties/FestOS.Modules.Parties.IntegrationTests/FestOS.Modules.Parties.IntegrationTests.csproj" />

@@ -16,6 +16,16 @@ public static class RoleCatalog
     // The codes of the step 1.3 modules, written out for the same reason (parties MD-04).
     private const string ViewParties = "Parties.Parties.View";
 
+    private const string ViewCategories = "Catalog.Categories.View";
+
+    private static readonly string[] ManageCategories =
+    [
+        ViewCategories,
+        "Catalog.Categories.Create",
+        "Catalog.Categories.Edit",
+        "Catalog.Categories.Deactivate",
+    ];
+
     private static readonly string[] ManageParties =
     [
         ViewParties,
@@ -33,14 +43,15 @@ public static class RoleCatalog
                 .. InventoryPermissions.All,
                 ViewAuditEntries,
             ]),
-            [Role.BookingManager] = Set([InventoryPermissions.ViewWarehouses, .. ManageParties]),
-            [Role.TechnicalManager] = Set([InventoryPermissions.ViewWarehouses, ViewParties]),
-            [Role.WarehouseManager] = Set([InventoryPermissions.ViewWarehouses]),
+            [Role.BookingManager] = Set([InventoryPermissions.ViewWarehouses, .. ManageParties, ViewCategories]),
+            [Role.TechnicalManager] = Set([InventoryPermissions.ViewWarehouses, ViewParties, .. ManageCategories]),
+            [Role.WarehouseManager] = Set([InventoryPermissions.ViewWarehouses, ViewCategories]),
             [Role.GeneralManager] = Set([
                 IdentityPermissions.ViewUsers,
                 IdentityPermissions.ViewRoles,
                 InventoryPermissions.ViewWarehouses,
                 ViewParties,
+                ViewCategories,
                 ViewAuditEntries,
             ]),
         };

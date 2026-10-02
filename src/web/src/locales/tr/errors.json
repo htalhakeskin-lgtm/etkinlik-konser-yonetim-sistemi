@@ -25,5 +25,7 @@
   "BR-PTY-001": "Tarafın en az bir rolü olmalıdır; türü (kişi ya da firma) sonradan değiştirilemez.",
   "BR-PTY-002": "Her iletişim türünde yalnızca bir kayıt birincil olabilir.",
   "BR-PTY-003": "İletişim kişisi yalnızca bir firmaya bağlanır ve aktif bir kişi olmalıdır; aynı kişi bir firmaya bir kez bağlanır.",
-  "BR-PTY-004": "Seçilen taraf aktif olmalı ve bu alan için gereken role sahip olmalıdır. Temsil sürerken sanatçının Sanatçı, ajansın Ajans rolü kaldırılamaz."
+  "BR-PTY-004": "Seçilen taraf aktif olmalı ve bu alan için gereken role sahip olmalıdır. Temsil sürerken sanatçının Sanatçı, ajansın Ajans rolü kaldırılamaz.",
+  "BR-EQP-002": "Kategori ağacında döngü olamaz; altında aktif kategori ya da model bulunan kategori pasifleştirilemez ve pasif bir kategorinin altına aktif kategori konamaz.",
+  "BR-EQP-011": "Bu üst kategoride aynı adlı bir kategori zaten var; pasif kategorilerin adları da yeniden kullanılamaz."
 }

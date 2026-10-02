@@ -1,5 +1,6 @@
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
 using FestOS.Modules.Audit.Infrastructure;
+using FestOS.Modules.Catalog.Infrastructure;
 using FestOS.Modules.Identity.Infrastructure;
 using FestOS.Modules.Inventory.Infrastructure;
 using FestOS.Modules.Parties.Infrastructure;
@@ -23,6 +24,7 @@ internal static class ModuleContexts
         IdentityModuleDefinition.SchemaName,
         InventoryModuleDefinition.SchemaName,
         PartiesModuleDefinition.SchemaName,
+        CatalogModuleDefinition.SchemaName,
         SampleModuleDefinition.SchemaName,
     ];
 
@@ -38,6 +40,7 @@ internal static class ModuleContexts
             Create<IdentityDbContext>(connectionString, IdentityModuleDefinition.SchemaName, options => new(options)),
             Create<InventoryDbContext>(connectionString, InventoryModuleDefinition.SchemaName, options => new(options)),
             Create<PartiesDbContext>(connectionString, PartiesModuleDefinition.SchemaName, options => new(options)),
+            Create<CatalogDbContext>(connectionString, CatalogModuleDefinition.SchemaName, options => new(options)),
             Create<SampleDbContext>(connectionString, SampleModuleDefinition.SchemaName, options => new(options)),
         ];
 

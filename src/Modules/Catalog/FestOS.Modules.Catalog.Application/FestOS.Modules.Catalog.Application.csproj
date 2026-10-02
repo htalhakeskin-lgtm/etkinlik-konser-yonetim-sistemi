@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\FestOS.BuildingBlocks.Application\FestOS.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\FestOS.Modules.Catalog.Contracts\FestOS.Modules.Catalog.Contracts.csproj" />
+    <ProjectReference Include="..\FestOS.Modules.Catalog.Domain\FestOS.Modules.Catalog.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="FestOS.Modules.Catalog.UnitTests" />
+    <InternalsVisibleTo Include="FestOS.Modules.Catalog.IntegrationTests" />
+  </ItemGroup>
+</Project>
