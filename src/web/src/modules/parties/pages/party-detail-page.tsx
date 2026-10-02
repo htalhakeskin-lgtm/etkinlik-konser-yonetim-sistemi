@@ -52,7 +52,15 @@ export type PartyDetailPageProps = {
   tab: PartyDetailTab;
   /** Opened from the artists list: the path and tabs stay under `/artists`. */
   variant?: PartiesVariant;
+  /**
+   * What other modules show on an artist's page, such as its productions; the shell passes it, so Parties
+   * knows no module that uses it (05 §2).
+   */
+  artistSection?: ((artist: ArtistOfPage) => ReactNode) | undefined;
 };
+
+/** The artist a page shows, for the sections other modules add. */
+export type ArtistOfPage = { id: string; name: string; isActive: boolean };
 
 type Removal =
   | { kind: "contactPerson"; id: string; name: string }
@@ -60,7 +68,12 @@ type Removal =
 
 // A party's page (11 §3): its names, roles and contact points; an organization's contact persons, an
 // artist's agencies, an agency's artists and a person's employers; and its change history.
-export function PartyDetailPage({ partyId, tab, variant = "parties" }: PartyDetailPageProps) {
+export function PartyDetailPage({
+  partyId,
+  tab,
+  variant = "parties",
+  artistSection,
+}: PartyDetailPageProps) {
   const { t } = useTranslation("parties");
   const user = useSignedInUser();
   const canView = hasPermission(user, partiesPermissions.viewParties);
@@ -103,17 +116,21 @@ export function PartyDetailPage({ partyId, tab, variant = "parties" }: PartyDeta
     );
   }
 
-  return <PartyDetail party={party.data} tab={tab} variant={variant} />;
+  return (
+    <PartyDetail party={party.data} tab={tab} variant={variant} artistSection={artistSection} />
+  );
 }
 
 function PartyDetail({
   party,
   tab,
   variant,
+  artistSection,
 }: {
   party: PartyDetails;
   tab: PartyDetailTab;
   variant: PartiesVariant;
+  artistSection: PartyDetailPageProps["artistSection"];
 }) {
   const { t } = useTranslation("parties");
   const isArtists = variant === "artists";
@@ -359,6 +376,9 @@ function PartyDetail({
               />
             </Section>
           )}
+          {artistSection !== undefined &&
+            party.roles.includes(PartyRole.artist) &&
+            artistSection({ id: party.id, name: party.name, isActive })}
           {party.employers.length > 0 && (
             <Section title={t("detail.employers")}>
               <LinkTable

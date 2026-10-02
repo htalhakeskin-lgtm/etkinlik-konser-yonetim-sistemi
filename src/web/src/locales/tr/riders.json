@@ -1,0 +1,74 @@
+{
+  "forbidden": "Bu ekranı görme yetkiniz yok.",
+  "status": {
+    "active": "Aktif",
+    "inactive": "Pasif"
+  },
+  "actions": {
+    "edit": "Düzenle",
+    "deactivate": "Pasifleştir",
+    "activate": "Etkinleştir"
+  },
+  "confirm": {
+    "deactivateTitle": "{{name}} pasifleştirilsin mi?",
+    "deactivateDescription": "Prodüksiyon yeni etkinliklerde seçilemez; rider'ı ve bağlı olduğu mevcut kayıtlar görünmeye devam eder."
+  },
+  "done": {
+    "created": "Prodüksiyon oluşturuldu.",
+    "saved": "Prodüksiyon kaydedildi.",
+    "deactivated": "Prodüksiyon pasifleştirildi.",
+    "activated": "Prodüksiyon etkinleştirildi."
+  },
+  "artistProductions": {
+    "title": "Prodüksiyonlar",
+    "add": "Prodüksiyon ekle",
+    "empty": "Bu sanatçının henüz prodüksiyonu yok.",
+    "name": "Ad",
+    "latestVersion": "Rider",
+    "status": "Durum"
+  },
+  "productionForm": {
+    "createTitle": "Prodüksiyon ekle",
+    "editTitle": "Prodüksiyonu düzenle",
+    "artist": "Sanatçı: {{name}}",
+    "name": "Ad",
+    "description": "Açıklama",
+    "cancel": "Vazgeç",
+    "create": "Oluştur",
+    "save": "Kaydet"
+  },
+  "productionDetail": {
+    "notFound": "Bu prodüksiyon bulunamadı.",
+    "artists": "Sanatçılar",
+    "unknownArtist": "Bilinmeyen sanatçı",
+    "tabs": "Prodüksiyon sekmeleri",
+    "rider": "Rider",
+    "history": "Geçmiş"
+  },
+  "rider": {
+    "none": "Henüz rider girilmedi",
+    "noneDescription": "Teknik müdür ilk versiyonu kaydettiğinde rider burada görünür.",
+    "versionNumber": "v{{number}}"
+  },
+  "Production": {
+    "fields": {
+      "artistPartyId": "Sanatçı",
+      "name": "Ad",
+      "description": "Açıklama",
+      "deactivatedAt": "Pasifleştirildiği zaman",
+      "deactivatedBy": "Pasifleştiren"
+    }
+  },
+  "Rider": {
+    "fields": {
+      "source": "Kaynak",
+      "productionId": "Prodüksiyon",
+      "latestVersionNumber": "Son versiyon"
+    },
+    "values": {
+      "source": {
+        "production": "Prodüksiyon"
+      }
+    }
+  }
+}

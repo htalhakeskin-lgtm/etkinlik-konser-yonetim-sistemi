@@ -153,7 +153,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | [Modül tasarımı: Parties](docs/modules/parties.md) | v1.7 |
 | [Modül tasarımı: Catalog](docs/modules/catalog.md) | v1.6 |
 | [Modül tasarımı: Venues](docs/modules/venues.md) | v1.4 |
-| [Modül tasarımı: Riders](docs/modules/riders.md) | v1.1 |
+| [Modül tasarımı: Riders](docs/modules/riders.md) | v1.2 |
 
 ### Teknoloji
 

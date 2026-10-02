@@ -1,6 +1,6 @@
 # Modül tasarımı: Riders — Prodüksiyon ve rider
 
-> **Durum:** v1.1 (onaylandı) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.2 (onaylandı) · **Son güncelleme:** 2026-10-02
 > **Adım:** Faz 1.3 (prodüksiyonlar ve rider versiyonları); etkinliğe bağlama, etkinliğe özel versiyon ve ihtiyaç listesi 1.4'te bu belgeye eklenir ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 9](#9-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -105,6 +105,8 @@ Doğrulama: prodüksiyon adı zorunlu (en çok 200), açıklama en çok 2000; ve
 | 2b | Rider görünümü ve formu | Prodüksiyon sayfasındaki rider ve versiyon listesi, rider formu |
 | 2c | Karşılaştırma | Karşılaştırma ekranı ve eşleme fonksiyonu |
 
+**Uygulama (PR 1b):** Ön yüzde `modules/riders` açıldı. Sanatçı sayfasının Genel sekmesinde "Prodüksiyonlar" bölümü sanatçının aktif ve pasif bütün prodüksiyonlarını ad (prodüksiyon sayfasına bağlı), son rider versiyonu (`v3` ya da "Henüz rider girilmedi") ve durumla listeler. Bölümü Parties bilmez: `PartyDetailPage` sanatçı rolündeki tarafın sayfasına başka modüllerin bölümlerini koyan `artistSection` alanını alır, `/artists/{id}` rotası bölümü oraya verir (modül sınırı, 05 §2). "Prodüksiyon ekle" booking müdürüne ve yalnızca aktif sanatçıda görünür; diyalog ad ve açıklamayı ister, oluşturunca prodüksiyonun sayfası açılır. Alınmış ad (BR-RDR-009) ad alanının altında gösterilir. `/productions/{id}` sayfasının başlığı prodüksiyon adını, açıklamasını, sanatçı bağlantısını (pasifse rozetle) ve durumu taşır; Düzenle, Pasifleştir ve Etkinleştir işlemleri yetkiye göre görünür. Rider ve Geçmiş sekmeleri adreste tutulur; rider sekmesi 2b'ye kadar boş rider bilgisini gösterir.
+
 ## 9. Kararlar
 
 | No | Konu | Karar | Gerekçe |
@@ -125,3 +127,4 @@ Bu belgede proje sahibine soru yoktur.
 | 2026-10-02 | v0.1 | İlk taslak (prodüksiyonlar ve rider versiyonları) |
 | 2026-10-02 | v1.0 | Onaylandı. |
 | 2026-10-02 | v1.1 | §4: Riders iskeleti ve prodüksiyonların uygulama ayrıntıları (PR 1a). |
+| 2026-10-02 | v1.2 | §8: prodüksiyonlar ekranının uygulama ayrıntıları (PR 1b). |
