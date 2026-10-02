@@ -129,9 +129,6 @@
     "weightKilograms": "Ağırlık (kg)",
     "powerWatts": "Güç tüketimi (W)",
     "transportVolumeCubicMeters": "Taşıma hacmi (m³)",
-    "invalidDecimal": "Sayı girin; en fazla üç ondalık basamak (ör. 12,5).",
-    "positive": "Değer sıfırdan büyük olmalıdır.",
-    "positiveWhole": "Sıfırdan büyük bir tam sayı girin.",
     "cancel": "Vazgeç",
     "create": "Oluştur",
     "save": "Kaydet"

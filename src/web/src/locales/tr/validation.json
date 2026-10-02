@@ -13,5 +13,8 @@
   "invalidValue": "Geçersiz bir seçim.",
   "invalid": "Geçersiz değer.",
   "unsupportedSort": "Bu alana göre sıralanamaz.",
-  "incorrectPassword": "Şifre hatalı."
+  "incorrectPassword": "Şifre hatalı.",
+  "decimal": "Sayı girin; en fazla {{scale}} ondalık basamak (ör. 12,5).",
+  "positive": "Değer sıfırdan büyük olmalıdır.",
+  "positiveWhole": "Sıfırdan büyük bir tam sayı girin."
 }

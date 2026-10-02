@@ -20,6 +20,7 @@ import { Route as AppAdminWarehousesRouteImport } from './routes/_app/admin/ware
 import { Route as AppArtistsIndexRouteImport } from './routes/_app/artists/index'
 import { Route as AppCatalogCategoriesRouteImport } from './routes/_app/catalog/categories'
 import { Route as AppPartiesIndexRouteImport } from './routes/_app/parties/index'
+import { Route as AppVenuesIndexRouteImport } from './routes/_app/venues/index'
 import { Route as AppArtistsPartyIdIndexRouteImport } from './routes/_app/artists/$partyId/index'
 import { Route as AppArtistsPartyIdHistoryRouteImport } from './routes/_app/artists/$partyId/history'
 import { Route as AppCatalogKitsIndexRouteImport } from './routes/_app/catalog/kits/index'
@@ -27,6 +28,8 @@ import { Route as AppCatalogModelsIndexRouteImport } from './routes/_app/catalog
 import { Route as AppCatalogModelsNewRouteImport } from './routes/_app/catalog/models/new'
 import { Route as AppPartiesPartyIdIndexRouteImport } from './routes/_app/parties/$partyId/index'
 import { Route as AppPartiesPartyIdHistoryRouteImport } from './routes/_app/parties/$partyId/history'
+import { Route as AppVenuesVenueIdIndexRouteImport } from './routes/_app/venues/$venueId/index'
+import { Route as AppVenuesVenueIdHistoryRouteImport } from './routes/_app/venues/$venueId/history'
 import { Route as AppCatalogKitsKitIdIndexRouteImport } from './routes/_app/catalog/kits/$kitId/index'
 import { Route as AppCatalogKitsKitIdHistoryRouteImport } from './routes/_app/catalog/kits/$kitId/history'
 import { Route as AppCatalogModelsModelIdIndexRouteImport } from './routes/_app/catalog/models/$modelId/index'
@@ -87,6 +90,11 @@ const AppPartiesIndexRoute = AppPartiesIndexRouteImport.update({
   path: '/parties/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppVenuesIndexRoute = AppVenuesIndexRouteImport.update({
+  id: '/venues/',
+  path: '/venues/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppArtistsPartyIdIndexRoute = AppArtistsPartyIdIndexRouteImport.update({
   id: '/artists/$partyId/',
   path: '/artists/$partyId/',
@@ -124,6 +132,16 @@ const AppPartiesPartyIdHistoryRoute =
     path: '/parties/$partyId/history',
     getParentRoute: () => AppRoute,
   } as any)
+const AppVenuesVenueIdIndexRoute = AppVenuesVenueIdIndexRouteImport.update({
+  id: '/venues/$venueId/',
+  path: '/venues/$venueId/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppVenuesVenueIdHistoryRoute = AppVenuesVenueIdHistoryRouteImport.update({
+  id: '/venues/$venueId/history',
+  path: '/venues/$venueId/history',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppCatalogKitsKitIdIndexRoute =
   AppCatalogKitsKitIdIndexRouteImport.update({
     id: '/catalog/kits/$kitId/',
@@ -166,13 +184,16 @@ export interface FileRoutesByFullPath {
   '/catalog/categories': typeof AppCatalogCategoriesRoute
   '/artists/': typeof AppArtistsIndexRoute
   '/parties/': typeof AppPartiesIndexRoute
+  '/venues/': typeof AppVenuesIndexRoute
   '/artists/$partyId/history': typeof AppArtistsPartyIdHistoryRoute
   '/catalog/models/new': typeof AppCatalogModelsNewRoute
   '/parties/$partyId/history': typeof AppPartiesPartyIdHistoryRoute
+  '/venues/$venueId/history': typeof AppVenuesVenueIdHistoryRoute
   '/artists/$partyId/': typeof AppArtistsPartyIdIndexRoute
   '/catalog/kits/': typeof AppCatalogKitsIndexRoute
   '/catalog/models/': typeof AppCatalogModelsIndexRoute
   '/parties/$partyId/': typeof AppPartiesPartyIdIndexRoute
+  '/venues/$venueId/': typeof AppVenuesVenueIdIndexRoute
   '/catalog/kits/$kitId/history': typeof AppCatalogKitsKitIdHistoryRoute
   '/catalog/models/$modelId/edit': typeof AppCatalogModelsModelIdEditRoute
   '/catalog/models/$modelId/history': typeof AppCatalogModelsModelIdHistoryRoute
@@ -190,13 +211,16 @@ export interface FileRoutesByTo {
   '/catalog/categories': typeof AppCatalogCategoriesRoute
   '/artists': typeof AppArtistsIndexRoute
   '/parties': typeof AppPartiesIndexRoute
+  '/venues': typeof AppVenuesIndexRoute
   '/artists/$partyId/history': typeof AppArtistsPartyIdHistoryRoute
   '/catalog/models/new': typeof AppCatalogModelsNewRoute
   '/parties/$partyId/history': typeof AppPartiesPartyIdHistoryRoute
+  '/venues/$venueId/history': typeof AppVenuesVenueIdHistoryRoute
   '/artists/$partyId': typeof AppArtistsPartyIdIndexRoute
   '/catalog/kits': typeof AppCatalogKitsIndexRoute
   '/catalog/models': typeof AppCatalogModelsIndexRoute
   '/parties/$partyId': typeof AppPartiesPartyIdIndexRoute
+  '/venues/$venueId': typeof AppVenuesVenueIdIndexRoute
   '/catalog/kits/$kitId/history': typeof AppCatalogKitsKitIdHistoryRoute
   '/catalog/models/$modelId/edit': typeof AppCatalogModelsModelIdEditRoute
   '/catalog/models/$modelId/history': typeof AppCatalogModelsModelIdHistoryRoute
@@ -216,13 +240,16 @@ export interface FileRoutesById {
   '/_app/catalog/categories': typeof AppCatalogCategoriesRoute
   '/_app/artists/': typeof AppArtistsIndexRoute
   '/_app/parties/': typeof AppPartiesIndexRoute
+  '/_app/venues/': typeof AppVenuesIndexRoute
   '/_app/artists/$partyId/history': typeof AppArtistsPartyIdHistoryRoute
   '/_app/catalog/models/new': typeof AppCatalogModelsNewRoute
   '/_app/parties/$partyId/history': typeof AppPartiesPartyIdHistoryRoute
+  '/_app/venues/$venueId/history': typeof AppVenuesVenueIdHistoryRoute
   '/_app/artists/$partyId/': typeof AppArtistsPartyIdIndexRoute
   '/_app/catalog/kits/': typeof AppCatalogKitsIndexRoute
   '/_app/catalog/models/': typeof AppCatalogModelsIndexRoute
   '/_app/parties/$partyId/': typeof AppPartiesPartyIdIndexRoute
+  '/_app/venues/$venueId/': typeof AppVenuesVenueIdIndexRoute
   '/_app/catalog/kits/$kitId/history': typeof AppCatalogKitsKitIdHistoryRoute
   '/_app/catalog/models/$modelId/edit': typeof AppCatalogModelsModelIdEditRoute
   '/_app/catalog/models/$modelId/history': typeof AppCatalogModelsModelIdHistoryRoute
@@ -242,13 +269,16 @@ export interface FileRouteTypes {
     | '/catalog/categories'
     | '/artists/'
     | '/parties/'
+    | '/venues/'
     | '/artists/$partyId/history'
     | '/catalog/models/new'
     | '/parties/$partyId/history'
+    | '/venues/$venueId/history'
     | '/artists/$partyId/'
     | '/catalog/kits/'
     | '/catalog/models/'
     | '/parties/$partyId/'
+    | '/venues/$venueId/'
     | '/catalog/kits/$kitId/history'
     | '/catalog/models/$modelId/edit'
     | '/catalog/models/$modelId/history'
@@ -266,13 +296,16 @@ export interface FileRouteTypes {
     | '/catalog/categories'
     | '/artists'
     | '/parties'
+    | '/venues'
     | '/artists/$partyId/history'
     | '/catalog/models/new'
     | '/parties/$partyId/history'
+    | '/venues/$venueId/history'
     | '/artists/$partyId'
     | '/catalog/kits'
     | '/catalog/models'
     | '/parties/$partyId'
+    | '/venues/$venueId'
     | '/catalog/kits/$kitId/history'
     | '/catalog/models/$modelId/edit'
     | '/catalog/models/$modelId/history'
@@ -291,13 +324,16 @@ export interface FileRouteTypes {
     | '/_app/catalog/categories'
     | '/_app/artists/'
     | '/_app/parties/'
+    | '/_app/venues/'
     | '/_app/artists/$partyId/history'
     | '/_app/catalog/models/new'
     | '/_app/parties/$partyId/history'
+    | '/_app/venues/$venueId/history'
     | '/_app/artists/$partyId/'
     | '/_app/catalog/kits/'
     | '/_app/catalog/models/'
     | '/_app/parties/$partyId/'
+    | '/_app/venues/$venueId/'
     | '/_app/catalog/kits/$kitId/history'
     | '/_app/catalog/models/$modelId/edit'
     | '/_app/catalog/models/$modelId/history'
@@ -390,6 +426,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPartiesIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/venues/': {
+      id: '/_app/venues/'
+      path: '/venues'
+      fullPath: '/venues/'
+      preLoaderRoute: typeof AppVenuesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/artists/$partyId/': {
       id: '/_app/artists/$partyId/'
       path: '/artists/$partyId'
@@ -439,6 +482,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPartiesPartyIdHistoryRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/venues/$venueId/': {
+      id: '/_app/venues/$venueId/'
+      path: '/venues/$venueId'
+      fullPath: '/venues/$venueId/'
+      preLoaderRoute: typeof AppVenuesVenueIdIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/venues/$venueId/history': {
+      id: '/_app/venues/$venueId/history'
+      path: '/venues/$venueId/history'
+      fullPath: '/venues/$venueId/history'
+      preLoaderRoute: typeof AppVenuesVenueIdHistoryRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/catalog/kits/$kitId/': {
       id: '/_app/catalog/kits/$kitId/'
       path: '/catalog/kits/$kitId'
@@ -486,13 +543,16 @@ interface AppRouteChildren {
   AppCatalogCategoriesRoute: typeof AppCatalogCategoriesRoute
   AppArtistsIndexRoute: typeof AppArtistsIndexRoute
   AppPartiesIndexRoute: typeof AppPartiesIndexRoute
+  AppVenuesIndexRoute: typeof AppVenuesIndexRoute
   AppArtistsPartyIdHistoryRoute: typeof AppArtistsPartyIdHistoryRoute
   AppCatalogModelsNewRoute: typeof AppCatalogModelsNewRoute
   AppPartiesPartyIdHistoryRoute: typeof AppPartiesPartyIdHistoryRoute
+  AppVenuesVenueIdHistoryRoute: typeof AppVenuesVenueIdHistoryRoute
   AppArtistsPartyIdIndexRoute: typeof AppArtistsPartyIdIndexRoute
   AppCatalogKitsIndexRoute: typeof AppCatalogKitsIndexRoute
   AppCatalogModelsIndexRoute: typeof AppCatalogModelsIndexRoute
   AppPartiesPartyIdIndexRoute: typeof AppPartiesPartyIdIndexRoute
+  AppVenuesVenueIdIndexRoute: typeof AppVenuesVenueIdIndexRoute
   AppCatalogKitsKitIdHistoryRoute: typeof AppCatalogKitsKitIdHistoryRoute
   AppCatalogModelsModelIdEditRoute: typeof AppCatalogModelsModelIdEditRoute
   AppCatalogModelsModelIdHistoryRoute: typeof AppCatalogModelsModelIdHistoryRoute
@@ -509,13 +569,16 @@ const AppRouteChildren: AppRouteChildren = {
   AppCatalogCategoriesRoute: AppCatalogCategoriesRoute,
   AppArtistsIndexRoute: AppArtistsIndexRoute,
   AppPartiesIndexRoute: AppPartiesIndexRoute,
+  AppVenuesIndexRoute: AppVenuesIndexRoute,
   AppArtistsPartyIdHistoryRoute: AppArtistsPartyIdHistoryRoute,
   AppCatalogModelsNewRoute: AppCatalogModelsNewRoute,
   AppPartiesPartyIdHistoryRoute: AppPartiesPartyIdHistoryRoute,
+  AppVenuesVenueIdHistoryRoute: AppVenuesVenueIdHistoryRoute,
   AppArtistsPartyIdIndexRoute: AppArtistsPartyIdIndexRoute,
   AppCatalogKitsIndexRoute: AppCatalogKitsIndexRoute,
   AppCatalogModelsIndexRoute: AppCatalogModelsIndexRoute,
   AppPartiesPartyIdIndexRoute: AppPartiesPartyIdIndexRoute,
+  AppVenuesVenueIdIndexRoute: AppVenuesVenueIdIndexRoute,
   AppCatalogKitsKitIdHistoryRoute: AppCatalogKitsKitIdHistoryRoute,
   AppCatalogModelsModelIdEditRoute: AppCatalogModelsModelIdEditRoute,
   AppCatalogModelsModelIdHistoryRoute: AppCatalogModelsModelIdHistoryRoute,

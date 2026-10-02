@@ -1,6 +1,6 @@
 # Modül tasarımı: Venues — Mekanlar
 
-> **Durum:** v1.1 (onaylandı) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.2 (onaylandı) · **Son güncelleme:** 2026-10-02
 > **Adım:** Faz 1.3 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 9](#9-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -94,6 +94,8 @@ Doğrulama: ad, şehir, adres zorunlu (200 / 100 / 500); kapasite 1 ve üstü ta
 | US-VEN-001 Mekan oluşturma | Mekan uçları; mekanlar, Genel | BR-PTY-004, BR-VEN-003 |
 | US-VEN-002 Mekan ekipmanı | Ekipman uçları; Ekipman sekmesi; `VenueEquipmentChanged` | BR-VEN-001, BR-VEN-002 (BR-MRP-003 ve BR-MRP-010 1.6'da) |
 
+**Uygulama (PR 1b):** `/venues` listesi arama (ad, şehir) ve durumu adreste tutar; satırda ad mekanın sayfasına gider, şehir, kapasite ve işletmeci yazılır. Mekan diyaloğu (booking müdürü) ad, şehir, adres, kapasite ve işletmeciyi (aktif mekan işletmecileri arasında arayarak, MD-03) ister; teknik bilgiler isteğe bağlıdır: sahne ölçüleri ve güç kapasitesi virgül ya da noktayla, sessizlik saati saat alanıyla, saat dilimi IANA kimliğiyle (varsayılan `Europe/Istanbul`). Ondalık giriş yardımcıları modellerle ortak `lib/decimal-input.ts`'e taşındı. Alınmış ad (BR-VEN-003) ad alanının, işletmeci reddi (BR-PTY-004) işletmeci alanının altında gösterilir. `/venues/{id}` sayfası Genel ve Geçmiş sekmelerini taşır; işletmeci taraf sayfasına bağlıdır, pasifse rozet görünür. Ekipman sekmesi 2b'de eklenir. Menüde "Ana veriler › Mekanlar" yer alır.
+
 | # | PR | Kapsam |
 |---|---|---|
 | 1a | Venues iskeleti ve mekanlar (sunucu) | Projeler, şema, rol, yetkiler ve rol matrisi; mekan tablosu ve uçları, BR-PTY-004, BR-VEN-003 |
@@ -126,3 +128,4 @@ Soru 2026-10-02'de yanıtlandı; önerilen seçenek seçildi.
 | 2026-10-02 | v0.1 | İlk taslak |
 | 2026-10-02 | v1.0 | S3 yanıtlandı (VN-01, gün); onaylandı. |
 | 2026-10-02 | v1.1 | §4: Venues iskeleti ve mekanların uygulama ayrıntıları (PR 1a). |
+| 2026-10-02 | v1.2 | §8: mekanlar ekranlarının uygulama ayrıntıları (PR 1b). |
