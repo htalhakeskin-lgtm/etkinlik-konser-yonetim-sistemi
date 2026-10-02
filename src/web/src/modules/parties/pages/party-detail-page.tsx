@@ -43,12 +43,15 @@ import { hasPermission, useSignedInUser } from "@/modules/identity";
 import { PartyFormDialog } from "../components/party-form-dialog";
 import { type PartyLink, PartyLinkDialog } from "../components/party-link-dialog";
 import { partiesPermissions } from "../permissions";
+import type { PartiesVariant } from "./parties-page";
 
 export type PartyDetailTab = "general" | "history";
 
 export type PartyDetailPageProps = {
   partyId: string;
   tab: PartyDetailTab;
+  /** Opened from the artists list: the path and tabs stay under `/artists`. */
+  variant?: PartiesVariant;
 };
 
 type Removal =
@@ -57,7 +60,7 @@ type Removal =
 
 // A party's page (11 §3): its names, roles and contact points; an organization's contact persons, an
 // artist's agencies, an agency's artists and a person's employers; and its change history.
-export function PartyDetailPage({ partyId, tab }: PartyDetailPageProps) {
+export function PartyDetailPage({ partyId, tab, variant = "parties" }: PartyDetailPageProps) {
   const { t } = useTranslation("parties");
   const user = useSignedInUser();
   const canView = hasPermission(user, partiesPermissions.viewParties);
@@ -100,11 +103,20 @@ export function PartyDetailPage({ partyId, tab }: PartyDetailPageProps) {
     );
   }
 
-  return <PartyDetail party={party.data} tab={tab} />;
+  return <PartyDetail party={party.data} tab={tab} variant={variant} />;
 }
 
-function PartyDetail({ party, tab }: { party: PartyDetails; tab: PartyDetailTab }) {
+function PartyDetail({
+  party,
+  tab,
+  variant,
+}: {
+  party: PartyDetails;
+  tab: PartyDetailTab;
+  variant: PartiesVariant;
+}) {
   const { t } = useTranslation("parties");
+  const isArtists = variant === "artists";
   const user = useSignedInUser();
   const queryClient = useQueryClient();
   const canEdit = hasPermission(user, partiesPermissions.editParties);
@@ -163,8 +175,8 @@ function PartyDetail({ party, tab }: { party: PartyDetails; tab: PartyDetailTab 
           ...party.roles.map((role) => t(`roles.${role}`)),
         ].join(" · ")}
         breadcrumb={
-          <Link to="/parties" className="hover:underline">
-            {t("parties.title")}
+          <Link to={isArtists ? "/artists" : "/parties"} className="hover:underline">
+            {t(isArtists ? "artists.title" : "parties.title")}
           </Link>
         }
         actions={
@@ -198,11 +210,19 @@ function PartyDetail({ party, tab }: { party: PartyDetails; tab: PartyDetailTab 
         }
       />
       <nav aria-label={t("detail.tabs")} className="flex gap-1 border-b">
-        <TabLink to="/parties/$partyId" partyId={party.id} isCurrent={tab === "general"}>
+        <TabLink
+          to={isArtists ? "/artists/$partyId" : "/parties/$partyId"}
+          partyId={party.id}
+          isCurrent={tab === "general"}
+        >
           {t("detail.general")}
         </TabLink>
         {canViewHistory && (
-          <TabLink to="/parties/$partyId/history" partyId={party.id} isCurrent={tab === "history"}>
+          <TabLink
+            to={isArtists ? "/artists/$partyId/history" : "/parties/$partyId/history"}
+            partyId={party.id}
+            isCurrent={tab === "history"}
+          >
             {t("detail.history")}
           </TabLink>
         )}
@@ -447,7 +467,11 @@ function PartyDetail({ party, tab }: { party: PartyDetails; tab: PartyDetailTab 
 }
 
 type TabLinkProps = {
-  to: "/parties/$partyId" | "/parties/$partyId/history";
+  to:
+    | "/parties/$partyId"
+    | "/parties/$partyId/history"
+    | "/artists/$partyId"
+    | "/artists/$partyId/history";
   partyId: string;
   isCurrent: boolean;
   children: ReactNode;

@@ -55,9 +55,16 @@ import { partiesPermissions } from "../permissions";
 /** The parties list's state in the address (ui §5.1). */
 export type PartiesSearch = Omit<ListPartiesParams, "pageSize"> & { pageSize?: PageSize };
 
+/**
+ * Which list the page is: every party, or the artists only (11 §3, `/artists`), which keep the artist
+ * role fixed and open on the artists' pages.
+ */
+export type PartiesVariant = "parties" | "artists";
+
 export type PartiesPageProps = {
   search: PartiesSearch;
   onSearchChange: (search: PartiesSearch) => void;
+  variant?: PartiesVariant;
 };
 
 type Change = { action: "deactivate" | "activate"; party: PartyListItem };
@@ -68,8 +75,11 @@ const helper = createColumnHelper<typeof dataTableFeatures, PartyListItem>();
 
 // The booking manager's parties (US-PTY-001, US-PTY-002, 11 §3): searched by name and contact point,
 // filtered by role, kind and status; a dialog to create and edit, deactivation after a confirmation.
-export function PartiesPage({ search, onSearchChange }: PartiesPageProps) {
+export function PartiesPage({ search, onSearchChange, variant = "parties" }: PartiesPageProps) {
   const { t } = useTranslation("parties");
+  const isArtists = variant === "artists";
+  const texts = isArtists ? "artists" : "parties";
+  const detailPath = isArtists ? "/artists/$partyId" : "/parties/$partyId";
   const user = useSignedInUser();
   const queryClient = useQueryClient();
   const canView = hasPermission(user, partiesPermissions.viewParties);
@@ -84,7 +94,12 @@ export function PartiesPage({ search, onSearchChange }: PartiesPageProps) {
   const [history, setHistory] = useState<HistoryRecord | undefined>(undefined);
   const page = search.page ?? 1;
   const pageSize = search.pageSize ?? 25;
-  const params: ListPartiesParams = { ...search, page, pageSize };
+  const params: ListPartiesParams = {
+    ...search,
+    role: isArtists ? PartyRole.artist : search.role,
+    page,
+    pageSize,
+  };
   const parties = useQuery({
     queryKey: getListPartiesQueryKey(params),
     queryFn: ({ signal }) => listParties(params, { signal }),
@@ -136,7 +151,7 @@ export function PartiesPage({ search, onSearchChange }: PartiesPageProps) {
       header: t("parties.columns.name"),
       cell: ({ row }) => (
         <Link
-          to="/parties/$partyId"
+          to={detailPath}
           params={{ partyId: row.original.id }}
           className="font-medium hover:underline"
         >
@@ -261,8 +276,8 @@ export function PartiesPage({ search, onSearchChange }: PartiesPageProps) {
   return (
     <div className="flex flex-col gap-4 p-6">
       <PageHeader
-        title={t("parties.title")}
-        description={t("parties.description")}
+        title={t(`${texts}.title`)}
+        description={t(`${texts}.description`)}
         actions={
           canCreate ? (
             <Button
@@ -271,7 +286,7 @@ export function PartiesPage({ search, onSearchChange }: PartiesPageProps) {
               }}
             >
               <Plus aria-hidden="true" />
-              {t("parties.add")}
+              {t(`${texts}.add`)}
             </Button>
           ) : undefined
         }
@@ -285,26 +300,28 @@ export function PartiesPage({ search, onSearchChange }: PartiesPageProps) {
           <Input
             type="search"
             className="pl-8"
-            aria-label={t("parties.search")}
-            placeholder={t("parties.search")}
+            aria-label={t(`${texts}.search`)}
+            placeholder={t(`${texts}.search`)}
             value={text}
             onChange={(event) => {
               setText(event.target.value);
             }}
           />
         </div>
-        <FilterSelect
-          label={t("parties.filters.roleLabel")}
-          options={roles}
-          value={search.role ?? allValues}
-          onChange={(value) => {
-            onSearchChange({
-              ...search,
-              role: value === allValues ? undefined : (value as PartyRole),
-              page: undefined,
-            });
-          }}
-        />
+        {!isArtists && (
+          <FilterSelect
+            label={t("parties.filters.roleLabel")}
+            options={roles}
+            value={search.role ?? allValues}
+            onChange={(value) => {
+              onSearchChange({
+                ...search,
+                role: value === allValues ? undefined : (value as PartyRole),
+                page: undefined,
+              });
+            }}
+          />
+        )}
         <FilterSelect
           label={t("parties.filters.kindLabel")}
           options={kinds}
@@ -331,7 +348,7 @@ export function PartiesPage({ search, onSearchChange }: PartiesPageProps) {
         />
       </div>
       <DataTable
-        label={t("parties.title")}
+        label={t(`${texts}.title`)}
         columns={columns}
         rows={parties.data?.items}
         getRowId={(row) => row.id}
@@ -340,7 +357,7 @@ export function PartiesPage({ search, onSearchChange }: PartiesPageProps) {
         onRetry={() => {
           void parties.refetch();
         }}
-        empty={<EmptyState icon={BookUser} title={t("parties.empty")} />}
+        empty={<EmptyState icon={BookUser} title={t(`${texts}.empty`)} />}
         sort={search.sort}
         sortable={["name"]}
         onSortChange={(sort) => {
@@ -365,7 +382,7 @@ export function PartiesPage({ search, onSearchChange }: PartiesPageProps) {
           }
         }}
         partyId={editing?.id}
-        initialRoles={search.role === undefined ? [] : [search.role]}
+        initialRoles={params.role === undefined ? [] : [params.role]}
         onSaved={(_saved, isNew) => {
           setIsCreating(false);
           setEditing(undefined);

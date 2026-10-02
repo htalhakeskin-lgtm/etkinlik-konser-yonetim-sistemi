@@ -10,7 +10,7 @@ import { createQueryClient } from "@/lib/query-client";
 import { meQuery } from "@/modules/identity";
 import { anApiError, aUser } from "@/test/identity-fixtures";
 
-import { PartiesPage, type PartiesSearch } from "./parties-page";
+import { PartiesPage, type PartiesSearch, type PartiesVariant } from "./parties-page";
 
 vi.mock("@tanstack/react-router", async () => ({
   Link: (await import("@/test/router-fakes")).FakeLink,
@@ -54,13 +54,17 @@ function aParty(overrides: Partial<PartyListItem> = {}): PartyListItem {
   };
 }
 
-function renderPage(search: PartiesSearch = {}, permissions = manager) {
+function renderPage(
+  search: PartiesSearch = {},
+  permissions = manager,
+  variant: PartiesVariant = "parties",
+) {
   const client = createQueryClient();
   client.setQueryData(meQuery.queryKey, aUser({ permissions }));
   const onSearchChange = vi.fn();
   render(
     <QueryClientProvider client={client}>
-      <PartiesPage search={search} onSearchChange={onSearchChange} />
+      <PartiesPage search={search} onSearchChange={onSearchChange} variant={variant} />
     </QueryClientProvider>,
   );
   return { onSearchChange };
@@ -132,6 +136,30 @@ describe("PartiesPage", () => {
 
     expect(await screen.findByText(/en az bir rolü olmalıdır/u)).toBeInTheDocument();
     expect(createMock).toHaveBeenCalledWith(expect.objectContaining({ roles: ["supplier"] }));
+  });
+
+  it("lists only artists on the artists screen and starts a new one with the artist role", async () => {
+    listMock.mockResolvedValue({
+      items: [aParty({ id: "p-9", kind: "person", name: "Tarkan", roles: ["artist"] })],
+      page: 1,
+      pageSize: 25,
+      totalCount: 1,
+    });
+    const user = userEvent.setup();
+    renderPage({}, manager, "artists");
+
+    expect(await screen.findByRole("link", { name: "Tarkan" })).toHaveAttribute(
+      "href",
+      "/artists/p-9",
+    );
+    expect(screen.getByRole("heading", { name: "Sanatçılar" })).toBeInTheDocument();
+    expect(screen.queryByRole("combobox", { name: "Rol" })).not.toBeInTheDocument();
+    expect(listMock).toHaveBeenCalledWith(
+      expect.objectContaining({ role: "artist" }),
+      expect.anything(),
+    );
+    await user.click(screen.getByRole("button", { name: "Sanatçı ekle" }));
+    expect(screen.getByRole("checkbox", { name: "Sanatçı" })).toBeChecked();
   });
 
   it("tells a user without the permission and asks the server nothing", () => {
