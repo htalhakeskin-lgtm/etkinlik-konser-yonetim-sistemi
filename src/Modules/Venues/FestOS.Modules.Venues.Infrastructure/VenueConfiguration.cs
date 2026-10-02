@@ -29,6 +29,15 @@ internal sealed class VenueConfiguration : IEntityTypeConfiguration<Venue>
             .IsUnique()
             .HasDatabaseName("ux_venues_name_city");
 
+        // The equipment belongs to the venue, so this cascade is explicit (database §10.2).
+        builder
+            .HasMany(venue => venue.Equipment)
+            .WithOne()
+            .HasForeignKey("VenueId")
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+        builder.Navigation(venue => venue.Equipment).UsePropertyAccessMode(PropertyAccessMode.Field);
+
         // The operator is a party, another module's record: indexed by hand (database §12.2, DT-03).
         builder.HasIndex(venue => venue.OperatorPartyId);
 

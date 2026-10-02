@@ -27,6 +27,8 @@ public sealed class Venue : AggregateRoot<VenueId>, IDeactivatable
     /// <summary>The time zone of a venue unless told otherwise (database §7.2).</summary>
     public const string DefaultTimeZone = "Europe/Istanbul";
 
+    private readonly List<VenueEquipment> _equipment = [];
+
     private Venue(VenueId id)
         : base(id) { }
 
@@ -74,6 +76,9 @@ public sealed class Venue : AggregateRoot<VenueId>, IDeactivatable
     /// <summary>The IANA time zone of its local times.</summary>
     public string TimeZone { get; private set; } = DefaultTimeZone;
 
+    /// <summary>The venue's own equipment (US-VEN-002).</summary>
+    public IReadOnlyList<VenueEquipment> Equipment => _equipment;
+
     /// <inheritdoc />
     public DateTimeOffset? DeactivatedAt { get; private set; }
 
@@ -107,6 +112,69 @@ public sealed class Venue : AggregateRoot<VenueId>, IDeactivatable
         TimeZone = description.TimeZone.Trim();
     }
 
+    /// <summary>Adds an equipment line; the command checks that a model or category exists and is active.</summary>
+    public VenueEquipment AddEquipment(VenueEquipmentDetails details)
+    {
+        var line = new VenueEquipment(VenueEquipmentId.New(), details);
+        _equipment.Add(line);
+        Changed(details.ValidityStart, details.ValidityEnd);
+        return line;
+    }
+
+    /// <summary>Changes an equipment line, keeping its periods valid (BR-VEN-002).</summary>
+    public void EditEquipment(VenueEquipmentId id, VenueEquipmentDetails details)
+    {
+        VenueEquipment line = Line(id);
+        DateOnly? oldStart = line.ValidityStart;
+        DateOnly? oldEnd = line.ValidityEnd;
+        line.Change(details);
+        Changed(Earlier(oldStart, details.ValidityStart), Later(oldEnd, details.ValidityEnd));
+    }
+
+    /// <summary>
+    /// Removes a line entered by mistake (venues VN-03); equipment the venue gave away gets a validity end
+    /// instead, so past calculations keep it.
+    /// </summary>
+    public void RemoveEquipment(VenueEquipmentId id)
+    {
+        VenueEquipment line = Line(id);
+        _equipment.Remove(line);
+        Changed(line.ValidityStart, line.ValidityEnd);
+    }
+
+    /// <summary>Records days when part of a line cannot be used (BR-VEN-002).</summary>
+    public VenueEquipmentUnavailability AddUnavailability(VenueEquipmentId lineId, UnavailabilityDetails details)
+    {
+        VenueEquipmentUnavailability period = Line(lineId).AddUnavailability(details);
+        Changed(details.PeriodStart, details.PeriodEnd);
+        return period;
+    }
+
+    /// <summary>Changes an unavailability period (BR-VEN-002).</summary>
+    public void EditUnavailability(
+        VenueEquipmentId lineId,
+        VenueEquipmentUnavailabilityId periodId,
+        UnavailabilityDetails details
+    )
+    {
+        VenueEquipment line = Line(lineId);
+        VenueEquipmentUnavailability before = line.Period(periodId);
+        DateOnly oldStart = before.PeriodStart;
+        DateOnly oldEnd = before.PeriodEnd;
+        line.ChangeUnavailability(periodId, details);
+        Changed(
+            oldStart < details.PeriodStart ? oldStart : details.PeriodStart,
+            oldEnd > details.PeriodEnd ? oldEnd : details.PeriodEnd
+        );
+    }
+
+    /// <summary>Removes an unavailability period.</summary>
+    public void RemoveUnavailability(VenueEquipmentId lineId, VenueEquipmentUnavailabilityId periodId)
+    {
+        VenueEquipmentUnavailability period = Line(lineId).RemoveUnavailability(periodId);
+        Changed(period.PeriodStart, period.PeriodEnd);
+    }
+
     /// <summary>Takes the venue out of new selections (BR-SYS-001).</summary>
     public void Deactivate(Guid deactivatedBy, DateTimeOffset at)
     {
@@ -123,4 +191,15 @@ public sealed class Venue : AggregateRoot<VenueId>, IDeactivatable
         DeactivatedAt = null;
         DeactivatedBy = null;
     }
+
+    private static DateOnly? Earlier(DateOnly? left, DateOnly? right) =>
+        left is { } l && right is { } r ? (l < r ? l : r) : null;
+
+    private static DateOnly? Later(DateOnly? left, DateOnly? right) =>
+        left is { } l && right is { } r ? (l > r ? l : r) : null;
+
+    private VenueEquipment Line(VenueEquipmentId id) =>
+        _equipment.Find(line => line.Id == id) ?? throw new KeyNotFoundException("No such equipment line.");
+
+    private void Changed(DateOnly? start, DateOnly? end) => Raise(new VenueEquipmentChangedDomainEvent(Id, start, end));
 }

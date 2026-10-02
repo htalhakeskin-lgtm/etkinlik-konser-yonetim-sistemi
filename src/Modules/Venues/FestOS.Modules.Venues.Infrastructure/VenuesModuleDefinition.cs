@@ -1,9 +1,12 @@
 using FestOS.BuildingBlocks.Application.Messaging;
 using FestOS.BuildingBlocks.Infrastructure.Modules;
 using FestOS.BuildingBlocks.Infrastructure.Persistence;
+using FestOS.BuildingBlocks.Infrastructure.Realtime;
 using FestOS.Modules.Venues.Application.Venues;
 using FestOS.Modules.Venues.Contracts;
+using FestOS.Modules.Venues.Infrastructure.Equipment;
 using FestOS.Modules.Venues.Infrastructure.Venues;
+using FestOS.Modules.Venues.IntegrationEvents;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -35,8 +38,19 @@ public sealed class VenuesModuleDefinition : IModuleDefinition
         builder.Services.AddHandlersFrom(typeof(IVenueRepository).Assembly);
         builder.Services.AddHandlersFrom(typeof(VenuesModuleDefinition).Assembly);
         builder.Services.AddScoped<IVenueRepository, VenueRepository>();
+        builder.Services.AddRealtimeGroup<VenueGroupPolicy>();
+        builder.Services.AddResourceChange<VenueEquipmentChangedIntegrationEvent>(changed => new ResourceChange(
+            "venueEquipment",
+            changed.VenueId,
+            Version: null,
+            [$"venues:{changed.VenueId}"]
+        ));
     }
 
     /// <inheritdoc />
-    public void MapEndpoints(IEndpointRouteBuilder endpoints) => VenueEndpoints.Map(endpoints);
+    public void MapEndpoints(IEndpointRouteBuilder endpoints)
+    {
+        VenueEndpoints.Map(endpoints);
+        VenueEquipmentEndpoints.Map(endpoints);
+    }
 }

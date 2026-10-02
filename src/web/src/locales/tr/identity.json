@@ -199,6 +199,9 @@
         "Create": "Mekan oluşturma",
         "Edit": "Mekanı düzenleme",
         "Deactivate": "Mekanı pasifleştirme ve etkinleştirme"
+      },
+      "Equipment": {
+        "Edit": "Mekan ekipmanını ve kullanılamama dönemlerini girme"
       }
     }
   },

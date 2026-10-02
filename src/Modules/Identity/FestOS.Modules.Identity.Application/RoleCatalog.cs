@@ -74,6 +74,7 @@ public static class RoleCatalog
                 ViewParties,
                 .. ManageCatalog,
                 ViewVenues,
+                "Venues.Equipment.Edit",
             ]),
             [Role.WarehouseManager] = Set([InventoryPermissions.ViewWarehouses, .. ViewCatalog]),
             [Role.GeneralManager] = Set([

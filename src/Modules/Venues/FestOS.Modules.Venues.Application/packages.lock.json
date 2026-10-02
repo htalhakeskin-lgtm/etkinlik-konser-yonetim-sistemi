@@ -70,6 +70,12 @@
           "FestOS.BuildingBlocks.Domain": "[1.0.0, )"
         }
       },
+      "festos.modules.venues.integrationevents": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Contracts": "[1.0.0, )"
+        }
+      },
       "FluentValidation": {
         "type": "CentralTransitive",
         "requested": "[12.1.1, )",

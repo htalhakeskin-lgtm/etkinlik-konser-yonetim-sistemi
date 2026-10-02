@@ -15,6 +15,10 @@ public static class VenuesPermissions
     /// <summary>Deactivates and reactivates venues.</summary>
     public const string DeactivateVenues = "Venues.Venues.Deactivate";
 
+    /// <summary>Enters a venue's equipment and its unavailability periods (US-VEN-002).</summary>
+    public const string EditEquipment = "Venues.Equipment.Edit";
+
     /// <summary>All of them, as the module reports them to the Host.</summary>
-    public static IReadOnlyCollection<string> All { get; } = [ViewVenues, CreateVenues, EditVenues, DeactivateVenues];
+    public static IReadOnlyCollection<string> All { get; } =
+    [ViewVenues, CreateVenues, EditVenues, DeactivateVenues, EditEquipment];
 }

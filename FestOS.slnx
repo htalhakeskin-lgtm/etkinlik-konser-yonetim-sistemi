@@ -26,6 +26,7 @@
     <Project Path="src/Modules/Venues/FestOS.Modules.Venues.Contracts/FestOS.Modules.Venues.Contracts.csproj" />
     <Project Path="src/Modules/Venues/FestOS.Modules.Venues.Domain/FestOS.Modules.Venues.Domain.csproj" />
     <Project Path="src/Modules/Venues/FestOS.Modules.Venues.Infrastructure/FestOS.Modules.Venues.Infrastructure.csproj" />
+    <Project Path="src/Modules/Venues/FestOS.Modules.Venues.IntegrationEvents/FestOS.Modules.Venues.IntegrationEvents.csproj" />
   </Folder>
   <Folder Name="/src/Modules/Catalog/">
     <Project Path="src/Modules/Catalog/FestOS.Modules.Catalog.Application/FestOS.Modules.Catalog.Application.csproj" />

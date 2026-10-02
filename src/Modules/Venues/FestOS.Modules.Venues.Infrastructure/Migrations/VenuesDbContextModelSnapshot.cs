@@ -363,6 +363,135 @@ namespace FestOS.Modules.Venues.Infrastructure.Migrations
                             t.HasCheckConstraint("ck_venues_stage_width_meters", "stage_width_meters > 0");
                         });
                 });
+
+            modelBuilder.Entity("FestOS.Modules.Venues.Domain.Venues.VenueEquipment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid?>("CategoryId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("category_id");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("description");
+
+                    b.Property<Guid?>("ModelId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("model_id");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer")
+                        .HasColumnName("quantity");
+
+                    b.Property<DateOnly?>("ValidityEnd")
+                        .HasColumnType("date")
+                        .HasColumnName("validity_end");
+
+                    b.Property<DateOnly?>("ValidityStart")
+                        .HasColumnType("date")
+                        .HasColumnName("validity_start");
+
+                    b.Property<Guid>("VenueId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("venue_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_venue_equipment");
+
+                    b.HasIndex("CategoryId")
+                        .HasDatabaseName("ix_venue_equipment_category_id");
+
+                    b.HasIndex("ModelId")
+                        .HasDatabaseName("ix_venue_equipment_model_id");
+
+                    b.HasIndex("VenueId")
+                        .HasDatabaseName("ix_venue_equipment_venue_id");
+
+                    b.ToTable("venue_equipment", "venues", t =>
+                        {
+                            t.HasCheckConstraint("ck_venue_equipment_quantity", "quantity >= 1");
+
+                            t.HasCheckConstraint("ck_venue_equipment_target", "num_nonnulls(model_id, category_id, description) = 1");
+
+                            t.HasCheckConstraint("ck_venue_equipment_validity", "validity_start IS NULL OR validity_end IS NULL OR validity_start < validity_end");
+                        });
+                });
+
+            modelBuilder.Entity("FestOS.Modules.Venues.Domain.Venues.VenueEquipmentUnavailability", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateOnly>("PeriodEnd")
+                        .HasColumnType("date")
+                        .HasColumnName("period_end");
+
+                    b.Property<DateOnly>("PeriodStart")
+                        .HasColumnType("date")
+                        .HasColumnName("period_start");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer")
+                        .HasColumnName("quantity");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("reason");
+
+                    b.Property<Guid>("VenueEquipmentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("venue_equipment_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_venue_equipment_unavailabilities");
+
+                    b.HasIndex("VenueEquipmentId")
+                        .HasDatabaseName("ix_venue_equipment_unavailabilities_venue_equipment_id");
+
+                    b.ToTable("venue_equipment_unavailabilities", "venues", t =>
+                        {
+                            t.HasCheckConstraint("ck_venue_equipment_unavailabilities_period", "period_start < period_end");
+
+                            t.HasCheckConstraint("ck_venue_equipment_unavailabilities_quantity", "quantity >= 1");
+                        });
+                });
+
+            modelBuilder.Entity("FestOS.Modules.Venues.Domain.Venues.VenueEquipment", b =>
+                {
+                    b.HasOne("FestOS.Modules.Venues.Domain.Venues.Venue", null)
+                        .WithMany("Equipment")
+                        .HasForeignKey("VenueId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_venue_equipment_venues_venue_id");
+                });
+
+            modelBuilder.Entity("FestOS.Modules.Venues.Domain.Venues.VenueEquipmentUnavailability", b =>
+                {
+                    b.HasOne("FestOS.Modules.Venues.Domain.Venues.VenueEquipment", null)
+                        .WithMany("Unavailabilities")
+                        .HasForeignKey("VenueEquipmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_venue_equipment_unavailabilities_venue_equipment_venue_equi");
+                });
+
+            modelBuilder.Entity("FestOS.Modules.Venues.Domain.Venues.Venue", b =>
+                {
+                    b.Navigation("Equipment");
+                });
+
+            modelBuilder.Entity("FestOS.Modules.Venues.Domain.Venues.VenueEquipment", b =>
+                {
+                    b.Navigation("Unavailabilities");
+                });
 #pragma warning restore 612, 618
         }
     }

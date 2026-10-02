@@ -1,6 +1,6 @@
 # Modül tasarımı: Venues — Mekanlar
 
-> **Durum:** v1.2 (onaylandı) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.3 (onaylandı) · **Son güncelleme:** 2026-10-02
 > **Adım:** Faz 1.3 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 9](#9-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -80,6 +80,8 @@ Doğrulama: ad, şehir, adres zorunlu (200 / 100 / 500); kapasite 1 ve üstü ta
 - **Senkron sözleşmeler:** Mekan doğrulaması (Booking, 1.4) ve zaman aralığında kullanılabilir ekipman (Planning, 1.6) o adımlarda `IVenueDirectory`'ye eklenir; hesap bu adımda alan katmanında yazılıp testlenir.
 - **Anlık bildirim grubu:** `venues:{id}`; mekanı görme yetkisi olan her kullanıcı katılabilir.
 
+**Uygulama (PR 2a):** Ekipman satırları ve dönemleri mekanın toplu köküne aittir (iki düzey `CASCADE`); satırın model ve kategorisi başka modülün kaydıdır, elle indekslenir. `ck_venue_equipment_target` BR-VEN-001'e; `ck_venue_equipment_validity`, `ck_venue_equipment_unavailabilities_period` ve migration'da SQL ile yazılan `ex_venue_equipment_unavailabilities_overlap` dışlama kısıtı BR-VEN-002'ye eşlenir; adet kısıtları DT-04 istisnasıdır. Toplu kök BR-VEN-002'yi kendisi de denetler ve reddin nedenini `params.reason` ile söyler (`validity`, `period`, `quantity`, `outsideValidity`, `overlap`); satırın adedini ya da geçerliliğini, var olan bir dönemi dışarıda bırakacak şekilde değiştirmek de reddedilir. Yeni ya da değişen model ve kategori `ICatalogDirectory` ile var ve aktif olarak doğrulanır (değilse `400 invalidValue`); hedefini koruyan satır, hedef sonradan pasifleşse de kalır. Kullanılabilir adet alan katmanındadır (`VenueEquipment.UsableQuantity`, VN-05): mekanın günü, saat diliminde gece yarısı başlar (`VenueDays`). `GET …/equipment` satırları model ve kategori adlarıyla (Catalog'dan iki çağrı) ve mekanın sürümüyle (`ETag`) döner; `status` `current` (bitmemiş satırlar, gelecektekiler dahil, varsayılan), `ended`, `all`'dır. `GET …/equipment/usable?from&to` günleri yarı açık alır (`to` dahil değil, işlem geçmişi süzgeci gibi). Değiştiren uçlar mekanın sürümüyle (`If-Match`) çalışır ve mekanın ekipmanını yeni sürümle döner. Her değişiklik `VenueEquipmentChangedDomainEvent` üretir; aynı kayıtta giden kutusuna `VenueEquipmentChangedIntegrationEvent` (`AffectedStart`, `AffectedEnd`: eski ve yeni aralıkların birleşimi, açık uç boş) yazılır ve `venues:{id}` grubuna `resourceChanged` (`venueEquipment`) duyurulur. `Venues.Equipment.Edit` teknik müdüre verildi.
+
 ## 8. Ekranlar, hikayeler ve PR planı
 
 | Ekran | Adres | Not |
@@ -129,3 +131,4 @@ Soru 2026-10-02'de yanıtlandı; önerilen seçenek seçildi.
 | 2026-10-02 | v1.0 | S3 yanıtlandı (VN-01, gün); onaylandı. |
 | 2026-10-02 | v1.1 | §4: Venues iskeleti ve mekanların uygulama ayrıntıları (PR 1a). |
 | 2026-10-02 | v1.2 | §8: mekanlar ekranlarının uygulama ayrıntıları (PR 1b). |
+| 2026-10-02 | v1.3 | §7: mekan ekipmanının uygulama ayrıntıları (PR 2a). |
