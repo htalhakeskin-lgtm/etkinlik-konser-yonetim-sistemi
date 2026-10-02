@@ -36,6 +36,16 @@ public static class RoleCatalog
         "Catalog.Kits.Deactivate",
     ];
 
+    private const string ViewVenues = "Venues.Venues.View";
+
+    private static readonly string[] ManageVenues =
+    [
+        ViewVenues,
+        "Venues.Venues.Create",
+        "Venues.Venues.Edit",
+        "Venues.Venues.Deactivate",
+    ];
+
     private static readonly string[] ManageParties =
     [
         ViewParties,
@@ -53,8 +63,18 @@ public static class RoleCatalog
                 .. InventoryPermissions.All,
                 ViewAuditEntries,
             ]),
-            [Role.BookingManager] = Set([InventoryPermissions.ViewWarehouses, .. ManageParties, .. ViewCatalog]),
-            [Role.TechnicalManager] = Set([InventoryPermissions.ViewWarehouses, ViewParties, .. ManageCatalog]),
+            [Role.BookingManager] = Set([
+                InventoryPermissions.ViewWarehouses,
+                .. ManageParties,
+                .. ViewCatalog,
+                .. ManageVenues,
+            ]),
+            [Role.TechnicalManager] = Set([
+                InventoryPermissions.ViewWarehouses,
+                ViewParties,
+                .. ManageCatalog,
+                ViewVenues,
+            ]),
             [Role.WarehouseManager] = Set([InventoryPermissions.ViewWarehouses, .. ViewCatalog]),
             [Role.GeneralManager] = Set([
                 IdentityPermissions.ViewUsers,
@@ -62,6 +82,7 @@ public static class RoleCatalog
                 InventoryPermissions.ViewWarehouses,
                 ViewParties,
                 .. ViewCatalog,
+                ViewVenues,
                 ViewAuditEntries,
             ]),
         };

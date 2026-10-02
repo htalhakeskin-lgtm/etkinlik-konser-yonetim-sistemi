@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\Modules\Venues\FestOS.Modules.Venues.Infrastructure\FestOS.Modules.Venues.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

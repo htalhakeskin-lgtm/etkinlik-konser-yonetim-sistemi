@@ -562,6 +562,35 @@
           "FestOS.BuildingBlocks.Infrastructure": "[1.0.0, )"
         }
       },
+      "festos.modules.venues.application": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Application": "[1.0.0, )",
+          "FestOS.Modules.Catalog.Contracts": "[1.0.0, )",
+          "FestOS.Modules.Parties.Contracts": "[1.0.0, )",
+          "FestOS.Modules.Venues.Contracts": "[1.0.0, )",
+          "FestOS.Modules.Venues.Domain": "[1.0.0, )"
+        }
+      },
+      "festos.modules.venues.contracts": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Contracts": "[1.0.0, )"
+        }
+      },
+      "festos.modules.venues.domain": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Domain": "[1.0.0, )"
+        }
+      },
+      "festos.modules.venues.infrastructure": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Infrastructure": "[1.0.0, )",
+          "FestOS.Modules.Venues.Application": "[1.0.0, )"
+        }
+      },
       "festos.testing": {
         "type": "Project",
         "dependencies": {

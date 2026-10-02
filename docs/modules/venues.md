@@ -1,6 +1,6 @@
 # Modül tasarımı: Venues — Mekanlar
 
-> **Durum:** v1.0 (onaylandı) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.1 (onaylandı) · **Son güncelleme:** 2026-10-02
 > **Adım:** Faz 1.3 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 9](#9-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -34,6 +34,8 @@ Venues modülünün fiziksel tasarımıdır: mekanlar, mekan ekipmanı ve kullan
 - **Günler ve aralıklar (VN-01):** Geçerlilik ve kullanılamama dönemleri takvim günüdür ve yarı açıktır: `…_end` hariçtir ([database §7.3](../standards/database.md#73-zaman-aralıkları)). Arayüz son günü dahil gösterir ve gönderir; dönüşüm ön yüzdedir (işlem geçmişi ekranındaki tarih süzgeci gibi). Hesapta gün, mekanın saat diliminde `[başlangıç günü 00:00, bitiş günü 00:00)` anlarına çevrilir.
 - **Saat dilimi:** `time_zone` IANA kimliğidir, varsayılanı `Europe/Istanbul`'dur ([database §7.2](../standards/database.md#72-gelecekteki-duvar-saati-zamanları)). Etkinlik zamanları 1.4'te bu dilimden hesaplanır. Sessizlik saati mekanın yerel saatidir (`time`).
 - Güç kapasitesi S1'de yalnızca kaydedilir (US-VEN-001).
+
+**Uygulama (PR 1a):** Modül projeleri, `venues` şeması ve `festos_venues` rolü açıldı; Application, Parties'in ve Catalog'un Contracts'ına başvurur (08 §3.3). `Venue` toplu köktür; ad ve şehir arama anahtarlarıyla tutulur, `ux_venues_name_city` (`city_search, name_search`) BR-VEN-003'tür. İşletmeci başka modülün kaydıdır, kimlikle ve elle eklenen indeksle tutulur (DT-03). Ölçüler ve güç `numeric`, sessizlik saati `time`, saat dilimi IANA kimliğidir (gönderilmezse `Europe/Istanbul`, tanınmayan dilim `400 invalidValue`). Kapasite ve ölçülerin `> 0` kısıtları DT-04 istisnasıdır (MD-05). İşletmeci oluştururken ya da değiştirilirken `IPartyDirectory` ile aktif ve Mekan işletmecisi rolünde olduğu denetlenir; değilse `422 BR-PTY-004` (`params.field = operatorPartyId`, `params.role = venueOperator`); değişmeyen işletmeci sonradan rolünü kaybetse de kalır. Liste ve detay işletmecinin adını Parties'ten tek çağrıyla alır (MD-02); liste `q` (ad, şehir), `city`, `status` ile süzer, `name`, `city`, `capacity`'ye göre sıralar. Mekanı booking müdürü yönetir; teknik ve genel müdür görür. Mekan ekipmanı yetkisi (`Venues.Equipment.Edit`) 2a'da eklenir.
 
 ## 5. Kurallar
 
@@ -123,3 +125,4 @@ Soru 2026-10-02'de yanıtlandı; önerilen seçenek seçildi.
 |---|---|---|
 | 2026-10-02 | v0.1 | İlk taslak |
 | 2026-10-02 | v1.0 | S3 yanıtlandı (VN-01, gün); onaylandı. |
+| 2026-10-02 | v1.1 | §4: Venues iskeleti ve mekanların uygulama ayrıntıları (PR 1a). |
