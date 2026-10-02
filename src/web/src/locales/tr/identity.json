@@ -178,6 +178,12 @@
         "Create": "Kategori oluşturma",
         "Edit": "Kategoriyi düzenleme ve taşıma",
         "Deactivate": "Kategoriyi pasifleştirme ve etkinleştirme"
+      },
+      "Models": {
+        "View": "Modelleri görme",
+        "Create": "Model oluşturma",
+        "Edit": "Modeli düzenleme",
+        "Deactivate": "Modeli pasifleştirme ve etkinleştirme"
       }
     }
   },

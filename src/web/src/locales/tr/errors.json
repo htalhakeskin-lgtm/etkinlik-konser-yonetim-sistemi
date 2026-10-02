@@ -27,5 +27,7 @@
   "BR-PTY-003": "İletişim kişisi yalnızca bir firmaya bağlanır ve aktif bir kişi olmalıdır; aynı kişi bir firmaya bir kez bağlanır.",
   "BR-PTY-004": "Seçilen taraf aktif olmalı ve bu alan için gereken role sahip olmalıdır. Temsil sürerken sanatçının Sanatçı, ajansın Ajans rolü kaldırılamaz.",
   "BR-EQP-002": "Kategori ağacında döngü olamaz; altında aktif kategori ya da model bulunan kategori pasifleştirilemez ve pasif bir kategorinin altına aktif kategori konamaz.",
-  "BR-EQP-011": "Bu üst kategoride aynı adlı bir kategori zaten var; pasif kategorilerin adları da yeniden kullanılamaz."
+  "BR-EQP-011": "Bu üst kategoride aynı adlı bir kategori zaten var; pasif kategorilerin adları da yeniden kullanılamaz.",
+  "BR-EQP-001": "Bu modelin stoğu oluştuğu için takip tipi değiştirilemez.",
+  "BR-EQP-012": "Bu marka ve model adıyla bir model zaten var; pasif modellerin adları da yeniden kullanılamaz."
 }

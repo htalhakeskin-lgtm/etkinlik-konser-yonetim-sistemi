@@ -24,18 +24,20 @@ internal sealed class DeactivateEquipmentCategoryHandler(
             return true;
         }
 
-        // Whatever is active under it is moved or deactivated first (catalog CT-06); the models join in 2a.
+        // Whatever is active under it is moved or deactivated first (catalog CT-06). Model commands take the same
+        // lock, so a model cannot join the category meanwhile.
         var tree = new CategoryTree(await categories.LockTreeAsync(cancellationToken));
         int activeCategories = tree.ActiveChildCount(category.Id);
-        if (activeCategories > 0)
+        int activeModels = await categories.CountActiveModelsAsync(category.Id, cancellationToken);
+        if (activeCategories > 0 || activeModels > 0)
         {
             throw CategoryRules.Violation(
-                "A category with active categories under it stays active.",
+                "A category with active categories or models under it stays active.",
                 "activeChildren",
                 new Dictionary<string, object?>(StringComparer.Ordinal)
                 {
                     ["activeCategories"] = activeCategories,
-                    ["activeModels"] = 0,
+                    ["activeModels"] = activeModels,
                 }
             );
         }

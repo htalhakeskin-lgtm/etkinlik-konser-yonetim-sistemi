@@ -14,6 +14,9 @@ public interface IEquipmentCategoryRepository
     /// </summary>
     Task<IReadOnlyList<CategoryNode>> LockTreeAsync(CancellationToken cancellationToken);
 
+    /// <summary>How many active models the category holds directly (catalog CT-06).</summary>
+    Task<int> CountActiveModelsAsync(EquipmentCategoryId id, CancellationToken cancellationToken);
+
     /// <summary>Adds a new category.</summary>
     void Add(EquipmentCategory category);
 }

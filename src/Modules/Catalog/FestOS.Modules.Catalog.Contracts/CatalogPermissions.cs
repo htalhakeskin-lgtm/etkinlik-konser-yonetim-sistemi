@@ -15,7 +15,28 @@ public static class CatalogPermissions
     /// <summary>Deactivates and reactivates categories.</summary>
     public const string DeactivateCategories = "Catalog.Categories.Deactivate";
 
+    /// <summary>Lists and opens models.</summary>
+    public const string ViewModels = "Catalog.Models.View";
+
+    /// <summary>Creates models.</summary>
+    public const string CreateModels = "Catalog.Models.Create";
+
+    /// <summary>Changes models.</summary>
+    public const string EditModels = "Catalog.Models.Edit";
+
+    /// <summary>Deactivates and reactivates models.</summary>
+    public const string DeactivateModels = "Catalog.Models.Deactivate";
+
     /// <summary>All of them, as the module reports them to the Host.</summary>
     public static IReadOnlyCollection<string> All { get; } =
-    [ViewCategories, CreateCategories, EditCategories, DeactivateCategories];
+    [
+        ViewCategories,
+        CreateCategories,
+        EditCategories,
+        DeactivateCategories,
+        ViewModels,
+        CreateModels,
+        EditModels,
+        DeactivateModels,
+    ];
 }

@@ -1,6 +1,6 @@
 # Modül tasarımı: Catalog — Ekipman kataloğu
 
-> **Durum:** v1.2 (onaylandı) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.3 (onaylandı) · **Son güncelleme:** 2026-10-02
 > **Adım:** Faz 1.3 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 9](#9-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -36,6 +36,8 @@ Catalog modülünün fiziksel tasarımıdır: kategoriler, modeller, kitler. Ad�
 - Kategori yolu ("Ses › Mikrofon › Dinamik vokal") saklanmaz, okurken üretilir; ağaç küçüktür (CT-02).
 
 **Uygulama (PR 1a):** Modül projeleri, `catalog` şeması ve `festos_catalog` rolü açıldı; yetkiler rol matrisine yazıyla eklendi (MD-04): kategorileri booking müdürü, teknik müdür, depo sorumlusu ve genel müdür görür, yalnızca teknik müdür yönetir. Ad tekilliği `(parent_id, name_search)` üzerinde `NULLS NOT DISTINCT` benzersiz indekstir; üst düzeydeki kategoriler de tek bir üst altında sayılır (BR-EQP-011). Kategori ağacının kuralları komutlardadır (BR-EQP-002): oluşturma, taşıma, pasifleştirme ve etkinleştirme `catalog:categories:tree` kilidini alıp ağacı okur; üst kategori var ve aktif olmalı, kategori kendisinin ya da altındakinin altına taşınamaz, aktif alt kategorisi olan kategori pasifleşmez (ret `params.activeCategories` ve `params.activeModels` taşır; modeller 2a'da sayılır), pasif üst kategorinin altındaki kategori etkinleşmez. Ret nedeni `params.reason`'dadır (`inactiveParent`, `cycle`, `activeChildren`); var olmayan üst kategori `400` ve `parentId` alanında `invalidValue` döner. Liste sayfasızdır, Türkçe ada göre sıralıdır ve her kategorinin yolunu verir; değiştiren uçlar kategorinin kaydedilmiş halini yeni `ETag` ile döner.
+
+**Uygulama (PR 2a):** `EquipmentModel` toplu köktür; görünen adı "marka model"dir. Marka ve ad birlikte arama anahtarına çevrilir; bu kolonda iki indeks vardır: tekillik için b-tree (`ux_equipment_models_brand_name`, BR-EQP-012) ve içinde arama için `pg_trgm` GIN (`ix_equipment_models_search`). Aynı kolondaki iki indeks EF'te ayrı adla tanımlanır, yoksa EF onları tek indekste birleştirir. Ölçüler `numeric(10,3)` ve `numeric(8,3)`, güç `integer`'dır; API'de ondalıklar metindir (api A-11). Ölçülerin `> 0` kısıtları alan doğrulamasını tekrarlar ve DT-04 istisna listesindedir (MD-05). Model ancak var ve aktif bir kategoriye konur, pasif kategorideki model etkinleşmez (BR-EQP-002, `reason: inactiveParent`); bu denetimler de ağaç kilidini alır, böylece kategori pasifleştirmesi (artık aktif model sayısını da `params.activeModels` ile söyler) aradaki model eklemesini kaçırmaz. Takip tipi değişikliği `has_stock` doluysa `422 BR-EQP-001`'dir; kolonu 1.5'te Inventory'nin olayı dolduracak. Liste `q`, `categoryId` (alt ağaç dahil), `trackingType`, `status` ile süzer, `name` ve `brand`'e göre Türkçe sıralar, satırda kategori yolunu verir. Kategori listesindeki aktif model sayısı artık gerçektir. `ICatalogDirectory` modelleri (görünen ad, kategori ve yolu, takip tipi, aktiflik) ve kategorileri (ad, yol, aktiflik) verir; kitler 3a'da eklenir. Model yetkileri kategorilerinkiyle aynı rollere verildi.
 
 ## 5. Kurallar
 
@@ -138,3 +140,4 @@ Soru 2026-10-02'de yanıtlandı; önerilen seçenek seçildi. US-EQP-001'in 3. k
 | 2026-10-02 | v1.0 | S2 yanıtlandı (CT-06); onaylandı. |
 | 2026-10-02 | v1.1 | §4: Catalog iskeleti ve kategorilerin uygulama ayrıntıları (PR 1a). |
 | 2026-10-02 | v1.2 | §8: kategoriler ekranının uygulama ayrıntıları (PR 1b). |
+| 2026-10-02 | v1.3 | §4: modellerin ve `ICatalogDirectory`'nin uygulama ayrıntıları (PR 2a). |

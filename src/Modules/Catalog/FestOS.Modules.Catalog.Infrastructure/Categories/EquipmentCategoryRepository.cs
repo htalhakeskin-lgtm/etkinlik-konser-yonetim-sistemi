@@ -22,5 +22,8 @@ internal sealed class EquipmentCategoryRepository(CatalogDbContext context) : IE
             .ToListAsync(cancellationToken);
     }
 
+    public Task<int> CountActiveModelsAsync(EquipmentCategoryId id, CancellationToken cancellationToken) =>
+        context.Models.CountAsync(model => model.CategoryId == id && model.DeactivatedAt == null, cancellationToken);
+
     public void Add(EquipmentCategory category) => context.Categories.Add(category);
 }

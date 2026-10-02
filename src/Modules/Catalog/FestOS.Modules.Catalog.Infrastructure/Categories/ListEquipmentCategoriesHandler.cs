@@ -29,6 +29,12 @@ internal sealed class ListEquipmentCategoriesHandler(CatalogDbContext context)
             })
             .ToListAsync(cancellationToken);
         var byId = all.ToDictionary(category => category.Id);
+        Dictionary<EquipmentCategoryId, int> activeModels = await context
+            .Models.AsNoTracking()
+            .Where(model => model.DeactivatedAt == null)
+            .GroupBy(model => model.CategoryId)
+            .Select(group => new { group.Key, Count = group.Count() })
+            .ToDictionaryAsync(group => group.Key, group => group.Count, cancellationToken);
 
         List<string> PathOf(EquipmentCategoryId id)
         {
@@ -60,7 +66,7 @@ internal sealed class ListEquipmentCategoriesHandler(CatalogDbContext context)
                     category.Name,
                     category.ParentId,
                     PathOf(category.Id),
-                    ActiveModelCount: 0,
+                    activeModels.GetValueOrDefault(category.Id),
                     category.IsActive,
                     category.Version
                 )),

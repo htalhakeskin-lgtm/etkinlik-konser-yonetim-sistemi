@@ -118,3 +118,189 @@ export const ActivateEquipmentCategoryResponse = zod.object({
   "version": zod.int()
 })
 
+/**
+ * @summary Lists the models, searched and filtered, one page at a time.
+ */
+export const ListEquipmentModelsQueryParams = zod.object({
+  "q": zod.string().optional(),
+  "categoryId": zod.uuid().optional(),
+  "trackingType": zod.enum(['serialized', 'bulk']).optional(),
+  "status": zod.enum(['active', 'inactive', 'all']).optional(),
+  "sort": zod.string().optional(),
+  "page": zod.int().optional(),
+  "pageSize": zod.int().optional()
+})
+
+export const ListEquipmentModelsResponse = zod.object({
+  "items": zod.array(zod.object({
+  "id": zod.uuid(),
+  "brand": zod.string(),
+  "name": zod.string(),
+  "categoryId": zod.uuid(),
+  "categoryPath": zod.array(zod.string()),
+  "trackingType": zod.enum(['serialized', 'bulk']),
+  "weightKilograms": zod.string().nullable(),
+  "powerWatts": zod.int().nullable(),
+  "isActive": zod.boolean(),
+  "version": zod.int()
+})),
+  "page": zod.int(),
+  "pageSize": zod.int(),
+  "totalCount": zod.int()
+})
+
+/**
+ * @summary Adds a model to the catalog.
+ */
+export const CreateEquipmentModelHeader = zod.object({
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const CreateEquipmentModelBody = zod.object({
+  "brand": zod.string(),
+  "name": zod.string(),
+  "categoryId": zod.uuid(),
+  "trackingType": zod.enum(['serialized', 'bulk']),
+  "weightKilograms": zod.string().nullish(),
+  "powerWatts": zod.int().nullish(),
+  "transportVolumeCubicMeters": zod.string().nullish()
+})
+
+export const CreateEquipmentModelResponse = zod.object({
+  "id": zod.uuid(),
+  "brand": zod.string(),
+  "name": zod.string(),
+  "categoryId": zod.uuid(),
+  "categoryPath": zod.array(zod.string()),
+  "trackingType": zod.enum(['serialized', 'bulk']),
+  "weightKilograms": zod.string().nullable(),
+  "powerWatts": zod.int().nullable(),
+  "transportVolumeCubicMeters": zod.string().nullable(),
+  "hasStock": zod.boolean(),
+  "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "version": zod.int()
+})
+
+/**
+ * @summary Gets a model.
+ */
+export const GetEquipmentModelParams = zod.object({
+  "modelId": zod.uuid()
+})
+
+export const GetEquipmentModelResponse = zod.object({
+  "id": zod.uuid(),
+  "brand": zod.string(),
+  "name": zod.string(),
+  "categoryId": zod.uuid(),
+  "categoryPath": zod.array(zod.string()),
+  "trackingType": zod.enum(['serialized', 'bulk']),
+  "weightKilograms": zod.string().nullable(),
+  "powerWatts": zod.int().nullable(),
+  "transportVolumeCubicMeters": zod.string().nullable(),
+  "hasStock": zod.boolean(),
+  "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "version": zod.int()
+})
+
+/**
+ * @summary Changes a model; the tracking type only while it has no stock.
+ */
+export const EditEquipmentModelParams = zod.object({
+  "modelId": zod.uuid()
+})
+
+export const EditEquipmentModelHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const EditEquipmentModelBody = zod.object({
+  "brand": zod.string(),
+  "name": zod.string(),
+  "categoryId": zod.uuid(),
+  "trackingType": zod.enum(['serialized', 'bulk']),
+  "weightKilograms": zod.string().nullish(),
+  "powerWatts": zod.int().nullish(),
+  "transportVolumeCubicMeters": zod.string().nullish()
+})
+
+export const EditEquipmentModelResponse = zod.object({
+  "id": zod.uuid(),
+  "brand": zod.string(),
+  "name": zod.string(),
+  "categoryId": zod.uuid(),
+  "categoryPath": zod.array(zod.string()),
+  "trackingType": zod.enum(['serialized', 'bulk']),
+  "weightKilograms": zod.string().nullable(),
+  "powerWatts": zod.int().nullable(),
+  "transportVolumeCubicMeters": zod.string().nullable(),
+  "hasStock": zod.boolean(),
+  "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "version": zod.int()
+})
+
+/**
+ * @summary Takes a model out of new selections.
+ */
+export const DeactivateEquipmentModelParams = zod.object({
+  "modelId": zod.uuid()
+})
+
+export const DeactivateEquipmentModelHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const DeactivateEquipmentModelResponse = zod.object({
+  "id": zod.uuid(),
+  "brand": zod.string(),
+  "name": zod.string(),
+  "categoryId": zod.uuid(),
+  "categoryPath": zod.array(zod.string()),
+  "trackingType": zod.enum(['serialized', 'bulk']),
+  "weightKilograms": zod.string().nullable(),
+  "powerWatts": zod.int().nullable(),
+  "transportVolumeCubicMeters": zod.string().nullable(),
+  "hasStock": zod.boolean(),
+  "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "version": zod.int()
+})
+
+/**
+ * @summary Activates a deactivated model in an active category.
+ */
+export const ActivateEquipmentModelParams = zod.object({
+  "modelId": zod.uuid()
+})
+
+export const ActivateEquipmentModelHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const ActivateEquipmentModelResponse = zod.object({
+  "id": zod.uuid(),
+  "brand": zod.string(),
+  "name": zod.string(),
+  "categoryId": zod.uuid(),
+  "categoryPath": zod.array(zod.string()),
+  "trackingType": zod.enum(['serialized', 'bulk']),
+  "weightKilograms": zod.string().nullable(),
+  "powerWatts": zod.int().nullable(),
+  "transportVolumeCubicMeters": zod.string().nullable(),
+  "hasStock": zod.boolean(),
+  "deactivatedAt": zod.iso.datetime({"offset":true}).nullable(),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true}),
+  "version": zod.int()
+})
+
