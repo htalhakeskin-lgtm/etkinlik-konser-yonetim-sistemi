@@ -9,6 +9,7 @@ using FestOS.Modules.Audit.Infrastructure;
 using FestOS.Modules.Identity.Infrastructure;
 using FestOS.Modules.Identity.Infrastructure.Users;
 using FestOS.Modules.Inventory.Infrastructure;
+using FestOS.Modules.Parties.Infrastructure;
 using FestOS.ServiceDefaults;
 
 // Server code runs with the invariant culture; text for people is formatted with tr-TR explicitly
@@ -79,7 +80,12 @@ return 0;
 
 // The only list of modules; a new module is added here (08 §5).
 static IModuleDefinition[] Modules() =>
-    [new AuditModuleDefinition(), new IdentityModuleDefinition(), new InventoryModuleDefinition()];
+    [
+        new AuditModuleDefinition(),
+        new IdentityModuleDefinition(),
+        new InventoryModuleDefinition(),
+        new PartiesModuleDefinition(),
+    ];
 
 /// <summary>The Host's entry point; public so the architecture tests can start it in memory (AT-09).</summary>
 public partial class Program;

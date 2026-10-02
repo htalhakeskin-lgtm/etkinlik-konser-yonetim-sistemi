@@ -21,5 +21,7 @@
   "BR-SYS-013": "Sistemde en az bir aktif depo kalmalıdır; son aktif depo pasifleştirilemez.",
   "BR-SYS-014": "Depo sorumlusu rolündeki kullanıcıya en az bir depo bağlanmalıdır.",
   "BR-SYS-015": "Bu e-posta adresi başka bir kullanıcıya ait; pasif kullanıcıların adresleri de yeniden kullanılamaz.",
-  "BR-SYS-016": "Bu adda bir depo zaten var; pasif depoların adları da yeniden kullanılamaz."
+  "BR-SYS-016": "Bu adda bir depo zaten var; pasif depoların adları da yeniden kullanılamaz.",
+  "BR-PTY-001": "Tarafın en az bir rolü olmalıdır; türü (kişi ya da firma) sonradan değiştirilemez.",
+  "BR-PTY-002": "Her iletişim türünde yalnızca bir kayıt birincil olabilir."
 }

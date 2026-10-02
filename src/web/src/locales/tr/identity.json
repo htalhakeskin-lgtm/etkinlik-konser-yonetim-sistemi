@@ -134,7 +134,8 @@
   "modules": {
     "Identity": "Kullanıcılar ve yetkiler",
     "Audit": "İşlem geçmişi",
-    "Inventory": "Depolar"
+    "Inventory": "Depolar",
+    "Parties": "Taraflar"
   },
   "permissions": {
     "Identity": {
@@ -160,6 +161,14 @@
         "Create": "Depo oluşturma",
         "Edit": "Depoyu düzenleme",
         "Deactivate": "Depoyu pasifleştirme ve etkinleştirme"
+      }
+    },
+    "Parties": {
+      "Parties": {
+        "View": "Tarafları görme",
+        "Create": "Taraf oluşturma",
+        "Edit": "Tarafı, iletişim kişilerini ve temsili düzenleme",
+        "Deactivate": "Tarafı pasifleştirme ve etkinleştirme"
       }
     }
   },

@@ -13,6 +13,17 @@ public static class RoleCatalog
     // every granted code is in the catalog keeps the two in step.
     private const string ViewAuditEntries = "Audit.Entries.View";
 
+    // The codes of the step 1.3 modules, written out for the same reason (parties MD-04).
+    private const string ViewParties = "Parties.Parties.View";
+
+    private static readonly string[] ManageParties =
+    [
+        ViewParties,
+        "Parties.Parties.Create",
+        "Parties.Parties.Edit",
+        "Parties.Parties.Deactivate",
+    ];
+
     /// <summary>The permissions of each role.</summary>
     public static IReadOnlyDictionary<Role, IReadOnlySet<string>> Permissions { get; } =
         new Dictionary<Role, IReadOnlySet<string>>
@@ -22,13 +33,14 @@ public static class RoleCatalog
                 .. InventoryPermissions.All,
                 ViewAuditEntries,
             ]),
-            [Role.BookingManager] = Set([InventoryPermissions.ViewWarehouses]),
-            [Role.TechnicalManager] = Set([InventoryPermissions.ViewWarehouses]),
+            [Role.BookingManager] = Set([InventoryPermissions.ViewWarehouses, .. ManageParties]),
+            [Role.TechnicalManager] = Set([InventoryPermissions.ViewWarehouses, ViewParties]),
             [Role.WarehouseManager] = Set([InventoryPermissions.ViewWarehouses]),
             [Role.GeneralManager] = Set([
                 IdentityPermissions.ViewUsers,
                 IdentityPermissions.ViewRoles,
                 InventoryPermissions.ViewWarehouses,
+                ViewParties,
                 ViewAuditEntries,
             ]),
         };
