@@ -11,6 +11,7 @@ using FestOS.Modules.Identity.Infrastructure;
 using FestOS.Modules.Identity.Infrastructure.Users;
 using FestOS.Modules.Inventory.Infrastructure;
 using FestOS.Modules.Parties.Infrastructure;
+using FestOS.Modules.Venues.Infrastructure;
 using FestOS.ServiceDefaults;
 
 // Server code runs with the invariant culture; text for people is formatted with tr-TR explicitly
@@ -87,6 +88,7 @@ static IModuleDefinition[] Modules() =>
         new InventoryModuleDefinition(),
         new PartiesModuleDefinition(),
         new CatalogModuleDefinition(),
+        new VenuesModuleDefinition(),
     ];
 
 /// <summary>The Host's entry point; public so the architecture tests can start it in memory (AT-09).</summary>

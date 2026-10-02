@@ -5,6 +5,7 @@ using FestOS.Modules.Identity.Infrastructure;
 using FestOS.Modules.Inventory.Infrastructure;
 using FestOS.Modules.Parties.Infrastructure;
 using FestOS.Modules.Sample.Infrastructure;
+using FestOS.Modules.Venues.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace FestOS.DatabaseTests;
@@ -25,6 +26,7 @@ internal static class ModuleContexts
         InventoryModuleDefinition.SchemaName,
         PartiesModuleDefinition.SchemaName,
         CatalogModuleDefinition.SchemaName,
+        VenuesModuleDefinition.SchemaName,
         SampleModuleDefinition.SchemaName,
     ];
 
@@ -41,6 +43,7 @@ internal static class ModuleContexts
             Create<InventoryDbContext>(connectionString, InventoryModuleDefinition.SchemaName, options => new(options)),
             Create<PartiesDbContext>(connectionString, PartiesModuleDefinition.SchemaName, options => new(options)),
             Create<CatalogDbContext>(connectionString, CatalogModuleDefinition.SchemaName, options => new(options)),
+            Create<VenuesDbContext>(connectionString, VenuesModuleDefinition.SchemaName, options => new(options)),
             Create<SampleDbContext>(connectionString, SampleModuleDefinition.SchemaName, options => new(options)),
         ];
 

@@ -136,7 +136,8 @@
     "Audit": "İşlem geçmişi",
     "Inventory": "Depolar",
     "Parties": "Taraflar",
-    "Catalog": "Ekipman kataloğu"
+    "Catalog": "Ekipman kataloğu",
+    "Venues": "Mekanlar"
   },
   "permissions": {
     "Identity": {
@@ -190,6 +191,14 @@
         "Create": "Kit oluşturma",
         "Edit": "Kiti düzenleme",
         "Deactivate": "Kiti pasifleştirme ve etkinleştirme"
+      }
+    },
+    "Venues": {
+      "Venues": {
+        "View": "Mekanları ve ekipmanlarını görme",
+        "Create": "Mekan oluşturma",
+        "Edit": "Mekanı düzenleme",
+        "Deactivate": "Mekanı pasifleştirme ve etkinleştirme"
       }
     }
   },
