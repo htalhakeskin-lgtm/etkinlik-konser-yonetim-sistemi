@@ -1,6 +1,6 @@
 # Modül tasarımı: Catalog — Ekipman kataloğu
 
-> **Durum:** v1.1 (onaylandı) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.2 (onaylandı) · **Son güncelleme:** 2026-10-02
 > **Adım:** Faz 1.3 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 9](#9-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -100,6 +100,8 @@ Doğrulama: ad zorunlu (en çok 200), marka zorunlu (en çok 100), takip tipi zo
 | US-EQP-002 Ekipman modeli | Model uçları; modeller | BR-EQP-001, BR-EQP-012 |
 | US-EQP-005 Kit tanımlama | Kit uçları; kitler | BR-EQP-003, BR-EQP-013 |
 
+**Uygulama (PR 1b):** `/catalog/categories` bütün kategorileri bir kez okur (küçük ağaç, CT-02) ve durum süzgecini (adreste) ekranda uygular. Satırlar ağaç sırasıyla, derinliğe göre girintili gösterilir; üst kategorisi süzgece takılan kategori yoluyla görünür. Satır menüsü yetkiye göre: Alt kategori ekle (aktif kategoride), Düzenle, Pasifleştir (onaylı) / Etkinleştir, Geçmiş. Kategori diyaloğu adı ve üst kategoriyi sorar; üst kategori seçiminde yalnızca aktif kategoriler, düzenlemede kategorinin kendisi ve altındakiler hariç, yollarıyla listelenir. Alınmış ad (BR-EQP-011) ad alanının altında, ağaç kuralı reddi (BR-EQP-002) bildirimle gösterilir. Menüde yeni "Katalog" grubunun ilk öğesi "Kategoriler"dir; teknik müdür modeller ekranı gelene kadar bu ekrandan başlar (MD-07).
+
 | # | PR | Kapsam |
 |---|---|---|
 | 1a | Catalog iskeleti ve kategoriler (sunucu) | Projeler, şema, rol, yetkiler ve rol matrisi; kategori tablosu ve uçları, BR-EQP-002, BR-EQP-011 |
@@ -135,3 +137,4 @@ Soru 2026-10-02'de yanıtlandı; önerilen seçenek seçildi. US-EQP-001'in 3. k
 | 2026-10-02 | v0.1 | İlk taslak |
 | 2026-10-02 | v1.0 | S2 yanıtlandı (CT-06); onaylandı. |
 | 2026-10-02 | v1.1 | §4: Catalog iskeleti ve kategorilerin uygulama ayrıntıları (PR 1a). |
+| 2026-10-02 | v1.2 | §8: kategoriler ekranının uygulama ayrıntıları (PR 1b). |

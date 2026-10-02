@@ -25,7 +25,8 @@
     "Party": "Taraf",
     "ContactPoint": "İletişim bilgisi",
     "OrganizationContact": "İletişim kişisi",
-    "ArtistRepresentation": "Temsil"
+    "ArtistRepresentation": "Temsil",
+    "EquipmentCategory": "Ekipman kategorisi"
   },
   "changes": {
     "show": "Değişiklikleri göster",

@@ -1,0 +1,64 @@
+{
+  "categories": {
+    "title": "Kategoriler",
+    "description": "Ekipman kategorileri ağacı; rider'lar ve mekan ekipmanı çoğu zaman bir kategori ister.",
+    "add": "Kategori ekle",
+    "empty": "Bu süzgece uyan kategori yok.",
+    "forbidden": "Bu ekranı görme yetkiniz yok.",
+    "columns": {
+      "name": "Ad",
+      "models": "Aktif model",
+      "status": "Durum",
+      "actions": "İşlemler"
+    },
+    "status": {
+      "active": "Aktif",
+      "inactive": "Pasif"
+    },
+    "filters": {
+      "statusLabel": "Durum",
+      "status": {
+        "active": "Aktif",
+        "inactive": "Pasif",
+        "all": "Tümü"
+      }
+    },
+    "actions": {
+      "open": "{{name}} için işlemler",
+      "addChild": "Alt kategori ekle",
+      "edit": "Düzenle",
+      "deactivate": "Pasifleştir",
+      "activate": "Etkinleştir",
+      "history": "Geçmiş"
+    },
+    "confirm": {
+      "deactivateTitle": "{{name}} pasifleştirilsin mi?",
+      "deactivateDescription": "Kategori yeni kayıtlarda seçilemez; bağlı olduğu mevcut kayıtlarda görünmeye devam eder. Altında aktif kategori ya da model varsa önce onları taşıyın ya da pasifleştirin."
+    },
+    "done": {
+      "created": "Kategori oluşturuldu.",
+      "saved": "Kategori kaydedildi.",
+      "deactivated": "Kategori pasifleştirildi.",
+      "activated": "Kategori etkinleştirildi."
+    }
+  },
+  "categoryForm": {
+    "createTitle": "Kategori ekle",
+    "editTitle": "Kategoriyi düzenle",
+    "required": "* zorunlu alan",
+    "name": "Ad",
+    "parent": "Üst kategori",
+    "topLevel": "Üst kategori yok (en üst düzey)",
+    "cancel": "Vazgeç",
+    "create": "Oluştur",
+    "save": "Kaydet"
+  },
+  "EquipmentCategory": {
+    "fields": {
+      "name": "Ad",
+      "parentId": "Üst kategori",
+      "deactivatedAt": "Pasifleştirildiği zaman",
+      "deactivatedBy": "Pasifleştiren"
+    }
+  }
+}

@@ -18,6 +18,7 @@ import { Route as AppAdminRolesRouteImport } from './routes/_app/admin/roles'
 import { Route as AppAdminUsersRouteImport } from './routes/_app/admin/users'
 import { Route as AppAdminWarehousesRouteImport } from './routes/_app/admin/warehouses'
 import { Route as AppArtistsIndexRouteImport } from './routes/_app/artists/index'
+import { Route as AppCatalogCategoriesRouteImport } from './routes/_app/catalog/categories'
 import { Route as AppPartiesIndexRouteImport } from './routes/_app/parties/index'
 import { Route as AppArtistsPartyIdIndexRouteImport } from './routes/_app/artists/$partyId/index'
 import { Route as AppArtistsPartyIdHistoryRouteImport } from './routes/_app/artists/$partyId/history'
@@ -68,6 +69,11 @@ const AppArtistsIndexRoute = AppArtistsIndexRouteImport.update({
   path: '/artists/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppCatalogCategoriesRoute = AppCatalogCategoriesRouteImport.update({
+  id: '/catalog/categories',
+  path: '/catalog/categories',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppPartiesIndexRoute = AppPartiesIndexRouteImport.update({
   id: '/parties/',
   path: '/parties/',
@@ -104,6 +110,7 @@ export interface FileRoutesByFullPath {
   '/admin/roles': typeof AppAdminRolesRoute
   '/admin/users': typeof AppAdminUsersRoute
   '/admin/warehouses': typeof AppAdminWarehousesRoute
+  '/catalog/categories': typeof AppCatalogCategoriesRoute
   '/artists/': typeof AppArtistsIndexRoute
   '/parties/': typeof AppPartiesIndexRoute
   '/artists/$partyId/history': typeof AppArtistsPartyIdHistoryRoute
@@ -119,6 +126,7 @@ export interface FileRoutesByTo {
   '/admin/roles': typeof AppAdminRolesRoute
   '/admin/users': typeof AppAdminUsersRoute
   '/admin/warehouses': typeof AppAdminWarehousesRoute
+  '/catalog/categories': typeof AppCatalogCategoriesRoute
   '/artists': typeof AppArtistsIndexRoute
   '/parties': typeof AppPartiesIndexRoute
   '/artists/$partyId/history': typeof AppArtistsPartyIdHistoryRoute
@@ -136,6 +144,7 @@ export interface FileRoutesById {
   '/_app/admin/roles': typeof AppAdminRolesRoute
   '/_app/admin/users': typeof AppAdminUsersRoute
   '/_app/admin/warehouses': typeof AppAdminWarehousesRoute
+  '/_app/catalog/categories': typeof AppCatalogCategoriesRoute
   '/_app/artists/': typeof AppArtistsIndexRoute
   '/_app/parties/': typeof AppPartiesIndexRoute
   '/_app/artists/$partyId/history': typeof AppArtistsPartyIdHistoryRoute
@@ -153,6 +162,7 @@ export interface FileRouteTypes {
     | '/admin/roles'
     | '/admin/users'
     | '/admin/warehouses'
+    | '/catalog/categories'
     | '/artists/'
     | '/parties/'
     | '/artists/$partyId/history'
@@ -168,6 +178,7 @@ export interface FileRouteTypes {
     | '/admin/roles'
     | '/admin/users'
     | '/admin/warehouses'
+    | '/catalog/categories'
     | '/artists'
     | '/parties'
     | '/artists/$partyId/history'
@@ -184,6 +195,7 @@ export interface FileRouteTypes {
     | '/_app/admin/roles'
     | '/_app/admin/users'
     | '/_app/admin/warehouses'
+    | '/_app/catalog/categories'
     | '/_app/artists/'
     | '/_app/parties/'
     | '/_app/artists/$partyId/history'
@@ -263,6 +275,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppArtistsIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/catalog/categories': {
+      id: '/_app/catalog/categories'
+      path: '/catalog/categories'
+      fullPath: '/catalog/categories'
+      preLoaderRoute: typeof AppCatalogCategoriesRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/parties/': {
       id: '/_app/parties/'
       path: '/parties'
@@ -307,6 +326,7 @@ interface AppRouteChildren {
   AppAdminRolesRoute: typeof AppAdminRolesRoute
   AppAdminUsersRoute: typeof AppAdminUsersRoute
   AppAdminWarehousesRoute: typeof AppAdminWarehousesRoute
+  AppCatalogCategoriesRoute: typeof AppCatalogCategoriesRoute
   AppArtistsIndexRoute: typeof AppArtistsIndexRoute
   AppPartiesIndexRoute: typeof AppPartiesIndexRoute
   AppArtistsPartyIdHistoryRoute: typeof AppArtistsPartyIdHistoryRoute
@@ -321,6 +341,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAdminRolesRoute: AppAdminRolesRoute,
   AppAdminUsersRoute: AppAdminUsersRoute,
   AppAdminWarehousesRoute: AppAdminWarehousesRoute,
+  AppCatalogCategoriesRoute: AppCatalogCategoriesRoute,
   AppArtistsIndexRoute: AppArtistsIndexRoute,
   AppPartiesIndexRoute: AppPartiesIndexRoute,
   AppArtistsPartyIdHistoryRoute: AppArtistsPartyIdHistoryRoute,
