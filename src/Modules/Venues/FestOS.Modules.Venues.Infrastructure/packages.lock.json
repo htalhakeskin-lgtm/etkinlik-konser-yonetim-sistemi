@@ -309,7 +309,8 @@
           "FestOS.Modules.Catalog.Contracts": "[1.0.0, )",
           "FestOS.Modules.Parties.Contracts": "[1.0.0, )",
           "FestOS.Modules.Venues.Contracts": "[1.0.0, )",
-          "FestOS.Modules.Venues.Domain": "[1.0.0, )"
+          "FestOS.Modules.Venues.Domain": "[1.0.0, )",
+          "FestOS.Modules.Venues.IntegrationEvents": "[1.0.0, )"
         }
       },
       "festos.modules.venues.contracts": {
@@ -322,6 +323,12 @@
         "type": "Project",
         "dependencies": {
           "FestOS.BuildingBlocks.Domain": "[1.0.0, )"
+        }
+      },
+      "festos.modules.venues.integrationevents": {
+        "type": "Project",
+        "dependencies": {
+          "FestOS.BuildingBlocks.Contracts": "[1.0.0, )"
         }
       },
       "Cronos": {

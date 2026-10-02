@@ -3,6 +3,7 @@
     <ProjectReference Include="..\..\..\BuildingBlocks\FestOS.BuildingBlocks.Application\FestOS.BuildingBlocks.Application.csproj" />
     <ProjectReference Include="..\FestOS.Modules.Venues.Contracts\FestOS.Modules.Venues.Contracts.csproj" />
     <ProjectReference Include="..\FestOS.Modules.Venues.Domain\FestOS.Modules.Venues.Domain.csproj" />
+    <ProjectReference Include="..\FestOS.Modules.Venues.IntegrationEvents\FestOS.Modules.Venues.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\Parties\FestOS.Modules.Parties.Contracts\FestOS.Modules.Parties.Contracts.csproj" />
     <ProjectReference Include="..\..\Catalog\FestOS.Modules.Catalog.Contracts\FestOS.Modules.Catalog.Contracts.csproj" />
   </ItemGroup>

@@ -225,3 +225,314 @@ export const ActivateVenueResponse = zod.object({
   "version": zod.int()
 })
 
+/**
+ * @summary Lists a venue's equipment with its unavailability periods.
+ */
+export const ListVenueEquipmentParams = zod.object({
+  "venueId": zod.uuid()
+})
+
+export const ListVenueEquipmentQueryParams = zod.object({
+  "status": zod.enum(['current', 'ended', 'all']).optional()
+})
+
+export const ListVenueEquipmentResponse = zod.object({
+  "lines": zod.array(zod.object({
+  "id": zod.uuid(),
+  "modelId": zod.uuid().nullable(),
+  "categoryId": zod.uuid().nullable(),
+  "description": zod.string().nullable(),
+  "name": zod.string(),
+  "categoryPath": zod.array(zod.string()),
+  "isTargetActive": zod.boolean(),
+  "isCounted": zod.boolean(),
+  "quantity": zod.int(),
+  "validityStart": zod.iso.date().nullable(),
+  "validityEnd": zod.iso.date().nullable(),
+  "unavailabilities": zod.array(zod.object({
+  "id": zod.uuid(),
+  "periodStart": zod.iso.date(),
+  "periodEnd": zod.iso.date(),
+  "quantity": zod.int(),
+  "reason": zod.string()
+}))
+})),
+  "version": zod.int()
+})
+
+/**
+ * @summary Adds a line to a venue's equipment.
+ */
+export const AddVenueEquipmentParams = zod.object({
+  "venueId": zod.uuid()
+})
+
+export const AddVenueEquipmentHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const AddVenueEquipmentBody = zod.object({
+  "quantity": zod.int(),
+  "modelId": zod.uuid().nullish(),
+  "categoryId": zod.uuid().nullish(),
+  "description": zod.string().nullish(),
+  "validityStart": zod.iso.date().nullish(),
+  "validityEnd": zod.iso.date().nullish()
+})
+
+export const AddVenueEquipmentResponse = zod.object({
+  "lines": zod.array(zod.object({
+  "id": zod.uuid(),
+  "modelId": zod.uuid().nullable(),
+  "categoryId": zod.uuid().nullable(),
+  "description": zod.string().nullable(),
+  "name": zod.string(),
+  "categoryPath": zod.array(zod.string()),
+  "isTargetActive": zod.boolean(),
+  "isCounted": zod.boolean(),
+  "quantity": zod.int(),
+  "validityStart": zod.iso.date().nullable(),
+  "validityEnd": zod.iso.date().nullable(),
+  "unavailabilities": zod.array(zod.object({
+  "id": zod.uuid(),
+  "periodStart": zod.iso.date(),
+  "periodEnd": zod.iso.date(),
+  "quantity": zod.int(),
+  "reason": zod.string()
+}))
+})),
+  "version": zod.int()
+})
+
+/**
+ * @summary Tells how much of each line can be used on the given days.
+ */
+export const ListUsableVenueEquipmentParams = zod.object({
+  "venueId": zod.uuid()
+})
+
+export const ListUsableVenueEquipmentQueryParams = zod.object({
+  "from": zod.iso.date(),
+  "to": zod.iso.date()
+})
+
+export const ListUsableVenueEquipmentResponseItem = zod.object({
+  "id": zod.uuid(),
+  "name": zod.string(),
+  "isCounted": zod.boolean(),
+  "quantity": zod.int(),
+  "usableQuantity": zod.int()
+})
+export const ListUsableVenueEquipmentResponse = zod.array(ListUsableVenueEquipmentResponseItem)
+
+/**
+ * @summary Changes an equipment line.
+ */
+export const EditVenueEquipmentParams = zod.object({
+  "venueId": zod.uuid(),
+  "lineId": zod.uuid()
+})
+
+export const EditVenueEquipmentHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const EditVenueEquipmentBody = zod.object({
+  "quantity": zod.int(),
+  "modelId": zod.uuid().nullish(),
+  "categoryId": zod.uuid().nullish(),
+  "description": zod.string().nullish(),
+  "validityStart": zod.iso.date().nullish(),
+  "validityEnd": zod.iso.date().nullish()
+})
+
+export const EditVenueEquipmentResponse = zod.object({
+  "lines": zod.array(zod.object({
+  "id": zod.uuid(),
+  "modelId": zod.uuid().nullable(),
+  "categoryId": zod.uuid().nullable(),
+  "description": zod.string().nullable(),
+  "name": zod.string(),
+  "categoryPath": zod.array(zod.string()),
+  "isTargetActive": zod.boolean(),
+  "isCounted": zod.boolean(),
+  "quantity": zod.int(),
+  "validityStart": zod.iso.date().nullable(),
+  "validityEnd": zod.iso.date().nullable(),
+  "unavailabilities": zod.array(zod.object({
+  "id": zod.uuid(),
+  "periodStart": zod.iso.date(),
+  "periodEnd": zod.iso.date(),
+  "quantity": zod.int(),
+  "reason": zod.string()
+}))
+})),
+  "version": zod.int()
+})
+
+/**
+ * @summary Removes a line entered by mistake.
+ */
+export const RemoveVenueEquipmentParams = zod.object({
+  "venueId": zod.uuid(),
+  "lineId": zod.uuid()
+})
+
+export const RemoveVenueEquipmentHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const RemoveVenueEquipmentResponse = zod.object({
+  "lines": zod.array(zod.object({
+  "id": zod.uuid(),
+  "modelId": zod.uuid().nullable(),
+  "categoryId": zod.uuid().nullable(),
+  "description": zod.string().nullable(),
+  "name": zod.string(),
+  "categoryPath": zod.array(zod.string()),
+  "isTargetActive": zod.boolean(),
+  "isCounted": zod.boolean(),
+  "quantity": zod.int(),
+  "validityStart": zod.iso.date().nullable(),
+  "validityEnd": zod.iso.date().nullable(),
+  "unavailabilities": zod.array(zod.object({
+  "id": zod.uuid(),
+  "periodStart": zod.iso.date(),
+  "periodEnd": zod.iso.date(),
+  "quantity": zod.int(),
+  "reason": zod.string()
+}))
+})),
+  "version": zod.int()
+})
+
+/**
+ * @summary Records days when part of a line cannot be used.
+ */
+export const AddVenueEquipmentUnavailabilityParams = zod.object({
+  "venueId": zod.uuid(),
+  "lineId": zod.uuid()
+})
+
+export const AddVenueEquipmentUnavailabilityHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const AddVenueEquipmentUnavailabilityBody = zod.object({
+  "periodStart": zod.iso.date(),
+  "periodEnd": zod.iso.date(),
+  "quantity": zod.int(),
+  "reason": zod.string()
+})
+
+export const AddVenueEquipmentUnavailabilityResponse = zod.object({
+  "lines": zod.array(zod.object({
+  "id": zod.uuid(),
+  "modelId": zod.uuid().nullable(),
+  "categoryId": zod.uuid().nullable(),
+  "description": zod.string().nullable(),
+  "name": zod.string(),
+  "categoryPath": zod.array(zod.string()),
+  "isTargetActive": zod.boolean(),
+  "isCounted": zod.boolean(),
+  "quantity": zod.int(),
+  "validityStart": zod.iso.date().nullable(),
+  "validityEnd": zod.iso.date().nullable(),
+  "unavailabilities": zod.array(zod.object({
+  "id": zod.uuid(),
+  "periodStart": zod.iso.date(),
+  "periodEnd": zod.iso.date(),
+  "quantity": zod.int(),
+  "reason": zod.string()
+}))
+})),
+  "version": zod.int()
+})
+
+/**
+ * @summary Changes an unavailability period.
+ */
+export const EditVenueEquipmentUnavailabilityParams = zod.object({
+  "venueId": zod.uuid(),
+  "lineId": zod.uuid(),
+  "periodId": zod.uuid()
+})
+
+export const EditVenueEquipmentUnavailabilityHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const EditVenueEquipmentUnavailabilityBody = zod.object({
+  "periodStart": zod.iso.date(),
+  "periodEnd": zod.iso.date(),
+  "quantity": zod.int(),
+  "reason": zod.string()
+})
+
+export const EditVenueEquipmentUnavailabilityResponse = zod.object({
+  "lines": zod.array(zod.object({
+  "id": zod.uuid(),
+  "modelId": zod.uuid().nullable(),
+  "categoryId": zod.uuid().nullable(),
+  "description": zod.string().nullable(),
+  "name": zod.string(),
+  "categoryPath": zod.array(zod.string()),
+  "isTargetActive": zod.boolean(),
+  "isCounted": zod.boolean(),
+  "quantity": zod.int(),
+  "validityStart": zod.iso.date().nullable(),
+  "validityEnd": zod.iso.date().nullable(),
+  "unavailabilities": zod.array(zod.object({
+  "id": zod.uuid(),
+  "periodStart": zod.iso.date(),
+  "periodEnd": zod.iso.date(),
+  "quantity": zod.int(),
+  "reason": zod.string()
+}))
+})),
+  "version": zod.int()
+})
+
+/**
+ * @summary Removes an unavailability period.
+ */
+export const RemoveVenueEquipmentUnavailabilityParams = zod.object({
+  "venueId": zod.uuid(),
+  "lineId": zod.uuid(),
+  "periodId": zod.uuid()
+})
+
+export const RemoveVenueEquipmentUnavailabilityHeader = zod.object({
+  "If-Match": zod.string().describe('The version the change is based on, as a strong entity tag, e.g. "7" (api §9).'),
+  "Idempotency-Key": zod.uuid().describe('A new UUID for each user action, and the same one when the action is retried (api §10).')
+})
+
+export const RemoveVenueEquipmentUnavailabilityResponse = zod.object({
+  "lines": zod.array(zod.object({
+  "id": zod.uuid(),
+  "modelId": zod.uuid().nullable(),
+  "categoryId": zod.uuid().nullable(),
+  "description": zod.string().nullable(),
+  "name": zod.string(),
+  "categoryPath": zod.array(zod.string()),
+  "isTargetActive": zod.boolean(),
+  "isCounted": zod.boolean(),
+  "quantity": zod.int(),
+  "validityStart": zod.iso.date().nullable(),
+  "validityEnd": zod.iso.date().nullable(),
+  "unavailabilities": zod.array(zod.object({
+  "id": zod.uuid(),
+  "periodStart": zod.iso.date(),
+  "periodEnd": zod.iso.date(),
+  "quantity": zod.int(),
+  "reason": zod.string()
+}))
+})),
+  "version": zod.int()
+})
+

@@ -9,5 +9,12 @@ internal sealed class VenueRepository(VenuesDbContext context) : IVenueRepositor
     public Task<Venue?> FindAsync(VenueId id, CancellationToken cancellationToken) =>
         context.Venues.SingleOrDefaultAsync(venue => venue.Id == id, cancellationToken);
 
+    public Task<Venue?> FindWithEquipmentAsync(VenueId id, CancellationToken cancellationToken) =>
+        context
+            .Venues.Include(venue => venue.Equipment)
+                .ThenInclude(line => line.Unavailabilities)
+            .AsSplitQuery()
+            .SingleOrDefaultAsync(venue => venue.Id == id, cancellationToken);
+
     public void Add(Venue venue) => context.Venues.Add(venue);
 }

@@ -17,5 +17,9 @@ public sealed class VenuesDbContext(DbContextOptions<VenuesDbContext> options)
         new Dictionary<string, string>(StringComparer.Ordinal)
         {
             ["ux_venues_name_city"] = VenuesRuleCodes.UniqueVenueName,
+            ["ck_venue_equipment_target"] = VenuesRuleCodes.EquipmentTarget,
+            ["ck_venue_equipment_validity"] = VenuesRuleCodes.EquipmentPeriods,
+            ["ck_venue_equipment_unavailabilities_period"] = VenuesRuleCodes.EquipmentPeriods,
+            ["ex_venue_equipment_unavailabilities_overlap"] = VenuesRuleCodes.EquipmentPeriods,
         };
 }

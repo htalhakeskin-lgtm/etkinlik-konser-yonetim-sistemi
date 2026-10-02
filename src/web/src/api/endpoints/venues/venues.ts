@@ -25,9 +25,15 @@ import type {
 
 import type {
   ApiProblem,
+  ListUsableVenueEquipmentParams,
+  ListVenueEquipmentParams,
   ListVenuesParams,
   PagedResultOfVenueListItem,
+  UnavailabilityRequest,
+  UsableVenueEquipmentItem,
   VenueDetails,
+  VenueEquipmentList,
+  VenueEquipmentRequest,
   VenueRequest
 } from '../../model';
 
@@ -580,4 +586,746 @@ export const useActivateVenue = <TError = ApiProblem,
         TContext
       > => {
       return useMutation(getActivateVenueMutationOptions(options), queryClient);
+    }
+    export const getListVenueEquipmentUrl = (venueId: string,
+    params?: ListVenueEquipmentParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/venues/${venueId}/equipment?${stringifiedParams}` : `/api/v1/venues/${venueId}/equipment`
+}
+
+/**
+ * @summary Lists a venue's equipment with its unavailability periods.
+ */
+export const listVenueEquipment = async (venueId: string,
+    params?: ListVenueEquipmentParams, options?: Parameters<typeof apiClient>[1]): Promise<VenueEquipmentList> => {
+
+  return apiClient<VenueEquipmentList>(getListVenueEquipmentUrl(venueId,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListVenueEquipmentQueryKey = (venueId: string,
+    params?: ListVenueEquipmentParams,) => {
+    return [
+    `/api/v1/venues/${venueId}/equipment`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListVenueEquipmentQueryOptions = <TData = Awaited<ReturnType<typeof listVenueEquipment>>, TError = ApiProblem>(venueId: string,
+    params?: ListVenueEquipmentParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listVenueEquipment>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListVenueEquipmentQueryKey(venueId,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listVenueEquipment>>> = ({ signal }) => listVenueEquipment(venueId,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: venueId !== null && venueId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listVenueEquipment>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ListVenueEquipmentQueryResult = NonNullable<Awaited<ReturnType<typeof listVenueEquipment>>>
+export type ListVenueEquipmentQueryError = ApiProblem
+
+
+export function useListVenueEquipment<TData = Awaited<ReturnType<typeof listVenueEquipment>>, TError = ApiProblem>(
+ venueId: string,
+    params: undefined |  ListVenueEquipmentParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listVenueEquipment>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listVenueEquipment>>,
+          TError,
+          Awaited<ReturnType<typeof listVenueEquipment>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListVenueEquipment<TData = Awaited<ReturnType<typeof listVenueEquipment>>, TError = ApiProblem>(
+ venueId: string,
+    params?: ListVenueEquipmentParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listVenueEquipment>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listVenueEquipment>>,
+          TError,
+          Awaited<ReturnType<typeof listVenueEquipment>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListVenueEquipment<TData = Awaited<ReturnType<typeof listVenueEquipment>>, TError = ApiProblem>(
+ venueId: string,
+    params?: ListVenueEquipmentParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listVenueEquipment>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Lists a venue's equipment with its unavailability periods.
+ */
+
+export function useListVenueEquipment<TData = Awaited<ReturnType<typeof listVenueEquipment>>, TError = ApiProblem>(
+ venueId: string,
+    params?: ListVenueEquipmentParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listVenueEquipment>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getListVenueEquipmentQueryOptions(venueId,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getAddVenueEquipmentUrl = (venueId: string,) => {
+
+
+
+
+  return `/api/v1/venues/${venueId}/equipment`
+}
+
+/**
+ * @summary Adds a line to a venue's equipment.
+ */
+export const addVenueEquipment = async (venueId: string,
+    venueEquipmentRequest: VenueEquipmentRequest, options?: Parameters<typeof apiClient>[1]): Promise<VenueEquipmentList> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiClient<VenueEquipmentList>(getAddVenueEquipmentUrl(venueId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(venueEquipmentRequest)
+  }
+);}
+
+
+
+
+
+export const getAddVenueEquipmentMutationKey = () => ['addVenueEquipment'] as const;
+
+export const getAddVenueEquipmentMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addVenueEquipment>>, TError,AddVenueEquipmentMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof addVenueEquipment>>, TError,AddVenueEquipmentMutationVariables, TContext> => {
+
+const mutationKey = getAddVenueEquipmentMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof addVenueEquipment>>, AddVenueEquipmentMutationVariables> = (props) => {
+          const {venueId,data} = props ?? {};
+
+          return  addVenueEquipment(venueId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AddVenueEquipmentMutationResult = NonNullable<Awaited<ReturnType<typeof addVenueEquipment>>>
+    export type AddVenueEquipmentMutationBody = VenueEquipmentRequest
+    export type AddVenueEquipmentMutationError = ApiProblem
+    export type AddVenueEquipmentMutationVariables = {venueId: string;data: VenueEquipmentRequest}
+
+    /**
+ * @summary Adds a line to a venue's equipment.
+ */
+export const useAddVenueEquipment = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addVenueEquipment>>, TError,AddVenueEquipmentMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof addVenueEquipment>>,
+        TError,
+        AddVenueEquipmentMutationVariables,
+        TContext
+      > => {
+      return useMutation(getAddVenueEquipmentMutationOptions(options), queryClient);
+    }
+    export const getListUsableVenueEquipmentUrl = (venueId: string,
+    params: ListUsableVenueEquipmentParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/venues/${venueId}/equipment/usable?${stringifiedParams}` : `/api/v1/venues/${venueId}/equipment/usable`
+}
+
+/**
+ * @summary Tells how much of each line can be used on the given days.
+ */
+export const listUsableVenueEquipment = async (venueId: string,
+    params: ListUsableVenueEquipmentParams, options?: Parameters<typeof apiClient>[1]): Promise<UsableVenueEquipmentItem[]> => {
+
+  return apiClient<UsableVenueEquipmentItem[]>(getListUsableVenueEquipmentUrl(venueId,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListUsableVenueEquipmentQueryKey = (venueId: string,
+    params?: ListUsableVenueEquipmentParams,) => {
+    return [
+    `/api/v1/venues/${venueId}/equipment/usable`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListUsableVenueEquipmentQueryOptions = <TData = Awaited<ReturnType<typeof listUsableVenueEquipment>>, TError = ApiProblem>(venueId: string,
+    params: ListUsableVenueEquipmentParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUsableVenueEquipment>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListUsableVenueEquipmentQueryKey(venueId,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listUsableVenueEquipment>>> = ({ signal }) => listUsableVenueEquipment(venueId,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: venueId !== null && venueId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listUsableVenueEquipment>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ListUsableVenueEquipmentQueryResult = NonNullable<Awaited<ReturnType<typeof listUsableVenueEquipment>>>
+export type ListUsableVenueEquipmentQueryError = ApiProblem
+
+
+export function useListUsableVenueEquipment<TData = Awaited<ReturnType<typeof listUsableVenueEquipment>>, TError = ApiProblem>(
+ venueId: string,
+    params: ListUsableVenueEquipmentParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUsableVenueEquipment>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listUsableVenueEquipment>>,
+          TError,
+          Awaited<ReturnType<typeof listUsableVenueEquipment>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListUsableVenueEquipment<TData = Awaited<ReturnType<typeof listUsableVenueEquipment>>, TError = ApiProblem>(
+ venueId: string,
+    params: ListUsableVenueEquipmentParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUsableVenueEquipment>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listUsableVenueEquipment>>,
+          TError,
+          Awaited<ReturnType<typeof listUsableVenueEquipment>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListUsableVenueEquipment<TData = Awaited<ReturnType<typeof listUsableVenueEquipment>>, TError = ApiProblem>(
+ venueId: string,
+    params: ListUsableVenueEquipmentParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUsableVenueEquipment>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Tells how much of each line can be used on the given days.
+ */
+
+export function useListUsableVenueEquipment<TData = Awaited<ReturnType<typeof listUsableVenueEquipment>>, TError = ApiProblem>(
+ venueId: string,
+    params: ListUsableVenueEquipmentParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUsableVenueEquipment>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getListUsableVenueEquipmentQueryOptions(venueId,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getEditVenueEquipmentUrl = (venueId: string,
+    lineId: string,) => {
+
+
+
+
+  return `/api/v1/venues/${venueId}/equipment/${lineId}`
+}
+
+/**
+ * @summary Changes an equipment line.
+ */
+export const editVenueEquipment = async (venueId: string,
+    lineId: string,
+    venueEquipmentRequest: VenueEquipmentRequest, options?: Parameters<typeof apiClient>[1]): Promise<VenueEquipmentList> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiClient<VenueEquipmentList>(getEditVenueEquipmentUrl(venueId,lineId),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(venueEquipmentRequest)
+  }
+);}
+
+
+
+
+
+export const getEditVenueEquipmentMutationKey = () => ['editVenueEquipment'] as const;
+
+export const getEditVenueEquipmentMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editVenueEquipment>>, TError,EditVenueEquipmentMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof editVenueEquipment>>, TError,EditVenueEquipmentMutationVariables, TContext> => {
+
+const mutationKey = getEditVenueEquipmentMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof editVenueEquipment>>, EditVenueEquipmentMutationVariables> = (props) => {
+          const {venueId,lineId,data} = props ?? {};
+
+          return  editVenueEquipment(venueId,lineId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type EditVenueEquipmentMutationResult = NonNullable<Awaited<ReturnType<typeof editVenueEquipment>>>
+    export type EditVenueEquipmentMutationBody = VenueEquipmentRequest
+    export type EditVenueEquipmentMutationError = ApiProblem
+    export type EditVenueEquipmentMutationVariables = {venueId: string;lineId: string;data: VenueEquipmentRequest}
+
+    /**
+ * @summary Changes an equipment line.
+ */
+export const useEditVenueEquipment = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editVenueEquipment>>, TError,EditVenueEquipmentMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof editVenueEquipment>>,
+        TError,
+        EditVenueEquipmentMutationVariables,
+        TContext
+      > => {
+      return useMutation(getEditVenueEquipmentMutationOptions(options), queryClient);
+    }
+    export const getRemoveVenueEquipmentUrl = (venueId: string,
+    lineId: string,) => {
+
+
+
+
+  return `/api/v1/venues/${venueId}/equipment/${lineId}`
+}
+
+/**
+ * @summary Removes a line entered by mistake.
+ */
+export const removeVenueEquipment = async (venueId: string,
+    lineId: string, options?: Parameters<typeof apiClient>[1]): Promise<VenueEquipmentList> => {
+
+  return apiClient<VenueEquipmentList>(getRemoveVenueEquipmentUrl(venueId,lineId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getRemoveVenueEquipmentMutationKey = () => ['removeVenueEquipment'] as const;
+
+export const getRemoveVenueEquipmentMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeVenueEquipment>>, TError,RemoveVenueEquipmentMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof removeVenueEquipment>>, TError,RemoveVenueEquipmentMutationVariables, TContext> => {
+
+const mutationKey = getRemoveVenueEquipmentMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof removeVenueEquipment>>, RemoveVenueEquipmentMutationVariables> = (props) => {
+          const {venueId,lineId} = props ?? {};
+
+          return  removeVenueEquipment(venueId,lineId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RemoveVenueEquipmentMutationResult = NonNullable<Awaited<ReturnType<typeof removeVenueEquipment>>>
+
+    export type RemoveVenueEquipmentMutationError = ApiProblem
+    export type RemoveVenueEquipmentMutationVariables = {venueId: string;lineId: string}
+
+    /**
+ * @summary Removes a line entered by mistake.
+ */
+export const useRemoveVenueEquipment = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeVenueEquipment>>, TError,RemoveVenueEquipmentMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof removeVenueEquipment>>,
+        TError,
+        RemoveVenueEquipmentMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRemoveVenueEquipmentMutationOptions(options), queryClient);
+    }
+    export const getAddVenueEquipmentUnavailabilityUrl = (venueId: string,
+    lineId: string,) => {
+
+
+
+
+  return `/api/v1/venues/${venueId}/equipment/${lineId}/unavailabilities`
+}
+
+/**
+ * @summary Records days when part of a line cannot be used.
+ */
+export const addVenueEquipmentUnavailability = async (venueId: string,
+    lineId: string,
+    unavailabilityRequest: UnavailabilityRequest, options?: Parameters<typeof apiClient>[1]): Promise<VenueEquipmentList> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiClient<VenueEquipmentList>(getAddVenueEquipmentUnavailabilityUrl(venueId,lineId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(unavailabilityRequest)
+  }
+);}
+
+
+
+
+
+export const getAddVenueEquipmentUnavailabilityMutationKey = () => ['addVenueEquipmentUnavailability'] as const;
+
+export const getAddVenueEquipmentUnavailabilityMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addVenueEquipmentUnavailability>>, TError,AddVenueEquipmentUnavailabilityMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof addVenueEquipmentUnavailability>>, TError,AddVenueEquipmentUnavailabilityMutationVariables, TContext> => {
+
+const mutationKey = getAddVenueEquipmentUnavailabilityMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof addVenueEquipmentUnavailability>>, AddVenueEquipmentUnavailabilityMutationVariables> = (props) => {
+          const {venueId,lineId,data} = props ?? {};
+
+          return  addVenueEquipmentUnavailability(venueId,lineId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AddVenueEquipmentUnavailabilityMutationResult = NonNullable<Awaited<ReturnType<typeof addVenueEquipmentUnavailability>>>
+    export type AddVenueEquipmentUnavailabilityMutationBody = UnavailabilityRequest
+    export type AddVenueEquipmentUnavailabilityMutationError = ApiProblem
+    export type AddVenueEquipmentUnavailabilityMutationVariables = {venueId: string;lineId: string;data: UnavailabilityRequest}
+
+    /**
+ * @summary Records days when part of a line cannot be used.
+ */
+export const useAddVenueEquipmentUnavailability = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addVenueEquipmentUnavailability>>, TError,AddVenueEquipmentUnavailabilityMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof addVenueEquipmentUnavailability>>,
+        TError,
+        AddVenueEquipmentUnavailabilityMutationVariables,
+        TContext
+      > => {
+      return useMutation(getAddVenueEquipmentUnavailabilityMutationOptions(options), queryClient);
+    }
+    export const getEditVenueEquipmentUnavailabilityUrl = (venueId: string,
+    lineId: string,
+    periodId: string,) => {
+
+
+
+
+  return `/api/v1/venues/${venueId}/equipment/${lineId}/unavailabilities/${periodId}`
+}
+
+/**
+ * @summary Changes an unavailability period.
+ */
+export const editVenueEquipmentUnavailability = async (venueId: string,
+    lineId: string,
+    periodId: string,
+    unavailabilityRequest: UnavailabilityRequest, options?: Parameters<typeof apiClient>[1]): Promise<VenueEquipmentList> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiClient<VenueEquipmentList>(getEditVenueEquipmentUnavailabilityUrl(venueId,lineId,periodId),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(unavailabilityRequest)
+  }
+);}
+
+
+
+
+
+export const getEditVenueEquipmentUnavailabilityMutationKey = () => ['editVenueEquipmentUnavailability'] as const;
+
+export const getEditVenueEquipmentUnavailabilityMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editVenueEquipmentUnavailability>>, TError,EditVenueEquipmentUnavailabilityMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof editVenueEquipmentUnavailability>>, TError,EditVenueEquipmentUnavailabilityMutationVariables, TContext> => {
+
+const mutationKey = getEditVenueEquipmentUnavailabilityMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof editVenueEquipmentUnavailability>>, EditVenueEquipmentUnavailabilityMutationVariables> = (props) => {
+          const {venueId,lineId,periodId,data} = props ?? {};
+
+          return  editVenueEquipmentUnavailability(venueId,lineId,periodId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type EditVenueEquipmentUnavailabilityMutationResult = NonNullable<Awaited<ReturnType<typeof editVenueEquipmentUnavailability>>>
+    export type EditVenueEquipmentUnavailabilityMutationBody = UnavailabilityRequest
+    export type EditVenueEquipmentUnavailabilityMutationError = ApiProblem
+    export type EditVenueEquipmentUnavailabilityMutationVariables = {venueId: string;lineId: string;periodId: string;data: UnavailabilityRequest}
+
+    /**
+ * @summary Changes an unavailability period.
+ */
+export const useEditVenueEquipmentUnavailability = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editVenueEquipmentUnavailability>>, TError,EditVenueEquipmentUnavailabilityMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof editVenueEquipmentUnavailability>>,
+        TError,
+        EditVenueEquipmentUnavailabilityMutationVariables,
+        TContext
+      > => {
+      return useMutation(getEditVenueEquipmentUnavailabilityMutationOptions(options), queryClient);
+    }
+    export const getRemoveVenueEquipmentUnavailabilityUrl = (venueId: string,
+    lineId: string,
+    periodId: string,) => {
+
+
+
+
+  return `/api/v1/venues/${venueId}/equipment/${lineId}/unavailabilities/${periodId}`
+}
+
+/**
+ * @summary Removes an unavailability period.
+ */
+export const removeVenueEquipmentUnavailability = async (venueId: string,
+    lineId: string,
+    periodId: string, options?: Parameters<typeof apiClient>[1]): Promise<VenueEquipmentList> => {
+
+  return apiClient<VenueEquipmentList>(getRemoveVenueEquipmentUnavailabilityUrl(venueId,lineId,periodId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getRemoveVenueEquipmentUnavailabilityMutationKey = () => ['removeVenueEquipmentUnavailability'] as const;
+
+export const getRemoveVenueEquipmentUnavailabilityMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeVenueEquipmentUnavailability>>, TError,RemoveVenueEquipmentUnavailabilityMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof removeVenueEquipmentUnavailability>>, TError,RemoveVenueEquipmentUnavailabilityMutationVariables, TContext> => {
+
+const mutationKey = getRemoveVenueEquipmentUnavailabilityMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof removeVenueEquipmentUnavailability>>, RemoveVenueEquipmentUnavailabilityMutationVariables> = (props) => {
+          const {venueId,lineId,periodId} = props ?? {};
+
+          return  removeVenueEquipmentUnavailability(venueId,lineId,periodId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RemoveVenueEquipmentUnavailabilityMutationResult = NonNullable<Awaited<ReturnType<typeof removeVenueEquipmentUnavailability>>>
+
+    export type RemoveVenueEquipmentUnavailabilityMutationError = ApiProblem
+    export type RemoveVenueEquipmentUnavailabilityMutationVariables = {venueId: string;lineId: string;periodId: string}
+
+    /**
+ * @summary Removes an unavailability period.
+ */
+export const useRemoveVenueEquipmentUnavailability = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeVenueEquipmentUnavailability>>, TError,RemoveVenueEquipmentUnavailabilityMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof removeVenueEquipmentUnavailability>>,
+        TError,
+        RemoveVenueEquipmentUnavailabilityMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRemoveVenueEquipmentUnavailabilityMutationOptions(options), queryClient);
     }
