@@ -12,6 +12,9 @@ import { anApiError, aUser } from "@/test/identity-fixtures";
 
 import { PartiesPage, type PartiesSearch } from "./parties-page";
 
+vi.mock("@tanstack/react-router", async () => ({
+  Link: (await import("@/test/router-fakes")).FakeLink,
+}));
 vi.mock("@/api/endpoints/parties/parties", () => ({
   listParties: vi.fn(),
   getListPartiesQueryKey: (params: unknown) => ["/api/v1/parties", params],

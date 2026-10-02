@@ -53,5 +53,11 @@
     "previous": "Önceki sayfa",
     "next": "Sonraki sayfa",
     "refreshFailed": "Liste yenilenemedi; gösterilen bilgiler güncel olmayabilir."
+  },
+  "picker": {
+    "searching": "Aranıyor…",
+    "empty": "Aramanıza uyan kayıt yok.",
+    "clear": "Seçimi temizle",
+    "open": "Seçenekleri göster"
   }
 }

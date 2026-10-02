@@ -18,6 +18,8 @@ import { Route as AppAdminRolesRouteImport } from './routes/_app/admin/roles'
 import { Route as AppAdminUsersRouteImport } from './routes/_app/admin/users'
 import { Route as AppAdminWarehousesRouteImport } from './routes/_app/admin/warehouses'
 import { Route as AppPartiesIndexRouteImport } from './routes/_app/parties/index'
+import { Route as AppPartiesPartyIdIndexRouteImport } from './routes/_app/parties/$partyId/index'
+import { Route as AppPartiesPartyIdHistoryRouteImport } from './routes/_app/parties/$partyId/history'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -63,6 +65,17 @@ const AppPartiesIndexRoute = AppPartiesIndexRouteImport.update({
   path: '/parties/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppPartiesPartyIdIndexRoute = AppPartiesPartyIdIndexRouteImport.update({
+  id: '/parties/$partyId/',
+  path: '/parties/$partyId/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPartiesPartyIdHistoryRoute =
+  AppPartiesPartyIdHistoryRouteImport.update({
+    id: '/parties/$partyId/history',
+    path: '/parties/$partyId/history',
+    getParentRoute: () => AppRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -73,6 +86,8 @@ export interface FileRoutesByFullPath {
   '/admin/users': typeof AppAdminUsersRoute
   '/admin/warehouses': typeof AppAdminWarehousesRoute
   '/parties/': typeof AppPartiesIndexRoute
+  '/parties/$partyId/history': typeof AppPartiesPartyIdHistoryRoute
+  '/parties/$partyId/': typeof AppPartiesPartyIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -83,6 +98,8 @@ export interface FileRoutesByTo {
   '/admin/users': typeof AppAdminUsersRoute
   '/admin/warehouses': typeof AppAdminWarehousesRoute
   '/parties': typeof AppPartiesIndexRoute
+  '/parties/$partyId/history': typeof AppPartiesPartyIdHistoryRoute
+  '/parties/$partyId': typeof AppPartiesPartyIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -95,6 +112,8 @@ export interface FileRoutesById {
   '/_app/admin/users': typeof AppAdminUsersRoute
   '/_app/admin/warehouses': typeof AppAdminWarehousesRoute
   '/_app/parties/': typeof AppPartiesIndexRoute
+  '/_app/parties/$partyId/history': typeof AppPartiesPartyIdHistoryRoute
+  '/_app/parties/$partyId/': typeof AppPartiesPartyIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -107,6 +126,8 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/admin/warehouses'
     | '/parties/'
+    | '/parties/$partyId/history'
+    | '/parties/$partyId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -117,6 +138,8 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/admin/warehouses'
     | '/parties'
+    | '/parties/$partyId/history'
+    | '/parties/$partyId'
   id:
     | '__root__'
     | '/_app'
@@ -128,6 +151,8 @@ export interface FileRouteTypes {
     | '/_app/admin/users'
     | '/_app/admin/warehouses'
     | '/_app/parties/'
+    | '/_app/parties/$partyId/history'
+    | '/_app/parties/$partyId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -201,6 +226,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPartiesIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/parties/$partyId/': {
+      id: '/_app/parties/$partyId/'
+      path: '/parties/$partyId'
+      fullPath: '/parties/$partyId/'
+      preLoaderRoute: typeof AppPartiesPartyIdIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/parties/$partyId/history': {
+      id: '/_app/parties/$partyId/history'
+      path: '/parties/$partyId/history'
+      fullPath: '/parties/$partyId/history'
+      preLoaderRoute: typeof AppPartiesPartyIdHistoryRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -211,6 +250,8 @@ interface AppRouteChildren {
   AppAdminUsersRoute: typeof AppAdminUsersRoute
   AppAdminWarehousesRoute: typeof AppAdminWarehousesRoute
   AppPartiesIndexRoute: typeof AppPartiesIndexRoute
+  AppPartiesPartyIdHistoryRoute: typeof AppPartiesPartyIdHistoryRoute
+  AppPartiesPartyIdIndexRoute: typeof AppPartiesPartyIdIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -220,6 +261,8 @@ const AppRouteChildren: AppRouteChildren = {
   AppAdminUsersRoute: AppAdminUsersRoute,
   AppAdminWarehousesRoute: AppAdminWarehousesRoute,
   AppPartiesIndexRoute: AppPartiesIndexRoute,
+  AppPartiesPartyIdHistoryRoute: AppPartiesPartyIdHistoryRoute,
+  AppPartiesPartyIdIndexRoute: AppPartiesPartyIdIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
