@@ -31,7 +31,7 @@ Kurallar: BR-SYS-001
 **Booking müdürü olarak** mekanları teknik bilgileriyle kaydetmek **istiyorum**, **çünkü** opsiyon, ihtiyaç hesabı ve ileride güç hesabı bu bilgilere dayanır.
 
 Öncelik: Must · Demo adımı: —
-Kurallar: BR-PTY-004
+Kurallar: BR-PTY-004, BR-VEN-003
 
 **Kabul kriterleri**
 1. Ad, şehir, adres ve kapasite zorunludur.
@@ -43,7 +43,7 @@ Kurallar: BR-PTY-004
 **Booking müdürü olarak** sanatçıları ve şovlarını kaydetmek **istiyorum**, **çünkü** rider ve etkinlikler prodüksiyona bağlanır.
 
 Öncelik: Must · Demo adımı: —
-Kurallar: BR-PTY-004
+Kurallar: BR-PTY-004, BR-RDR-009
 
 **Kabul kriterleri**
 1. Sanatçı, sanatçı rolündeki bir taraftır; varsa ajansı bağlanır.

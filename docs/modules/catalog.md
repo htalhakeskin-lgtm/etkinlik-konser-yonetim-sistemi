@@ -1,0 +1,132 @@
+# Modül tasarımı: Catalog — Ekipman kataloğu
+
+> **Durum:** v0.1 (taslak) · **Son güncelleme:** 2026-10-02
+> **Adım:** Faz 1.3 ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 9](#9-kararlar)
+
+## 1. Bu belge ne işe yarar
+
+Catalog modülünün fiziksel tasarımıdır: kategoriler, modeller, kitler. Adımın ortak kararları [parties §2](parties.md#2-adımın-ortak-kararları)'dedir.
+
+**Kaynaklar:** [05 §5.4](../05-module-map.md#54-catalog--ekipman-kataloğu), [06 §5.4](../06-erd-conceptual.md#54-catalog--ekipman-kataloğu), [11 §3](../11-screens.md#3-s1-ekran-envanteri); hikayeler US-EQP-001, 002, 005; kurallar BR-SYS-001, BR-EQP-001…003, BR-EQP-011…013 (yeni).
+
+## 2. Kapsam
+
+| Var | Yok (sonraki adım ya da sürüm) |
+|---|---|
+| Hiyerarşik kategoriler, modeller, kitler; pasifleştirme ve yeniden etkinleştirme | `StockCreatedForModel` dinleyicisi (1.5; kolon ve alan kuralı bu adımda) |
+| Kitin ağırlık ve güç toplamı | Kitin modellere açılmış içeriğinin ve kategori alt ağacının sözleşmesi (Planning, 1.6) |
+| `ICatalogDirectory` sözleşmesi (Venues ve Riders için doğrulama ve adlar) | Sarf malzeme tanımı (S6) |
+
+## 3. Projeler
+
+`FestOS.Modules.Catalog.{Domain, Application, Contracts, Infrastructure}`. S1'de olay yayınlamadığı için `IntegrationEvents` projesi yoktur; 1.5'te Inventory'nin olayını dinlemek için yalnızca Inventory'nin IntegrationEvents projesine başvurur. Şema `catalog`, veritabanı rolü `festos_catalog`.
+
+## 4. Veritabanı (`catalog` şeması)
+
+| Tablo | Kolonlar (ortak kolonlar hariç) | Kısıtlar ve indeksler |
+|---|---|---|
+| `equipment_categories` | `id`, `name varchar(200)`, `name_search`, `parent_id null`, `deactivated_at`, `deactivated_by`, `version` | FK `parent_id` → kendisi `RESTRICT`; `ux_equipment_categories_name` (`parent_id, name_search`, `NULLS NOT DISTINCT`) → BR-EQP-011 |
+| `equipment_models` | `id`, `brand varchar(100)`, `name varchar(200)`, `brand_name_search`, `category_id`, `tracking_type` (`serialized` / `bulk`), `weight_kilograms numeric(10,3) null`, `power_watts integer null`, `transport_volume_cubic_meters numeric(8,3) null`, `has_stock bool`, `deactivated_at`, `deactivated_by`, `version` | FK `category_id` `RESTRICT`; `ux_equipment_models_brand_name` → BR-EQP-012; ölçülerde `CHECK (> 0)` (MD-05); `ix_equipment_models_search` (`pg_trgm`) |
+| `kits` | `id`, `name varchar(200)`, `name_search`, `deactivated_at`, `deactivated_by`, `version` | `ux_kits_name` → BR-EQP-013 |
+| `kit_lines` | `id`, `kit_id`, `sort_order int`, `model_id null`, `sub_kit_id null`, `quantity int` | FK `kit_id` `CASCADE`; FK `model_id`, `sub_kit_id` `RESTRICT`; `ck_kit_lines_target` (`num_nonnulls(model_id, sub_kit_id) = 1`) → BR-EQP-003; `quantity >= 1` (MD-05) |
+
+- `EquipmentCategory`, `EquipmentModel` ve `Kit` ayrı toplu köklerdir; kit satırı kite aittir ([06 §7](../06-erd-conceptual.md#7-toplu-kökler-ve-eşzamanlılık)).
+- Benzersizlikler pasif kayıtları da kapsar: pasif bir modelin adıyla yeni model açılamaz, gerekirse eskisi etkinleştirilir (depolardaki BR-SYS-016 ile aynı).
+- Modelin görünen adı "marka + model adı"dır (ör. "Shure SM58"). Arama anahtarı ikisinden birlikte üretilir.
+- Kategori yolu ("Ses › Mikrofon › Dinamik vokal") saklanmaz, okurken üretilir; ağaç küçüktür (CT-02).
+
+## 5. Kurallar
+
+| Kural | Uygulama |
+|---|---|
+| BR-SYS-001 Silme yerine pasifleştirme | Kategori, model ve kit silinmez; pasifleştirilir ve yeniden etkinleştirilebilir. Pasif kategoriye model ya da alt kategori, kite pasif model ya da kit eklenemez; var olan bağlar görünmeye devam eder ve "Pasif" rozeti taşır. Kit satırı modül içi kayıttır, kaldırılabilir. |
+| BR-EQP-001 Takip tipinin değişmezliği | `has_stock` doluysa takip tipi değişikliği reddedilir (alan kuralı). Kolonu 1.5'te `StockCreatedForModel` dinleyicisi doldurur; bu adımda alan kuralı birim testiyle sınanır. |
+| BR-EQP-002 Kategori hiyerarşisi | Kategori kendisinin ya da alt kategorisinin altına taşınamaz. Taşıma ve oluşturma `catalog:categories:tree` danışma kilidi altında yapılır, iki eşzamanlı taşıma döngü kuramaz (CT-03). Pasifleştirmenin alt kayıtlarla ilişkisi S2'nin sorusudur. "Alt kategorileri de kapsar" kısmı kategoriyi hedefleyen hesaplarındır (Planning, 1.6). |
+| BR-EQP-003 Kit yapısı | Kayıtta alt kitlerin kapanışı hesaplanır, kit kendini içeriyorsa reddedilir; kit satırı kaydı `catalog:kits:structure` danışma kilidi altındadır (iki kit aynı anda birbirini eklerse ikincisi döngüyü görür). Aynı model ya da alt kit bir kitte bir kez geçer (doğrulama). Toplam ağırlık ve güç, içerik modellere açılarak hesaplanır; değeri boş bir model varsa toplam "eksik veri" işaretlidir. |
+| BR-EQP-011 Tekil kategori adı (yeni) | Kategori adı aynı üst kategori içinde, büyük-küçük harf ve Türkçe işaret farkı gözetmeden tekildir. US-EQP-001'in kabul kriteriydi. |
+| BR-EQP-012 Tekil model (yeni) | Marka ve model adı birlikte, aynı biçimde tekildir. US-EQP-002'nin kabul kriteriydi. |
+| BR-EQP-013 Tekil kit adı (yeni) | Kit adı tekildir; seçim kutularında iki aynı adlı kit karışırdı. |
+
+## 6. Yetkiler ve uç noktalar
+
+| Yetki | SY | BM | TM | DS | GM |
+|---|---|---|---|---|---|
+| `Catalog.Categories.View`, `Catalog.Models.View`, `Catalog.Kits.View` | | ✓ | ✓ | ✓ | ✓ |
+| `Catalog.Categories.Create / Edit / Deactivate` | | | ✓ | | |
+| `Catalog.Models.Create / Edit / Deactivate` | | | ✓ | | |
+| `Catalog.Kits.Create / Edit / Deactivate` | | | ✓ | | |
+
+Booking müdürü rider'ı okurken, depo sorumlusu stokta (1.5) katalogu görür.
+
+| Yöntem ve adres | İşlem adı | Yetki | Not |
+|---|---|---|---|
+| `GET /api/v1/equipment-categories` | `ListEquipmentCategories` | `…Categories.View` | Sayfasız düz liste (üst kimlik, yol, aktif model sayısı); ön yüz ağaca çevirir (CT-02); `status` |
+| `POST /api/v1/equipment-categories` | `CreateEquipmentCategory` | `…Categories.Create` | Ad, üst kategori |
+| `PUT /api/v1/equipment-categories/{categoryId}` | `EditEquipmentCategory` | `…Categories.Edit` | Ad, üst kategori (taşıma); `If-Match` |
+| `POST …/{categoryId}/deactivate`, `…/activate` | `DeactivateEquipmentCategory`, `ActivateEquipmentCategory` | `…Categories.Deactivate` | `If-Match`; pasif üst kategorinin altındaki kategori etkinleştirilemez |
+| `GET /api/v1/equipment-models` | `ListEquipmentModels` | `…Models.View` | Sayfalı; `q`, `categoryId` (alt ağaç dahil), `trackingType`, `status`; sıralama `name`, `brand`, `category` |
+| `GET /api/v1/equipment-models/{modelId}` | `GetEquipmentModel` | `…Models.View` | Kategori yolu, modeli içeren kitler; `ETag` |
+| `POST /api/v1/equipment-models` | `CreateEquipmentModel` | `…Models.Create` | |
+| `PUT /api/v1/equipment-models/{modelId}` | `EditEquipmentModel` | `…Models.Edit` | BR-EQP-001; `If-Match` |
+| `POST …/{modelId}/deactivate`, `…/activate` | `DeactivateEquipmentModel`, `ActivateEquipmentModel` | `…Models.Deactivate` | `If-Match` |
+| `GET /api/v1/kits` | `ListKits` | `…Kits.View` | Sayfalı; `q`, `status` |
+| `GET /api/v1/kits/{kitId}` | `GetKit` | `…Kits.View` | Satırlar (model ya da alt kit adı, pasiflik), açılmış içerik, toplam ağırlık ve güç, eksik veri işareti; `ETag` |
+| `POST /api/v1/kits` | `CreateKit` | `…Kits.Create` | Ad ve isteğe bağlı satırlar |
+| `PUT /api/v1/kits/{kitId}` | `EditKit` | `…Kits.Edit` | Ad ve satırların tamamı (sıralı); BR-EQP-003; `If-Match` |
+| `POST …/{kitId}/deactivate`, `…/activate` | `DeactivateKit`, `ActivateKit` | `…Kits.Deactivate` | `If-Match` |
+
+Doğrulama: ad zorunlu (en çok 200), marka zorunlu (en çok 100), takip tipi zorunlu, ölçüler sıfırdan büyük; kit satırında adet 1–9999.
+
+## 7. Sözleşme ve olaylar
+
+- **Senkron sözleşme (Contracts):** `ICatalogDirectory.FindModelsAsync(ids)`, `FindCategoriesAsync(ids)`, `FindKitsAsync(ids)` → ad, kategori yolu (kökten yaprağa adlar), takip tipi, aktiflik. Venues ve Riders kayıtta hedefi doğrular, okurken adları alır (MD-02). Kategorinin alt ağacı ve kitin açılmış içeriği Planning'in ihtiyacıdır; 1.6'da sözleşmeye eklenir.
+- **Dinlediği olay:** `StockCreatedForModel` (Inventory, 1.5).
+- **Yayınladığı olay:** yok.
+
+## 8. Ekranlar, hikayeler ve PR planı
+
+| Ekran | Adres | Not |
+|---|---|---|
+| Kategoriler | `/catalog/categories` | Girintili ağaç: ad, aktif model sayısı, durum; satır menüsü (Alt kategori ekle, Düzenle, Pasifleştir / Etkinleştir, Geçmiş); kategori diyaloğu (ad, üst kategori) |
+| Modeller | `/catalog/models` | Liste: marka, model, kategori yolu, takip tipi, ağırlık, güç; arama, kategori, takip tipi ve durum süzgeci adreste |
+| Model detayı ve formu | `/catalog/models/{id}`, `/catalog/models/new`, `/catalog/models/{id}/edit` | Form sayfası (11 §2.4): marka, model adı, kategori (ağaçtan seçim), takip tipi (stok varsa pasif ve nedeni yazılı), ölçüler. Detay: bilgiler, modeli içeren kitler; Geçmiş sekmesi. |
+| Kitler | `/catalog/kits`, `/catalog/kits/{id}` | Liste: ad, satır sayısı, toplam ağırlık ve güç (eksik veri işaretiyle). Detay: satır düzenleyici (model ya da kit seçimi, adet, sıra), açılmış içerik, toplamlar; Geçmiş sekmesi. Oluşturma diyaloğu yalnızca ad ister. |
+
+| Hikaye | Uç noktalar ve ekranlar | Kurallar |
+|---|---|---|
+| US-EQP-001 Ekipman kategorileri | Kategori uçları; kategoriler | BR-SYS-001, BR-EQP-002, BR-EQP-011 |
+| US-EQP-002 Ekipman modeli | Model uçları; modeller | BR-EQP-001, BR-EQP-012 |
+| US-EQP-005 Kit tanımlama | Kit uçları; kitler | BR-EQP-003, BR-EQP-013 |
+
+| # | PR | Kapsam |
+|---|---|---|
+| 1a | Catalog iskeleti ve kategoriler (sunucu) | Projeler, şema, rol, yetkiler ve rol matrisi; kategori tablosu ve uçları, BR-EQP-002, BR-EQP-011 |
+| 1b | Kategoriler ekranı | `/catalog/categories`, menü grubu "Katalog" |
+| 2a | Modeller (sunucu) | Model tablosu ve uçları, BR-EQP-001 alan kuralı, BR-EQP-012, `ICatalogDirectory` |
+| 2b | Modeller ekranı | Liste, detay, form sayfası |
+| 3a | Kitler (sunucu) | Kit tabloları ve uçları, BR-EQP-003, BR-EQP-013, toplam hesabı |
+| 3b | Kitler ekranı | Liste, detay ve satır düzenleyici |
+
+## 9. Kararlar
+
+| No | Konu | Karar | Gerekçe |
+|---|---|---|---|
+| CT-01 | Benzersizlik ve pasif kayıtlar | Pasif kayıtlar da benzersizliğe girer | Pasif kaydın etkinleştirilmesi çakışma yaratmaz; aynı adlı iki model geçmişte karışmaz. |
+| CT-02 | Kategori ağacı | Sayfasız düz liste, yol okurken üretilir; materyalize yol ya da `ltree` yok | S1'de yüzlerce kategori beklenir; taşımada alt ağacın yollarını güncellemek gerekmez. |
+| CT-03 | Döngü denetimi | Alan kuralı + danışma kilidi (kategori taşıma, kit satırları) | Döngü iki toplu kökü birlikte ilgilendirir; iyimser kilit tek kökü korur, eşzamanlı iki değişikliği yakalamaz. |
+| CT-04 | Kit satırları | Kitin tamamı tek istekle kaydedilir | Kit küçük bir toplu köktür; sıralama ve döngü denetimi bütün üzerinde yapılır. |
+| CT-05 | Model formu | 11'deki gibi ayrı sayfa | Form ileride (S2 güç, S5 hacim) büyüyecek; 11 §3 onaylı envanterdir. |
+
+## 10. Proje sahibine sorulanlar
+
+| Soru | Seçenekler | Yanıt |
+|---|---|---|
+| S2 — Altında aktif alt kategori ya da aktif model bulunan bir kategori pasifleştirilmek istenirse ne olsun? | **Reddedilsin; önce alttakiler taşınır ya da pasifleştirilir** (önerilen; kazara toplu pasifleştirme olmaz, ret mesajı alttaki sayıları söyler) / Alttaki kategori ve modellerle birlikte pasifleşsin (onay diyaloğu sayıları gösterir) | — |
+
+US-EQP-001'in 3. kabul kriteri ("silinemez, pasifleştirilir") BR-SYS-001'le uyumlu hale getirilecek: kategori hiç silinmez. Yanıta göre kural BR-EQP-002'ye eklenir.
+
+## 11. Değişiklik kaydı
+
+| Tarih | Versiyon | Değişiklik |
+|---|---|---|
+| 2026-10-02 | v0.1 | İlk taslak |
