@@ -27,7 +27,9 @@
     "OrganizationContact": "İletişim kişisi",
     "ArtistRepresentation": "Temsil",
     "EquipmentCategory": "Ekipman kategorisi",
-    "EquipmentModel": "Ekipman modeli"
+    "EquipmentModel": "Ekipman modeli",
+    "Kit": "Kit",
+    "KitLine": "Kit satırı"
   },
   "changes": {
     "show": "Değişiklikleri göster",

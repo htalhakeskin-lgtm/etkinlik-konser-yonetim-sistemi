@@ -2,6 +2,7 @@ import type { LinkProps } from "@tanstack/react-router";
 import type { ParseKeys } from "i18next";
 import {
   BookUser,
+  Boxes,
   FolderTree,
   History,
   type LucideIcon,
@@ -60,6 +61,12 @@ export const menu: readonly MenuGroup[] = [
         to: "/catalog/categories",
         permission: "Catalog.Categories.View",
         icon: FolderTree,
+      },
+      {
+        label: "menu.kits",
+        to: "/catalog/kits",
+        permission: "Catalog.Kits.View",
+        icon: Boxes,
       },
     ],
   },

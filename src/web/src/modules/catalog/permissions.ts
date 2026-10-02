@@ -8,4 +8,8 @@ export const catalogPermissions = {
   createModels: "Catalog.Models.Create",
   editModels: "Catalog.Models.Edit",
   deactivateModels: "Catalog.Models.Deactivate",
+  viewKits: "Catalog.Kits.View",
+  createKits: "Catalog.Kits.Create",
+  editKits: "Catalog.Kits.Edit",
+  deactivateKits: "Catalog.Kits.Deactivate",
 } as const;

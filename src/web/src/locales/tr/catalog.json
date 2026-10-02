@@ -141,7 +141,9 @@
     "tabs": "Model sekmeleri",
     "general": "Genel",
     "history": "Geçmiş",
-    "hasStock": "stoğu var"
+    "hasStock": "stoğu var",
+    "kits": "Bu modeli içeren kitler",
+    "noKits": "Bu model hiçbir kitte yok."
   },
   "EquipmentModel": {
     "fields": {
@@ -161,6 +163,104 @@
         "serialized": "Seri no'lu",
         "bulk": "Adetli"
       }
+    }
+  },
+  "kits": {
+    "title": "Kitler",
+    "description": "Sık birlikte kullanılan ekipman setleri; ağırlık ve güç toplamı içindeki modellerden hesaplanır.",
+    "add": "Kit ekle",
+    "search": "Kit adı ara",
+    "empty": "Bu süzgeçlere uyan kit yok.",
+    "forbidden": "Bu ekranı görme yetkiniz yok.",
+    "missingData": "eksik veri",
+    "columns": {
+      "name": "Ad",
+      "lines": "Satır",
+      "weight": "Toplam ağırlık",
+      "power": "Toplam güç",
+      "status": "Durum",
+      "actions": "İşlemler"
+    },
+    "status": {
+      "active": "Aktif",
+      "inactive": "Pasif"
+    },
+    "filters": {
+      "statusLabel": "Durum",
+      "status": {
+        "active": "Aktif",
+        "inactive": "Pasif",
+        "all": "Tümü"
+      }
+    },
+    "actions": {
+      "rename": "Adını değiştir",
+      "deactivate": "Pasifleştir",
+      "activate": "Etkinleştir"
+    },
+    "confirm": {
+      "deactivateTitle": "{{name}} pasifleştirilsin mi?",
+      "deactivateDescription": "Kit yeni kayıtlarda seçilemez; bağlı olduğu mevcut kayıtlarda ve onu içeren kitlerde görünmeye devam eder."
+    },
+    "done": {
+      "created": "Kit oluşturuldu; satırlarını bu sayfada ekleyebilirsiniz.",
+      "saved": "Kit kaydedildi.",
+      "deactivated": "Kit pasifleştirildi.",
+      "activated": "Kit etkinleştirildi."
+    }
+  },
+  "kitForm": {
+    "createTitle": "Kit ekle",
+    "renameTitle": "Kitin adını değiştir",
+    "required": "* zorunlu alan",
+    "name": "Ad",
+    "cancel": "Vazgeç",
+    "create": "Oluştur",
+    "save": "Kaydet"
+  },
+  "kitDetail": {
+    "notFound": "Bu kit bulunamadı.",
+    "description_one": "{{count}} satır",
+    "description_other": "{{count}} satır",
+    "tabs": "Kit sekmeleri",
+    "general": "Genel",
+    "history": "Geçmiş",
+    "lines": "Satırlar",
+    "noLines": "Henüz satır yok.",
+    "kind": "Tür",
+    "kinds": {
+      "model": "Model",
+      "kit": "Kit"
+    },
+    "kindOf": "{{number}}. satırın türü",
+    "target": "Model ya da kit",
+    "quantity": "Adet",
+    "quantityOf": "{{number}}. satırın adedi",
+    "searchModel": "Marka ya da model yazın",
+    "searchKit": "Kit adı yazın",
+    "moveUp": "{{number}}. satırı yukarı taşı",
+    "moveDown": "{{number}}. satırı aşağı taşı",
+    "remove": "{{number}}. satırı kaldır",
+    "addLine": "Satır ekle",
+    "undo": "Değişiklikleri geri al",
+    "save": "Satırları kaydet",
+    "invalidLines": "İşaretli satırlarda model ya da kit seçin ve 1 ile 9999 arasında bir adet girin.",
+    "contents": "İçerik ve toplamlar"
+  },
+  "Kit": {
+    "fields": {
+      "name": "Ad",
+      "deactivatedAt": "Pasifleştirildiği zaman",
+      "deactivatedBy": "Pasifleştiren"
+    }
+  },
+  "KitLine": {
+    "fields": {
+      "modelId": "Model",
+      "subKitId": "Alt kit",
+      "quantity": "Adet",
+      "sortOrder": "Sıra",
+      "kitId": "Kit"
     }
   }
 }

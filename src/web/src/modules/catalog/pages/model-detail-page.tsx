@@ -37,8 +37,8 @@ export type ModelDetailPageProps = {
   tab: ModelDetailTab;
 };
 
-// A model's page (11 §3): its category, tracking type and technical values, and its change history.
-// The kits that hold it join with the kits.
+// A model's page (11 §3): its category, tracking type and technical values, the kits that hold it, and
+// its change history.
 export function ModelDetailPage({ modelId, tab }: ModelDetailPageProps) {
   const { t } = useTranslation("catalog");
   const user = useSignedInUser();
@@ -188,6 +188,27 @@ function ModelDetail({ model, tab }: { model: EquipmentModelDetails; tab: ModelD
               {formatDecimal(model.transportVolumeCubicMeters)}
             </Row>
           </dl>
+          <h2 className="mt-6 mb-2 text-base font-semibold">{t("modelDetail.kits")}</h2>
+          {model.kits.length === 0 ? (
+            <p className="text-sm text-muted-foreground">{t("modelDetail.noKits")}</p>
+          ) : (
+            <ul className="flex flex-col gap-1 text-sm">
+              {model.kits.map((kit) => (
+                <li key={kit.id} className="flex items-center gap-2">
+                  <Link
+                    to="/catalog/kits/$kitId"
+                    params={{ kitId: kit.id }}
+                    className="font-medium hover:underline"
+                  >
+                    {kit.name}
+                  </Link>
+                  {!kit.isActive && (
+                    <StatusBadge tone="muted" label={t("models.status.inactive")} />
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
       )}
       <ConfirmDialog

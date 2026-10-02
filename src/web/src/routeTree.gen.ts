@@ -22,10 +22,13 @@ import { Route as AppCatalogCategoriesRouteImport } from './routes/_app/catalog/
 import { Route as AppPartiesIndexRouteImport } from './routes/_app/parties/index'
 import { Route as AppArtistsPartyIdIndexRouteImport } from './routes/_app/artists/$partyId/index'
 import { Route as AppArtistsPartyIdHistoryRouteImport } from './routes/_app/artists/$partyId/history'
+import { Route as AppCatalogKitsIndexRouteImport } from './routes/_app/catalog/kits/index'
 import { Route as AppCatalogModelsIndexRouteImport } from './routes/_app/catalog/models/index'
 import { Route as AppCatalogModelsNewRouteImport } from './routes/_app/catalog/models/new'
 import { Route as AppPartiesPartyIdIndexRouteImport } from './routes/_app/parties/$partyId/index'
 import { Route as AppPartiesPartyIdHistoryRouteImport } from './routes/_app/parties/$partyId/history'
+import { Route as AppCatalogKitsKitIdIndexRouteImport } from './routes/_app/catalog/kits/$kitId/index'
+import { Route as AppCatalogKitsKitIdHistoryRouteImport } from './routes/_app/catalog/kits/$kitId/history'
 import { Route as AppCatalogModelsModelIdIndexRouteImport } from './routes/_app/catalog/models/$modelId/index'
 import { Route as AppCatalogModelsModelIdEditRouteImport } from './routes/_app/catalog/models/$modelId/edit'
 import { Route as AppCatalogModelsModelIdHistoryRouteImport } from './routes/_app/catalog/models/$modelId/history'
@@ -95,6 +98,11 @@ const AppArtistsPartyIdHistoryRoute =
     path: '/artists/$partyId/history',
     getParentRoute: () => AppRoute,
   } as any)
+const AppCatalogKitsIndexRoute = AppCatalogKitsIndexRouteImport.update({
+  id: '/catalog/kits/',
+  path: '/catalog/kits/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppCatalogModelsIndexRoute = AppCatalogModelsIndexRouteImport.update({
   id: '/catalog/models/',
   path: '/catalog/models/',
@@ -114,6 +122,18 @@ const AppPartiesPartyIdHistoryRoute =
   AppPartiesPartyIdHistoryRouteImport.update({
     id: '/parties/$partyId/history',
     path: '/parties/$partyId/history',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppCatalogKitsKitIdIndexRoute =
+  AppCatalogKitsKitIdIndexRouteImport.update({
+    id: '/catalog/kits/$kitId/',
+    path: '/catalog/kits/$kitId/',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppCatalogKitsKitIdHistoryRoute =
+  AppCatalogKitsKitIdHistoryRouteImport.update({
+    id: '/catalog/kits/$kitId/history',
+    path: '/catalog/kits/$kitId/history',
     getParentRoute: () => AppRoute,
   } as any)
 const AppCatalogModelsModelIdIndexRoute =
@@ -150,10 +170,13 @@ export interface FileRoutesByFullPath {
   '/catalog/models/new': typeof AppCatalogModelsNewRoute
   '/parties/$partyId/history': typeof AppPartiesPartyIdHistoryRoute
   '/artists/$partyId/': typeof AppArtistsPartyIdIndexRoute
+  '/catalog/kits/': typeof AppCatalogKitsIndexRoute
   '/catalog/models/': typeof AppCatalogModelsIndexRoute
   '/parties/$partyId/': typeof AppPartiesPartyIdIndexRoute
+  '/catalog/kits/$kitId/history': typeof AppCatalogKitsKitIdHistoryRoute
   '/catalog/models/$modelId/edit': typeof AppCatalogModelsModelIdEditRoute
   '/catalog/models/$modelId/history': typeof AppCatalogModelsModelIdHistoryRoute
+  '/catalog/kits/$kitId/': typeof AppCatalogKitsKitIdIndexRoute
   '/catalog/models/$modelId/': typeof AppCatalogModelsModelIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -171,10 +194,13 @@ export interface FileRoutesByTo {
   '/catalog/models/new': typeof AppCatalogModelsNewRoute
   '/parties/$partyId/history': typeof AppPartiesPartyIdHistoryRoute
   '/artists/$partyId': typeof AppArtistsPartyIdIndexRoute
+  '/catalog/kits': typeof AppCatalogKitsIndexRoute
   '/catalog/models': typeof AppCatalogModelsIndexRoute
   '/parties/$partyId': typeof AppPartiesPartyIdIndexRoute
+  '/catalog/kits/$kitId/history': typeof AppCatalogKitsKitIdHistoryRoute
   '/catalog/models/$modelId/edit': typeof AppCatalogModelsModelIdEditRoute
   '/catalog/models/$modelId/history': typeof AppCatalogModelsModelIdHistoryRoute
+  '/catalog/kits/$kitId': typeof AppCatalogKitsKitIdIndexRoute
   '/catalog/models/$modelId': typeof AppCatalogModelsModelIdIndexRoute
 }
 export interface FileRoutesById {
@@ -194,10 +220,13 @@ export interface FileRoutesById {
   '/_app/catalog/models/new': typeof AppCatalogModelsNewRoute
   '/_app/parties/$partyId/history': typeof AppPartiesPartyIdHistoryRoute
   '/_app/artists/$partyId/': typeof AppArtistsPartyIdIndexRoute
+  '/_app/catalog/kits/': typeof AppCatalogKitsIndexRoute
   '/_app/catalog/models/': typeof AppCatalogModelsIndexRoute
   '/_app/parties/$partyId/': typeof AppPartiesPartyIdIndexRoute
+  '/_app/catalog/kits/$kitId/history': typeof AppCatalogKitsKitIdHistoryRoute
   '/_app/catalog/models/$modelId/edit': typeof AppCatalogModelsModelIdEditRoute
   '/_app/catalog/models/$modelId/history': typeof AppCatalogModelsModelIdHistoryRoute
+  '/_app/catalog/kits/$kitId/': typeof AppCatalogKitsKitIdIndexRoute
   '/_app/catalog/models/$modelId/': typeof AppCatalogModelsModelIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -217,10 +246,13 @@ export interface FileRouteTypes {
     | '/catalog/models/new'
     | '/parties/$partyId/history'
     | '/artists/$partyId/'
+    | '/catalog/kits/'
     | '/catalog/models/'
     | '/parties/$partyId/'
+    | '/catalog/kits/$kitId/history'
     | '/catalog/models/$modelId/edit'
     | '/catalog/models/$modelId/history'
+    | '/catalog/kits/$kitId/'
     | '/catalog/models/$modelId/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -238,10 +270,13 @@ export interface FileRouteTypes {
     | '/catalog/models/new'
     | '/parties/$partyId/history'
     | '/artists/$partyId'
+    | '/catalog/kits'
     | '/catalog/models'
     | '/parties/$partyId'
+    | '/catalog/kits/$kitId/history'
     | '/catalog/models/$modelId/edit'
     | '/catalog/models/$modelId/history'
+    | '/catalog/kits/$kitId'
     | '/catalog/models/$modelId'
   id:
     | '__root__'
@@ -260,10 +295,13 @@ export interface FileRouteTypes {
     | '/_app/catalog/models/new'
     | '/_app/parties/$partyId/history'
     | '/_app/artists/$partyId/'
+    | '/_app/catalog/kits/'
     | '/_app/catalog/models/'
     | '/_app/parties/$partyId/'
+    | '/_app/catalog/kits/$kitId/history'
     | '/_app/catalog/models/$modelId/edit'
     | '/_app/catalog/models/$modelId/history'
+    | '/_app/catalog/kits/$kitId/'
     | '/_app/catalog/models/$modelId/'
   fileRoutesById: FileRoutesById
 }
@@ -366,6 +404,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppArtistsPartyIdHistoryRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/catalog/kits/': {
+      id: '/_app/catalog/kits/'
+      path: '/catalog/kits'
+      fullPath: '/catalog/kits/'
+      preLoaderRoute: typeof AppCatalogKitsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/catalog/models/': {
       id: '/_app/catalog/models/'
       path: '/catalog/models'
@@ -392,6 +437,20 @@ declare module '@tanstack/react-router' {
       path: '/parties/$partyId/history'
       fullPath: '/parties/$partyId/history'
       preLoaderRoute: typeof AppPartiesPartyIdHistoryRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/catalog/kits/$kitId/': {
+      id: '/_app/catalog/kits/$kitId/'
+      path: '/catalog/kits/$kitId'
+      fullPath: '/catalog/kits/$kitId/'
+      preLoaderRoute: typeof AppCatalogKitsKitIdIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/catalog/kits/$kitId/history': {
+      id: '/_app/catalog/kits/$kitId/history'
+      path: '/catalog/kits/$kitId/history'
+      fullPath: '/catalog/kits/$kitId/history'
+      preLoaderRoute: typeof AppCatalogKitsKitIdHistoryRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/catalog/models/$modelId/': {
@@ -431,10 +490,13 @@ interface AppRouteChildren {
   AppCatalogModelsNewRoute: typeof AppCatalogModelsNewRoute
   AppPartiesPartyIdHistoryRoute: typeof AppPartiesPartyIdHistoryRoute
   AppArtistsPartyIdIndexRoute: typeof AppArtistsPartyIdIndexRoute
+  AppCatalogKitsIndexRoute: typeof AppCatalogKitsIndexRoute
   AppCatalogModelsIndexRoute: typeof AppCatalogModelsIndexRoute
   AppPartiesPartyIdIndexRoute: typeof AppPartiesPartyIdIndexRoute
+  AppCatalogKitsKitIdHistoryRoute: typeof AppCatalogKitsKitIdHistoryRoute
   AppCatalogModelsModelIdEditRoute: typeof AppCatalogModelsModelIdEditRoute
   AppCatalogModelsModelIdHistoryRoute: typeof AppCatalogModelsModelIdHistoryRoute
+  AppCatalogKitsKitIdIndexRoute: typeof AppCatalogKitsKitIdIndexRoute
   AppCatalogModelsModelIdIndexRoute: typeof AppCatalogModelsModelIdIndexRoute
 }
 
@@ -451,10 +513,13 @@ const AppRouteChildren: AppRouteChildren = {
   AppCatalogModelsNewRoute: AppCatalogModelsNewRoute,
   AppPartiesPartyIdHistoryRoute: AppPartiesPartyIdHistoryRoute,
   AppArtistsPartyIdIndexRoute: AppArtistsPartyIdIndexRoute,
+  AppCatalogKitsIndexRoute: AppCatalogKitsIndexRoute,
   AppCatalogModelsIndexRoute: AppCatalogModelsIndexRoute,
   AppPartiesPartyIdIndexRoute: AppPartiesPartyIdIndexRoute,
+  AppCatalogKitsKitIdHistoryRoute: AppCatalogKitsKitIdHistoryRoute,
   AppCatalogModelsModelIdEditRoute: AppCatalogModelsModelIdEditRoute,
   AppCatalogModelsModelIdHistoryRoute: AppCatalogModelsModelIdHistoryRoute,
+  AppCatalogKitsKitIdIndexRoute: AppCatalogKitsKitIdIndexRoute,
   AppCatalogModelsModelIdIndexRoute: AppCatalogModelsModelIdIndexRoute,
 }
 
