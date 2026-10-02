@@ -40,7 +40,7 @@ public sealed class VenuesModuleDefinition : IModuleDefinition
         builder.Services.AddScoped<IVenueRepository, VenueRepository>();
         builder.Services.AddRealtimeGroup<VenueGroupPolicy>();
         builder.Services.AddResourceChange<VenueEquipmentChangedIntegrationEvent>(changed => new ResourceChange(
-            "venueEquipment",
+            "venues",
             changed.VenueId,
             Version: null,
             [$"venues:{changed.VenueId}"]

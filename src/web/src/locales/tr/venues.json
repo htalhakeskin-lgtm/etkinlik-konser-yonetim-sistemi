@@ -74,7 +74,8 @@
     "history": "Geçmiş",
     "stage": "Sahne (genişlik × derinlik × yükseklik)",
     "capacity_one": "{{count}} kişi",
-    "capacity_other": "{{count}} kişi"
+    "capacity_other": "{{count}} kişi",
+    "equipment": "Ekipman"
   },
   "Venue": {
     "fields": {
@@ -92,6 +93,112 @@
       "timeZone": "Saat dilimi",
       "deactivatedAt": "Pasifleştirildiği zaman",
       "deactivatedBy": "Pasifleştiren"
+    }
+  },
+  "equipment": {
+    "title": "Mekanın ekipmanı",
+    "statusLabel": "Satır durumu",
+    "status": {
+      "current": "Güncel",
+      "ended": "Sona ermiş",
+      "all": "Tümü"
+    },
+    "addLine": "Satır ekle",
+    "empty": "Bu süzgece uyan ekipman satırı yok.",
+    "columns": {
+      "name": "Ekipman",
+      "quantity": "Adet",
+      "validity": "Geçerlilik",
+      "unavailable": "Kullanılamayan dönemler",
+      "actions": "İşlemler"
+    },
+    "notCounted": "Hesaba girmez",
+    "targetInactive": "Katalogda pasif",
+    "always": "Süresiz",
+    "period_one": "{{days}}: {{count}} adet, {{reason}}",
+    "period_other": "{{days}}: {{count}} adet, {{reason}}",
+    "addPeriod": "Dönem ekle",
+    "editPeriod": "{{name}} dönemini düzenle",
+    "removePeriod": "{{name}} dönemini kaldır",
+    "editLine": "{{name}} satırını düzenle",
+    "removeLine": "{{name}} satırını kaldır",
+    "confirm": {
+      "lineTitle": "{{name}} satırı kaldırılsın mı?",
+      "lineDescription": "Satır ve kullanılamayan dönemleri silinir; değişiklik geçmişte kalır.",
+      "periodTitle": "{{name}} için bu dönem kaldırılsın mı?",
+      "periodDescription": "Bu günlerde satırın tamamı yeniden kullanılabilir sayılır.",
+      "remove": "Kaldır"
+    },
+    "done": {
+      "lineSaved": "Ekipman satırı kaydedildi.",
+      "lineRemoved": "Ekipman satırı kaldırıldı.",
+      "periodSaved": "Dönem kaydedildi.",
+      "periodRemoved": "Dönem kaldırıldı."
+    },
+    "usable": {
+      "title": "Kullanılabilir ekipman",
+      "help": "Seçilen günlerin her birinde kullanılabilecek en az adet; son gün dahildir.",
+      "firstDay": "İlk gün",
+      "lastDay": "Son gün",
+      "show": "Göster",
+      "invalid": "İlk ve son günü girin; son gün ilk günden önce olamaz.",
+      "empty": "Bu günlerde geçerli ekipman satırı yok.",
+      "quantity": "{{usable}} / {{total}}"
+    }
+  },
+  "lineForm": {
+    "createTitle": "Ekipman satırı ekle",
+    "editTitle": "Ekipman satırını düzenle",
+    "help": "Katalogdaki bir model ya da kategori seçin; katalogda olmayan ekipmanı açıklamayla yazın.",
+    "kind": "Satır türü",
+    "kinds": {
+      "model": "Model",
+      "category": "Kategori",
+      "description": "Açıklama"
+    },
+    "targets": {
+      "model": "Model",
+      "category": "Kategori",
+      "description": "Açıklama"
+    },
+    "notCounted": "Açıklamayla yazılan ekipman kullanılabilir adetlerde hesaba girmez.",
+    "searchModel": "Marka ya da model adı yazın",
+    "searchCategory": "Kategori adı yazın",
+    "quantity": "Adet",
+    "firstDay": "İlk gün",
+    "lastDay": "Son gün",
+    "daysHelp": "Günler isteğe bağlıdır; boş bırakılan uç açık kalır, son gün dahildir.",
+    "daysOrder": "Son gün ilk günden önce olamaz.",
+    "cancel": "Vazgeç",
+    "create": "Ekle",
+    "save": "Kaydet"
+  },
+  "periodForm": {
+    "createTitle": "Kullanılamayan dönem ekle",
+    "editTitle": "Kullanılamayan dönemi düzenle",
+    "firstDay": "İlk gün",
+    "lastDay": "Son gün",
+    "quantity": "Kullanılamayan adet",
+    "reason": "Neden"
+  },
+  "VenueEquipment": {
+    "fields": {
+      "modelId": "Model",
+      "categoryId": "Kategori",
+      "description": "Açıklama",
+      "quantity": "Adet",
+      "validityStart": "Geçerlilik başlangıcı",
+      "validityEnd": "Geçerlilik bitişi (dahil değil)",
+      "venueId": "Mekan"
+    }
+  },
+  "VenueEquipmentUnavailability": {
+    "fields": {
+      "periodStart": "Dönem başlangıcı",
+      "periodEnd": "Dönem bitişi (dahil değil)",
+      "quantity": "Adet",
+      "reason": "Neden",
+      "venueEquipmentId": "Ekipman satırı"
     }
   }
 }

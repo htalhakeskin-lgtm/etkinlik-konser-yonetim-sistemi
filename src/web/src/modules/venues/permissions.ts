@@ -4,4 +4,5 @@ export const venuesPermissions = {
   createVenues: "Venues.Venues.Create",
   editVenues: "Venues.Venues.Edit",
   deactivateVenues: "Venues.Venues.Deactivate",
+  editEquipment: "Venues.Equipment.Edit",
 } as const;
