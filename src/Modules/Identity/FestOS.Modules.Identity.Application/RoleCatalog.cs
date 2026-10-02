@@ -18,12 +18,19 @@ public static class RoleCatalog
 
     private const string ViewCategories = "Catalog.Categories.View";
 
-    private static readonly string[] ManageCategories =
+    private const string ViewModels = "Catalog.Models.View";
+
+    private static readonly string[] ViewCatalog = [ViewCategories, ViewModels];
+
+    private static readonly string[] ManageCatalog =
     [
-        ViewCategories,
+        .. ViewCatalog,
         "Catalog.Categories.Create",
         "Catalog.Categories.Edit",
         "Catalog.Categories.Deactivate",
+        "Catalog.Models.Create",
+        "Catalog.Models.Edit",
+        "Catalog.Models.Deactivate",
     ];
 
     private static readonly string[] ManageParties =
@@ -43,15 +50,15 @@ public static class RoleCatalog
                 .. InventoryPermissions.All,
                 ViewAuditEntries,
             ]),
-            [Role.BookingManager] = Set([InventoryPermissions.ViewWarehouses, .. ManageParties, ViewCategories]),
-            [Role.TechnicalManager] = Set([InventoryPermissions.ViewWarehouses, ViewParties, .. ManageCategories]),
-            [Role.WarehouseManager] = Set([InventoryPermissions.ViewWarehouses, ViewCategories]),
+            [Role.BookingManager] = Set([InventoryPermissions.ViewWarehouses, .. ManageParties, .. ViewCatalog]),
+            [Role.TechnicalManager] = Set([InventoryPermissions.ViewWarehouses, ViewParties, .. ManageCatalog]),
+            [Role.WarehouseManager] = Set([InventoryPermissions.ViewWarehouses, .. ViewCatalog]),
             [Role.GeneralManager] = Set([
                 IdentityPermissions.ViewUsers,
                 IdentityPermissions.ViewRoles,
                 InventoryPermissions.ViewWarehouses,
                 ViewParties,
-                ViewCategories,
+                .. ViewCatalog,
                 ViewAuditEntries,
             ]),
         };

@@ -20,10 +20,17 @@ public sealed class SchemaRuleTests(PostgresDatabase database) : IAsyncLifetime
         ["sample.sample_usage_records.sample_item_id"] = "The test-only sample module never queries by it.",
     };
 
+    // A constraint that repeats a field check the API already answers with the field's error (parties MD-05).
+    private const string FieldCheck =
+        "Repeats the API's field check; the request is refused before it reaches the table.";
+
     // Constraints that guard a technical value, not a business rule, with the reason (DT-04).
     private static readonly Dictionary<string, string> ConstraintsWithoutRule = new(StringComparer.Ordinal)
     {
         ["ux_sessions_key_hash"] = "A random key's hash; a clash is impossible in practice and is no user's mistake.",
+        ["ck_equipment_models_weight_kilograms"] = FieldCheck,
+        ["ck_equipment_models_power_watts"] = FieldCheck,
+        ["ck_equipment_models_transport_volume_cubic_meters"] = FieldCheck,
     };
 
     private readonly Dictionary<string, string> _passwords = ModuleContexts.NewPasswords();

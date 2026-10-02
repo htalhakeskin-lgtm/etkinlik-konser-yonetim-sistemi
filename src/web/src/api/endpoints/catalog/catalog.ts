@@ -27,7 +27,11 @@ import type {
   ApiProblem,
   EquipmentCategoryItem,
   EquipmentCategoryRequest,
-  ListEquipmentCategoriesParams
+  EquipmentModelDetails,
+  EquipmentModelRequest,
+  ListEquipmentCategoriesParams,
+  ListEquipmentModelsParams,
+  PagedResultOfEquipmentModelListItem
 } from '../../model';
 
 import { apiClient } from '../../../lib/api-client';
@@ -479,4 +483,532 @@ export const useActivateEquipmentCategory = <TError = ApiProblem,
         TContext
       > => {
       return useMutation(getActivateEquipmentCategoryMutationOptions(options), queryClient);
+    }
+    export const getListEquipmentModelsUrl = (params?: ListEquipmentModelsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/equipment-models?${stringifiedParams}` : `/api/v1/equipment-models`
+}
+
+/**
+ * @summary Lists the models, searched and filtered, one page at a time.
+ */
+export const listEquipmentModels = async (params?: ListEquipmentModelsParams, options?: Parameters<typeof apiClient>[1]): Promise<PagedResultOfEquipmentModelListItem> => {
+
+  return apiClient<PagedResultOfEquipmentModelListItem>(getListEquipmentModelsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListEquipmentModelsQueryKey = (params?: ListEquipmentModelsParams,) => {
+    return [
+    `/api/v1/equipment-models`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getListEquipmentModelsQueryOptions = <TData = Awaited<ReturnType<typeof listEquipmentModels>>, TError = ApiProblem>(params?: ListEquipmentModelsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEquipmentModels>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListEquipmentModelsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listEquipmentModels>>> = ({ signal }) => listEquipmentModels(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listEquipmentModels>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ListEquipmentModelsQueryResult = NonNullable<Awaited<ReturnType<typeof listEquipmentModels>>>
+export type ListEquipmentModelsQueryError = ApiProblem
+
+
+export function useListEquipmentModels<TData = Awaited<ReturnType<typeof listEquipmentModels>>, TError = ApiProblem>(
+ params: undefined |  ListEquipmentModelsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEquipmentModels>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listEquipmentModels>>,
+          TError,
+          Awaited<ReturnType<typeof listEquipmentModels>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListEquipmentModels<TData = Awaited<ReturnType<typeof listEquipmentModels>>, TError = ApiProblem>(
+ params?: ListEquipmentModelsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEquipmentModels>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listEquipmentModels>>,
+          TError,
+          Awaited<ReturnType<typeof listEquipmentModels>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useListEquipmentModels<TData = Awaited<ReturnType<typeof listEquipmentModels>>, TError = ApiProblem>(
+ params?: ListEquipmentModelsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEquipmentModels>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Lists the models, searched and filtered, one page at a time.
+ */
+
+export function useListEquipmentModels<TData = Awaited<ReturnType<typeof listEquipmentModels>>, TError = ApiProblem>(
+ params?: ListEquipmentModelsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listEquipmentModels>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getListEquipmentModelsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getCreateEquipmentModelUrl = () => {
+
+
+
+
+  return `/api/v1/equipment-models`
+}
+
+/**
+ * @summary Adds a model to the catalog.
+ */
+export const createEquipmentModel = async (equipmentModelRequest: EquipmentModelRequest, options?: Parameters<typeof apiClient>[1]): Promise<EquipmentModelDetails> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiClient<EquipmentModelDetails>(getCreateEquipmentModelUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(equipmentModelRequest)
+  }
+);}
+
+
+
+
+
+export const getCreateEquipmentModelMutationKey = () => ['createEquipmentModel'] as const;
+
+export const getCreateEquipmentModelMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createEquipmentModel>>, TError,CreateEquipmentModelMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof createEquipmentModel>>, TError,CreateEquipmentModelMutationVariables, TContext> => {
+
+const mutationKey = getCreateEquipmentModelMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createEquipmentModel>>, CreateEquipmentModelMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createEquipmentModel(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateEquipmentModelMutationResult = NonNullable<Awaited<ReturnType<typeof createEquipmentModel>>>
+    export type CreateEquipmentModelMutationBody = EquipmentModelRequest
+    export type CreateEquipmentModelMutationError = ApiProblem
+    export type CreateEquipmentModelMutationVariables = {data: EquipmentModelRequest}
+
+    /**
+ * @summary Adds a model to the catalog.
+ */
+export const useCreateEquipmentModel = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createEquipmentModel>>, TError,CreateEquipmentModelMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createEquipmentModel>>,
+        TError,
+        CreateEquipmentModelMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateEquipmentModelMutationOptions(options), queryClient);
+    }
+    export const getGetEquipmentModelUrl = (modelId: string,) => {
+
+
+
+
+  return `/api/v1/equipment-models/${modelId}`
+}
+
+/**
+ * @summary Gets a model.
+ */
+export const getEquipmentModel = async (modelId: string, options?: Parameters<typeof apiClient>[1]): Promise<EquipmentModelDetails> => {
+
+  return apiClient<EquipmentModelDetails>(getGetEquipmentModelUrl(modelId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetEquipmentModelQueryKey = (modelId: string,) => {
+    return [
+    `/api/v1/equipment-models/${modelId}`
+    ] as const;
+    }
+
+
+export const getGetEquipmentModelQueryOptions = <TData = Awaited<ReturnType<typeof getEquipmentModel>>, TError = ApiProblem>(modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEquipmentModel>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetEquipmentModelQueryKey(modelId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getEquipmentModel>>> = ({ signal }) => getEquipmentModel(modelId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: modelId !== null && modelId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getEquipmentModel>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetEquipmentModelQueryResult = NonNullable<Awaited<ReturnType<typeof getEquipmentModel>>>
+export type GetEquipmentModelQueryError = ApiProblem
+
+
+export function useGetEquipmentModel<TData = Awaited<ReturnType<typeof getEquipmentModel>>, TError = ApiProblem>(
+ modelId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEquipmentModel>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getEquipmentModel>>,
+          TError,
+          Awaited<ReturnType<typeof getEquipmentModel>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetEquipmentModel<TData = Awaited<ReturnType<typeof getEquipmentModel>>, TError = ApiProblem>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEquipmentModel>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getEquipmentModel>>,
+          TError,
+          Awaited<ReturnType<typeof getEquipmentModel>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetEquipmentModel<TData = Awaited<ReturnType<typeof getEquipmentModel>>, TError = ApiProblem>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEquipmentModel>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Gets a model.
+ */
+
+export function useGetEquipmentModel<TData = Awaited<ReturnType<typeof getEquipmentModel>>, TError = ApiProblem>(
+ modelId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEquipmentModel>>, TError, TData>>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetEquipmentModelQueryOptions(modelId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+export const getEditEquipmentModelUrl = (modelId: string,) => {
+
+
+
+
+  return `/api/v1/equipment-models/${modelId}`
+}
+
+/**
+ * @summary Changes a model; the tracking type only while it has no stock.
+ */
+export const editEquipmentModel = async (modelId: string,
+    equipmentModelRequest: EquipmentModelRequest, options?: Parameters<typeof apiClient>[1]): Promise<EquipmentModelDetails> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiClient<EquipmentModelDetails>(getEditEquipmentModelUrl(modelId),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(equipmentModelRequest)
+  }
+);}
+
+
+
+
+
+export const getEditEquipmentModelMutationKey = () => ['editEquipmentModel'] as const;
+
+export const getEditEquipmentModelMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editEquipmentModel>>, TError,EditEquipmentModelMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof editEquipmentModel>>, TError,EditEquipmentModelMutationVariables, TContext> => {
+
+const mutationKey = getEditEquipmentModelMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof editEquipmentModel>>, EditEquipmentModelMutationVariables> = (props) => {
+          const {modelId,data} = props ?? {};
+
+          return  editEquipmentModel(modelId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type EditEquipmentModelMutationResult = NonNullable<Awaited<ReturnType<typeof editEquipmentModel>>>
+    export type EditEquipmentModelMutationBody = EquipmentModelRequest
+    export type EditEquipmentModelMutationError = ApiProblem
+    export type EditEquipmentModelMutationVariables = {modelId: string;data: EquipmentModelRequest}
+
+    /**
+ * @summary Changes a model; the tracking type only while it has no stock.
+ */
+export const useEditEquipmentModel = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editEquipmentModel>>, TError,EditEquipmentModelMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof editEquipmentModel>>,
+        TError,
+        EditEquipmentModelMutationVariables,
+        TContext
+      > => {
+      return useMutation(getEditEquipmentModelMutationOptions(options), queryClient);
+    }
+    export const getDeactivateEquipmentModelUrl = (modelId: string,) => {
+
+
+
+
+  return `/api/v1/equipment-models/${modelId}/deactivate`
+}
+
+/**
+ * @summary Takes a model out of new selections.
+ */
+export const deactivateEquipmentModel = async (modelId: string, options?: Parameters<typeof apiClient>[1]): Promise<EquipmentModelDetails> => {
+
+  return apiClient<EquipmentModelDetails>(getDeactivateEquipmentModelUrl(modelId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeactivateEquipmentModelMutationKey = () => ['deactivateEquipmentModel'] as const;
+
+export const getDeactivateEquipmentModelMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deactivateEquipmentModel>>, TError,DeactivateEquipmentModelMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof deactivateEquipmentModel>>, TError,DeactivateEquipmentModelMutationVariables, TContext> => {
+
+const mutationKey = getDeactivateEquipmentModelMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deactivateEquipmentModel>>, DeactivateEquipmentModelMutationVariables> = (props) => {
+          const {modelId} = props ?? {};
+
+          return  deactivateEquipmentModel(modelId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeactivateEquipmentModelMutationResult = NonNullable<Awaited<ReturnType<typeof deactivateEquipmentModel>>>
+
+    export type DeactivateEquipmentModelMutationError = ApiProblem
+    export type DeactivateEquipmentModelMutationVariables = {modelId: string}
+
+    /**
+ * @summary Takes a model out of new selections.
+ */
+export const useDeactivateEquipmentModel = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deactivateEquipmentModel>>, TError,DeactivateEquipmentModelMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deactivateEquipmentModel>>,
+        TError,
+        DeactivateEquipmentModelMutationVariables,
+        TContext
+      > => {
+      return useMutation(getDeactivateEquipmentModelMutationOptions(options), queryClient);
+    }
+    export const getActivateEquipmentModelUrl = (modelId: string,) => {
+
+
+
+
+  return `/api/v1/equipment-models/${modelId}/activate`
+}
+
+/**
+ * @summary Activates a deactivated model in an active category.
+ */
+export const activateEquipmentModel = async (modelId: string, options?: Parameters<typeof apiClient>[1]): Promise<EquipmentModelDetails> => {
+
+  return apiClient<EquipmentModelDetails>(getActivateEquipmentModelUrl(modelId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getActivateEquipmentModelMutationKey = () => ['activateEquipmentModel'] as const;
+
+export const getActivateEquipmentModelMutationOptions = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof activateEquipmentModel>>, TError,ActivateEquipmentModelMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof activateEquipmentModel>>, TError,ActivateEquipmentModelMutationVariables, TContext> => {
+
+const mutationKey = getActivateEquipmentModelMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof activateEquipmentModel>>, ActivateEquipmentModelMutationVariables> = (props) => {
+          const {modelId} = props ?? {};
+
+          return  activateEquipmentModel(modelId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ActivateEquipmentModelMutationResult = NonNullable<Awaited<ReturnType<typeof activateEquipmentModel>>>
+
+    export type ActivateEquipmentModelMutationError = ApiProblem
+    export type ActivateEquipmentModelMutationVariables = {modelId: string}
+
+    /**
+ * @summary Activates a deactivated model in an active category.
+ */
+export const useActivateEquipmentModel = <TError = ApiProblem,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof activateEquipmentModel>>, TError,ActivateEquipmentModelMutationVariables, TContext>, request?: SecondParameter<typeof apiClient>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof activateEquipmentModel>>,
+        TError,
+        ActivateEquipmentModelMutationVariables,
+        TContext
+      > => {
+      return useMutation(getActivateEquipmentModelMutationOptions(options), queryClient);
     }

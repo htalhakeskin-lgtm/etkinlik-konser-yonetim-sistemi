@@ -2140,6 +2140,375 @@
           }
         }
       }
+    },
+    "/api/v1/equipment-models": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Lists the models, searched and filtered, one page at a time.",
+        "operationId": "ListEquipmentModels",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "trackingType",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/TrackingType"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/ModelStatusFilter"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfEquipmentModelListItem"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Adds a model to the catalog.",
+        "operationId": "CreateEquipmentModel",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "A new UUID for each user action, and the same one when the action is retried (api §10).",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EquipmentModelRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EquipmentModelDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/equipment-models/{modelId}": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Gets a model.",
+        "operationId": "GetEquipmentModel",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EquipmentModelDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Changes a model; the tracking type only while it has no stock.",
+        "operationId": "EditEquipmentModel",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "description": "The version the change is based on, as a strong entity tag, e.g. \"7\" (api §9).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "A new UUID for each user action, and the same one when the action is retried (api §10).",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EquipmentModelRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EquipmentModelDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/equipment-models/{modelId}/deactivate": {
+      "post": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Takes a model out of new selections.",
+        "operationId": "DeactivateEquipmentModel",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "description": "The version the change is based on, as a strong entity tag, e.g. \"7\" (api §9).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "A new UUID for each user action, and the same one when the action is retried (api §10).",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EquipmentModelDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/equipment-models/{modelId}/activate": {
+      "post": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Activates a deactivated model in an active category.",
+        "operationId": "ActivateEquipmentModel",
+        "parameters": [
+          {
+            "name": "modelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "description": "The version the change is based on, as a strong entity tag, e.g. \"7\" (api §9).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "A new UUID for each user action, and the same one when the action is retried (api §10).",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EquipmentModelDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2601,6 +2970,202 @@
         },
         "additionalProperties": false
       },
+      "EquipmentModelDetails": {
+        "required": [
+          "id",
+          "brand",
+          "name",
+          "categoryId",
+          "categoryPath",
+          "trackingType",
+          "weightKilograms",
+          "powerWatts",
+          "transportVolumeCubicMeters",
+          "hasStock",
+          "deactivatedAt",
+          "createdAt",
+          "updatedAt",
+          "version"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/EquipmentModelId"
+          },
+          "brand": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "categoryId": {
+            "$ref": "#/components/schemas/EquipmentCategoryId"
+          },
+          "categoryPath": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "trackingType": {
+            "$ref": "#/components/schemas/TrackingType"
+          },
+          "weightKilograms": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "decimal"
+          },
+          "powerWatts": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "transportVolumeCubicMeters": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "decimal"
+          },
+          "hasStock": {
+            "type": "boolean"
+          },
+          "deactivatedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EquipmentModelId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "EquipmentModelListItem": {
+        "required": [
+          "id",
+          "brand",
+          "name",
+          "categoryId",
+          "categoryPath",
+          "trackingType",
+          "weightKilograms",
+          "powerWatts",
+          "isActive",
+          "version"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/EquipmentModelId"
+          },
+          "brand": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "categoryId": {
+            "$ref": "#/components/schemas/EquipmentCategoryId"
+          },
+          "categoryPath": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "trackingType": {
+            "$ref": "#/components/schemas/TrackingType"
+          },
+          "weightKilograms": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "decimal"
+          },
+          "powerWatts": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EquipmentModelRequest": {
+        "required": [
+          "brand",
+          "name",
+          "categoryId",
+          "trackingType"
+        ],
+        "type": "object",
+        "properties": {
+          "brand": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "categoryId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "trackingType": {
+            "$ref": "#/components/schemas/TrackingType"
+          },
+          "weightKilograms": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "decimal"
+          },
+          "powerWatts": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "transportVolumeCubicMeters": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "decimal"
+          }
+        },
+        "additionalProperties": false
+      },
       "JsonElement": { },
       "LoginRequest": {
         "required": [
@@ -2617,6 +3182,13 @@
           }
         },
         "additionalProperties": false
+      },
+      "ModelStatusFilter": {
+        "enum": [
+          "active",
+          "inactive",
+          "all"
+        ]
       },
       "ModulePermissions": {
         "required": [
@@ -2640,6 +3212,36 @@
       "OrganizationContactId": {
         "type": "string",
         "format": "uuid"
+      },
+      "PagedResultOfEquipmentModelListItem": {
+        "required": [
+          "items",
+          "page",
+          "pageSize",
+          "totalCount"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EquipmentModelListItem"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
       },
       "PagedResultOfPartyListItem": {
         "required": [
@@ -3136,6 +3738,13 @@
           }
         },
         "additionalProperties": false
+      },
+      "TrackingType": {
+        "enum": [
+          "serialized",
+          "bulk"
+        ],
+        "type": "string"
       },
       "UserCreated": {
         "required": [
