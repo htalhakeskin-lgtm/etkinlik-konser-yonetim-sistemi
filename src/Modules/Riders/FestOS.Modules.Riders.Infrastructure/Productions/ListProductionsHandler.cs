@@ -55,6 +55,15 @@ internal sealed class ListProductionsHandler(RidersDbContext context, IPartyDire
                     .Riders.Where(rider => rider.ProductionId == production.Id)
                     .Select(rider => rider.LatestVersionNumber)
                     .First(),
+                context
+                    .Riders.Where(rider => rider.ProductionId == production.Id)
+                    .SelectMany(rider =>
+                        context.RiderVersions.Where(version =>
+                            version.RiderId == rider.Id && version.Number == rider.LatestVersionNumber
+                        )
+                    )
+                    .Select(version => (DateTimeOffset?)version.CreatedAt)
+                    .FirstOrDefault(),
                 production.DeactivatedAt == null,
                 production.Version
             ))

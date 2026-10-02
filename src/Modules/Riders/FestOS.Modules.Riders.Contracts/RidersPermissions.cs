@@ -18,7 +18,7 @@ public static class RidersPermissions
     /// <summary>Reads riders and their versions.</summary>
     public const string ViewRiders = "Riders.Riders.View";
 
-    /// <summary>Saves a new rider version; the technical manager alone has it.</summary>
+    /// <summary>Saves a new rider version; the technical manager alone has it (BR-RDR-008).</summary>
     public const string EditRiders = "Riders.Riders.Edit";
 
     /// <summary>All of them, as the module reports them to the Host.</summary>

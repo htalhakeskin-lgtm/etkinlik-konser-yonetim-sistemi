@@ -1,6 +1,6 @@
 # Modül tasarımı: Riders — Prodüksiyon ve rider
 
-> **Durum:** v1.2 (onaylandı) · **Son güncelleme:** 2026-10-02
+> **Durum:** v1.3 (onaylandı) · **Son güncelleme:** 2026-10-02
 > **Adım:** Faz 1.3 (prodüksiyonlar ve rider versiyonları); etkinliğe bağlama, etkinliğe özel versiyon ve ihtiyaç listesi 1.4'te bu belgeye eklenir ([12 §3](../12-implementation-plan.md#3-adımlar)) · **Kararlar:** [Bölüm 9](#9-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -74,6 +74,8 @@ Riders modülünün fiziksel tasarımıdır. Bu sürüm prodüksiyonları, prod�
 
 Doğrulama: prodüksiyon adı zorunlu (en çok 200), açıklama en çok 2000; versiyon notu en çok 500; en az bir satır, en çok 500; adet 1–9999; satır notu en çok 2000; satır başına en çok 10 muadil.
 
+**Uygulama (PR 2a):** `RiderVersion` BuildingBlocks'un yeni `ImmutableRecord` tabanındadır: yalnızca `created_at` ve `created_by` taşır, işlem birimi değiştirilen ya da silinen değişmez kaydı reddeder; `festos_riders` rolü üç tabloda yalnızca `SELECT` ve `INSERT` yetkisine sahiptir. Versiyon, satır ve muadiller kendi geçmişleri oldukları için işlem geçmişine yazılmaz (`[NotAudited]`); rider'ın `latest_version_number` değişikliği rider'ın geçmişinde görünür. `Rider.AddVersion` sıradaki numarayı verir, rider'ın sürümünü ilerletir (`If-Match` ile `412`, BR-RDR-003) ve `RiderVersionCreatedDomainEvent` üretir; aynı kayıtta giden kutusuna `RiderVersionCreatedIntegrationEvent` yazılır (yeni `IntegrationEvents` projesi) ve `riders:{id}` grubuna `resourceChanged` (`riders` kaynağı, rider kimliğiyle) duyurulur. Satır kuralları alan katmanındadır (`RiderLineRules`): BR-RDR-001 reddi `params.reason` ile `target`, `quantity` ya da `flexibility`, BR-RDR-002 reddi `notFlexible`, `sameModel` ya da `repeated` der ve `params.line` satırın sırasıdır. Model, muadil ve kategoriler `ICatalogDirectory` ile var ve aktif olarak denetlenir; değilse `400 invalidValue` (`/lines/{i}/modelId`, `/lines/{i}/categoryId`, `/lines/{i}/equivalentModelIds/{j}`; RD-04). Tekrarlanan `lineKey` `400 invalidValue`'dur; gönderilmeyen anahtar yeni üretilir. `ListRiderVersions` versiyonları rider'ın sürümüyle birlikte bir zarf içinde döner (`versions`, `version`; `ETag` de rider'ın sürümüdür): rider formu sonraki kaydın `If-Match` değerini buradan alır ve anlık bildirim yalnızca bu adresi yeniler. `GetRiderVersion` satırları sırasıyla, hedefin adı, kategori yolu ve aktifliğiyle, muadilleri adlarıyla döner. Prodüksiyon listesine son versiyonun tarihi (`latestVersionAt`) eklendi. `created_by_name` kaydedenin `ICurrentUser.DisplayName` değeridir.
+
 **Karşılaştırma** ön yüzde yapılır: iki versiyon `GetRiderVersion` ile okunur, satırlar `line_key` ile eşlenir; yalnızca birinde olan satır eklenmiş ya da çıkarılmış, ikisinde olup hedefi, adedi, esnekliği, muadilleri ya da notu farklı olan satır değişmiş sayılır (RD-03).
 
 ## 7. Sözleşme ve olaylar
@@ -128,3 +130,4 @@ Bu belgede proje sahibine soru yoktur.
 | 2026-10-02 | v1.0 | Onaylandı. |
 | 2026-10-02 | v1.1 | §4: Riders iskeleti ve prodüksiyonların uygulama ayrıntıları (PR 1a). |
 | 2026-10-02 | v1.2 | §8: prodüksiyonlar ekranının uygulama ayrıntıları (PR 1b). |
+| 2026-10-02 | v1.3 | §6: rider versiyonlarının uygulama ayrıntıları (PR 2a). |

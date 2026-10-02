@@ -4154,6 +4154,159 @@
           }
         }
       }
+    },
+    "/api/v1/riders/{riderId}/versions": {
+      "get": {
+        "tags": [
+          "Riders"
+        ],
+        "summary": "Lists a rider's versions, newest first, with the rider's version.",
+        "operationId": "ListRiderVersions",
+        "parameters": [
+          {
+            "name": "riderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RiderVersionList"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Riders"
+        ],
+        "summary": "Saves a rider's lines as its next version.",
+        "operationId": "CreateRiderVersion",
+        "parameters": [
+          {
+            "name": "riderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "description": "The version the change is based on, as a strong entity tag, e.g. \"7\" (api §9).",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "A new UUID for each user action, and the same one when the action is retried (api §10).",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRiderVersionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RiderVersionDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/rider-versions/{versionId}": {
+      "get": {
+        "tags": [
+          "Riders"
+        ],
+        "summary": "Gets a rider version with its lines.",
+        "operationId": "GetRiderVersion",
+        "parameters": [
+          {
+            "name": "versionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RiderVersionDetails"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as Problem Details (api §8).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiProblem"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -4510,6 +4663,27 @@
             "type": "string"
           },
           "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateRiderVersionRequest": {
+        "required": [
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RiderLineRequest"
+            }
+          },
+          "note": {
             "type": [
               "null",
               "string"
@@ -5734,6 +5908,7 @@
           "artistName",
           "name",
           "latestVersionNumber",
+          "latestVersionAt",
           "isActive",
           "version"
         ],
@@ -5758,6 +5933,13 @@
           "latestVersionNumber": {
             "type": "integer",
             "format": "int32"
+          },
+          "latestVersionAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
           },
           "isActive": {
             "type": "boolean"
@@ -5846,9 +6028,289 @@
         },
         "additionalProperties": false
       },
+      "RiderEquivalentItem": {
+        "required": [
+          "modelId",
+          "name",
+          "isActive"
+        ],
+        "type": "object",
+        "properties": {
+          "modelId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
       "RiderId": {
         "type": "string",
         "format": "uuid"
+      },
+      "RiderLineFlexibility": {
+        "enum": [
+          "required",
+          "flexible",
+          null
+        ],
+        "type": [
+          "null",
+          "string"
+        ]
+      },
+      "RiderLineId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "RiderLineItem": {
+        "required": [
+          "id",
+          "lineKey",
+          "modelId",
+          "categoryId",
+          "name",
+          "categoryPath",
+          "isTargetActive",
+          "quantity",
+          "flexibility",
+          "equivalents",
+          "note"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/RiderLineId"
+          },
+          "lineKey": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "modelId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "categoryId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "categoryPath": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isTargetActive": {
+            "type": "boolean"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "flexibility": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/RiderLineFlexibility"
+              }
+            ]
+          },
+          "equivalents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RiderEquivalentItem"
+            }
+          },
+          "note": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "RiderLineRequest": {
+        "required": [
+          "quantity"
+        ],
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lineKey": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "modelId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "categoryId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "flexibility": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/RiderLineFlexibility"
+              }
+            ]
+          },
+          "equivalentModelIds": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "note": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "RiderVersionDetails": {
+        "required": [
+          "id",
+          "riderId",
+          "number",
+          "note",
+          "createdAt",
+          "createdByName",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/RiderVersionId"
+          },
+          "riderId": {
+            "$ref": "#/components/schemas/RiderId"
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "note": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdByName": {
+            "type": "string"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RiderLineItem"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "RiderVersionId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "RiderVersionList": {
+        "required": [
+          "versions",
+          "version"
+        ],
+        "type": "object",
+        "properties": {
+          "versions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RiderVersionListItem"
+            }
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RiderVersionListItem": {
+        "required": [
+          "id",
+          "number",
+          "note",
+          "createdAt",
+          "createdByName",
+          "lineCount"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/RiderVersionId"
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "note": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdByName": {
+            "type": "string"
+          },
+          "lineCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
       },
       "Role": {
         "enum": [

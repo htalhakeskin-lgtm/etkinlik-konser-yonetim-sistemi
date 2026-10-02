@@ -9,6 +9,7 @@ public sealed record ProductionListItem(
     string? ArtistName,
     string Name,
     int LatestVersionNumber,
+    DateTimeOffset? LatestVersionAt,
     bool IsActive,
     int Version
 );
