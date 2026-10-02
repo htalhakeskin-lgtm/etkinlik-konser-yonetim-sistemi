@@ -105,9 +105,9 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | Belge | Sürüm |
 |---|---|
 | [00 — Kapsam ve MVP sınırları](docs/00-scope.md) | v1.7 |
-| [01 — Terimler sözlüğü](docs/01-glossary.md) | v1.9 |
+| [01 — Terimler sözlüğü](docs/01-glossary.md) | v1.10 |
 | [02 — Kullanıcı hikayeleri](docs/02-user-stories/README.md) (52 hikaye) | v1.7 |
-| [03 — İş kuralları](docs/03-business-rules.md) (93 kural) | v1.8 |
+| [03 — İş kuralları](docs/03-business-rules.md) (98 kural) | v1.9 |
 | [04 — Durum makineleri](docs/04-state-machines.md) (62 geçiş) | v1.1 |
 | [05 — Modül haritası](docs/05-module-map.md) | v1.3 |
 | [06 — Kavramsal veri modeli](docs/06-erd-conceptual.md) | v1.0 |
@@ -126,7 +126,7 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 |---|---|
 | [İsimlendirme](docs/standards/naming.md) | v1.7 |
 | [Kod stili ve statik analiz](docs/standards/code-style.md) | v1.9 |
-| [Veritabanı](docs/standards/database.md) | v1.10 |
+| [Veritabanı](docs/standards/database.md) | v1.11 |
 | [API](docs/standards/api.md) | v1.14 |
 | [Güvenlik](docs/standards/security.md) | v1.3 |
 | [Gözlemlenebilirlik](docs/standards/observability.md) | v1.2 |
@@ -150,6 +150,10 @@ Faz 0'da kod yazılmadan önce tasarımın tamamı belgelendi. Belgeler Türkçe
 | [Modül tasarımı: Identity](docs/modules/identity.md) | v1.14 |
 | [Modül tasarımı: Audit](docs/modules/audit.md) | v1.3 |
 | [Modül tasarımı: Inventory](docs/modules/inventory.md) | v1.3 |
+| [Modül tasarımı: Parties](docs/modules/parties.md) | v1.0 |
+| [Modül tasarımı: Catalog](docs/modules/catalog.md) | v1.0 |
+| [Modül tasarımı: Venues](docs/modules/venues.md) | v1.0 |
+| [Modül tasarımı: Riders](docs/modules/riders.md) | v1.0 |
 
 ### Teknoloji
 

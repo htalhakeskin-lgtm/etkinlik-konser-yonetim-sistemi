@@ -8,18 +8,18 @@
 **Teknik müdür olarak** ekipmanı hiyerarşik kategorilere ayırmak **istiyorum**, **çünkü** rider'lar çoğu zaman belirli bir model değil, bir kategori ister.
 
 Öncelik: Must · Demo adımı: —
-Kurallar: BR-SYS-001, BR-EQP-002
+Kurallar: BR-SYS-001, BR-EQP-002, BR-EQP-011
 
 **Kabul kriterleri**
 1. Kategori bir üst kategoriye bağlanabilir (ör. Ses › Mikrofon › Dinamik vokal).
 2. Kategori adı aynı üst kategori içinde tekildir.
-3. Altında model veya kategori bulunan kategori silinemez, pasifleştirilir.
+3. Kategori silinmez, pasifleştirilir. Altında aktif kategori ya da model varsa önce onlar taşınır ya da pasifleştirilir.
 
 ### US-EQP-002 · Ekipman modeli oluşturma
 **Teknik müdür olarak** ekipman kataloğunu gerçek teknik değerleriyle tutmak **istiyorum**, **çünkü** ihtiyaç hesabı, ileride güç ve yükleme hesapları bu değerlere dayanır.
 
 Öncelik: Must · Demo adımı: —
-Kurallar: BR-EQP-001
+Kurallar: BR-EQP-001, BR-EQP-012
 
 **Kabul kriterleri**
 1. Marka, model adı, kategori ve takip tipi (**Seri no'lu** / **Adetli**) zorunludur.
@@ -31,7 +31,7 @@ Kurallar: BR-EQP-001
 **Teknik müdür olarak** sık birlikte kullanılan ekipmanı kit olarak tanımlamak **istiyorum**, **çünkü** "küçük sahne ışık paketi" gibi setleri her seferinde satır satır girmek istemiyorum.
 
 Öncelik: Should · Demo adımı: —
-Kurallar: BR-EQP-003
+Kurallar: BR-EQP-003, BR-EQP-013
 
 **Kabul kriterleri**
 1. Kit bir ad ve satırlardan oluşur; her satır bir model ya da başka bir kit ve adettir.

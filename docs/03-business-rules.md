@@ -1,6 +1,6 @@
 # 03 — İş Kuralları Kataloğu
 
-> **Durum:** v1.8 · **Son güncelleme:** 2026-10-01
+> **Durum:** v1.9 · **Son güncelleme:** 2026-10-02
 > **Kararlar:** [Bölüm 7](#7-kararlar)
 
 ## 1. Bu belge ne işe yarar
@@ -146,7 +146,7 @@ Bir tarafın her iletişim türünde (telefon, e-posta, adres) en fazla bir biri
 *Tür:* Kısıt · *Hikayeler:* US-PTY-001
 
 #### BR-PTY-004 · Rol gerektiren seçimler
-Bir tarafın bir alana seçilebilmesi için aktif olması ve ilgili role sahip olması gerekir: etkinlik müşterisi → Müşteri, dış kiralama tedarikçisi → Tedarikçi, prodüksiyonun sanatçısı → Sanatçı, sanatçının ajansı → Ajans, mekan işletmecisi → Mekan işletmecisi.
+Bir tarafın bir alana seçilebilmesi için aktif olması ve ilgili role sahip olması gerekir: etkinlik müşterisi → Müşteri, dış kiralama tedarikçisi → Tedarikçi, prodüksiyonun sanatçısı → Sanatçı, sanatçının ajansı → Ajans, mekan işletmecisi → Mekan işletmecisi. Temsili olan sanatçıdan Sanatçı, temsil ettiği sanatçısı olan ajanstan Ajans rolü kaldırılamaz.
 *Tür:* Kısıt · *Hikayeler:* US-EVT-001, US-MRP-005, US-ART-001, US-VEN-001
 
 ### 5.3 Mekan (VEN)
@@ -162,10 +162,14 @@ Bir etkinlik için bir satırdan kullanılabilecek adet:
 
 #### BR-VEN-002 · Mekan ekipmanının tarihe göre değişmesi
 - Mekan ekipmanı satırının geçerlilik başlangıcı ve bitişi isteğe bağlıdır; boş bırakılan uç sınırsız sayılır. Bitiş başlangıçtan önce olamaz.
-- Kullanılamama döneminde kullanılamayan adet, satırın adedini aşamaz; dönem satırın geçerlilik aralığının içinde kalır.
+- Kullanılamama döneminde kullanılamayan adet, satırın adedini aşamaz; dönem satırın geçerlilik aralığının içinde kalır. Bir satırın kullanılamama dönemleri birbiriyle örtüşmez; böylece BR-VEN-001'deki en yüksek adet, aynı anda kullanılamayan adettir.
 - Mekanın elden çıkardığı ekipman silinmez, geçerlilik bitişi girilir. Böylece geçmiş etkinliklerin hesabı değişmez.
 
 *Tür:* Kısıt · *Hikayeler:* US-VEN-002
+
+#### BR-VEN-003 · Tekil mekan adı
+Mekan adı aynı şehir içinde, büyük-küçük harf ve Türkçe işaret farkı gözetilmeden tekildir. Pasif mekanların adı da yeniden kullanılamaz.
+*Tür:* Kısıt · *Hikayeler:* US-VEN-001
 
 ### 5.4 Etkinlik ve opsiyon (EVT)
 
@@ -327,6 +331,10 @@ Etkinliğe özel versiyon yalnızca etkinliğe o an bağlı versiyondan türetil
 Rider'ı yalnızca teknik müdür oluşturur ve değiştirir.
 *Tür:* Yetki · *Hikayeler:* US-RDR-001
 
+#### BR-RDR-009 · Tekil prodüksiyon adı
+Prodüksiyon adı aynı sanatçı içinde, büyük-küçük harf ve Türkçe işaret farkı gözetilmeden tekildir. Pasif prodüksiyonların adı da yeniden kullanılamaz.
+*Tür:* Kısıt · *Hikayeler:* US-ART-001
+
 ### 5.6 Ekipman kataloğu ve stok (EQP)
 
 #### BR-EQP-001 · Takip tipinin değişmezliği
@@ -334,7 +342,7 @@ Bir modelin birimi ya da adetli stok kaydı oluştuktan sonra takip tipi değiş
 *Tür:* Kısıt · *Hikayeler:* US-EQP-002
 
 #### BR-EQP-002 · Kategori hiyerarşisi
-Kategori hiyerarşisinde döngü olamaz. Bir kategoriyi hedefleyen her kural o kategorinin tüm alt kategorilerini de kapsar.
+Kategori hiyerarşisinde döngü olamaz. Bir kategoriyi hedefleyen her kural o kategorinin tüm alt kategorilerini de kapsar. Aktif alt kategorisi ya da aktif modeli olan kategori pasifleştirilemez; pasif kategorinin altında aktif kategori ya da model bulunamaz.
 *Tür:* Kısıt · *Hikayeler:* US-EQP-001
 
 #### BR-EQP-003 · Kit yapısı
@@ -377,6 +385,18 @@ Sahipliği **Dış kiralama** olan birim ve adetli stok; şirket stok toplamlar�
 #### BR-EQP-010 · Kayıp oranı
 Bir adetli model için kayıp oranı = seçilen dönemde sayım farkı olarak kaydedilen eksik adet / aynı dönemde çıkışı yapılan adet. Varsayılan dönem P-10'dur; en yüksek orana sahip P-11 model öne çıkarılır.
 *Tür:* Hesaplama · *Hikayeler:* US-EQP-009
+
+#### BR-EQP-011 · Tekil kategori adı
+Kategori adı aynı üst kategori içinde, büyük-küçük harf ve Türkçe işaret farkı gözetilmeden tekildir. Pasif kategorilerin adı da yeniden kullanılamaz.
+*Tür:* Kısıt · *Hikayeler:* US-EQP-001
+
+#### BR-EQP-012 · Tekil model
+Marka ve model adı birlikte, büyük-küçük harf ve Türkçe işaret farkı gözetilmeden tekildir. Pasif modeller de dahildir.
+*Tür:* Kısıt · *Hikayeler:* US-EQP-002
+
+#### BR-EQP-013 · Tekil kit adı
+Kit adı, büyük-küçük harf ve Türkçe işaret farkı gözetilmeden tekildir. Pasif kitler de dahildir.
+*Tür:* Kısıt · *Hikayeler:* US-EQP-005
 
 ### 5.7 Depo işlemleri (WHS)
 
@@ -591,3 +611,4 @@ Rider karşılama raporu, son ihtiyaç hesabından ve güncel onaylı rezervasyo
 | 2026-09-25 | v1.6 | Mekan ekipmanı tarihe göre değişebilir: BR-VEN-001 genişletildi, BR-VEN-002 eklendi, BR-MRP-010 güncellendi. |
 | 2026-09-25 | v1.7 | Güvenlik standardıyla uyum: P-04 15 karaktere çıktı; BR-SYS-007'ye boşluk yasağı ve yaygın şifre kontrolü, BR-SYS-008'e mutlak oturum süresi (yeni P-16) eklendi. |
 | 2026-10-01 | v1.8 | BR-SYS-015 (tekil e-posta) ve BR-SYS-016 (tekil depo adı) eklendi; ikisi de hikayelerin kabul kriteriydi, veritabanı kısıtına bağlanabilmek için numaralı kural oldu (Faz 1.2). |
+| 2026-10-02 | v1.9 | Faz 1.3 modül tasarımlarıyla: BR-EQP-011 (tekil kategori adı), BR-EQP-012 (tekil model), BR-EQP-013 (tekil kit adı), BR-VEN-003 (tekil mekan adı), BR-RDR-009 (tekil prodüksiyon adı) eklendi; BR-PTY-004'e temsil sürerken rolün kaldırılamaması, BR-VEN-002'ye dönemlerin örtüşmemesi, BR-EQP-002'ye alt kaydı olan kategorinin pasifleştirilememesi eklendi. |
